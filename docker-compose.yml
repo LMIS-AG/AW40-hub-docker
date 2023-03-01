@@ -98,6 +98,19 @@ services:
     volumes:
       - minio-data:/data
 
+  api:
+    build:
+      context: ./api
+    ports:
+      - 8000:8000
+
+    # DEVELOPMENT: run with reload and mount api package code
+    command: uvicorn --host 0.0.0.0 --reload api.__init__:app
+    volumes:
+      - ./api/api/:/home/api/api/
+
+
+
 networks:
   hubintranet:
     internal: true
