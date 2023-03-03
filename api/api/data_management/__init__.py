@@ -10,6 +10,7 @@ __all__ = [
 
 from .case import NewCase, Case
 from .customer import Customer
+from .obd_data import OBDData
 from .symptom import Symptom
 from .vehicle import Component, Vehicle
 from .workshop import Workshop
