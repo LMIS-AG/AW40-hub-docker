@@ -13,6 +13,15 @@ class SymptomLabel(str, Enum):
 
 
 class Symptom(BaseModel):
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "component": "Batterie",
+                "label": "defekt"
+            }
+        }
+
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     component: Component
     label: SymptomLabel
