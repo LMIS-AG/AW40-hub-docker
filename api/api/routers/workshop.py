@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from ..data_management import NewCase, Case, Component, OBDData, Symptom
+from ..data_management import NewCase, Case, OBDData, Symptom
 
 tags_metadata = [
     {
@@ -174,7 +174,7 @@ async def get_obd_data(
 
 
 @router.put("/{workshop_id}/cases/{case_id}/obd_data/{idx}")
-def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
+async def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
     """Update a specific obd dataset of a case."""
     pass
 
@@ -200,14 +200,22 @@ async def delete_obd_data(
         )
 
 
-@router.get("/{workshop_id}/cases/{case_id}/symptoms")
-def list_symptoms(case: Case = Depends(case_from_workshop)):
-    pass
+@router.get(
+    "/{workshop_id}/cases/{case_id}/symptoms",
+    status_code=200,
+    response_model=List[Symptom]
+)
+async def list_symptoms(
+        case: Case = Depends(case_from_workshop)
+) -> List[Symptom]:
+    """List all available symptoms for a case."""
+    return case.symptoms
 
 
 @router.post(
     "/{workshop_id}/cases/{case_id}/symptoms",
-    status_code=201, response_model=Case
+    status_code=201,
+    response_model=Case
 )
 async def add_symptom(
         symptom: Symptom, case: Case = Depends(case_from_workshop)
@@ -218,22 +226,48 @@ async def add_symptom(
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/symptoms/{component}")
-def get_symptom(
-        component: Component, case: Case = Depends(case_from_workshop)
+@router.get(
+    "/{workshop_id}/cases/{case_id}/symptoms/{idx}",
+    status_code=200,
+    response_model=Symptom
+)
+async def get_symptom(
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> Symptom:
+    """Get a specific symptom from a case."""
+    try:
+        return case.symptoms[idx]
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.symptoms)} symptoms."
+        )
+
+
+@router.put("/{workshop_id}/cases/{case_id}/symptoms/{idx}")
+async def update_symptom(
+        idx: int, case: Case = Depends(case_from_workshop)
 ):
     pass
 
 
-@router.put("/{workshop_id}/cases/{case_id}/symptoms/{component}")
-def update_symptom(
-        component: Component, case: Case = Depends(case_from_workshop)
-):
-    pass
-
-
-@router.delete("/{workshop_id}/cases/{case_id}/symptoms/{component}")
-def delete_symptom(
-        component: Component, case: Case = Depends(case_from_workshop)
-):
-    pass
+@router.delete(
+    "/{workshop_id}/cases/{case_id}/symptoms/{idx}",
+    status_code=200,
+    response_model=Case
+)
+async def delete_symptom(
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> Case:
+    """Delete a specific symptom from a case."""
+    try:
+        case.symptoms.pop(idx)
+        await case.save()
+        return case
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.symptoms)} symptoms."
+        )
