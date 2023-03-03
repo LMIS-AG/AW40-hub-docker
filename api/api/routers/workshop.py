@@ -26,7 +26,7 @@ class CaseNotFoundException(HTTPException):
         )
 
 
-@router.get("/{workshop_id}/cases")
+@router.get("/{workshop_id}/cases", status_code=200, response_model=List[Case])
 async def list_cases(
         workshop_id: str = None,
         customer_id: str = None,
@@ -38,14 +38,16 @@ async def list_cases(
     return cases
 
 
-@router.post("/{workshop_id}/cases")
+@router.post("/{workshop_id}/cases", status_code=201, response_model=Case)
 async def add_case(workshop_id: str, case: NewCase) -> Case:
     case = Case(workshop_id=workshop_id, **case.dict())
     case = await case.insert()
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}", status_code=200)
+@router.get(
+    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=Case
+)
 async def get_case(workshop_id: str, case_id: str) -> Case:
     case = await Case.get(case_id)
 
