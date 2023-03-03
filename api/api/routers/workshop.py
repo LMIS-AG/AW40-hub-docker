@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 
-from ..data_management import NewCase, Case, Component
+from ..data_management import NewCase, Case, Component, OBDData
 
 tags_metadata = [
     {
@@ -124,10 +124,24 @@ def list_obd_data(workshop_id: str, case_id: str):
     pass
 
 
-@router.post("/{workshop_id}/cases/{case_id}/obd_data")
-def add_obd_data(workshop_id: str, case_id: str, obd_data: None):
+@router.post(
+    "/{workshop_id}/cases/{case_id}/obd_data",
+    status_code=201,
+    response_model=Case
+)
+async def add_obd_data(
+        workshop_id: str, case_id: str, obd_data: OBDData
+) -> Case:
     """Add a new obd dataset to a case."""
-    pass
+    case = await Case.get(case_id)
+
+    if case is None or case.workshop_id != workshop_id:
+        # No case for THIS workshop
+        raise CaseNotFoundException(case_id=case_id, workshop_id=workshop_id)
+    else:
+        case.obd_data.append(obd_data)
+        case = await case.save()
+        return case
 
 
 @router.get("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
