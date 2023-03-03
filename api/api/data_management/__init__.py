@@ -2,6 +2,7 @@ __all__ = [
     "NewCase",
     "Case",
     "Customer",
+    "OBDData",
     "Symptom",
     "Component",
     "Vehicle",
