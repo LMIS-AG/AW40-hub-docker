@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from ..data_management import NewCase, Case, Component, OBDData
+from ..data_management import NewCase, Case, Component, OBDData, Symptom
 
 tags_metadata = [
     {
@@ -171,9 +171,17 @@ def list_symptoms(case: Case = Depends(case_from_workshop)):
     pass
 
 
-@router.post("/{workshop_id}/cases/{case_id}/symptoms")
-def add_symptom(case: Case = Depends(case_from_workshop)):
-    pass
+@router.post(
+    "/{workshop_id}/cases/{case_id}/symptoms",
+    status_code=201, response_model=Case
+)
+async def add_symptom(
+        symptom: Symptom, case: Case = Depends(case_from_workshop)
+) -> Case:
+    """Add a new symptom to a case."""
+    case.symptoms.append(symptom)
+    case = await case.save()
+    return case
 
 
 @router.get("/{workshop_id}/cases/{case_id}/symptoms/{component}")
