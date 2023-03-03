@@ -23,6 +23,7 @@ class Status(str, Enum):
 
 
 class NewCase(BaseModel):
+    """Schema for new cases added via the api."""
 
     class Config:
         schema_extra = {
@@ -41,6 +42,7 @@ class NewCase(BaseModel):
 
 
 class Case(Document):
+    """Complete case schema and major db interfacing class."""
 
     class Config:
         validate_assignment = True
@@ -69,6 +71,10 @@ class Case(Document):
 
     @before_event(Insert)
     async def insert_vehicle(self):
+        """
+        Create the vehicle if non-existent, e.g. if it is the first case for
+        this vehicle.
+        """
         vehicle = await Vehicle.find_one({"vin": self.vehicle_vin})
         if vehicle is None:
             vehicle = Vehicle(vin=self.vehicle_vin)
@@ -76,6 +82,10 @@ class Case(Document):
 
     @before_event(Insert)
     async def insert_customer(self):
+        """
+        Create the customer if non-existent, e.g. if it is the first case for
+        this customer.
+        """
         customer = await Customer.get(self.customer_id)
         if customer is None:
             customer = Customer(id=self.customer_id)
@@ -88,6 +98,10 @@ class Case(Document):
             vin: str = None,
             workshop_id: str = None
     ):
+        """
+        Get list of all cases filtered by customer_id, vehicle_vin and
+        workshop_id.
+        """
         filter = {}
         if customer_id is not None:
             filter["customer_id"] = customer_id
@@ -98,3 +112,4 @@ class Case(Document):
 
         cases = await cls.find(filter).to_list()
         return cases
+
