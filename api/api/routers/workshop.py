@@ -128,10 +128,16 @@ def delete_timeseries_data(
     pass
 
 
-@router.get("/{workshop_id}/cases/{case_id}/obd_data")
-def list_obd_data(case: Case = Depends(case_from_workshop)):
+@router.get(
+    "/{workshop_id}/cases/{case_id}/obd_data",
+    status_code=200,
+    response_model=List[OBDData]
+)
+async def list_obd_data(
+        case: Case = Depends(case_from_workshop)
+) -> List[OBDData]:
     """List all available obd datasets for a case."""
-    pass
+    return case.obd_data
 
 
 @router.post(
@@ -148,22 +154,50 @@ async def add_obd_data(
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
-def get_obd_data(data_id: str, case: Case = Depends(case_from_workshop)):
+@router.get(
+    "/{workshop_id}/cases/{case_id}/obd_data/{idx}",
+    status_code=200,
+    response_model=OBDData
+)
+async def get_obd_data(
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> OBDData:
     """Get a specific obd dataset from a case."""
-    pass
+    try:
+        return case.obd_data[idx]
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.obd_data)} OBD datasets."
+        )
 
 
-@router.put("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
-def update_obd_data(data_id: str, case: Case = Depends(case_from_workshop)):
+@router.put("/{workshop_id}/cases/{case_id}/obd_data/{idx}")
+def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
     """Update a specific obd dataset of a case."""
     pass
 
 
-@router.delete("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
-def delete_obd_data(data_id: str, case: Case = Depends(case_from_workshop)):
+@router.delete(
+    "/{workshop_id}/cases/{case_id}/obd_data/{idx}",
+    status_code=200,
+    response_model=Case
+)
+async def delete_obd_data(
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> Case:
     """Delete a specific obd dataset from a case."""
-    pass
+    try:
+        case.obd_data.pop(idx)
+        await case.save()
+        return case
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.obd_data)} OBD datasets."
+        )
 
 
 @router.get("/{workshop_id}/cases/{case_id}/symptoms")
