@@ -113,11 +113,14 @@ def get_timeseries_data(
 
 
 @router.put("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
-def update_timeseries_data(
+async def update_timeseries_data(
         data_id: str, case: Case = Depends(case_from_workshop)
 ):
-    """Update a specific timeseries dataset of a case."""
-    pass
+    """Update a specific timeseries dataset of a case. Currently not allowed"""
+    raise HTTPException(
+        status_code=405,
+        headers={"Allow": "GET, DELETE"}
+    )
 
 
 @router.delete("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
@@ -175,8 +178,11 @@ async def get_obd_data(
 
 @router.put("/{workshop_id}/cases/{case_id}/obd_data/{idx}")
 async def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
-    """Update a specific obd dataset of a case."""
-    pass
+    """Update a specific obd dataset of a case. Currently not allowed"""
+    raise HTTPException(
+        status_code=405,
+        headers={"Allow": "GET, DELETE"}
+    )
 
 
 @router.delete(
@@ -249,7 +255,11 @@ async def get_symptom(
 async def update_symptom(
         idx: int, case: Case = Depends(case_from_workshop)
 ):
-    pass
+    """Update a specific symptom of a case. Currently not allowed"""
+    raise HTTPException(
+        status_code=405,
+        headers={"Allow": "GET, DELETE"}
+    )
 
 
 @router.delete(
