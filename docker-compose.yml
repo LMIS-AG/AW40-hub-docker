@@ -123,7 +123,7 @@ services:
       - MONGO_DB=${MONGO_DB}
 
     # DEVELOPMENT: run with reload and mount api package code
-    command: uvicorn --host 0.0.0.0 --reload api.__init__:app
+    command: uvicorn --host 0.0.0.0 --reload api.main:app
     volumes:
       - ./api/api/:/home/api/api/
 

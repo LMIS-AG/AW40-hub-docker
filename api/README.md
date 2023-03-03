@@ -37,9 +37,9 @@ Some suggestions to keep things clean:
 - Environment variables are read in one place only:
 [`api.settings.Settings`](./api/settings.py)
 - All configuration specified through environment variables is resolved in the
-main entrypoint of the api, which is [`api.__init__`](./api/__init__.py). E.g.
+main entrypoint of the api, which is [`api.main`](./api/main.py). E.g.
 `from .settings import settings` happens only in
-[`api.__init__`](./api/__init__.py) which creates and injects all dependencies
+[`api.main`](./api/main.py) which creates and injects all dependencies
 for lower level code.
 
 ### 3. Run tests and check code style
