@@ -6,6 +6,7 @@ from beanie import Document, Indexed, before_event, Insert
 from pydantic import BaseModel, Field
 
 from .customer import Customer
+from .obd_data import OBDData
 from .symptom import Symptom
 from .vehicle import Vehicle
 
@@ -61,7 +62,7 @@ class Case(Document):
 
     # diagnostic data
     timeseries_data: str = None
-    obd_data: str = None
+    obd_data: List[OBDData] = []
     symptoms: List[Symptom] = []
 
     schema_version: int = 0
