@@ -15,7 +15,7 @@ tags_metadata = [
 router = APIRouter(tags=["Shared"])
 
 
-@router.get("/cases")
+@router.get("/cases", status_code=200, response_model=List[Case])
 async def list_cases(
         customer_id: str = None,
         vin: str = None,
@@ -31,7 +31,7 @@ async def list_cases(
     return cases
 
 
-@router.get("/cases/{case_id}")
+@router.get("/cases/{case_id}", status_code=200, response_model=Case)
 async def get_case(case_id: str) -> Case:
     case = await Case.get(case_id)
     return case
