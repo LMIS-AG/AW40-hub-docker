@@ -2,7 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from ..data_management import NewCase, Case, OBDData, Symptom
+from ..data_management import (
+    NewCase, Case, OBDData, Symptom, NewTimeseriesData, TimeseriesData
+)
 
 tags_metadata = [
     {
@@ -92,24 +94,59 @@ def update_vehicle(case: Case = Depends(case_from_workshop)):
     pass
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data")
+@router.get(
+    "/{workshop_id}/cases/{case_id}/timeseries_data",
+    status_code=200,
+    response_model=List[TimeseriesData]
+)
 def list_timeseries_data(case: Case = Depends(case_from_workshop)):
     """List all available timeseries datasets for a case."""
-    pass
+    return case.timeseries_data
 
 
-@router.post("/{workshop_id}/cases/{case_id}/timeseries_data")
-def add_timeseries_data(case: Case = Depends(case_from_workshop)):
+@router.post(
+    "/{workshop_id}/cases/{case_id}/timeseries_data",
+    status_code=201,
+    response_model=Case
+)
+async def add_timeseries_data(
+        timeseries_data: NewTimeseriesData,
+        case: Case = Depends(case_from_workshop)
+) -> Case:
     """Add a new timeseries dataset to a case."""
-    pass
+    case = await case.add_timeseries_data(timeseries_data)
+    return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{idx}")
 def get_timeseries_data(
-        data_id: str, case: Case = Depends(case_from_workshop)
-):
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> TimeseriesData:
     """Get a specific timeseries dataset from a case."""
-    pass
+    try:
+        return case.timeseries_data[idx]
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.timeseries_data)} timeseries datasets."
+        )
+
+
+@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{idx}/signal")
+async def get_timeseries_data_signal(
+        idx: int, case: Case = Depends(case_from_workshop)
+) -> TimeseriesData:
+    """Get the signal of a specific timeseries dataset from a case."""
+    try:
+        timeseries_data = case.timeseries_data[idx]
+        return await timeseries_data.signal
+    except IndexError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Case '{case.id}' only has "
+                   f"{len(case.timeseries_data)} timeseries datasets."
+        )
 
 
 @router.put("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")

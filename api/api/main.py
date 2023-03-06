@@ -2,7 +2,10 @@ from beanie import init_beanie
 from fastapi import FastAPI
 from motor import motor_asyncio
 
-from .data_management import Case, Vehicle, Customer, Workshop
+from .data_management import (
+    Case, Vehicle, Customer, Workshop, BaseTimeseriesData
+)
+from .data_management.timeseriers_data import GridFSSignalStore
 from .settings import settings
 from .v1 import api_v1
 
@@ -20,3 +23,9 @@ async def init_mongo():
         client[settings.mongo_db],
         document_models=[Case, Vehicle, Customer, Workshop]
     )
+
+    # initialized gridfs signal storage
+    bucket = motor_asyncio.AsyncIOMotorGridFSBucket(
+        client[settings.mongo_db], bucket_name="signals"
+    )
+    BaseTimeseriesData.signal_store = GridFSSignalStore(bucket=bucket)
