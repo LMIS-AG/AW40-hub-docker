@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from .customer import Customer
 from .obd_data import OBDData
 from .symptom import Symptom
+from .timeseriers_data import TimeseriesData, NewTimeseriesData
 from .vehicle import Vehicle
 
 
@@ -63,7 +64,7 @@ class Case(Document):
     workshop_id: Indexed(str, unique=False)
 
     # diagnostic data
-    timeseries_data: str = None
+    timeseries_data: List[TimeseriesData] = []
     obd_data: List[OBDData] = []
     symptoms: List[Symptom] = []
 
@@ -113,3 +114,11 @@ class Case(Document):
         cases = await cls.find(filter).to_list()
         return cases
 
+    async def add_timeseries_data(self, new_data: NewTimeseriesData):
+        # signal data is stored and converted to ref
+        timeseries_data = await new_data.to_timeseries_data()
+
+        # case is updated and returned
+        self.timeseries_data.append(timeseries_data)
+        await self.save()
+        return self
