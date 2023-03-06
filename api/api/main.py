@@ -5,7 +5,7 @@ from motor import motor_asyncio
 from .data_management import (
     Case, Vehicle, Customer, Workshop, BaseTimeseriesData
 )
-from .data_management.timeseriers_data import GridFSSignalStore
+from .data_management.timeseries_data import GridFSSignalStore
 from .settings import settings
 from .v1 import api_v1
 

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from .customer import Customer
 from .obd_data import OBDData
 from .symptom import Symptom
-from .timeseriers_data import TimeseriesData, NewTimeseriesData
+from .timeseries_data import TimeseriesData, NewTimeseriesData
 from .vehicle import Vehicle
 
 
