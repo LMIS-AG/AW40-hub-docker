@@ -111,6 +111,8 @@ services:
   api:
     build:
       context: ./api
+    depends_on:
+      - mongo
     ports:
       - 8000:8000
     networks:
