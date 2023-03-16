@@ -20,4 +20,3 @@ def motor_db(motor_client):
     api user.
     """
     yield motor_client["aw40-hub-test"]
-
