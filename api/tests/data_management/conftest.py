@@ -1,5 +1,5 @@
-import pytest
 from motor import motor_asyncio
+import pytest
 
 
 @pytest.fixture
