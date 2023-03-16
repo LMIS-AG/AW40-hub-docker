@@ -15,8 +15,9 @@ def motor_client():
 @pytest.fixture
 def motor_db(motor_client):
     """
-    Use database defined in dev.env (otherwise credentials
-    mongo-api-user:mongo-api-pw used in motor_client will not work. Hence,
-    make sure to use dedicated test collections.
+    Use database 'aw40-hub-test'. Database 'aw40-hub' ist defined in dev.env
+    and hence mongo/init-users.sh should have created readWrite role for
+    api user.
     """
-    return motor_client["aw40-hub"]
+    yield motor_client["aw40-hub-test"]
+
