@@ -20,7 +20,7 @@ router = APIRouter(tags=["Workshop"])
 
 @router.get("/{workshop_id}/cases", status_code=200, response_model=List[Case])
 async def list_cases(
-        workshop_id: str = None,
+        workshop_id: str,
         customer_id: str = None,
         vin: str = None
 ) -> List[Case]:
