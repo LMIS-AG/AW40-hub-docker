@@ -414,13 +414,34 @@ def test_list_obd_data(case_data, obd_data, test_app):
     assert len(response.json()) == repeats
 
 
-def test_add_obd_data(case_data, obd_data, test_app):
+def create_mock_save():
+    """
+    Create the closure mock_save that can be used to patch Case.save.
+    The second return value saved_cases can be used to confirm correct
+    usage of Case.save, e.g. after updating instance attributes and correct
+    response data, e.g. representations of saved state.
+    """
+    saved_cases = []
+
+    async def mock_save(self):
+        saved_cases.append(self)
+        return self
+
+    return mock_save, saved_cases
+
+
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_add_obd_data(save, case_data, obd_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
 
     with TestClient(test_app) as client:
         response = client.post(
@@ -431,6 +452,10 @@ def test_add_obd_data(case_data, obd_data, test_app):
     # confirm expected status code and response shape
     assert response.status_code == 201
     assert len(response.json()["obd_data"]) == 1
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case after saving
+    assert Case(**response.json()) == saved_cases[0]
 
 
 def test_get_obd_data_not_found(case_data, test_app):
@@ -493,7 +518,8 @@ def test_delete_obd_data_not_found(case_data, test_app):
     assert response.status_code == 404
 
 
-def test_delete_obd_data(case_data, obd_data, test_app):
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_delete_obd_data(save, case_data, obd_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
@@ -503,6 +529,10 @@ def test_delete_obd_data(case_data, obd_data, test_app):
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
 
     # request deletion of obd_data with idx 0, which should exist
     with TestClient(test_app) as client:
@@ -514,6 +544,10 @@ def test_delete_obd_data(case_data, obd_data, test_app):
     # obd_data
     assert response.status_code == 200
     assert response.json()["obd_data"] == []
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case after saving
+    assert Case(**response.json()) == saved_cases[0]
 
 
 def test_list_symptoms(case_data, symptom, test_app):
@@ -538,13 +572,18 @@ def test_list_symptoms(case_data, symptom, test_app):
     assert len(response.json()) == repeats
 
 
-def test_add_symptom(case_data, symptom, test_app):
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_add_symptom(save, case_data, symptom, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
 
     with TestClient(test_app) as client:
         response = client.post(
@@ -555,6 +594,10 @@ def test_add_symptom(case_data, symptom, test_app):
     # confirm expected status code and response shape
     assert response.status_code == 201
     assert len(response.json()["symptoms"]) == 1
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case after saving
+    assert Case(**response.json()) == saved_cases[0]
 
 
 def test_get_symptom_not_found(case_data, test_app):
@@ -617,7 +660,8 @@ def test_delete_symptom_not_found(case_data, test_app):
     assert response.status_code == 404
 
 
-def test_delete_symptom(case_data, symptom, test_app):
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_delete_symptom(save, case_data, symptom, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
@@ -627,6 +671,10 @@ def test_delete_symptom(case_data, symptom, test_app):
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
 
     # request deletion of symptom with idx 0, which should exist
     with TestClient(test_app) as client:
@@ -638,3 +686,7 @@ def test_delete_symptom(case_data, symptom, test_app):
     # obd_data
     assert response.status_code == 200
     assert response.json()["symptoms"] == []
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case after saving
+    assert Case(**response.json()) == saved_cases[0]
