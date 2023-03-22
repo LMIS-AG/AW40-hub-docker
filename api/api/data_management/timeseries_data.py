@@ -78,8 +78,7 @@ class TimeseriesData(BaseTimeseriesData):
     # Ref to signal data instead of actual data
     signal_id: PydanticObjectId
 
-    @property
-    async def signal(self):
+    async def get_signal(self):
         """Fetches the actual signal data on demand."""
         return await self.signal_store.get(self.signal_id)
 

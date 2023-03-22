@@ -51,43 +51,6 @@ class MockSignalStore(BaseSignalStore):
         return self.store[id]
 
 
-@pytest.fixture
-def timeseries_meta_data():
-    """Valid timeseries meta data"""
-    return {
-        "component": "Batterie",
-        "label": "keine Angabe",
-        "sampling_rate": 1,
-        "duration": 3,
-        "type": "oscillogram"
-    }
-
-
-@pytest.fixture
-def timeseries_signal_id():
-    """Valid timeseries signal id, e.g. needs to work with PydanticObjectId"""
-    return "5eb7cf5a86d9755df3a6c593"
-
-
-@pytest.fixture
-def timeseries_data(timeseries_meta_data, timeseries_signal_id):
-    """Data expected to validate successfully with TimeseriesData"""
-    timeseries_meta_data["signal_id"] = timeseries_signal_id
-    return timeseries_meta_data
-
-
-@pytest.fixture
-def timeseries_signal():
-    return [-1.0, 0, 1.0]
-
-
-@pytest.fixture
-def new_timeseries_data(timeseries_meta_data, timeseries_signal):
-    """Data expected to validate successfully with NewTimeseriesData"""
-    timeseries_meta_data["signal"] = timeseries_signal
-    return timeseries_meta_data
-
-
 class TestTimeseriesData:
 
     def test_validation_fails_without_signal_id(self, timeseries_meta_data):
@@ -98,7 +61,7 @@ class TestTimeseriesData:
         TimeseriesData(**timeseries_data)
 
     @pytest.mark.asyncio
-    async def test_signal(self, timeseries_signal, timeseries_meta_data):
+    async def test_get_signal(self, timeseries_signal, timeseries_meta_data):
         # init a MockSignalStore and manually add a signal
         signal_store = MockSignalStore()
         signal_id = await signal_store.create(timeseries_signal)
@@ -112,7 +75,7 @@ class TestTimeseriesData:
         timeseries_data = TimeseriesData(**timeseries_meta_data)
 
         # retrieve the original signal from the TimeseriesData instance
-        retrieved_signal = await timeseries_data.signal
+        retrieved_signal = await timeseries_data.get_signal()
         assert retrieved_signal == timeseries_signal
 
 

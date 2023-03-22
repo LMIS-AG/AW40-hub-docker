@@ -140,7 +140,7 @@ async def get_timeseries_data_signal(
     """Get the signal of a specific timeseries dataset from a case."""
     try:
         timeseries_data = case.timeseries_data[idx]
-        return await timeseries_data.signal
+        return await timeseries_data.get_signal()
     except IndexError:
         raise HTTPException(
             status_code=404,
