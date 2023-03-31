@@ -22,6 +22,10 @@ class BaseSignalStore(ABC):
         """Get a signal by storage id."""
         raise NotImplementedError
 
+    async def delete(self, id: str):
+        """Delete a signal by storage id."""
+        raise NotImplementedError
+
 
 class GridFSSignalStore(BaseSignalStore):
     """MongoDB GridFS based signal store."""
@@ -42,6 +46,9 @@ class GridFSSignalStore(BaseSignalStore):
         signal_bytes = await grid_out.read()
         signal = np.frombuffer(signal_bytes, dtype=float).tolist()
         return signal
+
+    async def delete(self, id: str):
+        await self._bucket.delete(id)
 
 
 class TimeseriesDataLabel(str, Enum):
@@ -81,6 +88,10 @@ class TimeseriesData(BaseTimeseriesData):
     async def get_signal(self):
         """Fetches the actual signal data on demand."""
         return await self.signal_store.get(self.signal_id)
+
+    async def delete_signal(self):
+        """Delete the actual signal data."""
+        await self.signal_store.delete(self.signal_id)
 
 
 class NewTimeseriesData(BaseTimeseriesData):

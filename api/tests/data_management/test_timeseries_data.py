@@ -32,6 +32,20 @@ class TestGridFSSignalStore:
         retrieved_signal = await signal_store.get(signal_id)
         assert signal == retrieved_signal
 
+    @pytest.mark.asyncio
+    async def test_delete(self, signal_bucket):
+        # seed test bucket with empty bytes and keep id
+        signal_id = await signal_bucket.upload_from_stream(
+            filename="",
+            source=b""
+        )
+        # delete via GridFSSignalStore and confirm non-existence
+        signal_store = GridFSSignalStore(signal_bucket)
+        await signal_store.delete(signal_id)
+        cursor = signal_bucket.find({"_id": signal_id})
+        stored_signals = await cursor.to_list(None)
+        assert stored_signals == []
+
 
 class MockSignalStore(BaseSignalStore):
     """
@@ -49,6 +63,9 @@ class MockSignalStore(BaseSignalStore):
 
     async def get(self, id: str) -> List[float]:
         return self.store[id]
+
+    async def delete(self, id: str):
+        self.store.pop(id)
 
 
 class TestTimeseriesData:
@@ -77,6 +94,26 @@ class TestTimeseriesData:
         # retrieve the original signal from the TimeseriesData instance
         retrieved_signal = await timeseries_data.get_signal()
         assert retrieved_signal == timeseries_signal
+
+    @pytest.mark.asyncio
+    async def test_delete_signal(
+            self, timeseries_signal, timeseries_meta_data
+    ):
+        # init a MockSignalStore and manually add a signal
+        signal_store = MockSignalStore()
+        signal_id = await signal_store.create(timeseries_signal)
+
+        # configure TimeseriesData class to use the mock store
+        TimeseriesData.signal_store = signal_store
+
+        # after adding signal_id to metadata, a TimeseriesData instance can
+        # be created
+        timeseries_meta_data["signal_id"] = signal_id
+        timeseries_data = TimeseriesData(**timeseries_meta_data)
+
+        # delete the signal from store and confirm non-existence
+        await timeseries_data.delete_signal()
+        assert signal_store.store == {}
 
 
 class TestNewTimeseriesData:
