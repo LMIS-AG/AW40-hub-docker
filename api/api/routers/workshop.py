@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import NonNegativeInt
 
 from ..data_management import (
     NewCase, Case, OBDData, Symptom, NewTimeseriesData, TimeseriesData
@@ -118,35 +119,34 @@ async def add_timeseries_data(
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{idx}")
-def get_timeseries_data(
-        idx: int, case: Case = Depends(case_from_workshop)
+@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+async def get_timeseries_data(
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
     """Get a specific timeseries dataset from a case."""
-    try:
-        return case.timeseries_data[idx]
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.timeseries_data)} timeseries datasets."
-        )
+    timeseries_data = case.get_timeseries_data(data_id)
+    if timeseries_data is not None:
+        return timeseries_data
+    else:
+        exception_detail = f"No timeseries_data with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_timeseries_data}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{idx}/signal")
+@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal")
 async def get_timeseries_data_signal(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
     """Get the signal of a specific timeseries dataset from a case."""
-    try:
-        timeseries_data = case.timeseries_data[idx]
+    timeseries_data = case.get_timeseries_data(data_id)
+    if timeseries_data is not None:
         return await timeseries_data.get_signal()
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.timeseries_data)} timeseries datasets."
-        )
+    else:
+        exception_detail = f"No timeseries_data with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_timeseries_data}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
 @router.put("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
@@ -195,26 +195,28 @@ async def add_obd_data(
 
 
 @router.get(
-    "/{workshop_id}/cases/{case_id}/obd_data/{idx}",
+    "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
     response_model=OBDData
 )
 async def get_obd_data(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> OBDData:
     """Get a specific obd dataset from a case."""
-    try:
-        return case.obd_data[idx]
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.obd_data)} OBD datasets."
-        )
+    obd_data = case.get_obd_data(data_id)
+    if obd_data is not None:
+        return obd_data
+    else:
+        exception_detail = f"No obd_data with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_obd_data}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.put("/{workshop_id}/cases/{case_id}/obd_data/{idx}")
-async def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
+@router.put("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
+async def update_obd_data(
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
+):
     """Update a specific obd dataset of a case. Currently not allowed"""
     raise HTTPException(
         status_code=405,
@@ -223,24 +225,16 @@ async def update_obd_data(idx: int, case: Case = Depends(case_from_workshop)):
 
 
 @router.delete(
-    "/{workshop_id}/cases/{case_id}/obd_data/{idx}",
+    "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
     response_model=Case
 )
 async def delete_obd_data(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> Case:
     """Delete a specific obd dataset from a case."""
-    try:
-        case.obd_data.pop(idx)
-        await case.save()
-        return case
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.obd_data)} OBD datasets."
-        )
+    await case.delete_obd_data(data_id)
+    return case
 
 
 @router.get(
@@ -270,27 +264,27 @@ async def add_symptom(
 
 
 @router.get(
-    "/{workshop_id}/cases/{case_id}/symptoms/{idx}",
+    "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
     response_model=Symptom
 )
 async def get_symptom(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> Symptom:
     """Get a specific symptom from a case."""
-    try:
-        return case.symptoms[idx]
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.symptoms)} symptoms."
-        )
+    symtpom = case.get_symptom(data_id)
+    if symtpom is not None:
+        return symtpom
+    else:
+        exception_detail = f"No symtpom with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_symptoms}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.put("/{workshop_id}/cases/{case_id}/symptoms/{idx}")
+@router.put("/{workshop_id}/cases/{case_id}/symptoms/{data_id}")
 async def update_symptom(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ):
     """Update a specific symptom of a case. Currently not allowed"""
     raise HTTPException(
@@ -300,21 +294,13 @@ async def update_symptom(
 
 
 @router.delete(
-    "/{workshop_id}/cases/{case_id}/symptoms/{idx}",
+    "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
     response_model=Case
 )
 async def delete_symptom(
-        idx: int, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> Case:
     """Delete a specific symptom from a case."""
-    try:
-        case.symptoms.pop(idx)
-        await case.save()
-        return case
-    except IndexError:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Case '{case.id}' only has "
-                   f"{len(case.symptoms)} symptoms."
-        )
+    await case.delete_symptom(data_id)
+    return case
