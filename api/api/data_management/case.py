@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Any, Union
 
-from beanie import Document, Indexed, before_event, Insert
+from beanie import Document, Indexed, before_event, Insert, Delete
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from .customer import Customer
@@ -181,3 +181,13 @@ class Case(Document):
     @property
     def available_symptoms(self):
         return [i for i, d in enumerate(self.symptoms) if d is not None]
+
+    @before_event(Delete)
+    async def _delete_all_timeseries_signals(self):
+        """
+        Makes sure that binary signal data stored outside of case is also
+        removed.
+        """
+        for ts in self.timeseries_data:
+            if ts is not None:
+                await ts.delete_signal()

@@ -452,3 +452,30 @@ class TestCase:
             new_case["symptoms"] = [symptom, None, symptom]
             case = Case(workshop_id=1, **new_case)
             assert case.available_symptoms == [0, 2]
+
+    @mock.patch(
+        "api.data_management.case.TimeseriesData.delete_signal", autospec=True
+    )
+    @pytest.mark.asyncio
+    async def test_delete_all_timeseries_signals(
+            self,
+            delete_signal,
+            new_case,
+            timeseries_data,
+            initialized_beanie_context
+    ):
+
+        # patch TimeseriesData.delete_signal
+        delete_signal.side_effect = mock.AsyncMock()
+
+        async with initialized_beanie_context:
+            # seed case with timeseries_data and save to db
+            new_case["timeseries_data"] = [
+                timeseries_data, None, timeseries_data
+            ]
+            case = Case(workshop_id=1, **new_case)
+            await case.save()
+            await case._delete_all_timeseries_signals()
+
+            # delete_signal should have been awaited for each not None entry
+            assert delete_signal.await_count == 2

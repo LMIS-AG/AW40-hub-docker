@@ -70,9 +70,11 @@ def update_case(case: Case = Depends(case_from_workshop)):
     pass
 
 
-@router.delete("/{workshop_id}/cases/{case_id}")
-def delete_case(case: Case = Depends(case_from_workshop)):
-    pass
+@router.delete(
+    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=None
+)
+async def delete_case(case: Case = Depends(case_from_workshop)):
+    await case.delete()
 
 
 @router.get("/{workshop_id}/cases/{case_id}/customer")

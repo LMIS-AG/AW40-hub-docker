@@ -237,6 +237,22 @@ def test_get_case(case_data, test_app):
     assert Case(**response.json())
 
 
+def test_delete_case(case_data, test_app):
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        response = client.delete(
+            f"/{workshop_id}/cases/{case_id}"
+        )
+    assert response.status_code == 200
+
+
 def test_list_timeseries_data(case_data, timeseries_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
@@ -348,8 +364,8 @@ def test_get_timeseries_data_signal_not_found(case_data, test_app):
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
-    # request signal from timeseries_data with data_id 1 eventhough case does not
-    # have any timeseries data
+    # request signal from timeseries_data with data_id 1 eventhough case does
+    # not have any timeseries data
     with TestClient(test_app) as client:
         response = client.get(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/1/signal"
