@@ -4,7 +4,12 @@ from typing import List
 from pydantic import BaseModel, Field, constr
 
 
-class OBDData(BaseModel):
+class OBDMetaData(BaseModel):
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    obd_specs: dict = None
+
+
+class OBDData(OBDMetaData):
 
     class Config:
         schema_extra = {
@@ -13,6 +18,4 @@ class OBDData(BaseModel):
             }
         }
 
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
     dtcs: List[constr(min_length=5, max_length=5)]
-    obd_specs: dict = None
