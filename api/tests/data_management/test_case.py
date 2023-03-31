@@ -10,7 +10,7 @@ from api.data_management import (
 )
 from beanie import init_beanie
 from pydantic import ValidationError
-from unittest.mock import patch
+from unittest import mock
 
 
 @pytest.fixture
@@ -336,7 +336,7 @@ class TestCase:
             case = Case(workshop_id=1, **new_case)
             await case.delete_timeseries_data(0)
 
-    @patch(
+    @mock.patch(
         "api.data_management.case.TimeseriesData.delete_signal", autospec=True
     )
     @pytest.mark.asyncio
@@ -348,18 +348,8 @@ class TestCase:
             initialized_beanie_context
     ):
 
-        # patch TimeseriesData.delete_signal and keep handle to closure scope
-        # to confirm it is awaited correctly
-        def create_mock_delete_signal():
-            was_awaited = [False]
-
-            async def mock_delete_signal(self):
-                was_awaited[0] = True
-
-            return mock_delete_signal, was_awaited
-
-        mock_delete_signal, was_awaited = create_mock_delete_signal()
-        delete_signal.side_effect = mock_delete_signal
+        # patch TimeseriesData.delete_signal
+        delete_signal.side_effect = mock.AsyncMock()
 
         async with initialized_beanie_context:
             # seed case with timeseries_data and save to db
@@ -376,7 +366,7 @@ class TestCase:
             assert case_retrieved.timeseries_data == [None]
 
             # confirm that TimeseriesData.delete_signal was awaited
-            assert was_awaited[0]
+            delete_signal.assert_awaited()
 
     @pytest.mark.asyncio
     async def test_delete_obd_data_non_existent(
