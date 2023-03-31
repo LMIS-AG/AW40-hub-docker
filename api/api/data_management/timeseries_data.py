@@ -57,7 +57,7 @@ class TimeseriesDataLabel(str, Enum):
     anomaly = "Anomalie / Auffälligkeit"
 
 
-class BaseTimeseriesData(BaseModel):
+class TimeseriesMetaData(BaseModel):
 
     class Config:
         validate_assignment = True
@@ -75,7 +75,7 @@ class BaseTimeseriesData(BaseModel):
     signal_store: ClassVar[BaseSignalStore]
 
 
-class TimeseriesData(BaseTimeseriesData):
+class TimeseriesData(TimeseriesMetaData):
 
     class Config:
         json_encoders = {
@@ -94,7 +94,7 @@ class TimeseriesData(BaseTimeseriesData):
         await self.signal_store.delete(self.signal_id)
 
 
-class NewTimeseriesData(BaseTimeseriesData):
+class NewTimeseriesData(TimeseriesMetaData):
     """Schema for new timeseries data added via the api."""
 
     class Config:

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from motor import motor_asyncio
 
 from .data_management import (
-    Case, Vehicle, Customer, Workshop, BaseTimeseriesData
+    Case, Vehicle, Customer, Workshop, TimeseriesMetaData
 )
 from .data_management.timeseries_data import GridFSSignalStore
 from .settings import settings
@@ -28,4 +28,4 @@ async def init_mongo():
     bucket = motor_asyncio.AsyncIOMotorGridFSBucket(
         client[settings.mongo_db], bucket_name="signals"
     )
-    BaseTimeseriesData.signal_store = GridFSSignalStore(bucket=bucket)
+    TimeseriesMetaData.signal_store = GridFSSignalStore(bucket=bucket)
