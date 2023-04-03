@@ -25,3 +25,10 @@ class Symptom(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     component: Component
     label: SymptomLabel
+
+
+class SymptomUpdate(BaseModel):
+    """Same fields as Symptom but all fields are optional."""
+    timestamp: datetime = None
+    component: Component = None
+    label: SymptomLabel = None

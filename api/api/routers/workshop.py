@@ -4,7 +4,15 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import NonNegativeInt
 
 from ..data_management import (
-    NewCase, Case, OBDData, Symptom, NewTimeseriesData, TimeseriesData
+    NewCase,
+    Case,
+    OBDDataUpdate,
+    OBDData,
+    Symptom,
+    SymptomUpdate,
+    TimeseriesDataUpdate,
+    NewTimeseriesData,
+    TimeseriesData
 )
 
 tags_metadata = [
@@ -151,20 +159,32 @@ async def get_timeseries_data_signal(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.put("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+@router.put(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
+    status_code=200,
+    response_model=TimeseriesData
+)
 async def update_timeseries_data(
-        data_id: str, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt,
+        update: TimeseriesDataUpdate,
+        case: Case = Depends(case_from_workshop)
 ):
-    """Update a specific timeseries dataset of a case. Currently not allowed"""
-    raise HTTPException(
-        status_code=405,
-        headers={"Allow": "GET, DELETE"}
+    """Update a specific timeseries dataset of a case."""
+    timeseries_data = await case.update_timeseries_data(
+        data_id=data_id, update=update
     )
+    if timeseries_data is not None:
+        return timeseries_data
+    else:
+        exception_detail = f"No timeseries_data with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_timeseries_data}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
 @router.delete("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
 def delete_timeseries_data(
-        data_id: str, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ):
     """Delete a specific timeseries dataset from a case."""
     pass
@@ -215,15 +235,25 @@ async def get_obd_data(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.put("/{workshop_id}/cases/{case_id}/obd_data/{data_id}")
+@router.put(
+    "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
+    status_code=200,
+    response_model=OBDData
+)
 async def update_obd_data(
-        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt,
+        update: OBDDataUpdate,
+        case: Case = Depends(case_from_workshop)
 ):
-    """Update a specific obd dataset of a case. Currently not allowed"""
-    raise HTTPException(
-        status_code=405,
-        headers={"Allow": "GET, DELETE"}
-    )
+    """Update a specific obd dataset from a case."""
+    obd_data = await case.update_obd_data(data_id=data_id, update=update)
+    if obd_data is not None:
+        return obd_data
+    else:
+        exception_detail = f"No obd_data with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_obd_data}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
 @router.delete(
@@ -284,15 +314,25 @@ async def get_symptom(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.put("/{workshop_id}/cases/{case_id}/symptoms/{data_id}")
+@router.put(
+    "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
+    status_code=200,
+    response_model=Symptom
+)
 async def update_symptom(
-        data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
+        data_id: NonNegativeInt,
+        update: SymptomUpdate,
+        case: Case = Depends(case_from_workshop)
 ):
-    """Update a specific symptom of a case. Currently not allowed"""
-    raise HTTPException(
-        status_code=405,
-        headers={"Allow": "GET, DELETE"}
-    )
+    """Update a specific symptom of a case."""
+    symptom = await case.update_symptom(data_id=data_id, update=update)
+    if symptom is not None:
+        return symptom
+    else:
+        exception_detail = f"No symtpom with data_id `{data_id}` in " \
+                           f"case '{case.id}'. Available data_ids are " \
+                           f"{case.available_symptoms}."
+        raise HTTPException(status_code=404, detail=exception_detail)
 
 
 @router.delete(

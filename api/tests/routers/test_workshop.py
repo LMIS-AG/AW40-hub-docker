@@ -408,6 +408,80 @@ def test_get_timeseries_data_signal(
     assert response.json() == test_signal
 
 
+def create_mock_save():
+    """
+    Create the closure mock_save that can be used to patch Case.save.
+    The second return value saved_cases can be used to confirm correct
+    usage of Case.save, e.g. after updating instance attributes and correct
+    response data, e.g. representations of saved state.
+    """
+    saved_cases = []
+
+    async def mock_save(self):
+        saved_cases.append(self)
+        return self
+
+    return mock_save, saved_cases
+
+
+def test_update_timeseries_data_not_found(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # request update of timeseries_data with data_id 1 eventhough case does not
+    # have any timeseries data
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/1",
+            json={"label": "Regelfall / Unauffällig"}
+        )
+
+    # confirm expected status code
+    assert response.status_code == 404
+
+
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_update_timeseries_data(save, case_data, timeseries_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    # define current label and updated label
+    old_label = "keine Angabe"
+    new_label = "Regelfall / Unauffällig"
+    timeseries_data["label"] = old_label
+
+    # add a single timeseries_data with old label to the case
+    case_data["timeseries_data"] = [timeseries_data]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
+
+    # request update of timeseries_data with data_id 0, which should exist
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/0",
+            json={"label": new_label}
+        )
+
+    # confirm expected status code and expected new label
+    assert response.status_code == 200
+    assert response.json()["label"] == new_label
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case.timeseries_datas after saving
+    assert TimeseriesData(**response.json()) == \
+           saved_cases[0].timeseries_data[0]
+
+
 def test_list_obd_data(case_data, obd_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
@@ -428,22 +502,6 @@ def test_list_obd_data(case_data, obd_data, test_app):
     # confirm expected status code and response shape
     assert response.status_code == 200
     assert len(response.json()) == repeats
-
-
-def create_mock_save():
-    """
-    Create the closure mock_save that can be used to patch Case.save.
-    The second return value saved_cases can be used to confirm correct
-    usage of Case.save, e.g. after updating instance attributes and correct
-    response data, e.g. representations of saved state.
-    """
-    saved_cases = []
-
-    async def mock_save(self):
-        saved_cases.append(self)
-        return self
-
-    return mock_save, saved_cases
 
 
 @mock.patch("api.routers.workshop.Case.save", autospec=True)
@@ -513,6 +571,63 @@ def test_get_obd_data(case_data, obd_data, test_app):
     # confirm expected status code and response shema
     assert response.status_code == 200
     assert OBDData(**response.json())
+
+
+def test_update_obd_data_not_found(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # request update of obd_data with data_id 1 eventhough case does not have
+    # any obd data
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/obd_data/1",
+            json={"obd_specs": {"some field": "some value"}}
+        )
+
+    # confirm expected status code
+    assert response.status_code == 404
+
+
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_update_obd_data(save, case_data, obd_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    old_obd_specs = {"device": "vcds 123"}
+    new_obd_specs = {"device": "VCDS"}
+    obd_data["obd_specs"] = old_obd_specs
+
+    # add a single obd data set to the case
+    case_data["obd_data"] = [obd_data]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
+
+    # request update of obd_data with data_id 0, which should exist
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/obd_data/0",
+            json={"obd_specs": new_obd_specs}
+        )
+
+    # confirm expected status code and update of obd specs
+    # obd_data
+    assert response.status_code == 200
+    assert response.json()["obd_specs"] == new_obd_specs
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case.obd_data after saving
+    assert OBDData(**response.json()) == saved_cases[0].obd_data[0]
 
 
 def test_delete_obd_data_not_found(case_data, test_app):
@@ -656,6 +771,63 @@ def test_get_symptom(case_data, symptom, test_app):
     # confirm expected status code and response shema
     assert response.status_code == 200
     assert Symptom(**response.json())
+
+
+def test_update_symptom_not_found(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # request update of symptom with data_id 1 eventhough case does not have
+    # any symptoms
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/symptoms/1",
+            json={"label": "nicht defekt"}
+        )
+
+    # confirm expected status code
+    assert response.status_code == 404
+
+
+@mock.patch("api.routers.workshop.Case.save", autospec=True)
+def test_update_symptom(save, case_data, symptom, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    # define current label and updated label
+    old_label = "keine Angabe"
+    new_label = "defekt"
+    symptom["label"] = old_label
+
+    # add a single symptom with old label to the case
+    case_data["symptoms"] = [symptom]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.save to use mock_save
+    mock_save, saved_cases = create_mock_save()
+    save.side_effect = mock_save
+
+    # request update of symptom with data_id 0, which should exist
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}/symptoms/0",
+            json={"label": new_label}
+        )
+
+    # confirm expected status code and expected new label
+    assert response.status_code == 200
+    assert response.json()["label"] == new_label
+    # confirm case was saved
+    assert len(saved_cases) == 1
+    # confirm response data represents case.symptoms after saving
+    assert Symptom(**response.json()) == saved_cases[0].symptoms[0]
 
 
 def test_delete_symptom_not_found(case_data, test_app):

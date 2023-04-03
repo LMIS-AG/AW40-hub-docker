@@ -9,6 +9,12 @@ class OBDMetaData(BaseModel):
     obd_specs: dict = None
 
 
+class OBDDataUpdate(BaseModel):
+    """Same fields as OBDMetaData but all fields are optional."""
+    timestamp: datetime = None
+    obd_specs: dict = None
+
+
 class OBDData(OBDMetaData):
 
     class Config:

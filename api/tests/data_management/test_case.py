@@ -1,3 +1,5 @@
+from unittest import mock
+
 import pytest
 from api.data_management import (
     NewCase,
@@ -5,12 +7,14 @@ from api.data_management import (
     Vehicle,
     Customer,
     Workshop,
+    TimeseriesDataUpdate,
     NewTimeseriesData,
-    TimeseriesData
+    TimeseriesData,
+    OBDDataUpdate,
+    SymptomUpdate
 )
 from beanie import init_beanie
 from pydantic import ValidationError
-from unittest import mock
 
 
 @pytest.fixture
@@ -421,6 +425,137 @@ class TestCase:
             # refetch case and assert deletion in database
             case_retrieved = await Case.get(case.id)
             assert case_retrieved.symptoms == [None]
+
+    @pytest.mark.asyncio
+    async def test_update_timeseries_data_non_existent(
+            self, new_case, initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            case = Case(workshop_id=1, **new_case)
+            assert await case.update_timeseries_data(0, update={}) is None
+
+    @pytest.mark.asyncio
+    async def test_update_timeseries_data(
+            self,
+            new_case,
+            timeseries_data,
+            initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            old_label = "keine Angabe"
+            new_label = "Anomalie / Auffälligkeit"
+            timeseries_data["label"] = old_label
+
+            # seed case with two timeseries datasets that have old label
+            new_case["timeseries_data"] = [timeseries_data, timeseries_data]
+            case = Case(workshop_id=1, **new_case)
+            await case.save()
+
+            # update the first timeseries dataset with new_label
+            update = TimeseriesDataUpdate(**{"label": new_label})
+            await case.update_timeseries_data(data_id=0, update=update)
+
+            # confirm correct update of instance
+            assert case.timeseries_data[0].label == new_label
+            assert case.timeseries_data[1].label == old_label
+
+            # refetch case and assert update in database
+            case_retrieved = await Case.get(case.id)
+            assert case_retrieved.timeseries_data[0].label == new_label
+            assert case_retrieved.timeseries_data[1].label == old_label
+
+            # confirm that only the label was changed
+            data_0 = case_retrieved.timeseries_data[0].dict(exclude={"label"})
+            data_1 = case_retrieved.timeseries_data[1].dict(exclude={"label"})
+            assert data_0 == data_1
+
+    @pytest.mark.asyncio
+    async def test_update_obd_data_non_existent(
+            self, new_case, initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            case = Case(workshop_id=1, **new_case)
+            assert await case.update_obd_data(0, update={}) is None
+
+    @pytest.mark.asyncio
+    async def test_update_obd_data(
+            self,
+            new_case,
+            initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            obd_data = {"dtcs": ["P0001", "U0001"]}
+
+            old_specs = {}
+            new_specs = {"firmware version": 1.0}
+            obd_data["obd_specs"] = old_specs
+
+            # seed case with two obd datasets that have old specs
+            new_case["obd_data"] = [obd_data, obd_data]
+            case = Case(workshop_id=1, **new_case)
+            await case.save()
+
+            # update the first obd dataset with new_specs
+            update = OBDDataUpdate(**{"obd_specs": new_specs})
+            await case.update_obd_data(data_id=0, update=update)
+
+            # confirm correct update of instance
+            assert case.obd_data[0].obd_specs == new_specs
+            assert case.obd_data[1].obd_specs == old_specs
+
+            # refetch case and assert update in database
+            case_retrieved = await Case.get(case.id)
+            assert case_retrieved.obd_data[0].obd_specs == new_specs
+            assert case_retrieved.obd_data[1].obd_specs == old_specs
+
+            # confirm that only the specs were changed
+            data_0 = case_retrieved.obd_data[0].dict(exclude={"obd_specs"})
+            data_1 = case_retrieved.obd_data[1].dict(exclude={"obd_specs"})
+            assert data_0 == data_1
+
+    @pytest.mark.asyncio
+    async def test_update_symptom_non_existent(
+            self, new_case, initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            case = Case(workshop_id=1, **new_case)
+            assert await case.update_symptom(0, update={}) is None
+
+    @pytest.mark.asyncio
+    async def test_update_symptom(
+            self,
+            new_case,
+            initialized_beanie_context
+    ):
+        async with initialized_beanie_context:
+            symptom = {"component": "Batterie"}
+
+            old_label = "keine Angabe"
+            new_label = "defekt"
+            symptom["label"] = old_label
+
+            # seed case with two symptoms that have old label
+            new_case["symptoms"] = [symptom, symptom]
+            case = Case(workshop_id=1, **new_case)
+            await case.save()
+
+            # update the first symptom with new_label
+            update = SymptomUpdate(**{"label": new_label})
+            await case.update_symptom(data_id=0, update=update)
+
+            # confirm correct update of instance
+            assert case.symptoms[0].label == new_label
+            assert case.symptoms[1].label == old_label
+
+            # refetch case and assert update in database
+            case_retrieved = await Case.get(case.id)
+            assert case_retrieved.symptoms[0].label == new_label
+            assert case_retrieved.symptoms[1].label == old_label
+
+            # confirm that only the label was changed
+            data_0 = case_retrieved.symptoms[0].dict(exclude={"label"})
+            data_1 = case_retrieved.symptoms[1].dict(exclude={"label"})
+            assert data_0 == data_1
 
     @pytest.mark.asyncio
     async def test_available_timeseries_data(

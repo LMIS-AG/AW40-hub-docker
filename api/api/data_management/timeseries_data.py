@@ -75,6 +75,17 @@ class TimeseriesMetaData(BaseModel):
     signal_store: ClassVar[BaseSignalStore]
 
 
+class TimeseriesDataUpdate(BaseModel):
+    """Same fields as TimeseriesMetaData but all fields are optional."""
+    timestamp: datetime = None
+    component: Component = None
+    label: TimeseriesDataLabel = None
+    sampling_rate: int = None
+    duration: int = None
+    type: str = None
+    device_specs: dict = None
+
+
 class TimeseriesData(TimeseriesMetaData):
 
     class Config:

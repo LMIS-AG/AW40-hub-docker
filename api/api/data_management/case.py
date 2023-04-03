@@ -6,9 +6,11 @@ from beanie import Document, Indexed, before_event, Insert, Delete
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from .customer import Customer
-from .obd_data import OBDData
-from .symptom import Symptom
-from .timeseries_data import TimeseriesData, NewTimeseriesData
+from .obd_data import OBDDataUpdate, OBDData
+from .symptom import Symptom, SymptomUpdate
+from .timeseries_data import (
+    TimeseriesDataUpdate, TimeseriesData, NewTimeseriesData
+)
 from .vehicle import Vehicle
 
 
@@ -129,7 +131,7 @@ class Case(Document):
             pass
         else:
             raise ValueError(
-                f"Expected non-negative int for data_id but got {data_id}"
+                f"Expected non-negative int for data_id but got {data_id}."
             )
 
     @staticmethod
@@ -169,6 +171,42 @@ class Case(Document):
         if symptom is not None:
             self.symptoms[data_id] = None
             await self.save()
+
+    async def update_timeseries_data(
+            self, data_id: NonNegativeInt, update: TimeseriesDataUpdate
+    ) -> TimeseriesData:
+        timeseries_data = self.get_timeseries_data(data_id)
+        if timeseries_data is not None:
+            timeseries_data = timeseries_data.dict()
+            timeseries_data.update(update.dict(exclude_unset=True))
+            timeseries_data = TimeseriesData(**timeseries_data)
+            self.timeseries_data[data_id] = timeseries_data
+            await self.save()
+        return timeseries_data
+
+    async def update_obd_data(
+            self, data_id: NonNegativeInt, update: OBDDataUpdate
+    ) -> OBDData:
+        obd_data = self.get_obd_data(data_id)
+        if obd_data is not None:
+            obd_data = obd_data.dict()
+            obd_data.update(update.dict(exclude_unset=True))
+            obd_data = OBDData(**obd_data)
+            self.obd_data[data_id] = obd_data
+            await self.save()
+        return obd_data
+
+    async def update_symptom(
+            self, data_id: NonNegativeInt, update: SymptomUpdate
+    ) -> OBDData:
+        symptom = self.get_symptom(data_id)
+        if symptom is not None:
+            symptom = symptom.dict()
+            symptom.update(update.dict(exclude_unset=True))
+            symptom = Symptom(**symptom)
+            self.symptoms[data_id] = symptom
+            await self.save()
+        return symptom
 
     @property
     def available_timeseries_data(self):
