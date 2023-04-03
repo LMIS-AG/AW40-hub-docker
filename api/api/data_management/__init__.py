@@ -1,6 +1,7 @@
 __all__ = [
     "NewCase",
     "Case",
+    "CaseUpdate",
     "Customer",
     "OBDMetaData",
     "OBDDataUpdate",
@@ -17,7 +18,7 @@ __all__ = [
     "Workshop"
 ]
 
-from .case import NewCase, Case
+from .case import NewCase, Case, CaseUpdate
 from .customer import Customer
 from .obd_data import OBDMetaData, OBDDataUpdate, OBDData
 from .symptom import Symptom, SymptomUpdate

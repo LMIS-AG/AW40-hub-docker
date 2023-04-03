@@ -44,6 +44,14 @@ class NewCase(BaseModel):
     milage: int = None
 
 
+class CaseUpdate(BaseModel):
+    """Metadata of a case that can be updated after creation."""
+    timestamp: datetime = None
+    occasion: Occasion = None
+    milage: int = None
+    status: Status = None
+
+
 class Case(Document):
     """Complete case schema and major db interfacing class."""
 

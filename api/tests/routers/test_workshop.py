@@ -237,6 +237,35 @@ def test_get_case(case_data, test_app):
     assert Case(**response.json())
 
 
+@mock.patch("api.routers.workshop.Case.set", autospec=True)
+def test_update_case(case_set, case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    case_data["status"] = "offen"
+    new_status = "abgeschlossen"
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.set with AsyncMock to confirm use with await
+    case_set.side_effect = mock.AsyncMock()
+
+    with TestClient(test_app) as client:
+        response = client.put(
+            f"/{workshop_id}/cases/{case_id}",
+            json={"status": new_status}
+        )
+
+    # confirm expected status code and response schema
+    assert response.status_code == 200
+    assert Case(**response.json())
+
+    # confirm await of Case.set
+    case_set.side_effect.assert_awaited_once()
+
+
 def test_delete_case(case_data, test_app):
 
     workshop_id = case_data["workshop_id"]

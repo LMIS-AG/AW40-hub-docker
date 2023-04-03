@@ -6,6 +6,7 @@ from pydantic import NonNegativeInt
 from ..data_management import (
     NewCase,
     Case,
+    CaseUpdate,
     OBDDataUpdate,
     OBDData,
     Symptom,
@@ -74,8 +75,11 @@ async def get_case(case: Case = Depends(case_from_workshop)) -> Case:
 
 
 @router.put("/{workshop_id}/cases/{case_id}")
-def update_case(case: Case = Depends(case_from_workshop)):
-    pass
+async def update_case(
+        update: CaseUpdate, case: Case = Depends(case_from_workshop)
+):
+    await case.set(update.dict(exclude_unset=True))
+    return case
 
 
 @router.delete(
