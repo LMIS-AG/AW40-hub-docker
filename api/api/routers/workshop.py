@@ -304,11 +304,11 @@ async def get_symptom(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> Symptom:
     """Get a specific symptom from a case."""
-    symtpom = case.get_symptom(data_id)
-    if symtpom is not None:
-        return symtpom
+    symptom = case.get_symptom(data_id)
+    if symptom is not None:
+        return symptom
     else:
-        exception_detail = f"No symtpom with data_id `{data_id}` in " \
+        exception_detail = f"No symptom with data_id `{data_id}` in " \
                            f"case '{case.id}'. Available data_ids are " \
                            f"{case.available_symptoms}."
         raise HTTPException(status_code=404, detail=exception_detail)
@@ -329,7 +329,7 @@ async def update_symptom(
     if symptom is not None:
         return symptom
     else:
-        exception_detail = f"No symtpom with data_id `{data_id}` in " \
+        exception_detail = f"No symptom with data_id `{data_id}` in " \
                            f"case '{case.id}'. Available data_ids are " \
                            f"{case.available_symptoms}."
         raise HTTPException(status_code=404, detail=exception_detail)
