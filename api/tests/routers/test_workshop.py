@@ -267,7 +267,6 @@ def test_update_case(case_set, case_data, test_app):
 
 
 def test_delete_case(case_data, test_app):
-
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
