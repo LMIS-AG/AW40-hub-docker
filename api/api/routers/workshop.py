@@ -13,7 +13,9 @@ from ..data_management import (
     SymptomUpdate,
     TimeseriesDataUpdate,
     NewTimeseriesData,
-    TimeseriesData
+    TimeseriesData,
+    Vehicle,
+    Customer
 )
 
 tags_metadata = [
@@ -89,9 +91,14 @@ async def delete_case(case: Case = Depends(case_from_workshop)):
     await case.delete()
 
 
-@router.get("/{workshop_id}/cases/{case_id}/customer")
-def get_customer(case: Case = Depends(case_from_workshop)):
-    pass
+@router.get(
+    "/{workshop_id}/cases/{case_id}/customer",
+    status_code=200,
+    response_model=Customer
+)
+async def get_customer(case: Case = Depends(case_from_workshop)):
+    customer = await Customer.get(case.customer_id)
+    return customer
 
 
 @router.put("/{workshop_id}/cases/{case_id}/customer")
@@ -99,9 +106,14 @@ def update_customer(case: Case = Depends(case_from_workshop)):
     pass
 
 
-@router.get("/{workshop_id}/cases/{case_id}/vehicle")
-def get_vehicle(case: Case = Depends(case_from_workshop)):
-    pass
+@router.get(
+    "/{workshop_id}/cases/{case_id}/vehicle",
+    status_code=200,
+    response_model=Vehicle
+)
+async def get_vehicle(case: Case = Depends(case_from_workshop)):
+    vehicle = await Vehicle.find_one({"vin": case.vehicle_vin})
+    return vehicle
 
 
 @router.put("/{workshop_id}/cases/{case_id}/vehicle")
