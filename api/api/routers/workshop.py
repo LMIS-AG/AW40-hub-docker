@@ -101,11 +101,6 @@ async def get_customer(case: Case = Depends(case_from_workshop)):
     return customer
 
 
-@router.put("/{workshop_id}/cases/{case_id}/customer")
-def update_customer(case: Case = Depends(case_from_workshop)):
-    pass
-
-
 @router.get(
     "/{workshop_id}/cases/{case_id}/vehicle",
     status_code=200,
