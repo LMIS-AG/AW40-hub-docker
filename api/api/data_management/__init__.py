@@ -15,6 +15,7 @@ __all__ = [
     "TimeseriesData",
     "GridFSSignalStore",
     "Vehicle",
+    "VehicleUpdate"
     "Workshop"
 ]
 
@@ -29,5 +30,5 @@ from .timeseries_data import (
     TimeseriesData,
     GridFSSignalStore
 )
-from .vehicle import Component, Vehicle
+from .vehicle import Component, Vehicle, VehicleUpdate
 from .workshop import Workshop

@@ -15,6 +15,7 @@ from ..data_management import (
     NewTimeseriesData,
     TimeseriesData,
     Vehicle,
+    VehicleUpdate,
     Customer
 )
 
@@ -111,9 +112,17 @@ async def get_vehicle(case: Case = Depends(case_from_workshop)):
     return vehicle
 
 
-@router.put("/{workshop_id}/cases/{case_id}/vehicle")
-def update_vehicle(case: Case = Depends(case_from_workshop)):
-    pass
+@router.put(
+    "/{workshop_id}/cases/{case_id}/vehicle",
+    status_code=200,
+    response_model=Vehicle
+)
+async def update_vehicle(
+        update: VehicleUpdate, case: Case = Depends(case_from_workshop)
+):
+    vehicle = await Vehicle.find_one({"vin": case.vehicle_vin})
+    await vehicle.set(update.dict(exclude_unset=True))
+    return vehicle
 
 
 @router.get(

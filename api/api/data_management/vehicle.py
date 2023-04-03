@@ -1,6 +1,7 @@
 from enum import Enum
 
 from beanie import Document, Indexed
+from pydantic import BaseModel
 
 
 class Component(str, Enum):
@@ -19,5 +20,10 @@ class Vehicle(Document):
         name = "vehicles"
 
     vin: Indexed(str, unique=True)
+    tsn: str = None
+    year_build: int = None
+
+
+class VehicleUpdate(BaseModel):
     tsn: str = None
     year_build: int = None
