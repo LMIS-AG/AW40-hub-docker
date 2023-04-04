@@ -6,7 +6,7 @@ from typing import List, ClassVar
 import numpy as np
 from beanie import PydanticObjectId
 from motor import motor_asyncio
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, NonNegativeInt
 
 from .vehicle import Component
 
@@ -92,6 +92,8 @@ class TimeseriesData(TimeseriesMetaData):
         json_encoders = {
             PydanticObjectId: str,
         }
+
+    data_id: NonNegativeInt = None
 
     # Ref to signal data instead of actual data
     signal_id: PydanticObjectId

@@ -1,15 +1,15 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Any, Union
+from typing import List, Union
 
 from beanie import Document, Indexed, before_event, Insert, Delete
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from .customer import Customer
-from .obd_data import OBDDataUpdate, OBDData
-from .symptom import Symptom, SymptomUpdate
+from .obd_data import NewOBDData, OBDData, OBDDataUpdate
+from .symptom import NewSymptom, Symptom, SymptomUpdate
 from .timeseries_data import (
-    TimeseriesDataUpdate, TimeseriesData, NewTimeseriesData
+    NewTimeseriesData, TimeseriesData, TimeseriesDataUpdate
 )
 from .vehicle import Vehicle
 
@@ -78,6 +78,11 @@ class Case(Document):
     obd_data: List[Union[OBDData, None]] = []
     symptoms: List[Union[Symptom, None]] = []
 
+    # keep track of diagnostic data added to set appropriate data_ids
+    timeseries_data_added: NonNegativeInt = 0
+    obd_data_added: NonNegativeInt = 0
+    symptoms_added: NonNegativeInt = 0
+
     schema_version: int = 0
 
     @before_event(Insert)
@@ -124,109 +129,136 @@ class Case(Document):
         cases = await cls.find(filter).to_list()
         return cases
 
-    async def add_timeseries_data(self, new_data: NewTimeseriesData):
+    async def add_timeseries_data(self, new_data: NewTimeseriesData) -> "Case":
         # signal data is stored and converted to ref
         timeseries_data = await new_data.to_timeseries_data()
-
-        # case is updated and returned
+        # append to data array
+        timeseries_data.data_id = self.timeseries_data_added
         self.timeseries_data.append(timeseries_data)
+        self.timeseries_data_added += 1
+        await self.save()
+        return self
+
+    async def add_obd_data(self, new_obd_data: NewOBDData) -> "Case":
+        obd_data = OBDData(data_id=self.obd_data_added, **new_obd_data.dict())
+        self.obd_data.append(obd_data)
+        self.obd_data_added += 1
+        await self.save()
+        return self
+
+    async def add_symptom(self, new_symptom: NewSymptom) -> "Case":
+        symptom = Symptom(data_id=self.symptoms_added, **new_symptom.dict())
+        self.symptoms.append(symptom)
+        self.symptoms_added += 1
         await self.save()
         return self
 
     @staticmethod
-    def validate_data_id(data_id: NonNegativeInt):
-        if isinstance(data_id, int) and data_id >= 0:
-            pass
-        else:
-            raise ValueError(
-                f"Expected non-negative int for data_id but got {data_id}."
-            )
-
-    @staticmethod
-    def get_data_from_array(
+    def find_data_in_array(
             data_array: list, data_id: NonNegativeInt
-    ) -> Any:
-        Case.validate_data_id(data_id)
-        try:
-            return data_array[data_id]
-        except IndexError:
-            return None
+    ) -> (NonNegativeInt, Union[TimeseriesData, OBDData, Symptom]):
+        for i, d in enumerate(data_array):
+            if d.data_id == data_id:
+                return i, d
+
+        return None, None
 
     def get_timeseries_data(self, data_id: NonNegativeInt) -> TimeseriesData:
-        return self.get_data_from_array(self.timeseries_data, data_id=data_id)
+        _, timeseries_data = self.find_data_in_array(
+            data_array=self.timeseries_data, data_id=data_id
+        )
+        return timeseries_data
 
     def get_obd_data(self, data_id: NonNegativeInt) -> OBDData:
-        return self.get_data_from_array(self.obd_data, data_id=data_id)
+        _, obd_data = self.find_data_in_array(
+            data_array=self.obd_data, data_id=data_id
+        )
+        return obd_data
 
     def get_symptom(self, data_id: NonNegativeInt) -> Symptom:
-        return self.get_data_from_array(self.symptoms, data_id=data_id)
+        _, symptom = self.find_data_in_array(
+            data_array=self.symptoms, data_id=data_id
+        )
+        return symptom
 
     async def delete_timeseries_data(self, data_id: NonNegativeInt):
-        timeseries_data = self.get_timeseries_data(data_id)
+        idx, timeseries_data = self.find_data_in_array(
+            data_array=self.timeseries_data, data_id=data_id
+        )
         if timeseries_data is not None:
             await timeseries_data.delete_signal()
-            self.timeseries_data[data_id] = None
+            self.timeseries_data.pop(idx)
             await self.save()
 
     async def delete_obd_data(self, data_id: NonNegativeInt):
-        obd_data = self.get_obd_data(data_id)
-        if obd_data is not None:
-            self.obd_data[data_id] = None
+        idx, _ = self.find_data_in_array(
+            data_array=self.obd_data, data_id=data_id
+        )
+        if idx is not None:
+            self.obd_data.pop(idx)
             await self.save()
 
     async def delete_symptom(self, data_id: NonNegativeInt):
-        symptom = self.get_symptom(data_id)
-        if symptom is not None:
-            self.symptoms[data_id] = None
+        idx, _ = self.find_data_in_array(
+            data_array=self.symptoms, data_id=data_id
+        )
+        if idx is not None:
+            self.symptoms.pop(idx)
             await self.save()
 
     async def update_timeseries_data(
             self, data_id: NonNegativeInt, update: TimeseriesDataUpdate
     ) -> TimeseriesData:
-        timeseries_data = self.get_timeseries_data(data_id)
+        idx, timeseries_data = self.find_data_in_array(
+            data_array=self.timeseries_data, data_id=data_id
+        )
         if timeseries_data is not None:
             timeseries_data = timeseries_data.dict()
             timeseries_data.update(update.dict(exclude_unset=True))
             timeseries_data = TimeseriesData(**timeseries_data)
-            self.timeseries_data[data_id] = timeseries_data
+            self.timeseries_data[idx] = timeseries_data
             await self.save()
         return timeseries_data
 
     async def update_obd_data(
             self, data_id: NonNegativeInt, update: OBDDataUpdate
     ) -> OBDData:
-        obd_data = self.get_obd_data(data_id)
+        idx, obd_data = self.find_data_in_array(
+            data_array=self.obd_data, data_id=data_id
+        )
         if obd_data is not None:
             obd_data = obd_data.dict()
             obd_data.update(update.dict(exclude_unset=True))
             obd_data = OBDData(**obd_data)
-            self.obd_data[data_id] = obd_data
+            self.obd_data[idx] = obd_data
             await self.save()
         return obd_data
 
     async def update_symptom(
             self, data_id: NonNegativeInt, update: SymptomUpdate
-    ) -> OBDData:
-        symptom = self.get_symptom(data_id)
+    ) -> Symptom:
+        idx, symptom = self.find_data_in_array(
+            data_array=self.symptoms, data_id=data_id
+        )
         if symptom is not None:
             symptom = symptom.dict()
             symptom.update(update.dict(exclude_unset=True))
             symptom = Symptom(**symptom)
-            self.symptoms[data_id] = symptom
+            self.symptoms[idx] = symptom
             await self.save()
         return symptom
 
     @property
     def available_timeseries_data(self):
-        return [i for i, d in enumerate(self.timeseries_data) if d is not None]
+        return [d.data_id for d in self.timeseries_data]
 
     @property
     def available_obd_data(self):
-        return [i for i, d in enumerate(self.obd_data) if d is not None]
+        return [d.data_id for d in self.obd_data]
 
     @property
     def available_symptoms(self):
-        return [i for i, d in enumerate(self.symptoms) if d is not None]
+        return [d.data_id for d in self.symptoms]
 
     @before_event(Delete)
     async def _delete_all_timeseries_signals(self):

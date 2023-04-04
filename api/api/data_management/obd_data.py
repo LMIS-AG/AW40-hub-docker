@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field, constr, NonNegativeInt
 
 
 class OBDMetaData(BaseModel):
@@ -9,13 +9,7 @@ class OBDMetaData(BaseModel):
     obd_specs: dict = None
 
 
-class OBDDataUpdate(BaseModel):
-    """Same fields as OBDMetaData but all fields are optional."""
-    timestamp: datetime = None
-    obd_specs: dict = None
-
-
-class OBDData(OBDMetaData):
+class NewOBDData(OBDMetaData):
 
     class Config:
         schema_extra = {
@@ -25,3 +19,13 @@ class OBDData(OBDMetaData):
         }
 
     dtcs: List[constr(min_length=5, max_length=5)]
+
+
+class OBDData(NewOBDData):
+    data_id: NonNegativeInt = None
+
+
+class OBDDataUpdate(BaseModel):
+    """Same fields as OBDMetaData but all fields are optional."""
+    timestamp: datetime = None
+    obd_specs: dict = None

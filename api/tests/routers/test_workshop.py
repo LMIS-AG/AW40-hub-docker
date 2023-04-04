@@ -367,19 +367,21 @@ def test_get_timeseries_data(case_data, timeseries_data, test_app):
     case_id = case_data["_id"]
 
     # add a single timeseries data set to the case
+    data_id = 42
+    timeseries_data["data_id"] = data_id
     case_data["timeseries_data"] = [timeseries_data]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
-    # request timeseries_data with data_id 0, which should exist
+    # request timeseries_data with specified data_id, which should exist
     with TestClient(test_app) as client:
         response = client.get(
-            f"/{workshop_id}/cases/{case_id}/timeseries_data/0"
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}"
         )
 
-    # confirm expected status code and response shema
+    # confirm expected status code and response schema
     assert response.status_code == 200
     assert TimeseriesData(**response.json())
 
@@ -411,6 +413,8 @@ def test_get_timeseries_data_signal(
     case_id = case_data["_id"]
 
     # add a single timeseries data set to the case
+    data_id = 30
+    timeseries_data["data_id"] = data_id
     case_data["timeseries_data"] = [timeseries_data]
 
     test_app.dependency_overrides = {
@@ -425,10 +429,10 @@ def test_get_timeseries_data_signal(
     # patch Case.get_signal to use mock_get_signal
     get_signal.side_effect = mock_get_signal
 
-    # request signal from timeseries_data with data_id 0, which should exist
+    # request signal from timeseries_data with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.get(
-            f"/{workshop_id}/cases/{case_id}/timeseries_data/0/signal"
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal"
         )
 
     # confirm expected status code and response data
@@ -483,6 +487,8 @@ def test_update_timeseries_data(save, case_data, timeseries_data, test_app):
     timeseries_data["label"] = old_label
 
     # add a single timeseries_data with old label to the case
+    data_id = 0
+    timeseries_data["data_id"] = data_id
     case_data["timeseries_data"] = [timeseries_data]
 
     test_app.dependency_overrides = {
@@ -493,10 +499,10 @@ def test_update_timeseries_data(save, case_data, timeseries_data, test_app):
     mock_save, saved_cases = create_mock_save()
     save.side_effect = mock_save
 
-    # request update of timeseries_data with data_id 0, which should exist
+    # request update of timeseries_data with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.put(
-            f"/{workshop_id}/cases/{case_id}/timeseries_data/0",
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
             json={"label": new_label}
         )
 
@@ -584,16 +590,18 @@ def test_get_obd_data(case_data, obd_data, test_app):
     case_id = case_data["_id"]
 
     # add a single obd data set to the case
+    data_id = 5
+    obd_data["data_id"] = data_id
     case_data["obd_data"] = [obd_data]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
-    # request obd_data with data_id 0, which should exist
+    # request obd_data with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.get(
-            f"/{workshop_id}/cases/{case_id}/obd_data/0"
+            f"/{workshop_id}/cases/{case_id}/obd_data/{data_id}"
         )
 
     # confirm expected status code and response shema
@@ -631,6 +639,8 @@ def test_update_obd_data(save, case_data, obd_data, test_app):
     obd_data["obd_specs"] = old_obd_specs
 
     # add a single obd data set to the case
+    data_id = 11
+    obd_data["data_id"] = data_id
     case_data["obd_data"] = [obd_data]
 
     test_app.dependency_overrides = {
@@ -641,10 +651,10 @@ def test_update_obd_data(save, case_data, obd_data, test_app):
     mock_save, saved_cases = create_mock_save()
     save.side_effect = mock_save
 
-    # request update of obd_data with data_id 0, which should exist
+    # request update of obd_data with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.put(
-            f"/{workshop_id}/cases/{case_id}/obd_data/0",
+            f"/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
             json={"obd_specs": new_obd_specs}
         )
 
@@ -684,6 +694,8 @@ def test_delete_obd_data(save, case_data, obd_data, test_app):
     case_id = case_data["_id"]
 
     # add a single obd data set to the case
+    data_id = 2
+    obd_data["data_id"] = data_id
     case_data["obd_data"] = [obd_data]
 
     test_app.dependency_overrides = {
@@ -694,16 +706,16 @@ def test_delete_obd_data(save, case_data, obd_data, test_app):
     mock_save, saved_cases = create_mock_save()
     save.side_effect = mock_save
 
-    # request deletion of obd_data with data_id 0, which should exist
+    # request deletion of obd_data with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.delete(
-            f"/{workshop_id}/cases/{case_id}/obd_data/0"
+            f"/{workshop_id}/cases/{case_id}/obd_data/{data_id}"
         )
 
     # confirm expected status code and non-existence of previously added
     # obd_data
     assert response.status_code == 200
-    assert response.json()["obd_data"] == [None]
+    assert response.json()["obd_data"] == []
     # confirm case was saved
     assert len(saved_cases) == 1
     # confirm response data represents case after saving
@@ -784,16 +796,18 @@ def test_get_symptom(case_data, symptom, test_app):
     case_id = case_data["_id"]
 
     # add a single symptom to the case
+    data_id = 1
+    symptom["data_id"] = data_id
     case_data["symptoms"] = [symptom]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
-    # request symptom with data_id 0, which should exist
+    # request symptom with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.get(
-            f"/{workshop_id}/cases/{case_id}/symptoms/0"
+            f"/{workshop_id}/cases/{case_id}/symptoms/{data_id}"
         )
 
     # confirm expected status code and response shema
@@ -832,6 +846,8 @@ def test_update_symptom(save, case_data, symptom, test_app):
     symptom["label"] = old_label
 
     # add a single symptom with old label to the case
+    data_id = 3
+    symptom["data_id"] = data_id
     case_data["symptoms"] = [symptom]
 
     test_app.dependency_overrides = {
@@ -842,10 +858,10 @@ def test_update_symptom(save, case_data, symptom, test_app):
     mock_save, saved_cases = create_mock_save()
     save.side_effect = mock_save
 
-    # request update of symptom with data_id 0, which should exist
+    # request update of symptom with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.put(
-            f"/{workshop_id}/cases/{case_id}/symptoms/0",
+            f"/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
             json={"label": new_label}
         )
 
@@ -884,6 +900,8 @@ def test_delete_symptom(save, case_data, symptom, test_app):
     case_id = case_data["_id"]
 
     # add a single symptom to the case
+    data_id = 99
+    symptom["data_id"] = data_id
     case_data["symptoms"] = [symptom]
 
     test_app.dependency_overrides = {
@@ -894,16 +912,16 @@ def test_delete_symptom(save, case_data, symptom, test_app):
     mock_save, saved_cases = create_mock_save()
     save.side_effect = mock_save
 
-    # request deletion of symptom with data_id 0, which should exist
+    # request deletion of symptom with data_id, which should exist
     with TestClient(test_app) as client:
         response = client.delete(
-            f"/{workshop_id}/cases/{case_id}/symptoms/0"
+            f"/{workshop_id}/cases/{case_id}/symptoms/{data_id}"
         )
 
     # confirm expected status code and non-existence of previously added
     # obd_data
     assert response.status_code == 200
-    assert response.json()["symptoms"] == [None]
+    assert response.json()["symptoms"] == []
     # confirm case was saved
     assert len(saved_cases) == 1
     # confirm response data represents case after saving

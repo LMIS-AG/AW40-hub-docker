@@ -4,8 +4,10 @@ __all__ = [
     "CaseUpdate",
     "Customer",
     "OBDMetaData",
+    "NewOBDData",
     "OBDDataUpdate",
     "OBDData",
+    "NewSymptom",
     "Symptom",
     "SymptomUpdate",
     "Component",
@@ -15,14 +17,14 @@ __all__ = [
     "TimeseriesData",
     "GridFSSignalStore",
     "Vehicle",
-    "VehicleUpdate"
+    "VehicleUpdate",
     "Workshop"
 ]
 
 from .case import NewCase, Case, CaseUpdate
 from .customer import Customer
-from .obd_data import OBDMetaData, OBDDataUpdate, OBDData
-from .symptom import Symptom, SymptomUpdate
+from .obd_data import OBDMetaData, NewOBDData, OBDDataUpdate, OBDData
+from .symptom import NewSymptom, Symptom, SymptomUpdate
 from .timeseries_data import (
     TimeseriesMetaData,
     TimeseriesDataUpdate,

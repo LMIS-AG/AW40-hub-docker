@@ -7,8 +7,10 @@ from ..data_management import (
     NewCase,
     Case,
     CaseUpdate,
+    NewOBDData,
     OBDDataUpdate,
     OBDData,
+    NewSymptom,
     Symptom,
     SymptomUpdate,
     TimeseriesDataUpdate,
@@ -203,11 +205,12 @@ async def update_timeseries_data(
 
 
 @router.delete("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
-def delete_timeseries_data(
+async def delete_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ):
     """Delete a specific timeseries dataset from a case."""
-    pass
+    await case.delete_timeseries_data(data_id)
+    return case
 
 
 @router.get(
@@ -228,11 +231,10 @@ async def list_obd_data(
     response_model=Case
 )
 async def add_obd_data(
-        obd_data: OBDData, case: Case = Depends(case_from_workshop),
+        obd_data: NewOBDData, case: Case = Depends(case_from_workshop),
 ) -> Case:
     """Add a new obd dataset to a case."""
-    case.obd_data.append(obd_data)
-    case = await case.save()
+    case = await case.add_obd_data(obd_data)
     return case
 
 
@@ -307,11 +309,10 @@ async def list_symptoms(
     response_model=Case
 )
 async def add_symptom(
-        symptom: Symptom, case: Case = Depends(case_from_workshop)
+        symptom: NewSymptom, case: Case = Depends(case_from_workshop)
 ) -> Case:
     """Add a new symptom to a case."""
-    case.symptoms.append(symptom)
-    case = await case.save()
+    case = await case.add_symptom(symptom)
     return case
 
 

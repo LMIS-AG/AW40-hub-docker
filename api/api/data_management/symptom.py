@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, NonNegativeInt
 
 from .vehicle import Component
 
@@ -12,8 +12,8 @@ class SymptomLabel(str, Enum):
     defect = "defekt"
 
 
-class Symptom(BaseModel):
-
+class NewSymptom(BaseModel):
+    """Schema for a new symptom."""
     class Config:
         schema_extra = {
             "example": {
@@ -27,8 +27,20 @@ class Symptom(BaseModel):
     label: SymptomLabel
 
 
+class Symptom(NewSymptom):
+    data_id: NonNegativeInt = None
+
+
 class SymptomUpdate(BaseModel):
-    """Same fields as Symptom but all fields are optional."""
+    """Same fields as NewSymptom but all fields are optional."""
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "label": "defekt"
+            }
+        }
+
     timestamp: datetime = None
     component: Component = None
     label: SymptomLabel = None
