@@ -204,7 +204,11 @@ async def update_timeseries_data(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.delete("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+@router.delete(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
+    status_code=200,
+    response_model=Case
+)
 async def delete_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ):
