@@ -516,6 +516,56 @@ def test_update_timeseries_data(save, case_data, timeseries_data, test_app):
            saved_cases[0].timeseries_data[0]
 
 
+def test_delete_timeseries_data_not_found(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # request deletion of timeseries_data with data_id 1 eventhough case does
+    # not have any timeseriers data
+    with TestClient(test_app) as client:
+        response = client.delete(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/1"
+        )
+
+    # confirm expected status code (trying to delete a non-existent ressource
+    # returns a 200, as desired status is already in place)
+    assert response.status_code == 200
+
+
+@mock.patch("api.routers.workshop.Case.delete_timeseries_data", autospec=True)
+def test_delete_timeseries_data(
+        delete_timeseries_data, case_data, timeseries_data, test_app
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    # add a single timeseries_data to the case
+    data_id = 7
+    timeseries_data["data_id"] = data_id
+    case_data["timeseries_data"] = [timeseries_data]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.delete_timeseries_data
+    delete_timeseries_data.side_effect = mock.AsyncMock()
+
+    # request deletion of timeseries_data with data_id, which should exist
+    with TestClient(test_app) as client:
+        response = client.delete(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}"
+        )
+
+    # confirm expected status code and usage of Case.delete_timeseries_data
+    assert response.status_code == 200
+    assert delete_timeseries_data.side_effect.awaited_once()
+
+
 def test_list_obd_data(case_data, obd_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
