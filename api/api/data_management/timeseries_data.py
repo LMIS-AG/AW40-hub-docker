@@ -58,6 +58,7 @@ class TimeseriesDataLabel(str, Enum):
 
 
 class TimeseriesMetaData(BaseModel):
+    """Schema for timeseries meta data."""
 
     class Config:
         validate_assignment = True
@@ -76,7 +77,15 @@ class TimeseriesMetaData(BaseModel):
 
 
 class TimeseriesDataUpdate(BaseModel):
-    """Same fields as TimeseriesMetaData but all fields are optional."""
+    """Schema for updating timeseries meta data."""
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "label": "Anomalie / Auffälligkeit",
+            }
+        }
+
     timestamp: datetime = None
     component: Component = None
     label: TimeseriesDataLabel = None
@@ -87,10 +96,24 @@ class TimeseriesDataUpdate(BaseModel):
 
 
 class TimeseriesData(TimeseriesMetaData):
+    """Schema for existing timeseries data."""
 
     class Config:
         json_encoders = {
             PydanticObjectId: str,
+        }
+        schema_extra = {
+            "example": {
+                "timestamp": "2023-04-04T07:07:22.643103",
+                "component": "Batterie",
+                "label": "Regelfall / Unauffällig",
+                "sampling_rate": 1,
+                "duration": 3,
+                "type": "oscillogram",
+                "device_specs": None,
+                "data_id": 0,
+                "signal_id": "642bccaa392b553201b2ac9f"
+            }
         }
 
     data_id: NonNegativeInt = None

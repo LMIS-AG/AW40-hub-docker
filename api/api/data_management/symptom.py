@@ -13,7 +13,7 @@ class SymptomLabel(str, Enum):
 
 
 class NewSymptom(BaseModel):
-    """Schema for a new symptom."""
+    """Schema for a new symptom added via the api."""
     class Config:
         schema_extra = {
             "example": {
@@ -28,11 +28,22 @@ class NewSymptom(BaseModel):
 
 
 class Symptom(NewSymptom):
+    """Schema for existing symptom."""
+    class Config:
+        schema_extra = {
+            "example": {
+                "timestamp": "2023-04-04T07:15:22.887633",
+                "component": "Batterie",
+                "label": "defekt",
+                "data_id": 0
+            }
+        }
+
     data_id: NonNegativeInt = None
 
 
 class SymptomUpdate(BaseModel):
-    """Same fields as NewSymptom but all fields are optional."""
+    """Schema to update a symptom."""
 
     class Config:
         schema_extra = {

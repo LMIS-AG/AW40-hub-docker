@@ -10,6 +10,7 @@ class OBDMetaData(BaseModel):
 
 
 class NewOBDData(OBDMetaData):
+    """Schema for new obd data added via the api."""
 
     class Config:
         schema_extra = {
@@ -22,10 +23,30 @@ class NewOBDData(OBDMetaData):
 
 
 class OBDData(NewOBDData):
+    """Schema for existing timeseries data."""
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "timestamp": "2023-04-04T07:11:24.032000",
+                "obd_specs": None,
+                "dtcs": ["P0001", "U0001"],
+                "data_id": 0
+            }
+        }
+
     data_id: NonNegativeInt = None
 
 
 class OBDDataUpdate(BaseModel):
-    """Same fields as OBDMetaData but all fields are optional."""
+    """Schema for updating obd meta data."""
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "obd_specs": {"device": "VCDS"},
+            }
+        }
+
     timestamp: datetime = None
     obd_specs: dict = None
