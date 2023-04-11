@@ -1,5 +1,7 @@
 from typing import List
 
+from bson import ObjectId
+from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import NonNegativeInt
 
@@ -59,15 +61,24 @@ async def case_from_workshop(workshop_id: str, case_id: str) -> Case:
      exists AND the respective case belongs to the workshop specified via
      {workshop_id}. Otherwise a 404 Not Found is raised.
     """
-    case = await Case.get(case_id)
 
-    if case is None or case.workshop_id != workshop_id:
-        # No case for THIS workshop
-        raise HTTPException(
+    no_case_with_id_exception = HTTPException(
             status_code=404,
             detail=f"No case with id '{case_id}' found "
                    f"for workshop '{workshop_id}'."
         )
+
+    try:
+        case_id = ObjectId(case_id)
+    except InvalidId:
+        # invalid id reports not found to user
+        raise no_case_with_id_exception
+
+    case = await Case.get(case_id)
+
+    if case is None or case.workshop_id != workshop_id:
+        # No case for THIS workshop
+        raise no_case_with_id_exception
     else:
         return case
 

@@ -1,5 +1,7 @@
 from typing import List
 
+from bson import ObjectId
+from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException
 
 from ..data_management import Case, Customer, Vehicle, Workshop
@@ -33,12 +35,20 @@ async def list_cases(
 
 @router.get("/cases/{case_id}", status_code=200, response_model=Case)
 async def get_case(case_id: str) -> Case:
+    no_case_exception = HTTPException(
+        status_code=404, detail=f"No case with id `{case_id}`"
+    )
+    try:
+        case_id = ObjectId(case_id)
+    except InvalidId:
+        # invalid id reports not found to user
+        raise no_case_exception
+
     case = await Case.get(case_id)
     if case is not None:
         return case
     else:
-        exception_detail = f"No case with id `{case_id}`"
-        raise HTTPException(status_code=404, detail=exception_detail)
+        raise no_case_exception
 
 
 @router.get("/customers", status_code=200, response_model=List[Customer])

@@ -156,8 +156,7 @@ def test_add_case(client):
 
 @mock.patch("api.routers.workshop.Case.get", autospec=True)
 @pytest.mark.asyncio
-async def test_case_from_workshop(get):
-    case_id = "test case"
+async def test_case_from_workshop(get, case_id):
     workshop_id = "test workshop"
 
     async def mock_get(*args):
@@ -179,7 +178,7 @@ async def test_case_from_workshop(get):
 
 @mock.patch("api.routers.workshop.Case.get", autospec=True)
 @pytest.mark.asyncio
-async def test_case_from_workshop_is_none(get):
+async def test_case_from_workshop_is_none(get, case_id):
 
     async def mock_get(*args):
         """Always returns None, e.g. no case found."""
@@ -190,14 +189,13 @@ async def test_case_from_workshop_is_none(get):
 
     # since there is no case, a 404 should be raised
     with pytest.raises(HTTPException) as excinfo:
-        await case_from_workshop(workshop_id="anything", case_id="anything")
+        await case_from_workshop(workshop_id="anything", case_id=case_id)
     assert excinfo.value.status_code == 404
 
 
 @mock.patch("api.routers.workshop.Case.get", autospec=True)
 @pytest.mark.asyncio
-async def test_case_from_workshop_wrong_workshop(get):
-    case_id = "test case"
+async def test_case_from_workshop_wrong_workshop(get, case_id):
     workshop_id = "test workshop"
 
     async def mock_get(*args):
@@ -214,6 +212,18 @@ async def test_case_from_workshop_wrong_workshop(get):
     get.side_effect = mock_get
 
     # since case belongs to another workshop, a 404 should be raised
+    with pytest.raises(HTTPException) as excinfo:
+        await case_from_workshop(workshop_id=workshop_id, case_id=case_id)
+    assert excinfo.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_case_from_workshop_invalid_case_id_format():
+    case_id = "this is not a valid ObjectId"
+    workshop_id = "test workshop"
+
+    # case_id will result in internal exception, as it is not a valid bson
+    # ObjectId. This should just be reported as not found to the api user
     with pytest.raises(HTTPException) as excinfo:
         await case_from_workshop(workshop_id=workshop_id, case_id=case_id)
     assert excinfo.value.status_code == 404
