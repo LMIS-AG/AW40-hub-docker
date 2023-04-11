@@ -5,17 +5,27 @@ x-restart-policy: &default_restart_policy
 
 services:
   mongo:
-    image: mongo:4.2.23
+    build: ./mongo
     <<: *default_restart_policy
     hostname: "mongo"
     container_name: mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_API_USERNAME=${MONGO_API_USERNAME}
+      - MONGO_INITDB_API_PASSWORD=${MONGO_API_PASSWORD}
+      - MONGO_INITDB_DB=${MONGO_DB}
     networks:
-      - hubintranet 
+      - hubintranet
+      - hubnet
     volumes:
       - mongo-data:/data/db
+    expose:
+      - 27017
+    ports:
+      - 127.0.0.1:27017:27017
+
+
   mongo-express: #Maybe not needed in Production
     image: mongo-express:0.54
     <<: *default_restart_policy
@@ -98,12 +108,34 @@ services:
     volumes:
       - minio-data:/data
 
+  api:
+    build:
+      context: ./api
+    depends_on:
+      - mongo
+    ports:
+      - 8000:8000
+    networks:
+      - hubintranet
+      - hubnet
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_USERNAME=${MONGO_API_USERNAME}
+      - MONGO_PASSWORD=${MONGO_API_PASSWORD}
+      - MONGO_DB=${MONGO_DB}
+
+    # DEVELOPMENT: run with reload and mount api package code
+    command: uvicorn --host 0.0.0.0 --reload api.main:app
+    volumes:
+      - ./api/api/:/home/api/api/
+
 networks:
   hubintranet:
     internal: true
   hubnet:
   keycloaknet:
     internal: true
+
 volumes:
   mongo-data:
   postgres-data:
