@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Union
 
 from bson import ObjectId
 from bson.errors import InvalidId
+from celery import Celery
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import NonNegativeInt
 
@@ -20,22 +21,37 @@ from ..data_management import (
     TimeseriesData,
     Vehicle,
     VehicleUpdate,
-    Customer
+    Customer,
+    Diagnosis,
+    RequiredAction
 )
+from ..diagnostics_management import get_celery
 
 tags_metadata = [
     {
-        "name": "Workshop",
-        "description": "Manage cases and associated diagnostic data of a "
-                       "workshop"
-    }
+        "name": "Workshop - Case Management",
+        "description": "Manage cases and associated meta data of a workshop."
+    },
+    {
+        "name": "Workshop - Data Management",
+        "description": "Manage diagnostic data of a case."
+    },
+    {
+        "name": "Workshop - Diagnostics",
+        "description": "Manage diagnosis of a case."
+    },
 ]
 
 
-router = APIRouter(tags=["Workshop"])
+router = APIRouter()
 
 
-@router.get("/{workshop_id}/cases", status_code=200, response_model=List[Case])
+@router.get(
+    "/{workshop_id}/cases",
+    status_code=200,
+    response_model=List[Case],
+    tags=["Workshop - Case Management"]
+)
 async def list_cases(
         workshop_id: str,
         customer_id: str = None,
@@ -47,7 +63,12 @@ async def list_cases(
     return cases
 
 
-@router.post("/{workshop_id}/cases", status_code=201, response_model=Case)
+@router.post(
+    "/{workshop_id}/cases",
+    status_code=201,
+    response_model=Case,
+    tags=["Workshop - Case Management"]
+)
 async def add_case(workshop_id: str, case: NewCase) -> Case:
     case = Case(workshop_id=workshop_id, **case.dict())
     case = await case.insert()
@@ -84,13 +105,20 @@ async def case_from_workshop(workshop_id: str, case_id: str) -> Case:
 
 
 @router.get(
-    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=Case
+    "/{workshop_id}/cases/{case_id}",
+    status_code=200,
+    response_model=Case,
+    tags=["Workshop - Case Management"]
 )
 async def get_case(case: Case = Depends(case_from_workshop)) -> Case:
     return case
 
 
-@router.put("/{workshop_id}/cases/{case_id}")
+@router.put(
+    "/{workshop_id}/cases/{case_id}",
+    status_code=200,
+    tags=["Workshop - Case Management"]
+)
 async def update_case(
         update: CaseUpdate, case: Case = Depends(case_from_workshop)
 ):
@@ -99,7 +127,10 @@ async def update_case(
 
 
 @router.delete(
-    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=None
+    "/{workshop_id}/cases/{case_id}",
+    status_code=200,
+    response_model=None,
+    tags=["Workshop - Case Management"]
 )
 async def delete_case(case: Case = Depends(case_from_workshop)):
     await case.delete()
@@ -108,7 +139,7 @@ async def delete_case(case: Case = Depends(case_from_workshop)):
 @router.get(
     "/{workshop_id}/cases/{case_id}/customer",
     status_code=200,
-    response_model=Customer
+    response_model=Customer, tags=["Workshop - Case Management"]
 )
 async def get_customer(case: Case = Depends(case_from_workshop)):
     customer = await Customer.get(case.customer_id)
@@ -118,7 +149,7 @@ async def get_customer(case: Case = Depends(case_from_workshop)):
 @router.get(
     "/{workshop_id}/cases/{case_id}/vehicle",
     status_code=200,
-    response_model=Vehicle
+    response_model=Vehicle, tags=["Workshop - Case Management"]
 )
 async def get_vehicle(case: Case = Depends(case_from_workshop)):
     vehicle = await Vehicle.find_one({"vin": case.vehicle_vin})
@@ -128,7 +159,7 @@ async def get_vehicle(case: Case = Depends(case_from_workshop)):
 @router.put(
     "/{workshop_id}/cases/{case_id}/vehicle",
     status_code=200,
-    response_model=Vehicle
+    response_model=Vehicle, tags=["Workshop - Case Management"]
 )
 async def update_vehicle(
         update: VehicleUpdate, case: Case = Depends(case_from_workshop)
@@ -141,7 +172,7 @@ async def update_vehicle(
 @router.get(
     "/{workshop_id}/cases/{case_id}/timeseries_data",
     status_code=200,
-    response_model=List[TimeseriesData]
+    response_model=List[TimeseriesData], tags=["Workshop - Data Management"]
 )
 def list_timeseries_data(case: Case = Depends(case_from_workshop)):
     """List all available timeseries datasets for a case."""
@@ -151,18 +182,27 @@ def list_timeseries_data(case: Case = Depends(case_from_workshop)):
 @router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data",
     status_code=201,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def add_timeseries_data(
         timeseries_data: NewTimeseriesData,
-        case: Case = Depends(case_from_workshop)
+        case: Case = Depends(case_from_workshop),
+        celery: Celery = Depends(get_celery)
 ) -> Case:
     """Add a new timeseries dataset to a case."""
     case = await case.add_timeseries_data(timeseries_data)
+    if case.diag:
+        case.diag.status = "processing"
+        await case.save()
+        celery.send_task("tasks.diagnose", (str(case.id),))
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+@router.get(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
+    status_code=200,
+    tags=["Workshop - Data Management"]
+)
 async def get_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
@@ -177,7 +217,10 @@ async def get_timeseries_data(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal")
+@router.get(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal",
+    status_code=200,
+    tags=["Workshop - Data Management"])
 async def get_timeseries_data_signal(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
@@ -195,7 +238,7 @@ async def get_timeseries_data_signal(
 @router.put(
     "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
     status_code=200,
-    response_model=TimeseriesData
+    response_model=TimeseriesData, tags=["Workshop - Data Management"]
 )
 async def update_timeseries_data(
         data_id: NonNegativeInt,
@@ -218,7 +261,7 @@ async def update_timeseries_data(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def delete_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -231,7 +274,7 @@ async def delete_timeseries_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/obd_data",
     status_code=200,
-    response_model=List[OBDData]
+    response_model=List[OBDData], tags=["Workshop - Data Management"]
 )
 async def list_obd_data(
         case: Case = Depends(case_from_workshop)
@@ -243,20 +286,26 @@ async def list_obd_data(
 @router.post(
     "/{workshop_id}/cases/{case_id}/obd_data",
     status_code=201,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def add_obd_data(
-        obd_data: NewOBDData, case: Case = Depends(case_from_workshop),
+        obd_data: NewOBDData,
+        case: Case = Depends(case_from_workshop),
+        celery: Celery = Depends(get_celery)
 ) -> Case:
     """Add a new obd dataset to a case."""
     case = await case.add_obd_data(obd_data)
+    if case.diag:
+        case.diag.status = "processing"
+        await case.save()
+        celery.send_task("tasks.diagnose", (str(case.id),))
     return case
 
 
 @router.get(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=OBDData
+    response_model=OBDData, tags=["Workshop - Data Management"]
 )
 async def get_obd_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -275,7 +324,7 @@ async def get_obd_data(
 @router.put(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=OBDData
+    response_model=OBDData, tags=["Workshop - Data Management"]
 )
 async def update_obd_data(
         data_id: NonNegativeInt,
@@ -296,7 +345,7 @@ async def update_obd_data(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def delete_obd_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -309,7 +358,7 @@ async def delete_obd_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/symptoms",
     status_code=200,
-    response_model=List[Symptom]
+    response_model=List[Symptom], tags=["Workshop - Data Management"]
 )
 async def list_symptoms(
         case: Case = Depends(case_from_workshop)
@@ -321,7 +370,7 @@ async def list_symptoms(
 @router.post(
     "/{workshop_id}/cases/{case_id}/symptoms",
     status_code=201,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def add_symptom(
         symptom: NewSymptom, case: Case = Depends(case_from_workshop)
@@ -334,7 +383,7 @@ async def add_symptom(
 @router.get(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Symptom
+    response_model=Symptom, tags=["Workshop - Data Management"]
 )
 async def get_symptom(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -353,7 +402,7 @@ async def get_symptom(
 @router.put(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Symptom
+    response_model=Symptom, tags=["Workshop - Data Management"]
 )
 async def update_symptom(
         data_id: NonNegativeInt,
@@ -374,7 +423,7 @@ async def update_symptom(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case, tags=["Workshop - Data Management"]
 )
 async def delete_symptom(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -382,3 +431,100 @@ async def delete_symptom(
     """Delete a specific symptom from a case."""
     await case.delete_symptom(data_id)
     return case
+
+
+@router.get(
+    "/{workshop_id}/cases/{case_id}/diag",
+    status_code=200,
+    response_model=Union[Diagnosis, None],
+    tags=["Workshop - Diagnostics"]
+)
+async def get_diagnosis(case: Case = Depends(case_from_workshop)):
+    return case.diag
+
+
+@router.post(
+    "/{workshop_id}/cases/{case_id}/diag",
+    status_code=201,
+    response_model=Diagnosis,
+    tags=["Workshop - Diagnostics"]
+)
+async def start_diagnosis(
+        case: Case = Depends(case_from_workshop),
+        celery: Celery = Depends(get_celery)
+):
+    if case.diag is not None:
+        return case
+
+    case.diag = Diagnosis(status="processing")
+    await case.save()
+    celery.send_task("tasks.diagnose", (str(case.id),))
+    return case.diag
+
+
+@router.put(
+    "/{workshop_id}/cases/{case_id}/diag",
+    status_code=200,
+    response_model=Diagnosis,
+    tags=["Workshop - Diagnostics"]
+)
+async def update_diagnosis(
+        update: Diagnosis,
+        case: Case = Depends(case_from_workshop)
+):
+    if case.diag is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No active diagnosis."
+        )
+    case.diag = update
+    case = await case.save()
+    return case.diag
+
+
+@router.delete(
+    "/{workshop_id}/cases/{case_id}/diag",
+    status_code=200,
+    response_model=None,
+    tags=["Workshop - Diagnostics"]
+)
+async def delete_diagnosis(case: Case = Depends(case_from_workshop)):
+    case.diag = None
+    await case.save()
+    return None
+
+
+@router.get(
+    "/{workshop_id}/cases/{case_id}/diag/required_actions",
+    status_code=200,
+    response_model=List[RequiredAction],
+    tags=["Workshop - Diagnostics"]
+)
+async def get_required_actions(case: Case = Depends(case_from_workshop)):
+    if case.diag is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No active diagnosis."
+        )
+    return case.diag.required_actions
+
+
+@router.post(
+    "/{workshop_id}/cases/{case_id}/diag/required_actions",
+    status_code=201,
+    response_model=Diagnosis,
+    tags=["Workshop - Diagnostics"]
+)
+async def add_required_action(
+        required_action: RequiredAction,
+        case: Case = Depends(case_from_workshop)
+):
+    if case.diag is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No active diagnosis."
+        )
+    case.diag.required_actions.append(required_action)
+    case.diag.status = "action_required"
+    await case.save()
+    return case.diag

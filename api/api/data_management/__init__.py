@@ -3,6 +3,9 @@ __all__ = [
     "Case",
     "CaseUpdate",
     "Customer",
+    "Diagnosis",
+    "RequiredAction",
+    "RequiredActionUpdate",
     "OBDMetaData",
     "NewOBDData",
     "OBDDataUpdate",
@@ -23,6 +26,7 @@ __all__ = [
 
 from .case import NewCase, Case, CaseUpdate
 from .customer import Customer
+from .diagnosis import Diagnosis, RequiredAction, RequiredActionUpdate
 from .obd_data import OBDMetaData, NewOBDData, OBDDataUpdate, OBDData
 from .symptom import NewSymptom, Symptom, SymptomUpdate
 from .timeseries_data import (

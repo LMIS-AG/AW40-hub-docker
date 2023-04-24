@@ -6,6 +6,7 @@ from beanie import Document, Indexed, before_event, Insert, Delete
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from .customer import Customer
+from .diagnosis import Diagnosis
 from .obd_data import NewOBDData, OBDData, OBDDataUpdate
 from .symptom import NewSymptom, Symptom, SymptomUpdate
 from .timeseries_data import (
@@ -77,6 +78,7 @@ class Case(Document):
     timeseries_data: List[Union[TimeseriesData, None]] = []
     obd_data: List[Union[OBDData, None]] = []
     symptoms: List[Union[Symptom, None]] = []
+    diag: Diagnosis = None
 
     # keep track of diagnostic data added to set appropriate data_ids
     timeseries_data_added: NonNegativeInt = 0
