@@ -1,6 +1,10 @@
+import inspect
+import os
+import sys
+
 import pytest
-from motor import motor_asyncio
 from bson import ObjectId
+from motor import motor_asyncio
 
 
 @pytest.fixture
@@ -58,3 +62,29 @@ def new_timeseries_data(timeseries_meta_data, timeseries_signal):
     """Data expected to validate successfully with NewTimeseriesData"""
     timeseries_meta_data["signal"] = timeseries_signal
     return timeseries_meta_data
+
+
+@pytest.fixture
+def files_dir():
+    main_test_dir = os.path.dirname(
+        inspect.getfile(
+            sys.modules[__name__]
+        )
+    )
+    return os.path.join(main_test_dir, "files")
+
+
+@pytest.fixture
+def picoscope_mat_file(files_dir):
+    path = os.path.join(files_dir, "picoscope.mat")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
