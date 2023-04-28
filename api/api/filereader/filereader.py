@@ -1,5 +1,7 @@
-class filereader:
-    def read_file(self, path):
-        pass
-    def probe(self, path):
-        pass
+from abc import ABC
+from typing import BinaryIO, List
+
+
+class FileReader(ABC):
+    def read_file(self, file: BinaryIO) -> List[dict]:
+        raise NotImplementedError

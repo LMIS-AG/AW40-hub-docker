@@ -1,19 +1,17 @@
-from filereader import filereader
 from scipy.io import loadmat
+from typing import BinaryIO, List
 
-class picoscope_mat_reader(filereader):
-    def read_file(self, path):
-        measuement = self.__read_mat(path)
-        return measuement
-    
-    def probe(self,path):
-        return path.endswith(".mat")
-    
-    def __read_mat(self, path):
-        f = loadmat(path)
-        result = {
-            'timeseries_data' : []
-        }
+from ..filereader import FileReader
+
+
+class PicoscopeMATReader(FileReader):
+    def read_file(self, file):
+        measurement = self.__read_mat(file)
+        return measurement
+
+    def __read_mat(self, file: BinaryIO) -> List[dict]:
+        f = loadmat(file)
+        result = []
         if 'Tinterval' not in f.keys():
             raise Exception("conversion error: missing Tinterval")
         if 'Length' not in f.keys():
@@ -24,10 +22,13 @@ class picoscope_mat_reader(filereader):
         if len(channels) == 0:
             raise Exception("conversion error: no channels found")
         for channel in channels:
-            result['timeseries_data'].append({
-                'sampling_rate' : sampling_rate,
-                'duration' : duration,
-                'signal_data': f[channel].ravel(),
-                'component': channel
+            result.append({
+                'sampling_rate': sampling_rate,
+                'duration': duration,
+                'signal': f[channel].ravel().tolist(),
+                'device_specs': {
+                    "channel": channel,
+                    "type": "picoscope"
+                }
             })
         return result

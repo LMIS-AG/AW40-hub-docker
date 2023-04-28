@@ -1,11 +1,11 @@
-import formats.picoscope_mat
-import formats.picoscope_csv
-import formats.vcds_txt
-import formats.omniscope_v1
+from .omniscope_v1 import OmniscopeV1Reader
+from .picoscope_csv import PicoscopeCSVReader
+from .picoscope_mat import PicoscopeMATReader
+from .vcds_txt import VCDSTXTReader
 
-SUPPORTED_FORMAT = {
-    "Picoscope CSV": formats.picoscope_csv.picoscope_csv_reader,
-    "Picoscope MAT": formats.picoscope_mat.picoscope_mat_reader,
-    "VCDS TXT": formats.vcds_txt.vcds_txt_reader,
-    "Omniscope V1 RAW": formats.omniscope_v1.omniscope_v1_reader
+SUPPORTED_FORMATS = {
+    "Picoscope CSV": PicoscopeCSVReader,
+    "Picoscope MAT": PicoscopeMATReader,
+    "Omniscope V1 RAW": OmniscopeV1Reader,
+    "VCDS TXT": VCDSTXTReader
 }
