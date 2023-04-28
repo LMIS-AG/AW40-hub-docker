@@ -15,6 +15,7 @@ __all__ = [
     "TimeseriesDataUpdate",
     "NewTimeseriesData",
     "TimeseriesData",
+    "TimeseriesDataLabel",
     "GridFSSignalStore",
     "Vehicle",
     "VehicleUpdate",
@@ -30,7 +31,8 @@ from .timeseries_data import (
     TimeseriesDataUpdate,
     NewTimeseriesData,
     TimeseriesData,
-    GridFSSignalStore
+    GridFSSignalStore,
+    TimeseriesDataLabel
 )
 from .vehicle import Component, Vehicle, VehicleUpdate
 from .workshop import Workshop
