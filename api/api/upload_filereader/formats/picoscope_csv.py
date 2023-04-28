@@ -44,7 +44,8 @@ class PicoscopeCSVReader(FileReader):
         file_iter = codecs.iterdecode(file, "utf-8")
         header = next(file_iter).strip()
         conv_header = next(file_iter).strip()
-        validated = HEADER_CHECK.match(header) and CONVHEADER_CHECK.match(conv_header)
+        validated = HEADER_CHECK.match(header) and CONVHEADER_CHECK.\
+            match(conv_header)
         file.seek(0)
         return validated
 

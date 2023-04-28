@@ -7,16 +7,16 @@ import chardet
 
 from ..filereader import FileReader
 
-OBD_ERROR = re.compile(r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2}) \d{2} \[\d{3}\] - (?P<error_string>.*)$")
-VIN_AND_MILAGE = re.compile(r"^Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*Kilometerstand: (?P<milage>\d+)km")
-VCDS_INFO = re.compile(r"^\s*VCDS Version: DRV (?P<driver_version>[0-9A-Fa-f.]+)  HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")
+OBD_ERROR = re.compile(r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2}) \d{2} \[\d{3}\] - (?P<error_string>.*)$")  # noqa: E501
+VIN_AND_MILAGE = re.compile(r"^Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*Kilometerstand: (?P<milage>\d+)km")  # noqa: E501
+VCDS_INFO = re.compile(r"^\s*VCDS Version: DRV (?P<driver_version>[0-9A-Fa-f.]+)  HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")  # noqa: E501
 
 
 class VCDSTXTReader(FileReader):
     def read_file(self, file: BinaryIO) -> List[dict]:
         enc = self.__determine_encoding(file)
         return self.__read_vcds_txt(file, enc)
-    
+
     def probe(self, file: BinaryIO):
         enc = self.__determine_encoding(file)
         validated = self.__get_obd_specs(file, enc)
@@ -28,7 +28,9 @@ class VCDSTXTReader(FileReader):
         for _ in range(0, 6):
             vcds_info = VCDS_INFO.match(next(file_iter))
             if vcds_info:
-                log.debug("Found VCDS File with Driver Ver: {} HEX_V2: {}".format(vcds_info['driver_version'],vcds_info['hex_v2']))
+                log.debug(
+                    "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
+                        vcds_info['driver_version'], vcds_info['hex_v2']))
                 obd_specs = {
                     'device': 'VCDS',
                     'drv_ver': vcds_info['driver_version'],
@@ -54,15 +56,15 @@ class VCDSTXTReader(FileReader):
             if not found_vam:
                 vam = VIN_AND_MILAGE.match(line)
                 if vam:
-                    result['vehicle'] = {'vin' : vam['vin']}
-                    result['case'] = {'milage' : int(vam['milage'])}
+                    result['vehicle'] = {'vin': vam['vin']}
+                    result['case'] = {'milage': int(vam['milage'])}
                     found_vam = True
             obd_code = OBD_ERROR.match(line)
             if obd_code:
                 dtcs.append(obd_code['error_code'])
         result['obd_data'] = {
-            'dtcs' : dtcs,
-            'obd_specs' : obd_specs
+            'dtcs': dtcs,
+            'obd_specs': obd_specs
         }
         # all file readers return a list
         result = [result]
