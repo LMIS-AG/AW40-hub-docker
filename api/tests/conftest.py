@@ -88,3 +88,11 @@ def picoscope_csv_file(files_dir):
     f = open(path, "rb")
     yield f
     f.close()
+
+
+@pytest.fixture
+def vcds_txt_file(files_dir):
+    path = os.path.join(files_dir, "vcds.txt")
+    f = open(path, "rb")
+    yield f
+    f.close()
