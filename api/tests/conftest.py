@@ -96,3 +96,11 @@ def vcds_txt_file(files_dir):
     f = open(path, "rb")
     yield f
     f.close()
+
+
+@pytest.fixture
+def omniscope_v1_file(files_dir):
+    path = os.path.join(files_dir, "omniscope")
+    f = open(path, "rb")
+    yield f
+    f.close()
