@@ -76,7 +76,7 @@ def files_dir():
 
 @pytest.fixture
 def picoscope_mat_file(files_dir):
-    path = os.path.join(files_dir, "picoscope.mat")
+    path = os.path.join(files_dir, "picoscope_1ch.mat")
     f = open(path, "rb")
     yield f
     f.close()
@@ -84,7 +84,7 @@ def picoscope_mat_file(files_dir):
 
 @pytest.fixture
 def picoscope_csv_file(files_dir):
-    path = os.path.join(files_dir, "picoscope.csv")
+    path = os.path.join(files_dir, "picoscope_1ch_eng.csv")
     f = open(path, "rb")
     yield f
     f.close()
