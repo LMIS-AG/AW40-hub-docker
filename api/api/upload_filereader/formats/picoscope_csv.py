@@ -14,23 +14,17 @@ conv_table = {
     "(μV)": 1e-6
 }
 
-#channel_names = [
-#    "Kanal",
-#    "Channel"
-#]
-
 time_names = [
     "Zeit",
     "Time"
 ]
 
-#HEADER_CHECK = re.compile(r"^(?:Time|Zeit)(?:,(?:Channel|Kanal) [A-Z])+$")
 HEADER_CHECK = re.compile(
     r"^\w*(?P<delimiter>[,;])(?:\w* [A-Z])(?:\1\w* [A-Z])*$")
 CONVHEADER_CHECK = re.compile(
     r"^\((?:m|μ){0,1}(?:s|V)\)(?:[,;]\((?:m|μ){0,1}(?:s|V)\))+$")
-ALLOWED_CHANNEL = re.compile(r"[A-Z]")
-CHANNEL_CHECK = re.compile(r"^(?P<channel_name>\w*) (?P<channel>[A-Z])$")
+CHANNEL_CHECK = re.compile(
+    r"^(?P<channel_name>\w*) (?P<channel>[A-Z])$")
 
 
 class PicoscopeCSVReader(FileReader):
@@ -70,18 +64,15 @@ class PicoscopeCSVReader(FileReader):
         return translated
 
     def __probe(self, file):
-        delimiter = ""
-        validated = False
         file_iter = codecs.iterdecode(file, "utf-8")
         header = next(file_iter).strip()
         conv_header = next(file_iter).strip()
         header_check = HEADER_CHECK.match(header)
         conv_header_check = CONVHEADER_CHECK.match(conv_header)
-        if header_check and conv_header_check:
-            delimiter = header_check["delimiter"]
-            validated = True
         file.seek(0)
-        return validated, delimiter
+        if header_check and conv_header_check:
+            return True, header_check["delimiter"]
+        return False, ""
 
     def __csv_to_dict(self, file, delimiter):
         reader = csv.reader(codecs.iterdecode(file, 'utf-8'),
