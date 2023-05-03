@@ -123,6 +123,14 @@ def picoscope_4ch_ger_csv_file(files_dir):
 
 
 @pytest.fixture
+def picoscope_8ch_ger_comma_decimal_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_8ch_ger_comma_decimal.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
 def vcds_txt_file(files_dir):
     path = os.path.join(files_dir, "vcds.txt")
     f = open(path, "rb")

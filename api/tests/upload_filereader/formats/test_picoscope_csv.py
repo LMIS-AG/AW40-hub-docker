@@ -11,22 +11,31 @@ class TestPicoscopeCSVReader:
         "file,expected_channels,expected_first_row",
         [
             (
-                    "picoscope_1ch_eng_csv_file", ["A"], [0.76307210]
+                "picoscope_1ch_eng_csv_file", ["A"], [0.76307210]
             ),
             (
-                    "picoscope_4ch_eng_csv_file",
-                    ["A", "B", "C", "D"],
-                    [0.76307210, -0.76977730, -0.73618970, -0.62472320]
+                "picoscope_4ch_eng_csv_file",
+                ["A", "B", "C", "D"],
+                [0.76307210, -0.76977730, -0.73618970, -0.62472320]
             ),
             (
-                    "picoscope_1ch_ger_csv_file", ["A"], [0.76307210]
+                "picoscope_1ch_ger_csv_file", ["A"], [0.76307210]
             ),
             (
-                    "picoscope_4ch_ger_csv_file",
-                    ["A", "B", "C", "D"],
-                    [0.76307210, -0.76977730, -0.73618970, -0.62472320]
+                "picoscope_4ch_ger_csv_file",
+                ["A", "B", "C", "D"],
+                [0.76307210, -0.76977730, -0.73618970, -0.62472320]
+            ),
+            (
+                "picoscope_8ch_ger_comma_decimal_csv_file",
+                ["A", "B", "C", "D", "E", "F", "G", "H"],
+                [
+                    0.75753870, 2.25064100, 5.68459300, 5.01922800, 0.74807720,
+                    1.22756700, 0.75448660, 1.00995000
+                ]
             )
-        ])
+        ]
+    )
     def test_read_file(
             self, file, expected_channels, expected_first_row, request
     ):

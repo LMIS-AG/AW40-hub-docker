@@ -30,7 +30,7 @@ CHANNEL_CHECK = re.compile(
 class PicoscopeCSVReader(FileReader):
     def read_file(self, file: BinaryIO) -> List[dict]:
         result = []
-        validated, delimiter =  self.__probe(file)
+        validated, delimiter = self.__probe(file)
         if not validated:
             raise Exception("conversion failed: wrong format")
         data = self.__csv_to_dict(file, delimiter)
@@ -48,7 +48,7 @@ class PicoscopeCSVReader(FileReader):
                     }
                 })
         return result
-    
+
     def __translate_header(self, header):
         translated = []
         for item in header:
@@ -93,13 +93,16 @@ class PicoscopeCSVReader(FileReader):
             for count, element in enumerate(row):
                 try:
                     data[header[count]].append(
-                        float(element) * conversion[count])
+                        self.__cast_to_float(element) * conversion[count])
                 except Exception as e:
                     raise Exception("conversion failed:{}".format(str(e)))
         return data
 
     def __calculate_duration(self, data):
         return abs(data['Time'][0]) + data['Time'][-1]
+
+    def __cast_to_float(self, value: str):
+        return float(value.replace(",", "."))
 
     def __calculate_sampling_rate(self, data):
         sr_arr = []
