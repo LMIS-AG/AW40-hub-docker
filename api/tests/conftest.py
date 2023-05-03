@@ -75,8 +75,16 @@ def files_dir():
 
 
 @pytest.fixture
-def picoscope_mat_file(files_dir):
+def picoscope_1ch_mat_file(files_dir):
     path = os.path.join(files_dir, "picoscope_1ch.mat")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_mat_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch.mat")
     f = open(path, "rb")
     yield f
     f.close()
