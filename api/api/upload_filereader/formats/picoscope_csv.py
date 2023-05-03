@@ -20,11 +20,11 @@ time_names = [
 ]
 
 HEADER_CHECK = re.compile(
-    r"^\w*(?P<delimiter>[,;])(?:\w* [A-Z])(?:\1\w* [A-Z])*$")
+    r"^.+(?P<delimiter>[,;])(?:.+ [A-Z])(?:\1.+ [A-Z])*$")
 CONVHEADER_CHECK = re.compile(
     r"^\((?:m|μ){0,1}(?:s|V)\)(?:[,;]\((?:m|μ){0,1}(?:s|V)\))+$")
 CHANNEL_CHECK = re.compile(
-    r"^(?P<channel_name>\w*) (?P<channel>[A-Z])$")
+    r"^(?P<channel_name>.+) (?P<channel>[A-Z])$")
 
 
 class PicoscopeCSVReader(FileReader):
