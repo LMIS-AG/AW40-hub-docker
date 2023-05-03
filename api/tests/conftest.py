@@ -91,8 +91,32 @@ def picoscope_4ch_mat_file(files_dir):
 
 
 @pytest.fixture
-def picoscope_csv_file(files_dir):
+def picoscope_1ch_eng_csv_file(files_dir):
     path = os.path.join(files_dir, "picoscope_1ch_eng.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_eng_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch_eng.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_1ch_ger_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_1ch_ger.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_ger_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch_ger.csv")
     f = open(path, "rb")
     yield f
     f.close()
