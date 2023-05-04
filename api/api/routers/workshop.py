@@ -167,62 +167,34 @@ async def add_timeseries_data(
 
 
 @router.post(
-    "/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
-    status_code=201,
-    response_model=Case
-)
-async def upload_picoscope_data(
-        upload: UploadFile = File(),
-        file_format: Literal["Picoscope MAT", "Picoscope CSV"] = Form(),
-        component: Component = Form(),  # TODO: Or mapping channel->component
-        label: TimeseriesDataLabel = Form(),  # TODO: Or mapping channel->label
-        case: Case = Depends(case_from_workshop)
-
-):
-    reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
-        raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload is WIP"
-        )
-    # TODO: handle multi channel upload
-    data = data[0]
-    data["component"] = component
-    data["label"] = label
-    data["type"] = "oscillogram"
-    case = await case.add_timeseries_data(
-        NewTimeseriesData(**data)
-    )
-    return case
-
-
-@router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
     status_code=201,
     response_model=Case
 )
 async def upload_omniscope_data(
-        upload: UploadFile = File(),
-        file_format: Literal["Omniscope V1 RAW"] = Form(),
-        component: Component = Form(),
-        label: TimeseriesDataLabel = Form(),
-        sampling_rate: PositiveInt = Form(),
+        upload: UploadFile = File(description="Omniscope Data File"),
+        file_format: Literal["Omniscope V1 RAW"] = Form(
+            default="Omniscope V1 RAW"
+        ),
+        component: Component = Form(
+            description="The investigated vehicle component"
+        ),
+        label: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        sampling_rate: PositiveInt = Form(
+            description="Sampling rate used (Hz)"
+        ),
         case: Case = Depends(case_from_workshop)
-
 ):
     reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
-        raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload not allowed"
-        )
-    data = data[0]
+    data = reader.read_file(upload.file)[0]
     data["component"] = component
     data["label"] = label
     data["type"] = "oscillogram"
     data["sampling_rate"] = sampling_rate
+    # duration is derived from length of signal and sampling_rate
     data["duration"] = len(data["signal"]) / sampling_rate
     case = await case.add_timeseries_data(
         NewTimeseriesData(**data)
@@ -327,18 +299,14 @@ async def add_obd_data(
     response_model=Case
 )
 async def upload_vcds_data(
-        upload: UploadFile = File(),
-        file_format: Literal["VCDS TXT"] = Form(),
+        upload: UploadFile = File(
+            description="VCDS Data File"
+        ),
+        file_format: Literal["VCDS TXT"] = Form(default="VCDS TXT"),
         case: Case = Depends(case_from_workshop)
 ):
     reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
-        raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload not allowed"
-        )
-    data = data[0]
+    data = reader.read_file(upload.file)[0]
     data = data["obd_data"]
     case = await case.add_obd_data(
         NewOBDData(**data)
