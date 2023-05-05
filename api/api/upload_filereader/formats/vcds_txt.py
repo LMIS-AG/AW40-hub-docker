@@ -3,13 +3,19 @@ import logging as log
 import re
 from typing import BinaryIO, List
 
-import chardet
+import cchardet as chardet
 
 from ..filereader import FileReader
 
-OBD_ERROR = re.compile(r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2}) \d{2} \[\d{3}\] - (?P<error_string>.*)$")  # noqa: E501
-VIN_AND_MILAGE = re.compile(r"^Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*Kilometerstand: (?P<milage>\d+)km")  # noqa: E501
-VCDS_INFO = re.compile(r"^\s*VCDS Version: DRV (?P<driver_version>[0-9A-Fa-f.]+)  HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")  # noqa: E501
+OBD_ERROR = re.compile(
+    r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2})\s"
+    r"\d{2} \[\d{3}\] - (?P<error_string>.*)$")
+VIN_AND_MILAGE = re.compile(
+    r"^.+: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*"
+    r".+: (?P<milage>\d+)km$")
+VCDS_INFO = re.compile(
+    r"^\s*.+: DRV (?P<driver_version>[0-9A-Fa-f.]+)\s*"
+    r"HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")
 
 
 class VCDSTXTReader(FileReader):
@@ -40,8 +46,8 @@ class VCDSTXTReader(FileReader):
                 return obd_specs
 
     def __determine_encoding(self, file: BinaryIO):
-        blob = file.readline()
-        encoding = chardet.detect(blob)['encoding']
+        encoding = chardet.detect(file.read())['encoding']
+        file.seek(0)
         return encoding
 
     def __read_vcds_txt(self, file: BinaryIO, enc: str):
