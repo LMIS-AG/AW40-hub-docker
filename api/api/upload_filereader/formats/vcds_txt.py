@@ -5,7 +5,7 @@ from typing import BinaryIO, List
 
 import chardet
 
-from ..filereader import FileReader
+from ..filereader import FileReader, FileReaderException
 
 OBD_ERROR = re.compile(r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2}) \d{2} \[\d{3}\] - (?P<error_string>.*)$")  # noqa: E501
 VIN_AND_MILAGE = re.compile(r"^Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*Kilometerstand: (?P<milage>\d+)km")  # noqa: E501
@@ -24,20 +24,26 @@ class VCDSTXTReader(FileReader):
         return validated
 
     def __get_obd_specs(self, file: BinaryIO, enc: str):
-        file_iter = codecs.iterdecode(file, enc)
-        for _ in range(0, 6):
-            vcds_info = VCDS_INFO.match(next(file_iter))
-            if vcds_info:
-                log.debug(
-                    "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
-                        vcds_info['driver_version'], vcds_info['hex_v2']))
-                obd_specs = {
-                    'device': 'VCDS',
-                    'drv_ver': vcds_info['driver_version'],
-                    'fw_ver': vcds_info['hex_v2']
-                }
-                file.seek(0)
-                return obd_specs
+        try:
+            file_iter = codecs.iterdecode(file, enc)
+            for _ in range(0, 6):
+                vcds_info = VCDS_INFO.match(next(file_iter))
+                if vcds_info:
+                    log.debug(
+                        "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
+                            vcds_info['driver_version'], vcds_info['hex_v2']))
+                    obd_specs = {
+                        'device': 'VCDS',
+                        'drv_ver': vcds_info['driver_version'],
+                        'fw_ver': vcds_info['hex_v2']
+                    }
+                    file.seek(0)
+                    return obd_specs
+
+        except StopIteration:
+            raise FileReaderException(
+                "conversion failed: Unexpected file head"
+            )
 
     def __determine_encoding(self, file: BinaryIO):
         blob = file.readline()
@@ -47,7 +53,7 @@ class VCDSTXTReader(FileReader):
     def __read_vcds_txt(self, file: BinaryIO, enc: str):
         obd_specs = self.__get_obd_specs(file, enc)
         if not obd_specs:
-            raise Exception("conversion error: invalid vcds file")
+            raise FileReaderException("conversion error: invalid vcds file")
         file_iter = codecs.iterdecode(file, enc)
         result = {}
         dtcs = []
