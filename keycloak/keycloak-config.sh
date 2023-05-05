@@ -16,7 +16,7 @@
     -s username=${KC_ADMIN_WERKSTATTHUB} \
     -s enabled=true \
     -s attributes.policy=consoleAdmin \
-    -s credentials='[{"type":"password","value":"rcTvQNX55nD8Fpmj5HXUMSyxd6LgBbeS"}]' #this should be an env, not working yet
+    -s credentials='[{"type":"password","value":"'${KC_ADMIN_WERKSTATTHUB_PASSWORD}'"}]'
 
 # Get the ID of the 'minio' client in the 'werkstatt-hub' realm
 CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
