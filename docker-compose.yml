@@ -88,7 +88,6 @@ services:
   keycloak-config:
       image: docker
       command: sh -c "docker exec keycloak sh /opt/keycloak-config.sh"
-#      restart: on-failure
       volumes:
         - "/var/run/docker.sock:/var/run/docker.sock"
       depends_on:

@@ -4,19 +4,19 @@
 /opt/keycloak/bin/kcadm.sh config credentials \
     --server http://${IP_ADDRESS}:8080 \
     --realm master \
-    --user kc-admin \
-    --password zC5dCYJX0saA7db7N7ctzdVs6OlBzEA0zWPNGelfBFn5mZI1 # this should be an env, not working yet
+    --user ${KEYCLOAK_ADMIN} \
+    --password ${KEYCLOAK_ADMIN_PASSWORD}
 
 # Create the werkstatt-hub-realm
 /opt/keycloak/bin/kcadm.sh create realms -f /opt/werkstatthub-realm.json
 
-# Create a first user
+# Create first user
 /opt/keycloak/bin/kcadm.sh create users \
     -r werkstatt-hub \
-    -s username=werkstatthub-admin \
+    -s username=${KC_ADMIN_WERKSTATTHUB} \
     -s enabled=true \
     -s attributes.policy=consoleAdmin \
-    -s credentials='[{"type":"password","value":"rcTvQNX55nD8Fpmj5HXUMSyxd6LgBbeS"}]' # this should be an env, not working yet
+    -s credentials='[{"type":"password","value":"rcTvQNX55nD8Fpmj5HXUMSyxd6LgBbeS"}]' #this should be an env, not working yet
 
 # Get the ID of the 'minio' client in the 'werkstatt-hub' realm
 CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
