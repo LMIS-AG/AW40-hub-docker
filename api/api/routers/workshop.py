@@ -25,7 +25,7 @@ from ..data_management import (
     VehicleUpdate,
     Customer
 )
-from ..upload_filereader import filereader_factory
+from ..upload_filereader import filereader_factory, FileReaderException
 
 tags_metadata = [
     {
@@ -166,6 +166,23 @@ async def add_timeseries_data(
     return case
 
 
+def read_file_or_400(upload: UploadFile, file_format: str) -> list:
+    """
+    Helper that attempts to read an uploaded file based on a user specified
+    format and raises a 400 if file reading fails.
+    """
+    reader = filereader_factory.get_reader(file_format)
+    try:
+        read_result = reader.read_file(upload.file)
+    except FileReaderException:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not read file '{upload.filename}' with file format "
+                   f"'{file_format}'."
+        )
+    return read_result
+
+
 def channel_description_form(
         component_A: Component = Form(
             default=None, description="The investigated vehicle component"),
@@ -215,8 +232,7 @@ def process_picoscope_upload(
     descriptions.
     """
     # Read the uploaded file.
-    reader = filereader_factory.get_reader(file_format)
-    read_results = reader.read_file(upload.file)
+    read_results = read_file_or_400(upload, file_format)
 
     # Only select results that have a specified component.
     selected_results = []
@@ -409,8 +425,7 @@ async def upload_vcds_data(
         file_format: Literal["VCDS TXT"] = Form(default="VCDS TXT"),
         case: Case = Depends(case_from_workshop)
 ):
-    reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)[0]
+    data = read_file_or_400(upload, file_format)[0]
     data = data["obd_data"]
     case = await case.add_obd_data(
         NewOBDData(**data)

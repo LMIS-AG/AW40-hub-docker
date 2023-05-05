@@ -17,6 +17,7 @@ from api.routers.workshop import router, case_from_workshop
 from beanie import init_beanie
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
+from tempfile import TemporaryFile
 
 
 @pytest.fixture
@@ -524,6 +525,31 @@ def test_upload_picoscope_data_wrong_channel_specs(
     assert response.status_code == 400
 
 
+@pytest.mark.parametrize("file_format", ["Picoscope MAT", "Picoscope CSV"])
+def test_upload_picoscope_data_wrong_file(
+        file_format,
+        case_data,
+        test_app,
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload wrong file
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", TemporaryFile())},
+            data={"componant_A": "Batterie", "file_format": file_format}
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
+
+
 @mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
 def test_upload_omniscope_data(
         add_timeseries_data,
@@ -866,6 +892,28 @@ def test_upload_vcds_data(
     # confirm expected status code and response shape
     assert response.status_code == 201
     assert len(response.json()["obd_data"]) == 1
+
+
+def test_upload_vcds_data_wrong_file(
+        case_data,
+        test_app,
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload wrong file
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/obd_data/upload/vcds",
+            files={"upload": ("filename", TemporaryFile())}
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
 
 
 def test_get_obd_data_not_found(case_data, test_app):
