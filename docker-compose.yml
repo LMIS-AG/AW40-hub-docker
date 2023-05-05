@@ -88,7 +88,7 @@ services:
   keycloak-config:
       image: docker
       command: sh -c "docker exec keycloak sh /opt/keycloak-config.sh"
-      restart: on-failure
+#      restart: on-failure
       volumes:
         - "/var/run/docker.sock:/var/run/docker.sock"
       depends_on:
@@ -144,12 +144,13 @@ services:
       depends_on:
           minio:
               condition: service_started
-      entrypoint: >
-          /bin/sh -c "
-          /usr/bin/mc alias set myminio http://${IP_ADDRESS}:9000 ${S3_ROOT_USER} ${S3_ROOT_PASSWORD};
-          /usr/bin/mc mb myminio/werkstatthub;
-          exit 0;
-          "
+      entrypoint: [./minio-config.sh]
+      volumes:
+        - ./minio/minio-config.sh:/minio-config.sh
+      environment:
+          - IP_ADDRESS=${IP_ADDRESS}
+          - S3_ROOT_USER=${S3_ROOT_USER}
+          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
   api:
     build:
       context: ./api
