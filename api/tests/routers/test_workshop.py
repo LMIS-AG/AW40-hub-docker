@@ -363,6 +363,167 @@ def test_add_timeseries_data(
     assert len(response.json()["timeseries_data"]) == 1
 
 
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_1ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_8ch_ger_comma_decimal_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_mat_file", "Picoscope MAT"),
+        ("picoscope_4ch_mat_file", "Picoscope MAT")
+    ]
+)
+@mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
+def test_upload_picoscope_data_single_channel(
+        add_timeseries_data,
+        file,
+        file_format,
+        case_data,
+        test_app,
+        timeseries_signal_id,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
+
+    # upload file and only specify component for one channel
+    channel = "A"
+    component = "Motor"
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                f"component_{channel}": component, "file_format": file_format
+            }
+        )
+
+    # confirm expected status code and response data
+    assert response.status_code == 201
+    timeseries_data = response.json()["timeseries_data"]
+    assert len(timeseries_data) == 1
+    assert timeseries_data[0]["device_specs"]["channel"] == channel
+    assert timeseries_data[0]["component"] == component
+
+
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_4ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_8ch_ger_comma_decimal_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_mat_file", "Picoscope MAT")
+    ]
+)
+@mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
+def test_upload_picoscope_data_multi_channel(
+        add_timeseries_data,
+        file,
+        file_format,
+        case_data,
+        test_app,
+        timeseries_signal_id,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
+
+    # upload file and specify components for two channels
+    channel_0 = "B"
+    component_0 = "Motor"
+    channel_1 = "C"
+    component_1 = "Batterie"
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                f"component_{channel_0}": component_0,
+                f"component_{channel_1}": component_1,
+                "file_format": file_format
+            }
+        )
+
+    # confirm expected status code and response data
+    assert response.status_code == 201
+    timeseries_data = response.json()["timeseries_data"]
+    assert len(timeseries_data) == 2
+    assert timeseries_data[0]["device_specs"]["channel"] == channel_0
+    assert timeseries_data[0]["component"] == component_0
+    assert timeseries_data[1]["device_specs"]["channel"] == channel_1
+    assert timeseries_data[1]["component"] == component_1
+
+
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_1ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_mat_file", "Picoscope MAT")
+    ]
+)
+def test_upload_picoscope_data_wrong_channel_specs(
+        file,
+        file_format,
+        case_data,
+        test_app,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload file and only specify component for channel B, even though files
+    # only have channel A
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                "component_B": "Batterie",
+                "file_format": file_format
+            }
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
+
+
 @mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
 def test_upload_omniscope_data(
         add_timeseries_data,

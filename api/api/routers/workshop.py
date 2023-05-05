@@ -166,6 +166,110 @@ async def add_timeseries_data(
     return case
 
 
+def channel_description_form(
+        component_A: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_A: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_B: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_B: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_C: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_C: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_D: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_D: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        )
+) -> dict:
+    """
+    Helper to retrieve required channel descriptions for picoscope uploads.
+    """
+    return {
+        "A": {"component": component_A, "label": label_A},
+        "B": {"component": component_B, "label": label_B},
+        "C": {"component": component_C, "label": label_C},
+        "D": {"component": component_D, "label": label_D}
+    }
+
+
+def process_picoscope_upload(
+        upload: UploadFile = File(description="Picoscope Data File"),
+        file_format: Literal["Picoscope MAT", "Picoscope CSV"] = Form(
+            default="Picoscope MAT"
+        ),
+        channel_description: dict = Depends(channel_description_form)
+) -> list:
+    """
+    Helper to preprocess picoscope upload and user-provided channel
+    descriptions.
+    """
+    # Read the uploaded file.
+    reader = filereader_factory.get_reader(file_format)
+    read_results = reader.read_file(upload.file)
+
+    # Only select results that have a specified component.
+    selected_results = []
+    for channel, description in channel_description.items():
+        description_component = description.get("component")
+        description_label = description.get("label")
+        # Channels without user specified component will be ignored.
+        if description_component:
+            # Component was specified for current channel. Try to find
+            # a corresponding result.
+            result_found = False
+            for i, data in enumerate(read_results):
+                if data["device_specs"]["channel"] == channel:
+                    # Result found for current channel. Add descriptive
+                    # attributes and move to selected_results. Break to
+                    # continue with next channel.
+                    result_found = True
+                    data = read_results.pop(i)
+                    data["component"] = description_component
+                    data["label"] = description_label
+                    data["type"] = "oscillogram"
+                    selected_results.append(data)
+                    break
+
+            if not result_found:
+                # A channel with specified component that is not found in the
+                # uploaded file is a client error
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"A component was specified for channel "
+                           f"'{channel}' but this channel is not found in "
+                           f"file '{upload.filename}'."
+                )
+
+    return selected_results
+
+
+@router.post(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+    status_code=201,
+    response_model=Case
+)
+async def upload_picoscope_data(
+        processed_upload: list = Depends(process_picoscope_upload),
+        case: Case = Depends(case_from_workshop)
+):
+    for data in processed_upload:
+        case = await case.add_timeseries_data(
+            NewTimeseriesData(**data)
+        )
+    return case
+
+
 @router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
     status_code=201,
