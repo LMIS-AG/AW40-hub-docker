@@ -40,9 +40,9 @@ class VCDSTXTReader(FileReader):
                     file.seek(0)
                     return obd_specs
 
-        except StopIteration:
+        except Exception:
             raise FileReaderException(
-                "conversion failed: Unexpected file head"
+                "conversion failed: Failed to read filehead"
             )
 
     def __determine_encoding(self, file: BinaryIO):
