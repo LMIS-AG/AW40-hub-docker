@@ -603,6 +603,28 @@ def test_upload_omniscope_data_empty_signal(case_data, test_app):
     assert response.status_code == 422
 
 
+@pytest.mark.parametrize("sr", [-1, 0])
+def test_upload_omniscope_data_invalid_sampling_rate(
+        sr, omniscope_v1_file, case_data, test_app
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
+            files={"upload": ("filename", omniscope_v1_file)},
+            data={"component": "Batterie", "sampling_rate": sr}
+        )
+
+    # confirm http exception
+    assert response.status_code == 422
+
+
 def test_get_timeseries_data_not_found(case_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
