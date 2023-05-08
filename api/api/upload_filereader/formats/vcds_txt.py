@@ -9,10 +9,10 @@ from ..filereader import FileReader
 
 OBD_ERROR = re.compile(
     r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2})\s"
-    r"\d{2} \[\d{3}\] - (?P<error_string>.*)$")
+    r"\d{2} \[\d{3}\] - (?P<error_string>.*)\s*$")
 VIN_AND_MILAGE = re.compile(
     r"^.+: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*"
-    r".+: (?P<milage>\d+)km$")
+    r".+: (?P<milage>\d+)km\s*$")
 VCDS_INFO = re.compile(
     r"^\s*.+: DRV (?P<driver_version>[0-9A-Fa-f.]+)\s*"
     r"HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")
@@ -32,7 +32,7 @@ class VCDSTXTReader(FileReader):
     def __get_obd_specs(self, file: BinaryIO, enc: str):
         file_iter = codecs.iterdecode(file, enc)
         for _ in range(0, 6):
-            vcds_info = VCDS_INFO.match(next(file_iter))
+            vcds_info = VCDS_INFO.match(next(file_iter).rstrip('\r\n'))
             if vcds_info:
                 log.debug(
                     "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
@@ -59,6 +59,7 @@ class VCDSTXTReader(FileReader):
         dtcs = []
         found_vam = False
         for line in file_iter:
+            line = line.rstrip('\r\n')
             if not found_vam:
                 vam = VIN_AND_MILAGE.match(line)
                 if vam:
