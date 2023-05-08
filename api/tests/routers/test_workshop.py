@@ -582,6 +582,27 @@ def test_upload_omniscope_data(
     assert len(response.json()["timeseries_data"]) == 1
 
 
+def test_upload_omniscope_data_empty_signal(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        with TemporaryFile() as empty_file:
+            response = client.post(
+                f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/"
+                f"omniscope",
+                files={"upload": ("filename", empty_file)},
+                data={"component": "Batterie", "sampling_rate": 1}
+            )
+
+    # confirm http exception
+    assert response.status_code == 422
+
+
 def test_get_timeseries_data_not_found(case_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]

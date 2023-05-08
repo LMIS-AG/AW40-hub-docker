@@ -340,6 +340,13 @@ async def upload_omniscope_data(
 ):
     reader = filereader_factory.get_reader(file_format)
     data = reader.read_file(upload.file)[0]
+
+    if len(data["signal"]) == 0:
+        raise HTTPException(
+            status_code=422, detail=f"File '{upload.filename}' seems to "
+                                    f"contain no data."
+        )
+
     data["component"] = component
     data["label"] = label
     data["type"] = "oscillogram"
