@@ -8,7 +8,6 @@ Currently deployed services:
 - PostgreSQL (Keycloak Database)
 - MINIO Object Storage
 - MongoDB
-- Mongo-Express
 - API
 
 ## Usage
