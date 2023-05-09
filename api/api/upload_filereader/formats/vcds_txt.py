@@ -3,13 +3,19 @@ import logging as log
 import re
 from typing import BinaryIO, List
 
-import chardet
+import cchardet as chardet
 
 from ..filereader import FileReader, FileReaderException
 
-OBD_ERROR = re.compile(r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2}) \d{2} \[\d{3}\] - (?P<error_string>.*)$")  # noqa: E501
-VIN_AND_MILAGE = re.compile(r"^Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*Kilometerstand: (?P<milage>\d+)km")  # noqa: E501
-VCDS_INFO = re.compile(r"^\s*VCDS Version: DRV (?P<driver_version>[0-9A-Fa-f.]+)  HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")  # noqa: E501
+OBD_ERROR = re.compile(
+    r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2})\s"
+    r"\d{2} \[\d{3}\] - (?P<error_string>.*)\s*$")
+VIN_AND_MILAGE = re.compile(
+    r"^.+: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*"
+    r".+: (?P<milage>\d+)km\s*$")
+VCDS_INFO = re.compile(
+    r"^\s*.+: DRV (?P<driver_version>[0-9A-Fa-f.]+)\s*"
+    r"HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")
 
 
 class VCDSTXTReader(FileReader):
@@ -27,14 +33,11 @@ class VCDSTXTReader(FileReader):
         try:
             file_iter = codecs.iterdecode(file, enc)
             for _ in range(0, 6):
-                vcds_info = VCDS_INFO.match(next(file_iter))
+                vcds_info = VCDS_INFO.match(next(file_iter).rstrip('\r\n'))
                 if vcds_info:
                     log.debug(
-                        "Found VCDS File with Driver Ver: {} HEX_V2: {}"
-                        "".format(
-                            vcds_info['driver_version'],
-                            vcds_info['hex_v2'])
-                    )
+                        "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
+                            vcds_info['driver_version'], vcds_info['hex_v2']))
                     obd_specs = {
                         'device': 'VCDS',
                         'drv_ver': vcds_info['driver_version'],
@@ -49,8 +52,8 @@ class VCDSTXTReader(FileReader):
             )
 
     def __determine_encoding(self, file: BinaryIO):
-        blob = file.readline()
-        encoding = chardet.detect(blob)['encoding']
+        encoding = chardet.detect(file.read())['encoding']
+        file.seek(0)
         return encoding
 
     def __read_vcds_txt(self, file: BinaryIO, enc: str):
@@ -62,6 +65,7 @@ class VCDSTXTReader(FileReader):
         dtcs = []
         found_vam = False
         for line in file_iter:
+            line = line.rstrip('\r\n')
             if not found_vam:
                 vam = VIN_AND_MILAGE.match(line)
                 if vam:
