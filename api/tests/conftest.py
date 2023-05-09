@@ -1,6 +1,10 @@
+import inspect
+import os
+import sys
+
 import pytest
-from motor import motor_asyncio
 from bson import ObjectId
+from motor import motor_asyncio
 
 
 @pytest.fixture
@@ -58,3 +62,85 @@ def new_timeseries_data(timeseries_meta_data, timeseries_signal):
     """Data expected to validate successfully with NewTimeseriesData"""
     timeseries_meta_data["signal"] = timeseries_signal
     return timeseries_meta_data
+
+
+@pytest.fixture
+def files_dir():
+    main_test_dir = os.path.dirname(
+        inspect.getfile(
+            sys.modules[__name__]
+        )
+    )
+    return os.path.join(main_test_dir, "files")
+
+
+@pytest.fixture
+def picoscope_1ch_mat_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_1ch.mat")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_mat_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch.mat")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_1ch_eng_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_1ch_eng.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_eng_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch_eng.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_1ch_ger_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_1ch_ger.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_4ch_ger_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_4ch_ger.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def picoscope_8ch_ger_comma_decimal_csv_file(files_dir):
+    path = os.path.join(files_dir, "picoscope_8ch_ger_comma_decimal.csv")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def vcds_txt_file(files_dir):
+    path = os.path.join(files_dir, "vcds.txt")
+    f = open(path, "rb")
+    yield f
+    f.close()
+
+
+@pytest.fixture
+def omniscope_v1_file(files_dir):
+    path = os.path.join(files_dir, "omniscope")
+    f = open(path, "rb")
+    yield f
+    f.close()
