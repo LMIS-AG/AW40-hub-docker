@@ -36,8 +36,10 @@ class VCDSTXTReader(FileReader):
                 vcds_info = VCDS_INFO.match(next(file_iter).rstrip('\r\n'))
                 if vcds_info:
                     log.debug(
-                        "Found VCDS File with Driver Ver: {} HEX_V2: {}".format(
-                            vcds_info['driver_version'], vcds_info['hex_v2']))
+                        "Found VCDS File with Driver Ver: {} HEX_V2: {}"
+                        "".format(
+                            vcds_info['driver_version'], vcds_info['hex_v2'])
+                    )
                     obd_specs = {
                         'device': 'VCDS',
                         'drv_ver': vcds_info['driver_version'],
