@@ -1,7 +1,7 @@
 from api.upload_filereader.formats.omniscope_v1 import OmniscopeV1Reader
 
 
-class TestPicoscopeCSVReader:
+class TestOmniscopeV1Reader:
 
     def test_read_file(self, omniscope_v1_file):
         reader = OmniscopeV1Reader()

@@ -10,12 +10,14 @@ from api.data_management import (
     TimeseriesData,
     NewTimeseriesData,
     OBDData,
+    NewOBDData,
     Symptom
 )
 from api.routers.workshop import router, case_from_workshop
 from beanie import init_beanie
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
+from tempfile import TemporaryFile
 
 
 @pytest.fixture
@@ -313,6 +315,24 @@ def test_list_timeseries_data(case_data, timeseries_data, test_app):
     assert len(response.json()) == repeats
 
 
+def mock_add_timeseries_data(signal_id):
+    """
+    Create a test mock for Case.add_timeseries_data that does not require
+    setup of storage backend and uses a fixed signal_id.
+    """
+    async def add_timeseries_data(self, new_data: NewTimeseriesData):
+        # exchange signal and signal_id without accessing signal store
+        meta_data = new_data.dict(exclude={"signal"})
+        meta_data["signal_id"] = signal_id
+        timeseries_data = TimeseriesData(**meta_data)
+
+        # append to case without saving
+        self.timeseries_data.append(timeseries_data)
+        return self
+
+    return add_timeseries_data
+
+
 @mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
 def test_add_timeseries_data(
         add_timeseries_data,
@@ -328,19 +348,10 @@ def test_add_timeseries_data(
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
-    async def mock_add_timeseries_data(self, new_data: NewTimeseriesData):
-        # exchange signal and signal_id without accessing signal store
-        signal_id = timeseries_signal_id
-        meta_data = new_data.dict(exclude={"signal"})
-        meta_data["signal_id"] = signal_id
-        timeseries_data = TimeseriesData(**meta_data)
-
-        # append to case without saving
-        self.timeseries_data.append(timeseries_data)
-        return self
-
-    # patch Case.add_timeseries_data to use mock_add_timeseries_data
-    add_timeseries_data.side_effect = mock_add_timeseries_data
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
 
     with TestClient(test_app) as client:
         response = client.post(
@@ -351,6 +362,267 @@ def test_add_timeseries_data(
     # confirm expected status code and response shape
     assert response.status_code == 201
     assert len(response.json()["timeseries_data"]) == 1
+
+
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_1ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_8ch_ger_comma_decimal_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_mat_file", "Picoscope MAT"),
+        ("picoscope_4ch_mat_file", "Picoscope MAT")
+    ]
+)
+@mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
+def test_upload_picoscope_data_single_channel(
+        add_timeseries_data,
+        file,
+        file_format,
+        case_data,
+        test_app,
+        timeseries_signal_id,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
+
+    # upload file and only specify component for one channel
+    channel = "A"
+    component = "Motor"
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                f"component_{channel}": component, "file_format": file_format
+            }
+        )
+
+    # confirm expected status code and response data
+    assert response.status_code == 201
+    timeseries_data = response.json()["timeseries_data"]
+    assert len(timeseries_data) == 1
+    assert timeseries_data[0]["device_specs"]["channel"] == channel
+    assert timeseries_data[0]["component"] == component
+
+
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_4ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_8ch_ger_comma_decimal_csv_file", "Picoscope CSV"),
+        ("picoscope_4ch_mat_file", "Picoscope MAT")
+    ]
+)
+@mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
+def test_upload_picoscope_data_multi_channel(
+        add_timeseries_data,
+        file,
+        file_format,
+        case_data,
+        test_app,
+        timeseries_signal_id,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
+
+    # upload file and specify components for two channels
+    channel_0 = "B"
+    component_0 = "Motor"
+    channel_1 = "C"
+    component_1 = "Batterie"
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                f"component_{channel_0}": component_0,
+                f"component_{channel_1}": component_1,
+                "file_format": file_format
+            }
+        )
+
+    # confirm expected status code and response data
+    assert response.status_code == 201
+    timeseries_data = response.json()["timeseries_data"]
+    assert len(timeseries_data) == 2
+    assert timeseries_data[0]["device_specs"]["channel"] == channel_0
+    assert timeseries_data[0]["component"] == component_0
+    assert timeseries_data[1]["device_specs"]["channel"] == channel_1
+    assert timeseries_data[1]["component"] == component_1
+
+
+@pytest.mark.parametrize(
+    "file,file_format",
+    [
+        ("picoscope_1ch_eng_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_ger_csv_file", "Picoscope CSV"),
+        ("picoscope_1ch_mat_file", "Picoscope MAT")
+    ]
+)
+def test_upload_picoscope_data_wrong_channel_specs(
+        file,
+        file_format,
+        case_data,
+        test_app,
+        request
+):
+    # use request fixture to convert file parameter from str to actual
+    # value of picoscope file fixture
+    file = request.getfixturevalue(file)
+
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload file and only specify component for channel B, even though files
+    # only have channel A
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", file)},
+            data={
+                "component_B": "Batterie",
+                "file_format": file_format
+            }
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
+
+
+@pytest.mark.parametrize("file_format", ["Picoscope MAT", "Picoscope CSV"])
+def test_upload_picoscope_data_wrong_file(
+        file_format,
+        case_data,
+        test_app,
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload wrong file
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
+            files={"upload": ("filename", TemporaryFile())},
+            data={"componant_A": "Batterie", "file_format": file_format}
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
+
+
+@mock.patch("api.routers.workshop.Case.add_timeseries_data", autospec=True)
+def test_upload_omniscope_data(
+        add_timeseries_data,
+        case_data,
+        omniscope_v1_file,
+        test_app,
+        timeseries_signal_id
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_timeseries_data to call mock instead
+    add_timeseries_data.side_effect = mock_add_timeseries_data(
+        signal_id=timeseries_signal_id
+    )
+
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
+            files={"upload": ("filename", omniscope_v1_file)},
+            data={"component": "Batterie", "sampling_rate": 1}
+        )
+
+    # confirm expected status code and response shape
+    assert response.status_code == 201
+    assert len(response.json()["timeseries_data"]) == 1
+
+
+def test_upload_omniscope_data_empty_signal(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        with TemporaryFile() as empty_file:
+            response = client.post(
+                f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/"
+                f"omniscope",
+                files={"upload": ("filename", empty_file)},
+                data={"component": "Batterie", "sampling_rate": 1}
+            )
+
+    # confirm http exception
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("sr", [-1, 0])
+def test_upload_omniscope_data_invalid_sampling_rate(
+        sr, omniscope_v1_file, case_data, test_app
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
+            files={"upload": ("filename", omniscope_v1_file)},
+            data={"component": "Batterie", "sampling_rate": sr}
+        )
+
+    # confirm http exception
+    assert response.status_code == 422
 
 
 def test_get_timeseries_data_not_found(case_data, test_app):
@@ -598,6 +870,20 @@ def test_list_obd_data(case_data, obd_data, test_app):
     assert len(response.json()) == repeats
 
 
+def mock_add_obd_data():
+    """
+    Create a test mock for Case.add_obd_data that does not require
+    setup of storage backend.
+    """
+    async def add_obd_data(self, new_obd_data: NewOBDData):
+        obd_data = OBDData(data_id=self.obd_data_added, **new_obd_data.dict())
+        self.obd_data.append(obd_data)
+        self.obd_data_added += 1
+        return self
+
+    return add_obd_data
+
+
 @mock.patch("api.routers.workshop.Case.save", autospec=True)
 def test_add_obd_data(save, case_data, obd_data, test_app):
     workshop_id = case_data["workshop_id"]
@@ -624,6 +910,53 @@ def test_add_obd_data(save, case_data, obd_data, test_app):
     assert len(saved_cases) == 1
     # confirm response data represents case after saving
     assert Case(**response.json()) == saved_cases[0]
+
+
+@mock.patch("api.routers.workshop.Case.add_obd_data", autospec=True)
+def test_upload_vcds_data(
+        add_obd_data, case_data, obd_data, vcds_txt_file, test_app
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # patch Case.add_obd_data to use mock
+    add_obd_data.side_effect = mock_add_obd_data()
+
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/obd_data/upload/vcds",
+            files={"upload": ("filename", vcds_txt_file)}
+        )
+
+    # confirm expected status code and response shape
+    assert response.status_code == 201
+    assert len(response.json()["obd_data"]) == 1
+
+
+def test_upload_vcds_data_wrong_file(
+        case_data,
+        test_app,
+):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    # upload wrong file
+    with TestClient(test_app) as client:
+        response = client.post(
+            f"/{workshop_id}/cases/{case_id}/obd_data/upload/vcds",
+            files={"upload": ("filename", TemporaryFile())}
+        )
+
+    # confirm expected http exception
+    assert response.status_code == 400
 
 
 def test_get_obd_data_not_found(case_data, test_app):

@@ -3,7 +3,7 @@ import csv
 import re
 from typing import BinaryIO, List
 
-from ..filereader import FileReader
+from ..filereader import FileReader, FileReaderException
 
 conv_table = {
     "(s)": 1e0,
@@ -32,7 +32,7 @@ class PicoscopeCSVReader(FileReader):
         result = []
         validated, delimiter = self.__probe(file)
         if not validated:
-            raise Exception("conversion failed: wrong format")
+            raise FileReaderException("conversion failed: wrong format")
         data = self.__csv_to_dict(file, delimiter)
         duration = self.__calculate_duration(data)
         sampling_rate = self.__calculate_sampling_rate(data)[0]
@@ -60,13 +60,20 @@ class PicoscopeCSVReader(FileReader):
                     channel = channel_check["channel"]
                     translated.append("Channel {}".format(channel))
         if len(translated) != len(header):
-            raise Exception("conversion failed: failed to translate header")
+            raise FileReaderException(
+                "conversion failed: failed to translate header"
+            )
         return translated
 
     def __probe(self, file):
-        file_iter = codecs.iterdecode(file, "utf-8")
-        header = next(file_iter).strip()
-        conv_header = next(file_iter).strip()
+        try:
+            file_iter = codecs.iterdecode(file, "utf-8")
+            header = next(file_iter).strip()
+            conv_header = next(file_iter).strip()
+        except Exception:
+            raise FileReaderException(
+                "conversion failed: failed to read two lines"
+            )
         header_check = HEADER_CHECK.match(header)
         conv_header_check = CONVHEADER_CHECK.match(conv_header)
         file.seek(0)
@@ -89,13 +96,17 @@ class PicoscopeCSVReader(FileReader):
 
         for row in reader:
             if len(row) > 0 and len(row) != len(header):
-                raise Exception("conversion failed: discontinuity detected")
+                raise FileReaderException(
+                    "conversion failed: discontinuity detected"
+                )
             for count, element in enumerate(row):
                 try:
                     data[header[count]].append(
                         self.__cast_to_float(element) * conversion[count])
                 except Exception as e:
-                    raise Exception("conversion failed:{}".format(str(e)))
+                    raise FileReaderException(
+                        "conversion failed:{}".format(str(e))
+                    )
         return data
 
     def __calculate_duration(self, data):

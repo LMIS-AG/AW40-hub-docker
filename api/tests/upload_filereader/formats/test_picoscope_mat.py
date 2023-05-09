@@ -1,6 +1,8 @@
-from api.upload_filereader.formats.picoscope_mat import PicoscopeMATReader
 from numbers import Number
+
 import pytest
+from api.upload_filereader.filereader import FileReaderException
+from api.upload_filereader.formats.picoscope_mat import PicoscopeMATReader
 
 
 class TestPicoscopeMATReader:
@@ -29,3 +31,14 @@ class TestPicoscopeMATReader:
             assert isinstance(data["signal"], list)
             assert data["device_specs"]["channel"] == expected_channels[i]
             assert data["device_specs"]["type"] == "picoscope"
+
+    @pytest.mark.parametrize(
+        "file",
+        [
+            "omniscope_v1_file", "vcds_txt_file", "picoscope_1ch_eng_csv_file"
+        ]
+    )
+    def test_read_file_wrong_format(self, file, request):
+        file = request.getfixturevalue(file)
+        with pytest.raises(FileReaderException):
+            PicoscopeMATReader().read_file(file)
