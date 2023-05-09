@@ -25,21 +25,29 @@ from ..data_management import (
     VehicleUpdate,
     Customer
 )
-from ..upload_filereader import filereader_factory
+from ..upload_filereader import filereader_factory, FileReaderException
 
 tags_metadata = [
     {
-        "name": "Workshop",
-        "description": "Manage cases and associated diagnostic data of a "
-                       "workshop"
+        "name": "Workshop - Case Management",
+        "description": "Manage cases and associated meta data of a workshop."
+    },
+    {
+        "name": "Workshop - Data Management",
+        "description": "Manage diagnostic data of a specific case."
     }
 ]
 
 
-router = APIRouter(tags=["Workshop"])
+router = APIRouter()
 
 
-@router.get("/{workshop_id}/cases", status_code=200, response_model=List[Case])
+@router.get(
+    "/{workshop_id}/cases",
+    status_code=200,
+    response_model=List[Case],
+    tags=["Workshop - Case Management"]
+)
 async def list_cases(
         workshop_id: str,
         customer_id: str = None,
@@ -51,7 +59,12 @@ async def list_cases(
     return cases
 
 
-@router.post("/{workshop_id}/cases", status_code=201, response_model=Case)
+@router.post(
+    "/{workshop_id}/cases",
+    status_code=201,
+    response_model=Case,
+    tags=["Workshop - Case Management"]
+)
 async def add_case(workshop_id: str, case: NewCase) -> Case:
     case = Case(workshop_id=workshop_id, **case.dict())
     case = await case.insert()
@@ -88,22 +101,32 @@ async def case_from_workshop(workshop_id: str, case_id: str) -> Case:
 
 
 @router.get(
-    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=Case
+    "/{workshop_id}/cases/{case_id}",
+    status_code=200,
+    response_model=Case,
+    tags=["Workshop - Case Management"]
 )
 async def get_case(case: Case = Depends(case_from_workshop)) -> Case:
     return case
 
 
-@router.put("/{workshop_id}/cases/{case_id}")
+@router.put(
+    "/{workshop_id}/cases/{case_id}",
+    tags=["Workshop - Case Management"]
+)
 async def update_case(
-        update: CaseUpdate, case: Case = Depends(case_from_workshop)
+        update: CaseUpdate,
+        case: Case = Depends(case_from_workshop)
 ):
     await case.set(update.dict(exclude_unset=True))
     return case
 
 
 @router.delete(
-    "/{workshop_id}/cases/{case_id}", status_code=200, response_model=None
+    "/{workshop_id}/cases/{case_id}",
+    status_code=200,
+    response_model=None,
+    tags=["Workshop - Case Management"]
 )
 async def delete_case(case: Case = Depends(case_from_workshop)):
     await case.delete()
@@ -112,7 +135,8 @@ async def delete_case(case: Case = Depends(case_from_workshop)):
 @router.get(
     "/{workshop_id}/cases/{case_id}/customer",
     status_code=200,
-    response_model=Customer
+    response_model=Customer,
+    tags=["Workshop - Case Management"]
 )
 async def get_customer(case: Case = Depends(case_from_workshop)):
     customer = await Customer.get(case.customer_id)
@@ -122,7 +146,8 @@ async def get_customer(case: Case = Depends(case_from_workshop)):
 @router.get(
     "/{workshop_id}/cases/{case_id}/vehicle",
     status_code=200,
-    response_model=Vehicle
+    response_model=Vehicle,
+    tags=["Workshop - Case Management"]
 )
 async def get_vehicle(case: Case = Depends(case_from_workshop)):
     vehicle = await Vehicle.find_one({"vin": case.vehicle_vin})
@@ -132,7 +157,8 @@ async def get_vehicle(case: Case = Depends(case_from_workshop)):
 @router.put(
     "/{workshop_id}/cases/{case_id}/vehicle",
     status_code=200,
-    response_model=Vehicle
+    response_model=Vehicle,
+    tags=["Workshop - Case Management"]
 )
 async def update_vehicle(
         update: VehicleUpdate, case: Case = Depends(case_from_workshop)
@@ -145,7 +171,8 @@ async def update_vehicle(
 @router.get(
     "/{workshop_id}/cases/{case_id}/timeseries_data",
     status_code=200,
-    response_model=List[TimeseriesData]
+    response_model=List[TimeseriesData],
+    tags=["Workshop - Data Management"]
 )
 def list_timeseries_data(case: Case = Depends(case_from_workshop)):
     """List all available timeseries datasets for a case."""
@@ -155,7 +182,8 @@ def list_timeseries_data(case: Case = Depends(case_from_workshop)):
 @router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def add_timeseries_data(
         timeseries_data: NewTimeseriesData,
@@ -166,63 +194,164 @@ async def add_timeseries_data(
     return case
 
 
+def read_file_or_400(upload: UploadFile, file_format: str) -> list:
+    """
+    Helper that attempts to read an uploaded file based on a user specified
+    format and raises a 400 if file reading fails.
+    """
+    reader = filereader_factory.get_reader(file_format)
+    try:
+        read_result = reader.read_file(upload.file)
+    except FileReaderException:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not read file '{upload.filename}' with file format "
+                   f"'{file_format}'."
+        )
+    return read_result
+
+
+def channel_description_form(
+        component_A: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_A: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_B: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_B: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_C: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_C: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        component_D: Component = Form(
+            default=None, description="The investigated vehicle component"),
+        label_D: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        )
+) -> dict:
+    """
+    Helper to retrieve required channel descriptions for picoscope uploads.
+    """
+    return {
+        "A": {"component": component_A, "label": label_A},
+        "B": {"component": component_B, "label": label_B},
+        "C": {"component": component_C, "label": label_C},
+        "D": {"component": component_D, "label": label_D}
+    }
+
+
+def process_picoscope_upload(
+        upload: UploadFile = File(description="Picoscope Data File"),
+        file_format: Literal["Picoscope MAT", "Picoscope CSV"] = Form(
+            default="Picoscope MAT"
+        ),
+        channel_description: dict = Depends(channel_description_form)
+) -> list:
+    """
+    Helper to preprocess picoscope upload and user-provided channel
+    descriptions.
+    """
+    # Read the uploaded file.
+    read_results = read_file_or_400(upload, file_format)
+
+    # Only select results that have a specified component.
+    selected_results = []
+    for channel, description in channel_description.items():
+        description_component = description.get("component")
+        description_label = description.get("label")
+        # Channels without user specified component will be ignored.
+        if description_component:
+            # Component was specified for current channel. Try to find
+            # a corresponding result.
+            result_found = False
+            for i, data in enumerate(read_results):
+                if data["device_specs"]["channel"] == channel:
+                    # Result found for current channel. Add descriptive
+                    # attributes and move to selected_results. Break to
+                    # continue with next channel.
+                    result_found = True
+                    data = read_results.pop(i)
+                    data["component"] = description_component
+                    data["label"] = description_label
+                    data["type"] = "oscillogram"
+                    selected_results.append(data)
+                    break
+
+            if not result_found:
+                # A channel with specified component that is not found in the
+                # uploaded file is a client error
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"A component was specified for channel "
+                           f"'{channel}' but this channel is not found in "
+                           f"file '{upload.filename}'."
+                )
+
+    return selected_results
+
+
 @router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def upload_picoscope_data(
-        upload: UploadFile = File(),
-        file_format: Literal["Picoscope MAT", "Picoscope CSV"] = Form(),
-        component: Component = Form(),  # TODO: Or mapping channel->component
-        label: TimeseriesDataLabel = Form(),  # TODO: Or mapping channel->label
+        processed_upload: list = Depends(process_picoscope_upload),
         case: Case = Depends(case_from_workshop)
-
 ):
-    reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
-        raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload is WIP"
+    for data in processed_upload:
+        case = await case.add_timeseries_data(
+            NewTimeseriesData(**data)
         )
-    # TODO: handle multi channel upload
-    data = data[0]
-    data["component"] = component
-    data["label"] = label
-    data["type"] = "oscillogram"
-    case = await case.add_timeseries_data(
-        NewTimeseriesData(**data)
-    )
     return case
 
 
 @router.post(
     "/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def upload_omniscope_data(
-        upload: UploadFile = File(),
-        file_format: Literal["Omniscope V1 RAW"] = Form(),
-        component: Component = Form(),
-        label: TimeseriesDataLabel = Form(),
-        sampling_rate: PositiveInt = Form(),
+        upload: UploadFile = File(description="Omniscope Data File"),
+        file_format: Literal["Omniscope V1 RAW"] = Form(
+            default="Omniscope V1 RAW"
+        ),
+        component: Component = Form(
+            description="The investigated vehicle component"
+        ),
+        label: TimeseriesDataLabel = Form(
+            default=TimeseriesDataLabel.unknown,
+            description="Label for the oscillogram"
+        ),
+        sampling_rate: PositiveInt = Form(
+            description="Sampling rate used (Hz)"
+        ),
         case: Case = Depends(case_from_workshop)
-
 ):
     reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
+    data = reader.read_file(upload.file)[0]
+
+    if len(data["signal"]) == 0:
         raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload not allowed"
+            status_code=422, detail=f"File '{upload.filename}' seems to "
+                                    f"contain no data."
         )
-    data = data[0]
+
     data["component"] = component
     data["label"] = label
     data["type"] = "oscillogram"
     data["sampling_rate"] = sampling_rate
+    # duration is derived from length of signal and sampling_rate
     data["duration"] = len(data["signal"]) / sampling_rate
     case = await case.add_timeseries_data(
         NewTimeseriesData(**data)
@@ -230,7 +359,10 @@ async def upload_omniscope_data(
     return case
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}")
+@router.get(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
+    tags=["Workshop - Data Management"]
+)
 async def get_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
@@ -245,7 +377,10 @@ async def get_timeseries_data(
         raise HTTPException(status_code=404, detail=exception_detail)
 
 
-@router.get("/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal")
+@router.get(
+    "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal",
+    tags=["Workshop - Data Management"]
+)
 async def get_timeseries_data_signal(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
@@ -263,7 +398,8 @@ async def get_timeseries_data_signal(
 @router.put(
     "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
     status_code=200,
-    response_model=TimeseriesData
+    response_model=TimeseriesData,
+    tags=["Workshop - Data Management"]
 )
 async def update_timeseries_data(
         data_id: NonNegativeInt,
@@ -286,7 +422,8 @@ async def update_timeseries_data(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def delete_timeseries_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -299,7 +436,8 @@ async def delete_timeseries_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/obd_data",
     status_code=200,
-    response_model=List[OBDData]
+    response_model=List[OBDData],
+    tags=["Workshop - Data Management"]
 )
 async def list_obd_data(
         case: Case = Depends(case_from_workshop)
@@ -311,7 +449,8 @@ async def list_obd_data(
 @router.post(
     "/{workshop_id}/cases/{case_id}/obd_data",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def add_obd_data(
         obd_data: NewOBDData, case: Case = Depends(case_from_workshop),
@@ -324,21 +463,17 @@ async def add_obd_data(
 @router.post(
     "/{workshop_id}/cases/{case_id}/obd_data/upload/vcds",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def upload_vcds_data(
-        upload: UploadFile = File(),
-        file_format: Literal["VCDS TXT"] = Form(),
+        upload: UploadFile = File(
+            description="VCDS Data File"
+        ),
+        file_format: Literal["VCDS TXT"] = Form(default="VCDS TXT"),
         case: Case = Depends(case_from_workshop)
 ):
-    reader = filereader_factory.get_reader(file_format)
-    data = reader.read_file(upload.file)
-    if len(data) > 1:
-        raise HTTPException(
-            status_code=422,
-            detail="Multi Channel Upload not allowed"
-        )
-    data = data[0]
+    data = read_file_or_400(upload, file_format)[0]
     data = data["obd_data"]
     case = await case.add_obd_data(
         NewOBDData(**data)
@@ -349,7 +484,8 @@ async def upload_vcds_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=OBDData
+    response_model=OBDData,
+    tags=["Workshop - Data Management"]
 )
 async def get_obd_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -368,7 +504,8 @@ async def get_obd_data(
 @router.put(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=OBDData
+    response_model=OBDData,
+    tags=["Workshop - Data Management"]
 )
 async def update_obd_data(
         data_id: NonNegativeInt,
@@ -389,7 +526,8 @@ async def update_obd_data(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/obd_data/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def delete_obd_data(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -402,7 +540,8 @@ async def delete_obd_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/symptoms",
     status_code=200,
-    response_model=List[Symptom]
+    response_model=List[Symptom],
+    tags=["Workshop - Data Management"]
 )
 async def list_symptoms(
         case: Case = Depends(case_from_workshop)
@@ -414,7 +553,8 @@ async def list_symptoms(
 @router.post(
     "/{workshop_id}/cases/{case_id}/symptoms",
     status_code=201,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def add_symptom(
         symptom: NewSymptom, case: Case = Depends(case_from_workshop)
@@ -427,7 +567,8 @@ async def add_symptom(
 @router.get(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Symptom
+    response_model=Symptom,
+    tags=["Workshop - Data Management"]
 )
 async def get_symptom(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
@@ -446,7 +587,8 @@ async def get_symptom(
 @router.put(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Symptom
+    response_model=Symptom,
+    tags=["Workshop - Data Management"]
 )
 async def update_symptom(
         data_id: NonNegativeInt,
@@ -467,7 +609,8 @@ async def update_symptom(
 @router.delete(
     "/{workshop_id}/cases/{case_id}/symptoms/{data_id}",
     status_code=200,
-    response_model=Case
+    response_model=Case,
+    tags=["Workshop - Data Management"]
 )
 async def delete_symptom(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)

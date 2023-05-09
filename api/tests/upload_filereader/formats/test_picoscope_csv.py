@@ -2,6 +2,7 @@ from numbers import Number
 
 import numpy as np
 import pytest
+from api.upload_filereader.filereader import FileReaderException
 from api.upload_filereader.formats.picoscope_csv import PicoscopeCSVReader
 
 
@@ -57,3 +58,14 @@ class TestPicoscopeCSVReader:
             assert data["device_specs"]["channel"] == expected_channels[i]
             assert data["device_specs"]["type"] == "picoscope"
             assert np.isclose(data["signal"][0], expected_first_row[i])
+
+    @pytest.mark.parametrize(
+        "file",
+        [
+            "omniscope_v1_file", "vcds_txt_file", "picoscope_1ch_mat_file"
+        ]
+    )
+    def test_read_file_wrong_format(self, file, request):
+        file = request.getfixturevalue(file)
+        with pytest.raises(FileReaderException):
+            PicoscopeCSVReader().read_file(file)

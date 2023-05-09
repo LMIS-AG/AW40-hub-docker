@@ -1,3 +1,5 @@
+import pytest
+from api.upload_filereader.filereader import FileReaderException
 from api.upload_filereader.formats.vcds_txt import VCDSTXTReader
 
 
@@ -21,3 +23,15 @@ class TestVCDSTXTReader:
         # comfirm expected case related information
         case = result[0]["case"]
         assert case["milage"] == 55835
+
+    @pytest.mark.parametrize(
+        "file",
+        [
+            "picoscope_1ch_eng_csv_file",
+            "picoscope_1ch_mat_file"
+        ]
+    )
+    def test_read_file_wrong_format(self, file, request):
+        file = request.getfixturevalue(file)
+        with pytest.raises(FileReaderException):
+            VCDSTXTReader().read_file(file)
