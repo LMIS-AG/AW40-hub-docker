@@ -58,8 +58,8 @@ services:
     depends_on:
       - keycloak-db
     ports:
-      - ${IP_ADDRESS}:8080:8080
-      - ${IP_ADDRESS}:8443:8443
+      - ${KEYCLOAK_HOST_IP_ADDRESS}:8080:8080
+      - ${KEYCLOAK_HOST_IP_ADDRESS}:8443:8443
     environment:
       - KEYCLOAK_ADMIN=${KC_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KC_ADMIN_PASSWORD}
@@ -74,14 +74,14 @@ services:
       - KC_HOSTNAME_STRICT=false # Not allowed in Production
       - KC_HOSTNAME_STRICT_HTTPS=false # Not Allowed in Production
       - MINIO_CLIENT_SECRET=${MINIO_CLIENT_SECRET}
-      - KC_ADMIN_WERKSTATTHUB=${KC_ADMIN_WERKSTATTHUB}
-      - KC_ADMIN_WERKSTATTHUB_PASSWORD=${KC_ADMIN_WERKSTATTHUB_PASSWORD}
-      - IP_ADDRESS=${IP_ADDRESS}
+      - MINIO_ADMIN_WERKSTATTHUB=${MINIO_ADMIN_WERKSTATTHUB}
+      - MINIO_ADMIN_WERKSTATTHUB_PASSWORD=${MINIO_ADMIN_WERKSTATTHUB_PASSWORD}
+      - KEYCLOAK_HOST_IP_ADDRESS=${KEYCLOAK_HOST_IP_ADDRESS}
     networks:
       - keycloaknet
       - hubnet
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://${IP_ADDRESS}:8080" ]
+      test: [ "CMD", "curl", "-f", "http://${KEYCLOAK_HOST_IP_ADDRESS}:8080" ]
       interval: 2s
       timeout: 2s
       retries: 15
@@ -122,11 +122,11 @@ services:
     environment:
       - MINIO_ROOT_USER=${S3_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
-      - MINIO_IDENTITY_OPENID_CONFIG_URL=http://${IP_ADDRESS}:8080/realms/werkstatt-hub/.well-known/openid-configuration
+      - MINIO_IDENTITY_OPENID_CONFIG_URL=http://${KEYCLOAK_HOST_IP_ADDRESS}:8080/realms/werkstatt-hub/.well-known/openid-configuration
       - MINIO_IDENTITY_OPENID_CLIENT_ID=minio
       - MINIO_IDENTITY_OPENID_CLIENT_SECRET=${MINIO_CLIENT_SECRET}
       - MINIO_IDENTITY_OPENID_SCOPES=minio-policy-scope,profile,email
-      - MINIO_IDENTITY_OPENID_REDIRECT_URI=http://${IP_ADDRESS}:9090/oauth_callback
+      - MINIO_IDENTITY_OPENID_REDIRECT_URI=http://${KEYCLOAK_HOST_IP_ADDRESS}:9090/oauth_callback
       - MINIO_IDENTITY_OPENID_CLAIM_NAME=policy
       - MINIO_IDENTITY_OPENID_ENABLE=on
     networks:
@@ -134,7 +134,7 @@ services:
     volumes:
       - minio-data:/data
     healthcheck:
-        test: [ "CMD", "curl", "-f", "http://${IP_ADDRESS}:9000" ]
+        test: [ "CMD", "curl", "-f", "http://${KEYCLOAK_HOST_IP_ADDRESS}:9000" ]
         interval: 2s
         timeout: 2s
         retries: 15
@@ -147,7 +147,7 @@ services:
       volumes:
         - ./minio/minio-config.sh:/minio-config.sh
       environment:
-          - IP_ADDRESS=${IP_ADDRESS}
+          - KEYCLOAK_HOST_IP_ADDRESS=${KEYCLOAK_HOST_IP_ADDRESS}
           - S3_ROOT_USER=${S3_ROOT_USER}
           - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
   api:
