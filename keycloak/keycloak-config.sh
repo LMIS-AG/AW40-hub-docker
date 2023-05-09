@@ -10,13 +10,21 @@
 # Create the werkstatt-hub-realm
 /opt/keycloak/bin/kcadm.sh create realms -f /opt/werkstatthub-realm.json
 
-# Create first user
+# Create MinIO administrator
 /opt/keycloak/bin/kcadm.sh create users \
     -r werkstatt-hub \
     -s username=${MINIO_ADMIN_WERKSTATTHUB} \
     -s enabled=true \
     -s attributes.policy=consoleAdmin \
     -s credentials='[{"type":"password","value":"'${MINIO_ADMIN_WERKSTATTHUB_PASSWORD}'"}]'
+
+# Create MinIO user with r/w access
+/opt/keycloak/bin/kcadm.sh create users \
+    -r werkstatt-hub \
+    -s username=${MINIO_USER_WERKSTATTHUB} \
+    -s enabled=true \
+    -s attributes.policy=readwrite \
+    -s credentials='[{"type":"password","value":"'${MINIO_USER_WERKSTATTHUB_PASSWORD}'"}]'
 
 # Get the ID of the 'minio' client in the 'werkstatt-hub' realm
 CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
