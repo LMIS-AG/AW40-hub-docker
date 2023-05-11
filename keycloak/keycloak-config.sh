@@ -2,7 +2,7 @@
 
 # Authenticate in order to use the Keycloak Admin CLI
 /opt/keycloak/bin/kcadm.sh config credentials \
-    --server http://${KEYCLOAK_HOST_IP_ADDRESS}:8080 \
+    --server http://${HOST_IP_ADDRESS}:8080 \
     --realm master \
     --user ${KEYCLOAK_ADMIN} \
     --password ${KEYCLOAK_ADMIN_PASSWORD}
