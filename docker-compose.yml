@@ -132,6 +132,7 @@ services:
     build:
       context: ./api
     <<: *default_restart_policy
+    hostname: "api"
     depends_on:
       - mongo
     ports:
