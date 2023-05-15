@@ -1,7 +1,7 @@
 version: "3.8"
 
 x-restart-policy: &default_restart_policy
-  restart: unless-stopped
+  restart: ${DEFAULT_RESTART_POLICY}
 
 services:
   mongo:
@@ -134,6 +134,7 @@ services:
   api:
     build:
       context: ./api
+    <<: *default_restart_policy
     depends_on:
       - mongo
     ports:
