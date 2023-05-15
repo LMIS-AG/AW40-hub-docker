@@ -58,6 +58,7 @@ services:
       - KEYCLOAK_HOST_IP_ADDRESS=${KEYCLOAK_HOST_IP_ADDRESS}
     networks:
       - keycloaknet
+      - hubintranet
       - hubnet
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
@@ -109,6 +110,7 @@ services:
       - MINIO_IDENTITY_OPENID_CLAIM_NAME=policy
       - MINIO_IDENTITY_OPENID_ENABLE=on
     networks:
+      - hubintranet
       - hubnet
     volumes:
       - minio-data:/data
@@ -151,8 +153,9 @@ services:
       - ./api/api/:/home/api/api/
 
 networks:
-  hubintranet:
   hubnet:
+  hubintranet:
+    internal: true
   keycloaknet:
     internal: true
 
