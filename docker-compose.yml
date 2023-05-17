@@ -58,8 +58,8 @@ services:
     depends_on:
       - keycloak-db
     ports:
-      - ${HOST_IP_ADDRESS}:8080:8080
-      - ${HOST_IP_ADDRESS}:8443:8443
+      - 8080:8080
+      - 8443:8443
     environment:
       - KEYCLOAK_ADMIN=${KC_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KC_ADMIN_PASSWORD}
@@ -83,7 +83,7 @@ services:
       - keycloaknet
       - hubnet
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://${HOST_IP_ADDRESS}:8080" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
       interval: 2s
       timeout: 2s
       retries: 15
@@ -132,11 +132,12 @@ services:
       - MINIO_IDENTITY_OPENID_CLAIM_NAME=policy
       - MINIO_IDENTITY_OPENID_ENABLE=on
     networks:
+      - hubintranet
       - hubnet
     volumes:
       - minio-data:/data
     healthcheck:
-        test: [ "CMD", "curl", "-f", "http://${HOST_IP_ADDRESS}:9000" ]
+        test: [ "CMD", "curl", "-f", "http://localhost:9000" ]
         interval: 2s
         timeout: 2s
         retries: 15
@@ -185,6 +186,7 @@ services:
 
 networks:
   hubintranet:
+      internal: true
   hubnet:
   keycloaknet:
     internal: true
