@@ -123,6 +123,13 @@ services:
     volumes:
       - ./api/api/:/home/api/api/
 
+  docs:
+    build:
+      context: ./docs
+    <<: *default_restart_policy
+    ports:
+      - 127.0.0.1:8001:80
+
 networks:
   hubnet:
   hubintranet:
