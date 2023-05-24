@@ -17,6 +17,9 @@ Note that the non-default port 8001 is suggest to avoid conflicts with the
 
 Now access the docs on http://127.0.0.1:8001
 
-## Publish
+## Deployment
 
-**WIP**
+### With Docker
+
+Documentation [Dockerfile](Dockerfile) builds the static website and serves
+it with nginx.
