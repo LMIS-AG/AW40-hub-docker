@@ -15,8 +15,12 @@ COPY ./requirements.txt /home/runtime/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# install vehicle_smach (without deps for now)
+RUN apt-get update && apt-get install -y git && \
+    pip install --no-deps git+https://github.com/tbohne/vehicle_diag_smach
+
 # copy python package and chown to runtime user
-COPY --chown=runtime:runtime ./tasks.py /home/runtime/tasks.py
+COPY --chown=runtime:runtime ./diagnostics /home/runtime/diagnostics
 
 # production image runs with non-root runtime user
 FROM base as prod
