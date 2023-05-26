@@ -1,13 +1,16 @@
 from beanie import init_beanie
+from celery import Celery
 from fastapi import FastAPI
 from motor import motor_asyncio
 
 from .data_management import (
-    Case, Vehicle, Customer, Workshop, TimeseriesMetaData
+    Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
+    ToDo
 )
 from .data_management.timeseries_data import GridFSSignalStore
-from .diagnostics_management import GetCelery
+from .diagnostics_management import DiagnosticTaskSender
 from .settings import settings
+from .utils import create_action_data
 from .v1 import api_v1
 
 app = FastAPI()
@@ -22,7 +25,9 @@ async def init_mongo():
     client = motor_asyncio.AsyncIOMotorClient(settings.mongo_uri)
     await init_beanie(
         client[settings.mongo_db],
-        document_models=[Case, Vehicle, Customer, Workshop]
+        document_models=[
+            Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+        ]
     )
 
     # initialized gridfs signal storage
@@ -31,8 +36,14 @@ async def init_mongo():
     )
     TimeseriesMetaData.signal_store = GridFSSignalStore(bucket=bucket)
 
+    # prefill the 'actions' collection on startup
+    for data in create_action_data():
+        action = Action(**data)
+        await action.save()
+
 
 @app.on_event("startup")
-async def init_celery():
-    GetCelery.broker = settings.redis_uri
-    GetCelery.backend = settings.redis_uri
+async def init_diagnostics_management():
+    DiagnosticTaskSender.celery = Celery(
+        broker=settings.redis_uri, backend=settings.redis_uri
+    )
