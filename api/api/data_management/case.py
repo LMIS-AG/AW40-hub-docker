@@ -1,12 +1,14 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Union
+from typing import List, Union, Optional
 
-from beanie import Document, Indexed, before_event, Insert, Delete
+from beanie import (
+    Document, Indexed, before_event, Insert, Delete, PydanticObjectId
+)
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from .customer import Customer
-from .diagnosis import Diagnosis
+from .diagnosis import DiagnosisDB
 from .obd_data import NewOBDData, OBDData, OBDDataUpdate
 from .symptom import NewSymptom, Symptom, SymptomUpdate
 from .timeseries_data import (
@@ -73,12 +75,12 @@ class Case(Document):
     customer_id: Indexed(str, unique=False) = Customer.unknown_id
     vehicle_vin: Indexed(str, unique=False)
     workshop_id: Indexed(str, unique=False)
+    diagnosis_id: Optional[Indexed(PydanticObjectId)]
 
     # diagnostic data
     timeseries_data: List[Union[TimeseriesData, None]] = []
     obd_data: List[Union[OBDData, None]] = []
     symptoms: List[Union[Symptom, None]] = []
-    diag: Diagnosis = None
 
     # keep track of diagnostic data added to set appropriate data_ids
     timeseries_data_added: NonNegativeInt = 0
@@ -265,9 +267,20 @@ class Case(Document):
     @before_event(Delete)
     async def _delete_all_timeseries_signals(self):
         """
-        Makes sure that binary signal data stored outside of case is also
+        Make sure that binary signal data stored outside of case is also
         removed.
         """
         for ts in self.timeseries_data:
             if ts is not None:
                 await ts.delete_signal()
+
+    @before_event(Delete)
+    async def _delete_diagnosis(self):
+        """
+        Make sure any diagnosis attached to the case is also removed.
+        """
+        if self.diagnosis_id is not None:
+            # delete via instance to make sure Diagnosis event handlers
+            # are also executed
+            diag = await DiagnosisDB.get(self.diagnosis_id)
+            await diag.delete()
