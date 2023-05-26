@@ -2,7 +2,6 @@ from typing import List, Union, Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
-from celery import Celery
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from pydantic import NonNegativeInt, PositiveInt
 
@@ -25,9 +24,9 @@ from ..data_management import (
     VehicleUpdate,
     Customer,
     Diagnosis,
-    RequiredAction
+    DiagnosisDB
 )
-from ..diagnostics_management import get_celery
+from ..diagnostics_management import DiagnosticTaskSender
 from ..upload_filereader import filereader_factory, FileReaderException
 
 tags_metadata = [
@@ -191,14 +190,12 @@ def list_timeseries_data(case: Case = Depends(case_from_workshop)):
 async def add_timeseries_data(
         timeseries_data: NewTimeseriesData,
         case: Case = Depends(case_from_workshop),
-        celery: Celery = Depends(get_celery)
+        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
 ) -> Case:
     """Add a new timeseries dataset to a case."""
     case = await case.add_timeseries_data(timeseries_data)
-    if case.diag:
-        case.diag.status = "processing"
-        await case.save()
-        celery.send_task("tasks.diagnose", (str(case.id),))
+    if case.diagnosis_id:
+        send_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -460,14 +457,12 @@ async def list_obd_data(
 async def add_obd_data(
         obd_data: NewOBDData,
         case: Case = Depends(case_from_workshop),
-        celery: Celery = Depends(get_celery)
+        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
 ) -> Case:
     """Add a new obd dataset to a case."""
     case = await case.add_obd_data(obd_data)
-    if case.diag:
-        case.diag.status = "processing"
-        await case.save()
-        celery.send_task("tasks.diagnose", (str(case.id),))
+    if case.diagnosis_id:
+        send_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -630,7 +625,12 @@ async def delete_symptom(
     tags=["Workshop - Diagnostics"]
 )
 async def get_diagnosis(case: Case = Depends(case_from_workshop)):
-    return case.diag
+    """Get diagnosis data for this case."""
+    if case.diagnosis_id is None:
+        return None
+    diag_db = await DiagnosisDB.get(case.diagnosis_id)
+    diag = await diag_db.to_diagnosis()
+    return diag
 
 
 @router.post(
@@ -641,35 +641,24 @@ async def get_diagnosis(case: Case = Depends(case_from_workshop)):
 )
 async def start_diagnosis(
         case: Case = Depends(case_from_workshop),
-        celery: Celery = Depends(get_celery)
+        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
 ):
-    if case.diag is not None:
-        return case
-
-    case.diag = Diagnosis(status="processing")
-    await case.save()
-    celery.send_task("tasks.diagnose", (str(case.id),))
-    return case.diag
-
-
-@router.put(
-    "/{workshop_id}/cases/{case_id}/diag",
-    status_code=200,
-    response_model=Diagnosis,
-    tags=["Workshop - Diagnostics"]
-)
-async def update_diagnosis(
-        update: Diagnosis,
-        case: Case = Depends(case_from_workshop)
-):
-    if case.diag is None:
-        raise HTTPException(
-            status_code=404,
-            detail="No active diagnosis."
+    """Initialize the diagnosis process for this case."""
+    if case.diagnosis_id is not None:
+        diag_db = await DiagnosisDB.get(case.diagnosis_id)
+        diag = await diag_db.to_diagnosis()
+    else:
+        diag_db = DiagnosisDB(
+            status="processing",
+            case_id=case.id
         )
-    case.diag = update
-    case = await case.save()
-    return case.diag
+        await diag_db.create()
+        case.diagnosis_id = diag_db.id
+        await case.save()
+        print(diag_db.dict())
+        diag = Diagnosis(**diag_db.dict())
+        send_diagnostic_task(diag.id)
+    return diag
 
 
 @router.delete(
@@ -679,42 +668,9 @@ async def update_diagnosis(
     tags=["Workshop - Diagnostics"]
 )
 async def delete_diagnosis(case: Case = Depends(case_from_workshop)):
-    case.diag = None
+    """Stop the diagnosis process for this case."""
+    diag_db = await DiagnosisDB.get(case.diagnosis_id)
+    await diag_db.delete()
+    case.diagnosis_id = None
     await case.save()
     return None
-
-
-@router.get(
-    "/{workshop_id}/cases/{case_id}/diag/required_actions",
-    status_code=200,
-    response_model=List[RequiredAction],
-    tags=["Workshop - Diagnostics"]
-)
-async def get_required_actions(case: Case = Depends(case_from_workshop)):
-    if case.diag is None:
-        raise HTTPException(
-            status_code=404,
-            detail="No active diagnosis."
-        )
-    return case.diag.required_actions
-
-
-@router.post(
-    "/{workshop_id}/cases/{case_id}/diag/required_actions",
-    status_code=201,
-    response_model=Diagnosis,
-    tags=["Workshop - Diagnostics"]
-)
-async def add_required_action(
-        required_action: RequiredAction,
-        case: Case = Depends(case_from_workshop)
-):
-    if case.diag is None:
-        raise HTTPException(
-            status_code=404,
-            detail="No active diagnosis."
-        )
-    case.diag.required_actions.append(required_action)
-    case.diag.status = "action_required"
-    await case.save()
-    return case.diag
