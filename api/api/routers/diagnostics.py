@@ -86,8 +86,10 @@ async def create_todo(diag_id: str, action_id: str):
     """Require a user action for a diagnosis."""
     diag = await DiagnosisDB.get(diag_id)
     action = await Action.get(action_id)
-    if diag is None or action is None:
-        raise HTTPException(404)
+    if diag is None:
+        raise HTTPException(404, detail=f"No diagnosis '{diag_id}'")
+    if action is None:
+        raise HTTPException(404, detail=f"No action '{action_id}'")
     # Requireing a user action is done by inserting a new entry for this
     # diagnosis-action pair in the todos collection
     todo = ToDo(diagnosis_id=diag_id, action_id=action_id)
@@ -109,5 +111,6 @@ async def delete_todo(diag_id: str, action_id: str):
     todo = await ToDo.find_one(
         {"action_id": action_id, "diagnosis_id": ObjectId(diag_id)}
     )
-    await todo.delete()
+    if todo is not None:
+        await todo.delete()
     return None
