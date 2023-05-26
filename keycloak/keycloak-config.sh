@@ -7,9 +7,6 @@
     --user ${KEYCLOAK_ADMIN} \
     --password ${KEYCLOAK_ADMIN_PASSWORD}
 
-# Create the werkstatt-hub-realm
-/opt/keycloak/bin/kcadm.sh create realms -f /opt/werkstatthub-realm.json
-
 # Create MinIO administrator
 /opt/keycloak/bin/kcadm.sh create users \
     -r werkstatt-hub \
