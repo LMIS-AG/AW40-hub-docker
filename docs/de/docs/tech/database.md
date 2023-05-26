@@ -18,7 +18,7 @@ Daten in Betracht gezogen:
 - OBD Daten (`obd_data`)
 - Symptome (`symptom`)
 
-In der untenstehenden Abbildung zeigt ein auf diesen Überlegungen basierendes
+Die untenstehenden Abbildung zeigt ein auf diesen Überlegungen basierendes
 ER Diagramm:
 
 ![](data_model.png)
@@ -46,7 +46,7 @@ Ein Fall beinhaltet die folgenden atomaren Attribute:
 
 Repräsentiert das Fahrzeug als technisches Objekt. Jede Instanz, identifiziert
 durch seine `vin`, existiert höchstens einmal in der Datenbank. Aktuell werden
-außerdem die Attribute `tsn` und Baujahr (`year_build`) verwendet. Theoretisch
+außerdem die Attribute `tsn` und Baujahr (`year_built`) verwendet. Theoretisch
 sind auch weitere technische Attribute denkbar, solange diese sich nicht mit
 der Zeit ändern, also beispielsweise *Hersteller*, *Fahrzeugtyp* etc.  
 Attribute die den Zustand des Fahrzeugs *zu einem bestimmten Zeitpunkt*
@@ -89,15 +89,15 @@ bevor Daten mit Partnern im AW4.0 Datenraum geteilt werden
 Eine Instanz repräsentiert eine einzelne Zeitreihen Messung, also z.B. ein
 Oszilloskop Signal. Attribute sind in der folgenden Tabelle genauer beschrieben.
 
-| Attribut         | Beschreibung                                                                                                                                                                               | Beispiele                                             |                                                                                                                                                                                           
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
-| `timestamp`      | Zeitpunkt der Erstellung                                                                                                                                                                   |                                                       |
-| `signal_data[]`  | Das eigentliche Signal, e.g Array mit Floats                                                                                                                                               |                                                       |
-| `sampling_rate`  | Abtastrate der Messung in Hz                                                                                                                                                               |                                                       |
-| `duration`       | Dauer der Messung in Sekunden                                                                                                                                                              |                                                       |
-| `component`      | Das gemessene Fahrzeugbauteil                                                                                                                                                              | "Batterie"                                            |
-| `label`          | Label des Datensatzes                                                                                                                                                                      | "Regelfall / Unauffällig", "Anomalie / Auffälligkeit" |
-| `type`           | Typ des Datensatzes                                                                                                                                                                        | "oscillogram", "engine load"                         |
+| Attribut    | Beschreibung                                                                                                                                                                               | Beispiele                                             |                                                                                                                                                                                           
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+| `timestamp` | Zeitpunkt der Erstellung                                                                                                                                                                   |                                                       |
+| `signal[]`  | Das eigentliche Signal, e.g Array mit Floats                                                                                                                                               |                                                       |
+| `sampling_rate` | Abtastrate der Messung in Hz                                                                                                                                                               |                                                       |
+| `duration`  | Dauer der Messung in Sekunden                                                                                                                                                              |                                                       |
+| `component` | Das gemessene Fahrzeugbauteil                                                                                                                                                              | "Batterie"                                            |
+| `label`     | Label des Datensatzes                                                                                                                                                                      | "Regelfall / Unauffällig", "Anomalie / Auffälligkeit" |
+| `type`      | Typ des Datensatzes                                                                                                                                                                        | "oscillogram", "engine load"                         |
 | `device_specs{}` | Technische Spezifikationen des Messgeräts. "`{}`" bedeutet hier, das dies ein nicht-standardisiertes Objekt mit verschiedenen key-value Paaren sein kann, abhängig vom benutzten Messgerät |                                                       |
 
 #### `obd_data`
@@ -108,7 +108,7 @@ Attribute sind in der folgenden Tabelle genauer beschrieben.
 | Attribut      | Beschreibung                                                                                                                                                                                                                                                       |  Beispiele |
 |---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ---------|
 | `timestamp`   | Zeitpunkt der Erstellung                                                                                                                                                                                                                                           ||
-| `dtc_data[]`  | Array mit DTCs                                                                                                                                                                                                                                                     | ["P0101", "P0202", "P0303"] |
+| `dtcs[]`      | Array mit DTCs                                                                                                                                                                                                                                                     | ["P0101", "P0202", "P0303"] |
 | `obd_specs{}` | Technische Spezifikationen des Messgeräts. "`{}`" bedeutet hier, das dies ein nicht-standardisiertes Objekt mit verschiedenen key-value Paaren sein kann, abhängig vom benutzten Messgerät |  |
 
 #### `symptom`
@@ -147,4 +147,11 @@ abgedeckt.
 
 ## Technische Umsetzung
 
-**WIP**
+Die Umsetzung des oben beschriebenen Datenmodells ist mit verschiedenen
+relationalen und nicht-relationalen Datenbanksystemen denkbar.
+Für den Hub Prototypen ist die Entscheidung zunächst auf
+[MongoDB](https://www.mongodb.com/) gefallen, da ...
+- ... das flexible Dokumenten-basierte Datenmodell eine einfachere Anpassung
+im Laufe des Projekts ermöglicht
+- ... mit [GridFS](https://www.mongodb.com/docs/manual/core/gridfs/) die
+Möglichkeit besteht auch größere Oszilloskop Signale im Binärformat zu speichern
