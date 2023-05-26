@@ -51,11 +51,3 @@ services:
     command: celery -A diagnostics.tasks worker --loglevel=INFO
     volumes:
       - ./diagnostics/diagnostics:/home/runtime/diagnostics
-
-  model-server:
-    build:
-      context: ./model-server
-    ports:
-      - 8501:8501
-    expose:
-      - 8501
