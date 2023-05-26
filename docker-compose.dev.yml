@@ -48,9 +48,9 @@ services:
       context: ./diagnostics
     environment:
       - REDIS_HOST=redis
-    command: celery -A tasks worker --loglevel=INFO
+    command: celery -A diagnostics.tasks worker --loglevel=INFO
     volumes:
-      - ./diagnostics:/home/runtime
+      - ./diagnostics/diagnostics:/home/runtime/diagnostics
 
   model-server:
     build:
