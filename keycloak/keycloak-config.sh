@@ -2,13 +2,10 @@
 
 # Authenticate in order to use the Keycloak Admin CLI
 /opt/keycloak/bin/kcadm.sh config credentials \
-    --server http://${HOST_IP_ADDRESS}:8080 \
+    --server http://keycloak:8080 \
     --realm master \
     --user ${KEYCLOAK_ADMIN} \
     --password ${KEYCLOAK_ADMIN_PASSWORD}
-
-# Create the werkstatt-hub-realm
-/opt/keycloak/bin/kcadm.sh create realms -f /opt/werkstatthub-realm.json
 
 # Create MinIO administrator
 /opt/keycloak/bin/kcadm.sh create users \

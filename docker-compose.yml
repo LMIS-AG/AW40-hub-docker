@@ -23,9 +23,9 @@ services:
     build:
       context: ./keycloak
       args:
-        - KC_VER=20.0
+        - KC_VER=${KC_VER}
     <<: *default_restart_policy
-    command: start-dev
+    command: start-dev --import-realm
     container_name: keycloak
     depends_on:
       - keycloak-db
@@ -39,6 +39,8 @@ services:
     ports:
       - 8080:8080
       - 8443:8443
+    volumes:
+      - ./keycloak/werkstatthub-realm.json:/opt/keycloak/data/import/wh.json:ro
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
       interval: 2s
@@ -46,13 +48,18 @@ services:
       retries: 15
 
   keycloak-config:
-      image: docker
-      command: sh -c "docker exec keycloak sh /opt/keycloak-config.sh"
+      image: quay.io/keycloak/keycloak:${KC_VER}
       depends_on:
           keycloak:
               condition: service_healthy
+      entrypoint: ["sh","-c","chmod +x /init.sh && ./init.sh"]
+      env_file:
+        - keycloak/keycloak.env
+      networks:
+        - hubintranet
+      user: root
       volumes:
-        - "/var/run/docker.sock:/var/run/docker.sock"
+        - ./keycloak/keycloak-config.sh:/init.sh
 
   keycloak-db:
     image: postgres:15-alpine
