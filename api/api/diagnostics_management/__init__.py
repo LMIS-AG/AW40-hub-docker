@@ -1,6 +1,5 @@
 __all__ = [
-    "GetCelery",
-    "get_celery"
+    "DiagnosticTaskSender",
 ]
 
-from .celery import GetCelery, get_celery
+from .tasks import DiagnosticTaskSender
