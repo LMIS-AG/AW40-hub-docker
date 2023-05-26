@@ -35,3 +35,21 @@ class TestVCDSTXTReader:
         file = request.getfixturevalue(file)
         with pytest.raises(FileReaderException):
             VCDSTXTReader().read_file(file)
+
+    def test_read_file_without_milage(self, vcds_no_milage_txt_file):
+        reader = VCDSTXTReader()
+        result = reader.read_file(vcds_no_milage_txt_file)
+        assert isinstance(result, list)
+        assert len(result) == 1
+
+        # confirm expected obd data
+        obd_data = result[0]["obd_data"]
+        assert obd_data["dtcs"] == []
+        assert obd_data["obd_specs"]["device"] == "VCDS"
+
+        # confirm no case related information
+        assert result[0].get("case") is None
+
+        # confirm expected vehicle related information
+        vehicle = result[0]["vehicle"]
+        assert vehicle["vin"] == "WV1ZZZ7HZPH004753"
