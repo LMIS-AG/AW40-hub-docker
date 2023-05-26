@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .routers import health, shared, workshop
+from .routers import health, shared, workshop, diagnostics
 
 all_tags_metadata = [
     *health.tags_metadata,
@@ -17,3 +17,4 @@ api_v1 = FastAPI(
 api_v1.include_router(health.router, prefix="/health")
 api_v1.include_router(shared.router, prefix="/shared")
 api_v1.include_router(workshop.router)
+api_v1.include_router(diagnostics.router, prefix="/diagnostics")
