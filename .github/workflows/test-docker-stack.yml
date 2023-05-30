@@ -18,8 +18,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
+    - name: Build containers
+      run: docker-compose --env-file=dev.env build
+
     - name: Start containers
-      run: docker-compose --env-file=dev.env up -d --build
+      run: docker-compose --env-file=dev.env up -d
     # Test MongoDB
 
     # Test API
@@ -35,4 +38,4 @@ jobs:
 
     - name: Stop containers
       if: always()
-      run: docker-compose --env_file=dev.env down -v
+      run: docker-compose --env-file=dev.env down -v
