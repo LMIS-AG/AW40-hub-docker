@@ -24,8 +24,9 @@ jobs:
     - name: Build containers
       run: docker-compose --env-file=dev.env build
 
+    # Skipping Keycloak/MinIO for now
     - name: Start containers
-      run: docker-compose --env-file=dev.env up -d
+      run: docker-compose --env-file=dev.env up mongo api -d
     # Test MongoDB
 
     # Test API
