@@ -19,8 +19,8 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Install Packages
-      run: apt-get update && apt-get install python3 python3-pip curl -y
-      
+      run: sudo apt-get update && sudo apt-get install python3 python3-pip curl -y
+
     - name: Build containers
       run: docker-compose --env-file=dev.env build
 
