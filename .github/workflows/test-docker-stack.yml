@@ -24,24 +24,22 @@ jobs:
     - name: Expose GitHub Runtime
       uses: crazy-max/ghaction-github-runtime@v2
     
-    - name: Prebuild Containers
+    - name: Build containers with cache
       run : |
         docker buildx bake \
         --load \
         --set=*.cache-from=type=gha \
         --set=*.cache-to=type=gha
-    #- name: Install Packages
-    #  run: sudo apt-get update && sudo apt-get install python3 python3-pip curl -y
 
-    - name: Build containers
+    - name: Add tags to containers
       run: docker compose --env-file=dev.env build
 
-    # Skipping Keycloak/MinIO for now
     - name: Start containers
-      run: docker compose --env-file=dev.env up -d mongo api
-    # Test MongoDB
+      run: docker compose --env-file=dev.env up -d
 
-    # Test API
+    - name: Test Keycloak
+      run: curl -f http://localhost:8080/
+
     - name: Install python dependencies
       run: pip install -r requirements.txt
 
@@ -50,7 +48,6 @@ jobs:
 
     - name: Run flake8
       run: flake8 ./api
-    # Test Keyloak/MinIO
 
     - name: Stop containers
       if: always()
