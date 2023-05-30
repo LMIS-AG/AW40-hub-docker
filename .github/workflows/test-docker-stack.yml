@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - 37-funktion-des-docker-stacks-über-github-action-prüfen
   pull_request:
     branches:
     - main
