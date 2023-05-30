@@ -18,8 +18,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Install Packages
-      run: sudo apt-get update && sudo apt-get install python3 python3-pip curl -y
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Expose GitHub Runtime
+      uses: crazy-max/ghaction-github-runtime@v2
+    
+    - Name: Prebuild Containers
+      run : |
+        docker buildx bake \
+        --set=*.cache-from=type=gha \
+        --set=*.cache-to=type=gha
+    #- name: Install Packages
+    #  run: sudo apt-get update && sudo apt-get install python3 python3-pip curl -y
 
     - name: Build containers
       run: docker compose --env-file=dev.env build
