@@ -1,0 +1,37 @@
+name: Test Docker Stack
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  docker:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Start containers
+      run: docker-compose --env-file=dev.env up -d --build
+    # Test MongoDB
+
+    # Test API
+    - name: Install python dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run pytest
+      run: pytest ./api
+
+    - name: Run flake8
+      run: flake8 ./api
+    # Test Keyloak/MinIO
+
+    - name: Stop containers
+      if: always()
+      run: docker-compose --env_file=dev.env down -v
