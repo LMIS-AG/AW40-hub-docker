@@ -23,7 +23,7 @@ services:
     build:
       context: ./keycloak
       args:
-        - KC_VER=${KC_VER}
+        - KC_VER=20.0
     <<: *default_restart_policy
     command: start-dev --import-realm
     container_name: keycloak
@@ -48,7 +48,7 @@ services:
       retries: 30
 
   keycloak-config:
-      image: quay.io/keycloak/keycloak:${KC_VER}
+      image: quay.io/keycloak/keycloak:20.0
       depends_on:
           keycloak:
               condition: service_healthy
