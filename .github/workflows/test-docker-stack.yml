@@ -24,7 +24,7 @@ jobs:
     - name: Expose GitHub Runtime
       uses: crazy-max/ghaction-github-runtime@v2
     
-    - Name: Prebuild Containers
+    - name: Prebuild Containers
       run : |
         docker buildx bake \
         --set=*.cache-from=type=gha \
