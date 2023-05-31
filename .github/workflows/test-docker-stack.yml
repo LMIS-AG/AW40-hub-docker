@@ -39,6 +39,34 @@ jobs:
       - name: Start containers
         run: docker compose --env-file=dev.env up -d
 
+    # Test documentation
+      - name: Check if documentation is reachable
+        run: |
+          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
+          http://localhost:8001 \
+          || exit 1
+
+    # Test MongoDB
+      - name: Check if MongoDB is reachable
+        run: |
+          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
+          http://localhost:27017 \
+          || exit 1
+
+    # Test Keycloak
+      - name: Check if Keycloak is healthy
+        run: |
+          curl -fs \
+          http://localhost:8080/health/live \
+          || exit 1
+
+    # Test MinIO
+      - name: Check if MinIO is healthy
+        run: |
+          curl -fs \
+          http://localhost:9000/minio/health/live \
+          || exit 1
+
     # Test API
       - name: Check if API is healthy
         run: |
@@ -55,27 +83,6 @@ jobs:
       - name: Run flake8
         run: flake8 ./api
         
-    # Test documentation
-      - name: Check if documentation is reachable
-        run: |
-          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
-          http://localhost:8001 \
-          || exit 1
-
-    # Test Keycloak
-      - name: Check if Keycloak is healthy
-        run: |
-          curl -fs \
-          http://localhost:8080/health/live \
-          || exit 1
-
-    # Test MinIO
-      - name: Check if MinIO is healthy
-        run: |
-          curl -fs \
-          http://localhost:9000/minio/health/live \
-          || exit 1
-          
     # Clean up
       - name: Stop containers
         if: always()
