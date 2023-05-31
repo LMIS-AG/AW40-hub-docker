@@ -9,11 +9,11 @@
 
 /opt/keycloak/bin/kcadm.sh create roles \
     -r werkstatt-hub \
-    -s name="Analyst"
+    -s name=${WERKSTATT_ANALYST_ROLE}
 
 /opt/keycloak/bin/kcadm.sh create roles \
     -r werkstatt-hub \
-    -s name="Mechanic"
+    -s name=${WERKSTATT_MECHANIC_ROLE}
 
 # Create MinIO administrator
 /opt/keycloak/bin/kcadm.sh create users \
@@ -35,7 +35,7 @@
 /opt/keycloak/bin/kcadm.sh add-roles \
     -r werkstatt-hub \
     --uusername ${WERKSTATT_ANALYST} \
-    --rolename "Analyst"
+    --rolename ${WERKSTATT_ANALYST_ROLE}
 
 # Create MinIO user with r/w access
 /opt/keycloak/bin/kcadm.sh create users \
@@ -49,7 +49,7 @@
 /opt/keycloak/bin/kcadm.sh add-roles \
     -r werkstatt-hub \
     --uusername ${WERKSTATT_MECHANIC} \
-    --rolename "Mechanic"
+    --rolename ${WERKSTATT_MECHANIC_ROLE}
 
 # Get the ID of the 'minio' client in the 'werkstatt-hub' realm
 CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
@@ -61,12 +61,12 @@ echo "The client ID of 'minio' in the 'werkstatt-hub' realm is: $CLIENT_ID"
     -r werkstatt-hub \
     -s secret=${MINIO_CLIENT_SECRET}
 
-# Get the ID of the 'plattform-ui' client in the 'werkstatt-hub' realm
-CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=plattform-ui -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
+# Get the ID of the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
+CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
 
-echo "The client ID of 'plattform-ui' in the 'werkstatt-hub' realm is: $CLIENT_ID"
+echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIENT_ID"
 
-# Update the client secret for the 'plattform-ui' client in the 'werkstatt-hub' realm
+# Update the client secret for the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
 /opt/keycloak/bin/kcadm.sh update clients/$CLIENT_ID \
     -r werkstatt-hub \
     -s secret=${PLATTFORM_UI_CLIENT_SECRET}
