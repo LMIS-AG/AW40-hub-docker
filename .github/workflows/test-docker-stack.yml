@@ -40,6 +40,12 @@ jobs:
         run: docker compose --env-file=dev.env up -d
 
     # Test API
+      - name: Check if API is healthy
+        run: |
+          curl -fs \
+          http://localhost:8000/v1/health/ping \
+          || exit 1
+      
       - name: Install python dependencies
         run: pip install -r requirements.txt
     
@@ -56,6 +62,20 @@ jobs:
           http://localhost:8001 \
           || exit 1
 
+    # Test Keycloak
+      - name: Check if Keycloak is healthy
+        run: |
+          curl -fs \
+          http://localhost:8080/health/live \
+          || exit 1
+
+    # Test MinIO
+      - name: Check if MinIO is healthy
+        run: |
+          curl -fs \
+          http://localhost:9000/minio/health/live \
+          || exit 1
+          
     # Clean up
       - name: Stop containers
         if: always()
