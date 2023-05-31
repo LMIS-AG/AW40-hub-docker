@@ -52,7 +52,10 @@ jobs:
         
     # Test documentation
       - name: Check if documentation is reachable
-        run: curl -f http://localhost:8001 || exit 1
+        run: |
+          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
+          http://localhost:8001 \
+          || exit 1
 
     # Clean up
       - name: Stop containers
