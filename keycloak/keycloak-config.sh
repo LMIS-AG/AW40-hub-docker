@@ -69,4 +69,4 @@ echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIE
 # Update the client secret for the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
 /opt/keycloak/bin/kcadm.sh update clients/$CLIENT_ID \
     -r werkstatt-hub \
-    -s secret=${PLATTFORM_UI_CLIENT_SECRET}
+    -s secret=${HUB_UI_CLIENT_SECRET}
