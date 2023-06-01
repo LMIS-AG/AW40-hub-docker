@@ -94,16 +94,17 @@ services:
     volumes:
       - minio-data:/data
     healthcheck:
-      test: curl -f http://localhost:9000 || exit 1
+      test: curl -fs http://localhost:9000/minio/health/live || exit 1
       interval: 2s
       timeout: 2s
-      retries: 15
+      retries: 30
+      start_period: 30s
 
   minio-config:
       image: minio/mc
       depends_on:
           minio:
-              condition: service_started
+              condition: service_healthy
       entrypoint: ["sh","-c","chmod +x /minio-config.sh && ./minio-config.sh"]
       environment:
           - HOST_IP_ADDRESS=${HOST_IP_ADDRESS}
