@@ -32,3 +32,5 @@ echo "The client ID of 'minio' in the 'werkstatt-hub' realm is: $CLIENT_ID"
 /opt/keycloak/bin/kcadm.sh update clients/$CLIENT_ID \
     -r werkstatt-hub \
     -s secret=${MINIO_CLIENT_SECRET}
+
+exit 0
