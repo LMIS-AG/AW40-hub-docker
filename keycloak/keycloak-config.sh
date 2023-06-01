@@ -61,6 +61,7 @@ echo "The client ID of 'minio' in the 'werkstatt-hub' realm is: $CLIENT_ID"
     -r werkstatt-hub \
     -s secret=${MINIO_CLIENT_SECRET}
 
+
 # Get the ID of the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
 CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
 
@@ -70,3 +71,5 @@ echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIE
 /opt/keycloak/bin/kcadm.sh update clients/$CLIENT_ID \
     -r werkstatt-hub \
     -s secret=${HUB_UI_CLIENT_SECRET}
+
+exit 0
