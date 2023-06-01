@@ -23,6 +23,9 @@ jobs:
 
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v2
+      
+      - name: Add internal Docker IP to hosts
+        run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
     # Build and tag images  
       - name: Build containers with cache
