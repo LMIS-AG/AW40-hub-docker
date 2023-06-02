@@ -15,7 +15,19 @@ val groupId: String by project
 val edcVersion: String by project
 
 dependencies {
+    implementation("$groupId:runtime-metamodel:$edcVersion")
+
     implementation("$groupId:control-plane-core:$edcVersion")
+    implementation("$groupId:data-plane-selector-core:$edcVersion")
+    implementation("$groupId:api-observability:$edcVersion")
+
+    implementation("$groupId:configuration-filesystem:$edcVersion")
+    implementation("$groupId:iam-mock:$edcVersion")
+
+    implementation("$groupId:auth-tokenbased:$edcVersion")
+    implementation("$groupId:management-api:$edcVersion")
+
+    implementation("$groupId:dsp:$edcVersion")
 }
 
 application {
