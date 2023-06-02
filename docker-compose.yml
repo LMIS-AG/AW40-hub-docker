@@ -40,6 +40,7 @@ services:
       - 8080:8080
       - 8443:8443
     volumes:
+      - ./keycloak/werkstatthub-realm.json:/opt/keycloak/data/import/wh.json:ro
     healthcheck:
       test: curl --head -fsS http://localhost:8080/health/ready || exit 1
       interval: 2s
