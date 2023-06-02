@@ -5,7 +5,7 @@ x-restart-policy: &default_restart_policy
 
 services:
   mongo:
-    build: 
+    build:
       context: ./mongo
     <<: *default_restart_policy
     env_file:
@@ -77,6 +77,8 @@ services:
   minio:
     build:
       context: ./minio
+      args:
+          - MINIO_VER=RELEASE.2023-05-27T05-56-19Z
     <<: *default_restart_policy
     command: server /data --console-address ":9090"
     hostname: "minio"
