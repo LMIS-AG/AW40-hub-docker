@@ -4,15 +4,11 @@ FROM gradle:8.0.0 AS builder
 # Create a directory for the project
 WORKDIR /app
 
-# Copy the Gradle wrapper files
-COPY gradlew .
-COPY gradle/ gradle/
-
 # Copy the build files
-COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradle/* .
 
-# Make gradlew executable
-RUN chmod +x gradlew
+# Setup wrapper
+RUN gradle wrapper
 
 # Perform the build
 RUN ./gradlew clean build
