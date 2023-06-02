@@ -5,7 +5,7 @@ x-restart-policy: &default_restart_policy
 
 services:
   mongo:
-    build: 
+    build:
       context: ./mongo
     <<: *default_restart_policy
     env_file:
@@ -23,7 +23,7 @@ services:
     build:
       context: ./keycloak
       args:
-        - KC_VER=${KC_VER}
+        - KC_VER=20.0
     <<: *default_restart_policy
     command: start-dev --import-realm
     container_name: keycloak
@@ -40,22 +40,24 @@ services:
       - 8080:8080
       - 8443:8443
     volumes:
-      - ./keycloak/werkstatthub-realm.json:/opt/keycloak/data/import/werkstatthub-realm.json:ro
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      test: curl --head -fsS http://localhost:8080/health/ready || exit 1
       interval: 2s
       timeout: 2s
-      retries: 15
+      retries: 30
+      start_period: 30s
 
   keycloak-config:
-      image: quay.io/keycloak/keycloak:${KC_VER}
+      image: quay.io/keycloak/keycloak:20.0
+      depends_on:
+          keycloak:
+              condition: service_healthy
       entrypoint: ["sh","-c","chmod +x /init.sh && ./init.sh"]
       env_file:
         - keycloak/keycloak.env
+      networks:
+        - hubintranet
       user: root
-      depends_on:
-        keycloak:
-          condition: service_healthy
       volumes:
         - ./keycloak/keycloak-config.sh:/init.sh
 
@@ -74,6 +76,8 @@ services:
   minio:
     build:
       context: ./minio
+      args:
+          - MINIO_VER=RELEASE.2023-05-27T05-56-19Z
     <<: *default_restart_policy
     command: server /data --console-address ":9090"
     depends_on:
@@ -91,21 +95,23 @@ services:
     volumes:
       - minio-data:/data
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000" ]
+      test: curl -fs http://localhost:9000/minio/health/live || exit 1
       interval: 2s
       timeout: 2s
-      retries: 15
+      retries: 30
+      start_period: 30s
 
   minio-config:
       image: minio/mc
       depends_on:
-        minio:
-          condition: service_started
+          minio:
+              condition: service_healthy
       entrypoint: ["sh","-c","chmod +x /minio-config.sh && ./minio-config.sh"]
       environment:
-        - HOST_IP_ADDRESS=${HOST_IP_ADDRESS}
-        - S3_ROOT_USER=${S3_ROOT_USER}
-        - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
+          - S3_ROOT_USER=${S3_ROOT_USER}
+          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
+      networks:
+        - hubintranet
       volumes:
         - ./minio/minio-config.sh:/minio-config.sh
 
@@ -141,6 +147,13 @@ services:
       - 8000:8000
     volumes:
       - ./api/api/:/home/api/api/
+
+  docs:
+    build:
+      context: ./docs
+    <<: *default_restart_policy
+    ports:
+      - 127.0.0.1:8001:80
 
 networks:
   hubnet:
