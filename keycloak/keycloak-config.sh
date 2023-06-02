@@ -7,6 +7,14 @@
     --user ${KEYCLOAK_ADMIN} \
     --password ${KEYCLOAK_ADMIN_PASSWORD}
 
+/opt/keycloak/bin/kcadm.sh create roles \
+    -r werkstatt-hub \
+    -s name=${WERKSTATT_ANALYST_ROLE}
+
+/opt/keycloak/bin/kcadm.sh create roles \
+    -r werkstatt-hub \
+    -s name=${WERKSTATT_MECHANIC_ROLE}
+
 # Create MinIO administrator
 /opt/keycloak/bin/kcadm.sh create users \
     -r werkstatt-hub \
