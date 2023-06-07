@@ -6,10 +6,10 @@ from pydantic import BaseModel
 
 class Component(str, Enum):
     """All the components that a vehicle can have."""
-    batterie = "Batterie"
-    luftmassenmesser = "Luftmassenmesser"
-    lambda_sonde_vor_kat = "Lambda Sonde (vor Kat)"
-    lambda_sonde_nach_kat = "Lambda Sonde (nach Kat)"
+    battery = "Batterie"
+    maf_sensor = "Luftmassenmesser"
+    lambda_sensor_before_cat = "Lambda Sonde (vor Kat)"
+    lambda_sensor_behind_cat = "Lambda Sonde (nach Kat)"
 
 
 class Vehicle(Document):
