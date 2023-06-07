@@ -28,6 +28,15 @@ dependencies {
     implementation("$groupId:management-api:$edcVersion")
 
     implementation("$groupId:dsp:$edcVersion")
+
+    implementation("$groupId:aws-s3-core:$edcVersion")
+    implementation("$groupId:data-plane-aws-s3:$edcVersion")
+
+    implementation("$groupId:data-plane-selector-spi:$edcVersion")
+    implementation("$groupId:data-plane-selector-client:$edcVersion")
+    implementation("$groupId:data-plane-core:$edcVersion")
+
+    implementation("$groupId:transfer-data-plane:$edcVersion")
 }
 
 application {
