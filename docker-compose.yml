@@ -81,12 +81,12 @@ services:
           - MINIO_VER=RELEASE.2023-05-27T05-56-19Z
     <<: *default_restart_policy
     command: server /data --console-address ":9090"
-    hostname: "minio"
     depends_on:
       keycloak-config:
         condition: service_completed_successfully
     env_file:
       - minio/minio.env
+    hostname: "minio"
     networks:
       - hubintranet
       - hubnet
@@ -116,6 +116,20 @@ services:
       volumes:
         - ./minio/minio-config.sh:/minio-config.sh
 
+  edc:
+      build: 
+        context: ./edc
+      <<: *default_restart_policy
+      env_file:
+        - edc/edc.env
+      hostname: "edc"
+      networks:
+        - hubnet
+      ports:
+        - 8181:8181
+        - 8182:8182
+        - 8282:8282
+      
   api:
     build:
       context: ./api
