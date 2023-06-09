@@ -22,12 +22,11 @@ WORKDIR /app
 # Copy the built JAR file from the builder stage
 COPY --from=builder /app/build/libs/connector.jar .
 
-# Copy any other necessary files
-COPY config.properties .
+# Copy script
 COPY entrypoint.sh .
 
 # Set permissions for the entrypoint script
 RUN chmod +x entrypoint.sh
 
 # Set the entrypoint
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./entrypoint.sh"]

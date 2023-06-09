@@ -117,7 +117,7 @@ services:
         - ./minio/minio-config.sh:/minio-config.sh
 
   edc:
-      build: 
+      build:
         context: ./edc
       <<: *default_restart_policy
       env_file:
@@ -129,7 +129,9 @@ services:
         - 8181:8181
         - 8182:8182
         - 8282:8282
-      
+      volumes:
+          - ./edc/config.properties:/config/config.properties
+
   api:
     build:
       context: ./api
