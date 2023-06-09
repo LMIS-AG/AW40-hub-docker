@@ -130,7 +130,7 @@ services:
         - 8182:8182
         - 8282:8282
       volumes:
-          - ./edc/config.properties:/config/config.properties
+          - ./edc/configs:/configs
 
   api:
     build:
