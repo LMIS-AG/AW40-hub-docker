@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
         return f"mongodb://{username}:{password}" \
                f"@{host}:27017/?authSource=admin"
-    
+
     @property
     def allowed_origins(self):
         return [x for x in self.api_allow_origins.split(',') if x]
