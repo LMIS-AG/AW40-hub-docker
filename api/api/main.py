@@ -13,7 +13,7 @@ from .v1 import api_v1
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:4200'],
+    allow_origins=settings.allowed_origins,
     allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allow_headers=["*"],
 )
