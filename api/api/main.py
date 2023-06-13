@@ -1,5 +1,6 @@
 from beanie import init_beanie
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
 
 from .data_management import (
@@ -10,7 +11,12 @@ from .settings import settings
 from .v1 import api_v1
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allow_headers=["*"],
+)
 app.mount("/v1", api_v1)
 
 
