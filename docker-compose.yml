@@ -1,7 +1,7 @@
 version: "3.8"
 
 x-restart-policy: &default_restart_policy
-  restart: ${DEFAULT_RESTART_POLICY}
+  restart: ${DEFAULT_RESTART_POLICY:-unless-stopped}
 
 services:
   mongo:
@@ -99,8 +99,8 @@ services:
           condition: service_healthy
       entrypoint: ["sh","-c","chmod +x /minio-config.sh && ./minio-config.sh"]
       environment:
-          - S3_ROOT_USER=${S3_ROOT_USER}
-          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
+          - S3_ROOT_USER=${S3_ROOT_USER:?error}
+          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD:?error}
       networks:
         - hubintranet
       volumes:
