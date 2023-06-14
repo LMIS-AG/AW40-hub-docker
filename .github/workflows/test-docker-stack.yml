@@ -27,6 +27,10 @@ jobs:
       - name: Add internal Docker IP to hosts
         run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
+    # Copy dev.env to .env for buildx
+      - name: Copy dev.env to .env
+        run: cp dev.env .env
+
     # Build and tag images  
       - name: Build containers with cache
         run : |
@@ -34,7 +38,12 @@ jobs:
           --load \
           --set=*.cache-from=type=gha \
           --set=*.cache-to=type=gha
-
+          
+    # Remove .env
+      - name: Remove .env
+        run: rm .env
+      
+    # Tag Containers
       - name: Add tags to containers
         run: docker compose --env-file=dev.env build
 
