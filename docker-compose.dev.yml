@@ -27,6 +27,7 @@ services:
       - MONGO_PASSWORD=${MONGO_API_PASSWORD}
       - MONGO_DB=${MONGO_DB}
       - REDIS_HOST=redis
+      - API_ALLOW_ORIGINS=${API_ALLOW_ORIGINS}
     expose:
       - 8000
 
