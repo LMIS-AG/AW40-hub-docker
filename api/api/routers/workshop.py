@@ -653,9 +653,10 @@ async def start_diagnosis(
 ):
     """Initialize the diagnosis process for this case."""
     if case.diagnosis_id is not None:
+        # Diagnosis for this case was already initialized and is returned as is
         diag_db = await DiagnosisDB.get(case.diagnosis_id)
-        diag = await diag_db.to_diagnosis()
     else:
+        # New diagnosis with status processing is initialized
         diag_db = DiagnosisDB(
             status="processing",
             case_id=case.id
@@ -663,9 +664,11 @@ async def start_diagnosis(
         await diag_db.create()
         case.diagnosis_id = diag_db.id
         await case.save()
-        print(diag_db.dict())
-        diag = Diagnosis(**diag_db.dict())
-        send_diagnostic_task(diag.id)
+
+        # New diagnosis is handed over to diagnostic backend
+        send_diagnostic_task(case.diagnosis_id)
+
+    diag = await diag_db.to_diagnosis()
     return diag
 
 
