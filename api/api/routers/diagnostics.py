@@ -1,12 +1,13 @@
 from typing import List
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 
 from ..data_management import (
     Case,
     Diagnosis,
     DiagnosisDB,
+    DiagnosisStatus,
     OBDData,
     Vehicle,
     Component,
@@ -77,6 +78,18 @@ async def get_oscillograms(diag_id: str, component: Component):
     return signals
 
 
+@router.get(
+    "/{diag_id}/todos",
+    status_code=200,
+    response_model=List[Action]
+)
+async def get_todos(diag_id: str):
+    """Get data of a diagnosis."""
+    diag_db = await DiagnosisDB.get(diag_id)
+    diag = await diag_db.to_diagnosis()
+    return diag.todos
+
+
 @router.post(
     "/{diag_id}/todos/{action_id}",
     status_code=201,
@@ -114,3 +127,45 @@ async def delete_todo(diag_id: str, action_id: str):
     if todo is not None:
         await todo.delete()
     return None
+
+
+@router.post(
+    "/{diag_id}/state-machine-log",
+    status_code=201,
+    response_model=List[str]
+)
+async def add_message_to_state_machine_log(
+        diag_id: str, message: str = Body(title="Message to be added to log.")
+):
+    diag = await DiagnosisDB.get(diag_id)
+    diag.state_machine_log.append(message)
+    await diag.save()
+    return diag.state_machine_log
+
+
+@router.put(
+    "/{diag_id}/state-machine-log",
+    status_code=201,
+    response_model=List[str]
+)
+async def set_state_machine_log(
+        diag_id: str, log: List[str]
+):
+    diag = await DiagnosisDB.get(diag_id)
+    diag.state_machine_log = log
+    await diag.save()
+    return diag.state_machine_log
+
+
+@router.put(
+    "/{diag_id}/status",
+    status_code=201,
+    response_model=DiagnosisStatus
+)
+async def set_state_machine_status(
+        diag_id: str, status: DiagnosisStatus = Body(title="New status")
+):
+    diag = await DiagnosisDB.get(diag_id)
+    diag.status = status
+    await diag.save()
+    return diag.status
