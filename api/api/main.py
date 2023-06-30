@@ -9,7 +9,7 @@ from .data_management import (
     ToDo
 )
 from .data_management.timeseries_data import GridFSSignalStore
-from .diagnostics_management import DiagnosticTaskSender
+from .diagnostics_management import DiagnosticTaskManager
 from .settings import settings
 from .utils import create_action_data
 from .v1 import api_v1
@@ -50,6 +50,8 @@ async def init_mongo():
 
 @app.on_event("startup")
 async def init_diagnostics_management():
-    DiagnosticTaskSender.celery = Celery(
-        broker=settings.redis_uri, backend=settings.redis_uri
+    DiagnosticTaskManager.set_celery(
+        Celery(
+            broker=settings.redis_uri, backend=settings.redis_uri
+        )
     )

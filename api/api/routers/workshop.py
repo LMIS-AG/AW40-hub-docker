@@ -26,7 +26,7 @@ from ..data_management import (
     Diagnosis,
     DiagnosisDB
 )
-from ..diagnostics_management import DiagnosticTaskSender
+from ..diagnostics_management import DiagnosticTaskManager
 from ..upload_filereader import filereader_factory, FileReaderException
 
 tags_metadata = [
@@ -190,16 +190,13 @@ def list_timeseries_data(case: Case = Depends(case_from_workshop)):
 async def add_timeseries_data(
         timeseries_data: NewTimeseriesData,
         case: Case = Depends(case_from_workshop),
-        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
+        manage_diagnostic_task: DiagnosticTaskManager = Depends(
+            DiagnosticTaskManager
+        )
 ) -> Case:
     """Add a new timeseries dataset to a case."""
     case = await case.add_timeseries_data(timeseries_data)
-    if case.diagnosis_id:
-        diag_db = await DiagnosisDB.get(case.diagnosis_id)
-        if diag_db.status == "action_required":
-            diag_db.status = "processing"
-            await diag_db.save()
-            send_diagnostic_task(case.diagnosis_id)
+    await manage_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -461,16 +458,13 @@ async def list_obd_data(
 async def add_obd_data(
         obd_data: NewOBDData,
         case: Case = Depends(case_from_workshop),
-        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
+        manage_diagnostic_task: DiagnosticTaskManager = Depends(
+            DiagnosticTaskManager
+        )
 ) -> Case:
     """Add a new obd dataset to a case."""
     case = await case.add_obd_data(obd_data)
-    if case.diagnosis_id:
-        diag_db = await DiagnosisDB.get(case.diagnosis_id)
-        if diag_db.status == "action_required":
-            diag_db.status = "processing"
-            await diag_db.save()
-            send_diagnostic_task(case.diagnosis_id)
+    await manage_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -649,16 +643,17 @@ async def get_diagnosis(case: Case = Depends(case_from_workshop)):
 )
 async def start_diagnosis(
         case: Case = Depends(case_from_workshop),
-        send_diagnostic_task: callable = Depends(DiagnosticTaskSender)
+        manage_diagnostic_task: DiagnosticTaskManager = Depends(
+            DiagnosticTaskManager
+        )
 ):
     """Initialize the diagnosis process for this case."""
     if case.diagnosis_id is not None:
         # Diagnosis for this case was already initialized and is returned as is
         diag_db = await DiagnosisDB.get(case.diagnosis_id)
     else:
-        # New diagnosis with status processing is initialized
+        # New diagnosis is initialized
         diag_db = DiagnosisDB(
-            status="processing",
             case_id=case.id
         )
         await diag_db.create()
@@ -666,7 +661,7 @@ async def start_diagnosis(
         await case.save()
 
         # New diagnosis is handed over to diagnostic backend
-        send_diagnostic_task(case.diagnosis_id)
+        await manage_diagnostic_task(case.diagnosis_id)
 
     diag = await diag_db.to_diagnosis()
     return diag

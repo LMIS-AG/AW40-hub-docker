@@ -1,5 +1,5 @@
 __all__ = [
-    "DiagnosticTaskSender",
+    "DiagnosticTaskManager"
 ]
 
-from .tasks import DiagnosticTaskSender
+from .tasks import DiagnosticTaskManager
