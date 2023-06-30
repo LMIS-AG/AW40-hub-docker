@@ -195,7 +195,11 @@ async def add_timeseries_data(
     """Add a new timeseries dataset to a case."""
     case = await case.add_timeseries_data(timeseries_data)
     if case.diagnosis_id:
-        send_diagnostic_task(case.diagnosis_id)
+        diag_db = await DiagnosisDB.get(case.diagnosis_id)
+        if diag_db.status == "action_required":
+            diag_db.status = "processing"
+            await diag_db.save()
+            send_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -462,7 +466,11 @@ async def add_obd_data(
     """Add a new obd dataset to a case."""
     case = await case.add_obd_data(obd_data)
     if case.diagnosis_id:
-        send_diagnostic_task(case.diagnosis_id)
+        diag_db = await DiagnosisDB.get(case.diagnosis_id)
+        if diag_db.status == "action_required":
+            diag_db.status = "processing"
+            await diag_db.save()
+            send_diagnostic_task(case.diagnosis_id)
     return case
 
 
