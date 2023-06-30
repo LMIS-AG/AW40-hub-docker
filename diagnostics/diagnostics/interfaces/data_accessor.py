@@ -1,12 +1,30 @@
 from typing import List, Union
 
-from vehicle_diag_smach.data_types.onboard_diagnosis_data import \
+from vehicle_diag_smach.data_types.customer_complaint_data import (
+    CustomerComplaintData
+)
+from vehicle_diag_smach.data_types.onboard_diagnosis_data import (
     OnboardDiagnosisData
+)
 from vehicle_diag_smach.data_types.oscillogram_data import OscillogramData
 from vehicle_diag_smach.data_types.workshop_data import WorkshopData
 from vehicle_diag_smach.interfaces.data_accessor import DataAccessor
 
 from ..hub_client import HubClient
+
+
+class InsufficientDataException(Exception):
+    pass
+
+
+class MissingOBDDataException(InsufficientDataException):
+    pass
+
+
+class MissingOscillogramsException(InsufficientDataException):
+    def __init__(self, message, components):
+        super().__init__(message)
+        self.components = components
 
 
 class HubDataAccessor(DataAccessor):
@@ -33,16 +51,16 @@ class HubDataAccessor(DataAccessor):
                 "This cannot be handled yet"
             )
 
-    def get_obd_data(self) -> Union[OnboardDiagnosisData, None]:
+    def get_obd_data(self) -> OnboardDiagnosisData:
         dtcs = self._get_dtcs()
         if not dtcs:
-            return None
+            raise MissingOBDDataException
 
         vehicle = self.hub_client.get_vehicle()
         return OnboardDiagnosisData(
             dtc_list=dtcs,
             model=vehicle.get("model"),
-            hsn=vehicle.get("hsn"),
+            hsn=vehicle.get("hsn", ""),
             tsn=vehicle.get("tsn"),
             vin=vehicle.get("vin")
         )
@@ -66,8 +84,28 @@ class HubDataAccessor(DataAccessor):
 
     def get_oscillograms_by_components(
             self, components: List[str]
-    ) -> List[Union[None, OscillogramData]]:
-        return [
-            self._get_oscillogram_by_component(component)
-            for component in components
-        ]
+    ) -> OscillogramData:
+        oscillograms = []
+        missing_components = []
+        for component in components:
+            oscillograms.append(
+                self._get_oscillogram_by_component(component)
+            )
+            if oscillograms[-1] is None:
+                missing_components.append(component)
+
+        if len(missing_components) > 0:
+            message = f"Failed to retrieve oscillograms for components: " \
+                      f"{missing_components}"
+            raise MissingOscillogramsException(message, missing_components)
+
+        return oscillograms
+
+    def get_customer_complaints(self) -> CustomerComplaintData:
+        return CustomerComplaintData()
+
+    def get_manual_judgement_for_component(self, component: str) -> bool:
+        return False
+
+    def get_manual_judgement_for_sensor(self) -> bool:
+        return False
