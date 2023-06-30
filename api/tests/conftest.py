@@ -3,8 +3,18 @@ import os
 import sys
 
 import pytest
+from api.data_management import (
+    Case,
+    Vehicle,
+    Customer,
+    Workshop,
+    DiagnosisDB,
+    Action,
+    ToDo
+)
 from bson import ObjectId
 from motor import motor_asyncio
+from beanie import init_beanie
 
 
 @pytest.fixture
@@ -25,6 +35,37 @@ def motor_db(motor_client):
     api user.
     """
     yield motor_client["aw40-hub-test"]
+
+
+@pytest.fixture
+def initialized_beanie_context(motor_db):
+    """
+    Could not get standard pytest fixture setup and teardown to work for
+    beanie initialization. As a workaround this fixture creates an async
+    context manager to handle test setup and teardown.
+    """
+    models = [
+        Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+    ]
+
+    class InitializedBeanieContext:
+        async def __aenter__(self):
+            await init_beanie(
+                motor_db,
+                document_models=models
+            )
+            for model in models:
+                # make sure all collections are empty at the beginning of each
+                # test
+                await model.delete_all()
+
+        async def __aexit__(self, exc_type, exc, tb):
+            for model in models:
+                # drop all collections and indexes after each test
+                await model.get_motor_collection().drop()
+                await model.get_motor_collection().drop_indexes()
+
+    return InitializedBeanieContext()
 
 
 @pytest.fixture
