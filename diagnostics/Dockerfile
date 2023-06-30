@@ -1,4 +1,4 @@
-FROM python:3.9.5-slim-buster AS base
+FROM python:3.9.5-buster AS base
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -10,14 +10,14 @@ RUN groupadd -r runtime && \
 # use runtime users home directory as workdir
 WORKDIR /home/runtime
 
-# install minimal requirements
+# install requirements
 COPY ./requirements.txt /home/runtime/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# install vehicle_smach (without deps for now)
+# install vehicle_smach
 RUN apt-get update && apt-get install -y git && \
-    pip install --no-deps git+https://github.com/tbohne/vehicle_diag_smach
+    pip install git+https://github.com/tbohne/vehicle_diag_smach
 
 # copy python package and chown to runtime user
 COPY --chown=runtime:runtime ./diagnostics /home/runtime/diagnostics
