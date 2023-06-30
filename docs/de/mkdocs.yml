@@ -1,0 +1,13 @@
+site_name: Autowerkstatt 4.0 - Hub
+nav:
+  - Hintergrund: 'background.md'
+  - Technische Umsetzung:
+      - Datenbank: 'tech/database.md'
+      - API: 'tech/api.md'
+      - Gaia-X: 'tech/gaiax.md'
+      - KI: 'tech/ai.md'
+      - Integration heterogener Messgeräte: 'tech/device_integration.md'
+theme:
+    name: mkdocs
+    navigation_depth: 3
+

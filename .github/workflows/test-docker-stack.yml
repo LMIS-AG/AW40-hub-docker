@@ -1,0 +1,101 @@
+name: Test Docker Stack
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  docker:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+    # Setup environment
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Expose GitHub Runtime
+        uses: crazy-max/ghaction-github-runtime@v2
+      
+      - name: Add internal Docker IP to hosts
+        run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+
+    # Copy dev.env to .env for buildx
+      - name: Copy dev.env to .env
+        run: cp dev.env .env
+
+    # Build and tag images  
+      - name: Build containers with cache
+        run : |
+          docker buildx bake \
+          --load \
+          --set=*.cache-from=type=gha \
+          --set=*.cache-to=type=gha
+          
+    # Remove .env
+      - name: Remove .env
+        run: rm .env
+      
+    # Tag Containers
+      - name: Add tags to containers
+        run: docker compose --env-file=dev.env build
+
+    # Start Containers
+      - name: Start containers
+        run: docker compose --env-file=dev.env up -d
+
+    # Test documentation
+      - name: Check if documentation is reachable
+        run: |
+          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
+          http://localhost:8001 \
+          || exit 1
+
+    # Test MongoDB
+      - name: Check if MongoDB is reachable
+        run: |
+          curl -fs -o /dev/null -w 'http_code:%{http_code}' \
+          http://localhost:27017 \
+          || exit 1
+
+    # Test Keycloak
+      - name: Check if Keycloak is healthy
+        run: |
+          curl -fs \
+          http://localhost:8080/health/live \
+          || exit 1
+
+    # Test MinIO
+      - name: Check if MinIO is healthy
+        run: |
+          curl -fs \
+          http://localhost:9000/minio/health/live \
+          || exit 1
+
+    # Test API
+      - name: Check if API is healthy
+        run: |
+          curl -fs \
+          http://localhost:8000/v1/health/ping \
+          || exit 1
+      
+      - name: Install python dependencies
+        run: pip install -r requirements.txt
+    
+      - name: Run pytest
+        run: pytest ./api
+
+      - name: Run flake8
+        run: flake8 ./api
+        
+    # Clean up
+      - name: Stop containers
+        if: always()
+        run: docker compose --env-file=dev.env down -v

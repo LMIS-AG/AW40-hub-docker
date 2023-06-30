@@ -1,11 +1,11 @@
 version: "3.8"
 
 x-restart-policy: &default_restart_policy
-  restart: ${DEFAULT_RESTART_POLICY}
+  restart: ${DEFAULT_RESTART_POLICY:-unless-stopped}
 
 services:
   mongo:
-    build: 
+    build:
       context: ./mongo
     <<: *default_restart_policy
     env_file:
@@ -25,10 +25,11 @@ services:
       args:
         - KC_VER=20.0
     <<: *default_restart_policy
-    command: start-dev
+    command: start-dev --import-realm
     container_name: keycloak
     depends_on:
-      - keycloak-db
+      keycloak-db:
+        condition: service_healthy
     env_file:
       - keycloak/keycloak.env
     hostname: "keycloak"
@@ -39,27 +40,30 @@ services:
     ports:
       - 8080:8080
       - 8443:8443
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
-      interval: 2s
-      timeout: 2s
-      retries: 15
+    volumes:
+      - ./keycloak/werkstatthub-realm.json:/opt/keycloak/data/import/wh.json:ro
 
   keycloak-config:
-      image: docker
-      command: sh -c "docker exec keycloak sh /opt/keycloak-config.sh"
+      image: quay.io/keycloak/keycloak:20.0
       depends_on:
-          keycloak:
-              condition: service_healthy
+        keycloak:
+          condition: service_healthy
+      entrypoint: ["sh","-c","chmod +x /init.sh && ./init.sh"]
+      env_file:
+        - keycloak/keycloak.env
+      networks:
+        - hubintranet
+      user: root
       volumes:
-        - "/var/run/docker.sock:/var/run/docker.sock"
+        - ./keycloak/keycloak-config.sh:/init.sh
 
   keycloak-db:
-    image: postgres:15-alpine
+    build:
+      context: ./keycloak-db
     <<: *default_restart_policy
     container_name: keycloak-db
     env_file:
-      - postgres/postgres.env
+      - keycloak-db/postgres.env
     hostname: "keycloak-db"
     networks:
       - keycloaknet
@@ -69,14 +73,16 @@ services:
   minio:
     build:
       context: ./minio
+      args:
+        - MINIO_VER=RELEASE.2023-05-27T05-56-19Z
     <<: *default_restart_policy
     command: server /data --console-address ":9090"
-    hostname: "minio"
     depends_on:
       keycloak-config:
         condition: service_completed_successfully
     env_file:
       - minio/minio.env
+    hostname: "minio"
     networks:
       - hubintranet
       - hubnet
@@ -85,24 +91,36 @@ services:
       - 9090:9090
     volumes:
       - minio-data:/data
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000" ]
-      interval: 2s
-      timeout: 2s
-      retries: 15
 
   minio-config:
       image: minio/mc
       depends_on:
-          minio:
-              condition: service_started
-      entrypoint: [./minio-config.sh]
+        minio:
+          condition: service_healthy
+      entrypoint: ["sh","-c","chmod +x /minio-config.sh && ./minio-config.sh"]
       environment:
-          - HOST_IP_ADDRESS=${HOST_IP_ADDRESS}
-          - S3_ROOT_USER=${S3_ROOT_USER}
-          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD}
+          - S3_ROOT_USER=${S3_ROOT_USER:?error}
+          - S3_ROOT_PASSWORD=${S3_ROOT_PASSWORD:?error}
+      networks:
+        - hubintranet
       volumes:
         - ./minio/minio-config.sh:/minio-config.sh
+
+  edc:
+      build:
+        context: ./edc
+      <<: *default_restart_policy
+      env_file:
+        - edc/edc.env
+      hostname: "edc"
+      networks:
+        - hubnet
+      ports:
+        - 8181:8181
+        - 8182:8182
+        - 8282:8282
+      volumes:
+          - ./edc/configs:/configs
 
   api:
     build:
@@ -111,7 +129,8 @@ services:
     # DEVELOPMENT: run with reload and mount api package code
     command: uvicorn --host 0.0.0.0 --reload api.main:app
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     env_file:
       - api/api.env
     hostname: "api"
@@ -122,6 +141,13 @@ services:
       - 8000:8000
     volumes:
       - ./api/api/:/home/api/api/
+
+  docs:
+    build:
+      context: ./docs
+    <<: *default_restart_policy
+    ports:
+      - 127.0.0.1:8001:80
 
 networks:
   hubnet:

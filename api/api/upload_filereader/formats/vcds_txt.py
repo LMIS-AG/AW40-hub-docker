@@ -10,9 +10,10 @@ from ..filereader import FileReader, FileReaderException
 OBD_ERROR = re.compile(
     r"^\s*(?P<error_code>[BCPU][01][0-7][0-9A-Z]{2})\s"
     r"\d{2} \[\d{3}\] - (?P<error_string>.*)\s*$")
-VIN_AND_MILAGE = re.compile(
-    r"^.+: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})\s*"
-    r".+: (?P<milage>\d+)km\s*$")
+VIN = re.compile(
+    r"Fahrzeug-Ident\.-Nr\.: (?P<vin>[A-HJ-NPR-Za-hj-npr-z0-9]{17})")
+MILAGE = re.compile(
+    r"Kilometerstand: (?P<milage>\d+)km")
 VCDS_INFO = re.compile(
     r"^\s*.+: DRV (?P<driver_version>[0-9A-Fa-f.]+)\s*"
     r"HEX-V2 CB: (?P<hex_v2>[0-9A-Fa-f.]+)\s*$")
@@ -65,15 +66,20 @@ class VCDSTXTReader(FileReader):
         file_iter = codecs.iterdecode(file, enc)
         result = {}
         dtcs = []
-        found_vam = False
+        found_vin = False
+        found_milage = False
         for line in file_iter:
             line = line.rstrip('\r\n')
-            if not found_vam:
-                vam = VIN_AND_MILAGE.match(line)
-                if vam:
-                    result['vehicle'] = {'vin': vam['vin']}
-                    result['case'] = {'milage': int(vam['milage'])}
-                    found_vam = True
+            if not found_vin:
+                vin = VIN.match(line)
+                if vin:
+                    result['vehicle'] = {'vin': vin['vin']}
+                    found_vin = True
+            if not found_milage:
+                milage = MILAGE.match(line)
+                if milage:
+                    result['case'] = {'milage': int(milage['milage'])}
+                    found_milage = True
             obd_code = OBD_ERROR.match(line)
             if obd_code:
                 dtcs.append(obd_code['error_code'])
