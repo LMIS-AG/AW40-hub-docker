@@ -38,6 +38,10 @@ class HubClient:
     def todos_url(self) -> str:
         return f"{self.diag_url}/todos"
 
+    @property
+    def state_machine_log_url(self) -> str:
+        return f"{self.diag_url}/state-machine-log"
+
     def test_connection(self):
         httpx.get(self.ping_url).raise_for_status()
 
@@ -60,6 +64,9 @@ class HubClient:
         return self._get_from_url(
             self.oscillograms_url, query_params={"component": component}
         )
+
+    def get_todos(self) -> List[dict]:
+        return self._get_from_url(self.todos_url)
 
     def _require_action(self, action_id) -> dict:
         url = f"{self.todos_url}/{action_id}"
@@ -86,3 +93,13 @@ class HubClient:
     def unrequire_oscillogram(self, component: str):
         action_id = f"add-data-oscillogram-{component.lower()}"
         return self._unrequire_action(action_id)
+
+    def clear_state_machine_log(self):
+        httpx.put(self.state_machine_log_url, json=[])
+
+    def add_to_state_machine_log(self, message: str):
+        httpx.post(self.state_machine_log_url, json=message)
+
+    def set_diagnosis_status(self, status: str):
+        url = f"{self.diag_url}/status"
+        httpx.put(url, json=status)
