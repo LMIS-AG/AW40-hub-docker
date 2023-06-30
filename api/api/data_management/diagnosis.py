@@ -50,7 +50,7 @@ class DiagnosisBase(BaseModel):
     """Diagnosis Meta Data"""
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     status: DiagnosisStatus
-    state_log: List[str] = []
+    state_machine_log: List[str] = []
     case_id: PydanticObjectId
 
 
