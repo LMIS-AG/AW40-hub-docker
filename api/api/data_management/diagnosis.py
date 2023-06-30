@@ -49,7 +49,7 @@ class DiagnosisStatus(str, Enum):
 class DiagnosisBase(BaseModel):
     """Diagnosis Meta Data"""
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    status: DiagnosisStatus
+    status: DiagnosisStatus = None
     state_machine_log: List[str] = []
     case_id: PydanticObjectId
 
