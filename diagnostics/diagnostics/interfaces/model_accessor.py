@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 
 import keras
 from vehicle_diag_smach.interfaces.model_accessor import ModelAccessor
@@ -6,7 +6,7 @@ from vehicle_diag_smach.interfaces.model_accessor import ModelAccessor
 
 class HubModelAccessor(ModelAccessor):
 
-    def get_model_by_component(
+    def get_keras_univariate_ts_classification_model_by_component(
             self, component: str
-    ) -> Union[keras.models.Model, None]:
+    ) -> Union[Tuple[keras.models.Model, dict], None]:
         return None

@@ -41,7 +41,11 @@ def execute_smach(
         StateTransition("GET_OSCILLOGRAMS_DATA", "GET_MODEL", "LINK")
     )
 
-    print(model_accessor.get_model_by_component("Batterie"))
+    print(
+        model_accessor.get_keras_univariate_ts_classification_model_by_component(
+            "Batterie"
+        )
+    )
     data_provider.provide_state_transition(
         StateTransition("GET_MODEL", "FINISH_DIAG", "LINK")
     )
