@@ -1,3 +1,4 @@
 redis==4.5.4
 celery==5.2.7
 httpx==0.23.3
+git+https://github.com/tbohne/vehicle_diag_smach@07a08a9f8f2b407ec4a8186a5dba9766a32e045d

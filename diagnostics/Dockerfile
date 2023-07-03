@@ -15,10 +15,6 @@ COPY ./requirements.txt /home/runtime/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# install vehicle_smach
-RUN apt-get update && apt-get install -y git && \
-    pip install git+https://github.com/tbohne/vehicle_diag_smach
-
 # copy python package and chown to runtime user
 COPY --chown=runtime:runtime ./diagnostics /home/runtime/diagnostics
 
