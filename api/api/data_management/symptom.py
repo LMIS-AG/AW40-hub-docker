@@ -7,9 +7,9 @@ from .vehicle import Component
 
 
 class SymptomLabel(str, Enum):
-    unkown = "keine Angabe"
-    ok = "nicht defekt"
-    defect = "defekt"
+    unknown = "unknown"
+    ok = "ok"
+    defect = "defect"
 
 
 class NewSymptom(BaseModel):

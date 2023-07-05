@@ -40,7 +40,7 @@ class NewCase(BaseModel):
 
     vehicle_vin: str
     customer_id: Indexed(str, unique=False) = Customer.unknown_id
-    occasion: Occasion = Occasion.unkown
+    occasion: Occasion = Occasion.unknown
     milage: int = None
 
 
@@ -64,7 +64,7 @@ class Case(Document):
 
     # case descriptions
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    occasion: Occasion = Occasion.unkown
+    occasion: Occasion = Occasion.unknown
     milage: int = None
     status: Status = Status.open
 
