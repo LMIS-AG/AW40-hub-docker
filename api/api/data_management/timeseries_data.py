@@ -52,9 +52,9 @@ class GridFSSignalStore(BaseSignalStore):
 
 
 class TimeseriesDataLabel(str, Enum):
-    unknown = "keine Angabe"
-    norm = "Regelfall / Unauffällig"
-    anomaly = "Anomalie / Auffälligkeit"
+    unknown = "unknown"
+    norm = "norm"
+    anomaly = "anomaly"
 
 
 class TimeseriesMetaData(BaseModel):
