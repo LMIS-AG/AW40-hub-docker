@@ -15,9 +15,9 @@ from .vehicle import Vehicle
 
 
 class Occasion(str, Enum):
-    unkown = "keine Angabe"
-    service_routine = "Service / Routine"
-    problem_defect = "Problem / Defekt"
+    unknown = "unknown"
+    service_routine = "service_routine"
+    problem_defect = "problem_defect"
 
 
 class Status(str, Enum):
