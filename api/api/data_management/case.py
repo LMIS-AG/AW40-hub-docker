@@ -21,8 +21,8 @@ class Occasion(str, Enum):
 
 
 class Status(str, Enum):
-    open = "offen"
-    closed = "abgeschlossen"
+    open = "open"
+    closed = "closed"
 
 
 class NewCase(BaseModel):
