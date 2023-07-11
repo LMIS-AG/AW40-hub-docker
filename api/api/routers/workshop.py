@@ -189,14 +189,10 @@ def list_timeseries_data(case: Case = Depends(case_from_workshop)):
 )
 async def add_timeseries_data(
         timeseries_data: NewTimeseriesData,
-        case: Case = Depends(case_from_workshop),
-        manage_diagnostic_task: DiagnosticTaskManager = Depends(
-            DiagnosticTaskManager
-        )
+        case: Case = Depends(case_from_workshop)
 ) -> Case:
     """Add a new timeseries dataset to a case."""
     case = await case.add_timeseries_data(timeseries_data)
-    await manage_diagnostic_task(case.diagnosis_id)
     return case
 
 
@@ -457,14 +453,10 @@ async def list_obd_data(
 )
 async def add_obd_data(
         obd_data: NewOBDData,
-        case: Case = Depends(case_from_workshop),
-        manage_diagnostic_task: DiagnosticTaskManager = Depends(
-            DiagnosticTaskManager
-        )
+        case: Case = Depends(case_from_workshop)
 ) -> Case:
     """Add a new obd dataset to a case."""
     case = await case.add_obd_data(obd_data)
-    await manage_diagnostic_task(case.diagnosis_id)
     return case
 
 

@@ -14,7 +14,6 @@ from api.data_management import (
     NewOBDData,
     Symptom
 )
-from api.diagnostics_management import DiagnosticTaskManager
 from api.routers.workshop import router, case_from_workshop
 from beanie import init_beanie
 from fastapi import FastAPI, HTTPException
@@ -93,15 +92,6 @@ def client(test_app):
     modification of the test_app fixture.
     """
     yield TestClient(test_app)
-
-
-class TestDiagnosticTaskManager:
-    """
-    Can be used for dependency_overrides when testing endpoints that have
-    the DiagnosticTaskManager dependency.
-    """
-    async def __call__(self, diagnosis_id):
-        pass
 
 
 @mock.patch("api.routers.workshop.Case.find_in_hub", autospec=True)
@@ -355,8 +345,7 @@ def test_add_timeseries_data(
     case_id = case_data["_id"]
 
     test_app.dependency_overrides = {
-        case_from_workshop: lambda case_id, workshop_id: Case(**case_data),
-        DiagnosticTaskManager: TestDiagnosticTaskManager
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
     # patch Case.add_timeseries_data to call mock instead
@@ -901,8 +890,7 @@ def test_add_obd_data(save, case_data, obd_data, test_app):
     case_id = case_data["_id"]
 
     test_app.dependency_overrides = {
-        case_from_workshop: lambda case_id, workshop_id: Case(**case_data),
-        DiagnosticTaskManager: TestDiagnosticTaskManager
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
     }
 
     # patch Case.save to use mock_save
