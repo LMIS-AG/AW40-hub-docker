@@ -1,4 +1,5 @@
-from typing import List, Union
+from time import sleep
+from typing import List
 
 from vehicle_diag_smach.data_types.customer_complaint_data import (
     CustomerComplaintData
@@ -13,24 +14,11 @@ from vehicle_diag_smach.interfaces.data_accessor import DataAccessor
 from ..hub_client import HubClient
 
 
-class InsufficientDataException(Exception):
-    pass
-
-
-class MissingOBDDataException(InsufficientDataException):
-    pass
-
-
-class MissingOscillogramsException(InsufficientDataException):
-    def __init__(self, message, components):
-        super().__init__(message)
-        self.components = components
-
-
 class HubDataAccessor(DataAccessor):
 
-    def __init__(self, hub_client: HubClient):
+    def __init__(self, hub_client: HubClient, data_poll_interval: int):
         self.hub_client = hub_client
+        self.data_poll_interval = data_poll_interval
 
     def get_workshop_info(self) -> WorkshopData:
         diag = self.hub_client.get_diag()
@@ -39,11 +27,24 @@ class HubDataAccessor(DataAccessor):
             diag_date=diag["timestamp"]
         )
 
+    def _wait_for_hub_obd_data(self) -> List:
+        print("Waiting for Hub OBD Data ...")
+        hub_obd_data = []
+        while hub_obd_data == []:
+            sleep(self.data_poll_interval)
+            hub_obd_data = self.hub_client.get_obd_data()
+        return hub_obd_data
+
     def _get_dtcs(self) -> List[str]:
         hub_obd_data = self.hub_client.get_obd_data()
-        if len(hub_obd_data) == 0:
-            return None
-        elif len(hub_obd_data) == 1:
+        if hub_obd_data == []:
+            self.hub_client.require_obd_data()
+            self.hub_client.set_diagnosis_status("action_required")
+            hub_obd_data = self._wait_for_hub_obd_data()
+            self.hub_client.set_diagnosis_status("processing")
+            self.hub_client.unrequire_obd_data()
+
+        if len(hub_obd_data) == 1:
             return hub_obd_data[0]["dtcs"]
         else:
             raise ValueError(
@@ -53,9 +54,6 @@ class HubDataAccessor(DataAccessor):
 
     def get_obd_data(self) -> OnboardDiagnosisData:
         dtcs = self._get_dtcs()
-        if not dtcs:
-            raise MissingOBDDataException
-
         vehicle = self.hub_client.get_vehicle()
         return OnboardDiagnosisData(
             dtc_list=dtcs,
@@ -65,13 +63,28 @@ class HubDataAccessor(DataAccessor):
             vin=vehicle.get("vin")
         )
 
+    def _wait_for_signal(self, component: str) -> List:
+        print(
+            f"Waiting for Hub Oscillogram signal for '{component}' ..."
+        )
+        signals = []
+        while signals == []:
+            sleep(self.data_poll_interval)
+            signals = self.hub_client.get_oscillograms(component)
+        return signals
+
     def _get_oscillogram_by_component(
             self, component: str
-    ) -> Union[None, OscillogramData]:
-        signals = self.hub_client.get_oscillograms(component=component)
-        if len(signals) == 0:
-            return None
-        elif len(signals) == 1:
+    ) -> OscillogramData:
+        signals = self.hub_client.get_oscillograms(component)
+        if signals == []:
+            self.hub_client.require_oscillogram(component)
+            self.hub_client.set_diagnosis_status("action_required")
+            signals = self._wait_for_signal(component)
+            self.hub_client.set_diagnosis_status("processing")
+            self.hub_client.unrequire_oscillogram(component)
+
+        if len(signals) == 1:
             return OscillogramData(
                 time_series=signals[0],
                 comp_name=component
@@ -84,21 +97,12 @@ class HubDataAccessor(DataAccessor):
 
     def get_oscillograms_by_components(
             self, components: List[str]
-    ) -> OscillogramData:
+    ) -> List[OscillogramData]:
         oscillograms = []
-        missing_components = []
         for component in components:
             oscillograms.append(
                 self._get_oscillogram_by_component(component)
             )
-            if oscillograms[-1] is None:
-                missing_components.append(component)
-
-        if len(missing_components) > 0:
-            message = f"Failed to retrieve oscillograms for components: " \
-                      f"{missing_components}"
-            raise MissingOscillogramsException(message, missing_components)
-
         return oscillograms
 
     def get_customer_complaints(self) -> CustomerComplaintData:
