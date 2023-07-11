@@ -5,14 +5,13 @@ from .hub_client import HubClient
 from .interfaces import (
     HubDataAccessor,
     HubDataProvider,
-    HubModelAccessor,
-    MissingOBDDataException,
-    MissingOscillogramsException
+    HubModelAccessor
 )
 
 # configuration
 REDIS_HOST = "redis"
 HUB_URL = "http://api:8000/v1"
+DATA_POLL_INTERVAL = 1
 
 # configuration is resolved
 redis_uri = f"redis://{REDIS_HOST}:6379"
@@ -59,27 +58,6 @@ def execute_smach(
     )
 
 
-def refresh_todos(hub_client: HubClient):
-    """Helper to check and refresh todos in a diagnosis."""
-    todos = hub_client.get_todos()
-    for todo in todos:
-        todo_id = todo["_id"]
-        if todo_id == "add-data-obd":
-            if len(hub_client.get_obd_data()) > 0:
-                # is done
-                hub_client.unrequire_obd_data()
-        elif "add-data-oscillogram" in todo_id:
-            todo_component = todo["component"]
-            if len(hub_client.get_oscillograms(todo_component)) > 0:
-                # is done
-                hub_client.unrequire_oscillogram(todo_component)
-        else:
-            raise ValueError(f"Unknown todo '{todo_id}'")
-
-    # return remaining todos
-    return hub_client.get_todos()
-
-
 @app.task
 def diagnose(diag_id):
     """Main task for a diagnosis."""
@@ -92,34 +70,17 @@ def diagnose(diag_id):
 
     # set up vehicle_diag_smach interfaces
     data_accessor = HubDataAccessor(
-        hub_client=hub_client
+        hub_client=hub_client,
+        data_poll_interval=DATA_POLL_INTERVAL
     )
     data_provider = HubDataProvider(
         hub_client=hub_client
     )
     model_accessor = HubModelAccessor()
 
-    # before running the state machine, we refresh the diagnosis list of
-    # required user actions
-    remaining_todos = refresh_todos(hub_client)
-
-    if remaining_todos == []:
-        # No more user actions required. Flush log and (re)execute smach
-        hub_client.clear_state_machine_log()
-        try:
-            execute_smach(
-                data_accessor,
-                data_provider,
-                model_accessor
-            )
-            hub_client.set_diagnosis_status("finished")
-        except MissingOBDDataException:
-            hub_client.require_obd_data()
-            hub_client.set_diagnosis_status("action_required")
-        except MissingOscillogramsException as e:
-            for component in e.components:
-                hub_client.require_oscillogram(component)
-            hub_client.set_diagnosis_status("action_required")
-
-    else:
-        hub_client.set_diagnosis_status("action_required")
+    execute_smach(
+        data_accessor,
+        data_provider,
+        model_accessor
+    )
+    hub_client.set_diagnosis_status("finished")
