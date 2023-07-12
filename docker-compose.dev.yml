@@ -52,3 +52,8 @@ services:
     command: celery -A diagnostics.tasks worker --loglevel=INFO
     volumes:
       - ./diagnostics/diagnostics:/home/runtime/diagnostics
+
+  knowledge-graph:
+    build: ./knowledge-graph
+    ports:
+      - 3030:3030
