@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     mongo_username: str
     mongo_password: str
     mongo_db: str
+    minio_host: str
+    minio_username: str
+    minio_password: str
 
     @property
     def mongo_uri(self):
