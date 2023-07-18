@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, Request, Header
 from fastapi.responses import StreamingResponse
 from minio import Minio
 from datetime import timedelta
 from ..settings import settings
+from tempfile import SpooledTemporaryFile
+from typing import Union
 
 tags_metadata = [
     {
@@ -82,6 +84,7 @@ async def get_file(
         media_type = handle.headers['Content-Type']
         headers = {
             "Content-Disposition": f"inline; filename=\"{key_name}\""
+            #"Content-Disposition": f"form-data; name=\"file\"; filename=\"{key_name}\""
         }
 
         def iter():
@@ -104,19 +107,34 @@ async def get_file(
 async def upload_file(
     bucket_name: str,
     key_name: str,
-    file: UploadFile
+    request: Request,
+    content_type: Union[str, None] = Header(default=None),
+    #file: UploadFile = None
 ):
     try:
-        # Using seek is ugly but i don't know a better way right now
         minio_client = get_minio_client()
-        file.file.seek(0, 2)
-        length = file.file.tell()
-        file.file.seek(0)
+        file = SpooledTemporaryFile(512*1024*1024)
+        size = 0
+        async for chunk in request.stream():
+            size = size + len(chunk)
+            file.write(chunk)
+        length = size
+        file.seek(0)
         minio_client.put_object(bucket_name,
                                 key_name,
-                                file.file,
+                                file,
                                 length=length,
-                                content_type=file.content_type)
+                                content_type=content_type)
+        # Using seek is ugly but i don't know a better way right now
+        #file.file.seek(0, 2)
+        #length = file.file.tell()
+        #file.file.seek(0)
+        #minio_client.put_object(bucket_name,
+        #                    key_name,
+        #                    file.file,
+        #                    length=length,
+        #                    content_type=file.content_type)
+
         return key_name
     except Exception as e:
         print(e)
