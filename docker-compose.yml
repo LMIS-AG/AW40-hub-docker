@@ -123,6 +123,8 @@ services:
         - 8185:8185
       volumes:
           - ./edc/configs:/configs
+          - ./edc/vaults:/vaults
+          - ./edc/certs:/certs
 
   api:
     build:

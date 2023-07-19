@@ -22,6 +22,7 @@ dependencies {
     implementation("$groupId:api-observability:$edcVersion")
 
     implementation("$groupId:configuration-filesystem:$edcVersion")
+    implementation("$groupId:vault-filesystem:$edcVersion")
     implementation("$groupId:iam-mock:$edcVersion")
 
     implementation("$groupId:auth-tokenbased:$edcVersion")
