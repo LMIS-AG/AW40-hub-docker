@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, UploadFile, Request, Header
+from fastapi import APIRouter, HTTPException, Request, Header
 from fastapi.responses import StreamingResponse
 from minio import Minio
 from datetime import timedelta
 from ..settings import settings
 from tempfile import SpooledTemporaryFile
 from typing import Union
+import logging
 
 tags_metadata = [
     {
@@ -46,7 +47,7 @@ async def get_file_download_link(
             expires=timedelta(minutes=30)
         )
     except Exception as e:
-        print(e)
+        logging.warning(e)
         raise HTTPException(status_code=403, detail="Item not found")
     return url
 
@@ -66,7 +67,7 @@ async def get_file_upload_link(
             expires=timedelta(minutes=30)
         )
     except Exception as e:
-        print(e)
+        logging.warning(e)
         raise HTTPException(status_code=403, detail="Item not found")
     return url
 
@@ -84,7 +85,6 @@ async def get_file(
         media_type = handle.headers['Content-Type']
         headers = {
             "Content-Disposition": f"inline; filename=\"{key_name}\""
-            #"Content-Disposition": f"form-data; name=\"file\"; filename=\"{key_name}\""
         }
 
         def iter():
@@ -92,11 +92,12 @@ async def get_file(
                 yield chunk
             handle.close()
             handle.release_conn()
+
         return StreamingResponse(iter(),
                                  media_type=media_type,
                                  headers=headers)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         raise HTTPException(status_code=403, detail="Item not found")
 
 
@@ -108,34 +109,22 @@ async def upload_file(
     bucket_name: str,
     key_name: str,
     request: Request,
-    content_type: Union[str, None] = Header(default=None),
-    #file: UploadFile = None
+    content_type: Union[str, None] = Header(default='application/octet-stream')
 ):
     try:
         minio_client = get_minio_client()
-        file = SpooledTemporaryFile(512*1024*1024)
+        file = SpooledTemporaryFile(1024*1024)
         size = 0
         async for chunk in request.stream():
             size = size + len(chunk)
             file.write(chunk)
-        length = size
         file.seek(0)
         minio_client.put_object(bucket_name,
                                 key_name,
                                 file,
-                                length=length,
+                                length=size,
                                 content_type=content_type)
-        # Using seek is ugly but i don't know a better way right now
-        #file.file.seek(0, 2)
-        #length = file.file.tell()
-        #file.file.seek(0)
-        #minio_client.put_object(bucket_name,
-        #                    key_name,
-        #                    file.file,
-        #                    length=length,
-        #                    content_type=file.content_type)
-
         return key_name
     except Exception as e:
-        print(e)
+        logging.warning(e)
         raise HTTPException(status_code=403, detail="Item not found")
