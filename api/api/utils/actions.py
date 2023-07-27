@@ -21,10 +21,22 @@ def _create_action_add_obd():
     }
 
 
+def _create_action_add_symptom(component):
+    return {
+        "id": f"add-data-symptom-{component.lower()}",
+        "instruction": f"Bitte manuelle Untersuchung des Bauteils "
+                       f"'{component}' durchführen und als Symptom "
+                       f"bereitstellen.",
+        "data_type": "symptom",
+        "action_type": "add_data",
+        "component": f"{component}"
+    }
+
+
 def create_action_data():
     all_actions = [
         _create_action_add_obd(),
-        *[_create_action_add_oscillogram(x.value) for x in Component]
-
+        *[_create_action_add_oscillogram(x.value) for x in Component],
+        *[_create_action_add_symptom(x.value) for x in Component]
     ]
     return all_actions
