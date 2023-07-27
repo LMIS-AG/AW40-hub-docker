@@ -41,6 +41,7 @@ class ToDo(Document):
 
 
 class DiagnosisStatus(str, Enum):
+    scheduled = "scheduled"
     action_required = "action_required"
     processing = "processing"
     finished = "finished"
