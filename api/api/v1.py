@@ -5,7 +5,8 @@ from .routers import health, shared, workshop, diagnostics
 all_tags_metadata = [
     *health.tags_metadata,
     *shared.tags_metadata,
-    *workshop.tags_metadata
+    *workshop.tags_metadata,
+    *diagnostics.tags_metadata
 ]
 
 api_v1 = FastAPI(
