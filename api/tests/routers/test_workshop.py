@@ -853,7 +853,7 @@ def test_delete_timeseries_data(
 
     # confirm expected status code and usage of Case.delete_timeseries_data
     assert response.status_code == 200
-    assert delete_timeseries_data.side_effect.awaited_once()
+    delete_timeseries_data.side_effect.assert_awaited_once()
 
 
 def test_list_obd_data(case_data, obd_data, test_app):
