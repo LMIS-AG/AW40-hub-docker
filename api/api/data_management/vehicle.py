@@ -10,6 +10,11 @@ class Component(str, Enum):
     maf_sensor = "Luftmassenmesser"
     lambda_sensor_before_cat = "Lambda Sonde (vor Kat)"
     lambda_sensor_behind_cat = "Lambda Sonde (nach Kat)"
+    ladedruck_magnetventil = "Ladedruck-Magnetventil"
+    ladedruck_regelventil = "Ladedruck-Regelventil"
+    ladedrucksteller_positionssensor = "Ladedrucksteller-Positionssensor"
+    motor_steurgeraet = "Motor-Steuergerät"
+    vtg_abgasturbolader = "VTG-Abgasturbolader"
 
 
 class Vehicle(Document):
