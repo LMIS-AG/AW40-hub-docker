@@ -1,20 +1,26 @@
 from collections import namedtuple
 from tempfile import TemporaryFile
 from unittest import mock
+from bson import ObjectId
 
 import pytest
 from api.data_management import (
-    Case,
-    Vehicle,
-    Customer,
-    Workshop,
     TimeseriesData,
     NewTimeseriesData,
     OBDData,
     NewOBDData,
-    Symptom
+    Symptom,
+    Case,
+    Vehicle,
+    Customer,
+    Workshop,
+    DiagnosisDB,
+    Action,
+    ToDo
 )
-from api.routers.workshop import router, case_from_workshop
+from api.routers.workshop import (
+    router, case_from_workshop, DiagnosticTaskManager
+)
 from beanie import init_beanie
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
@@ -63,13 +69,15 @@ def test_app(motor_db):
     test_app = FastAPI()
     test_app.include_router(router)
 
-    models = [Case, Vehicle, Customer, Workshop]
+    models = [
+        Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+    ]
 
     @test_app.on_event("startup")
     async def init_mongo():
         await init_beanie(
             motor_db,
-            document_models=[Case, Vehicle, Customer, Workshop]
+            document_models=models
         )
         for model in models:
             # make sure all collections are empty at the beginning of each
@@ -181,7 +189,6 @@ async def test_case_from_workshop(get, case_id):
 @mock.patch("api.routers.workshop.Case.get", autospec=True)
 @pytest.mark.asyncio
 async def test_case_from_workshop_is_none(get, case_id):
-
     async def mock_get(*args):
         """Always returns None, e.g. no case found."""
         return None
@@ -299,7 +306,7 @@ def test_list_timeseries_data(case_data, timeseries_data, test_app):
 
     # add timeseries_data multiple times to case_data
     repeats = 2
-    case_data["timeseries_data"] = repeats*[timeseries_data]
+    case_data["timeseries_data"] = repeats * [timeseries_data]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
@@ -320,6 +327,7 @@ def mock_add_timeseries_data(signal_id):
     Create a test mock for Case.add_timeseries_data that does not require
     setup of storage backend and uses a fixed signal_id.
     """
+
     async def add_timeseries_data(self, new_data: NewTimeseriesData):
         # exchange signal and signal_id without accessing signal store
         meta_data = new_data.dict(exclude={"signal"})
@@ -854,7 +862,7 @@ def test_list_obd_data(case_data, obd_data, test_app):
 
     # add obd_data multiple times to case_data
     repeats = 2
-    case_data["obd_data"] = repeats*[obd_data]
+    case_data["obd_data"] = repeats * [obd_data]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
@@ -875,6 +883,7 @@ def mock_add_obd_data():
     Create a test mock for Case.add_obd_data that does not require
     setup of storage backend.
     """
+
     async def add_obd_data(self, new_obd_data: NewOBDData):
         obd_data = OBDData(data_id=self.obd_data_added, **new_obd_data.dict())
         self.obd_data.append(obd_data)
@@ -1121,7 +1130,7 @@ def test_list_symptoms(case_data, symptom, test_app):
 
     # add symptom multiple times to case_data
     repeats = 2
-    case_data["symptoms"] = repeats*[symptom]
+    case_data["symptoms"] = repeats * [symptom]
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
@@ -1319,3 +1328,140 @@ def test_delete_symptom(save, case_data, symptom, test_app):
     assert len(saved_cases) == 1
     # confirm response data represents case after saving
     assert Case(**response.json()) == saved_cases[0]
+
+
+def test_get_diagnosis_no_diag(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    test_app.dependency_overrides = {
+        case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
+    }
+
+    with TestClient(test_app) as client:
+        response = client.get(f"/{workshop_id}/cases/{case_id}/diag")
+
+    assert response.status_code == 200
+    assert response.json() is None
+
+
+def test_get_diagnosis(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
+
+    @test_app.on_event("startup")
+    async def add_test_data_to_db():
+        diag_db = DiagnosisDB(**diag_db_data)
+        await diag_db.create()
+        case_data["diagnosis_id"] = diag_db.id
+        await Case(**case_data).create()
+
+    with TestClient(test_app) as client:
+        response = client.get(f"/{workshop_id}/cases/{case_id}/diag")
+
+    assert response.status_code == 200
+    diag_response = response.json()
+    assert diag_response["case_id"] == case_id
+    assert diag_response["state_machine_log"] == diag_db_data[
+        "state_machine_log"
+    ]
+
+
+def test_start_diagnosis_already_exists(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
+
+    @test_app.on_event("startup")
+    async def add_test_data_to_db():
+        diag_db = DiagnosisDB(**diag_db_data)
+        await diag_db.create()
+        case_data["diagnosis_id"] = diag_db.id
+        await Case(**case_data).create()
+
+    class TestDiagnosticTaskManager:
+        def __call__(self, diagnosis_id):
+            raise Exception("This dependency is not expected to be called")
+
+    test_app.dependency_overrides[
+        DiagnosticTaskManager
+    ] = TestDiagnosticTaskManager
+
+    with TestClient(test_app) as client:
+        response = client.post(f"/{workshop_id}/cases/{case_id}/diag")
+
+    assert response.status_code == 201
+    diag_response = response.json()
+    assert diag_response["case_id"] == case_id
+    assert diag_response["state_machine_log"] == diag_db_data[
+        "state_machine_log"
+    ]
+
+
+def test_start_diagnosis(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    @test_app.on_event("startup")
+    async def add_test_data_to_db():
+        await Case(**case_data).create()
+
+    class TestDiagnosticTaskManager:
+        calls = []
+
+        async def __call__(self, diagnosis_id):
+            self.calls.append(diagnosis_id)
+
+    test_app.dependency_overrides[
+        DiagnosticTaskManager
+    ] = TestDiagnosticTaskManager
+
+    with TestClient(test_app) as client:
+        response = client.post(f"/{workshop_id}/cases/{case_id}/diag")
+
+        assert response.status_code == 201
+        diag_response = response.json()
+        assert diag_response["case_id"] == case_id
+        assert diag_response["status"] == "scheduled"
+        assert TestDiagnosticTaskManager.calls == [
+            ObjectId(diag_response["_id"])
+        ]
+
+        # Not so pretty: Endpoints that are not under test are used to confirm
+        # expected change of db state
+        client.get(f"/{workshop_id}/cases/{case_id}/diag").json()[
+            "case_id"
+        ] == case_id
+        client.get(f"/{workshop_id}/cases/{case_id}").json()[
+            "diagnosis_id"
+        ] == diag_response["_id"]
+
+
+def test_delete_diagnosis(case_data, test_app):
+    workshop_id = case_data["workshop_id"]
+    case_id = case_data["_id"]
+
+    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
+
+    @test_app.on_event("startup")
+    async def add_test_data_to_db():
+        diag_db = DiagnosisDB(**diag_db_data)
+        await diag_db.create()
+        case_data["diagnosis_id"] = diag_db.id
+        await Case(**case_data).create()
+
+    with TestClient(test_app) as client:
+        response = client.delete(f"/{workshop_id}/cases/{case_id}/diag")
+
+        assert response.status_code == 200
+        assert response.json() is None
+
+        # Not so pretty: Endpoints that are not under test are used to confirm
+        # expected change of db state
+        client.get(f"/{workshop_id}/cases/{case_id}/diag").json() is None
+        client.get(f"/{workshop_id}/cases/{case_id}").json()[
+            "diagnosis_id"
+        ] is None
