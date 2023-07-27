@@ -1,5 +1,8 @@
+import smach
+
 from celery import Celery
 from vehicle_diag_smach.data_types.state_transition import StateTransition
+from vehicle_diag_smach.high_level_smach import VehicleDiagnosisStateMachine
 
 from .hub_client import HubClient
 from .interfaces import (
@@ -8,54 +11,31 @@ from .interfaces import (
     HubModelAccessor
 )
 
+
+# Make smach less verbose by disabling non-error logging
+def dont_log(msg):
+    pass
+
+
+def log_err(msg):
+    print("[ ERROR ] : " + str(msg))
+
+
+smach.set_loggers(
+    info=dont_log, warn=dont_log, debug=dont_log, error=log_err
+)
+
 # configuration
 REDIS_HOST = "redis"
 HUB_URL = "http://api:8000/v1"
 DATA_POLL_INTERVAL = 1
+MODELS_DIR = "models"
+KG_URL = "http://knowledge-graph:3030"
 
 # configuration is resolved
 redis_uri = f"redis://{REDIS_HOST}:6379"
 app = Celery("tasks", broker=redis_uri, backend=redis_uri)
 app.conf.update(timezone="UTC")
-
-
-def execute_smach(
-        data_accessor: HubDataAccessor,
-        data_provider: HubDataProvider,
-        model_accessor: HubModelAccessor
-):
-    """Mocks execution of the actual state machine"""
-    print(data_accessor.get_workshop_info())
-    data_provider.provide_state_transition(
-        StateTransition("GET_WORKSHOP_INFO", "GET_OBD_DATA", "LINK")
-    )
-
-    print(data_accessor.get_obd_data())
-    data_provider.provide_state_transition(
-        StateTransition("GET_OBD_DATA", "GET_OSCILLOGRAMS_DATA", "LINK")
-    )
-
-    print(data_accessor.get_oscillograms_by_components(["Batterie"]))
-    data_provider.provide_state_transition(
-        StateTransition("GET_OSCILLOGRAMS_DATA", "GET_MODEL", "LINK")
-    )
-
-    print(
-        model_accessor.get_keras_univariate_ts_classification_model_by_component(
-            "Batterie"
-        )
-    )
-    data_provider.provide_state_transition(
-        StateTransition("GET_MODEL", "FINISH_DIAG", "LINK")
-    )
-
-    # TODO: provider functions for images
-
-    print(
-        data_provider.provide_diagnosis(
-            ["fault-path-step-1", "fault-path-step-2"]
-        )
-    )
 
 
 @app.task
@@ -76,11 +56,17 @@ def diagnose(diag_id):
     data_provider = HubDataProvider(
         hub_client=hub_client
     )
-    model_accessor = HubModelAccessor()
+    model_accessor = HubModelAccessor(models_dir=MODELS_DIR)
 
-    execute_smach(
-        data_accessor,
-        data_provider,
-        model_accessor
+    # instantiate state machine
+    sm = VehicleDiagnosisStateMachine(
+        data_accessor=data_accessor,
+        data_provider=data_provider,
+        model_accessor=model_accessor,
+        kg_url=KG_URL
     )
+
+    # execute diagnosis
+    hub_client.set_diagnosis_status("processing")
+    sm.execute()
     hub_client.set_diagnosis_status("finished")
