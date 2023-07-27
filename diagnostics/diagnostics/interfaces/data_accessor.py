@@ -57,9 +57,9 @@ class HubDataAccessor(DataAccessor):
         vehicle = self.hub_client.get_vehicle()
         return OnboardDiagnosisData(
             dtc_list=dtcs,
-            model=vehicle.get("model"),
+            model=vehicle.get("model", ""),
             hsn=vehicle.get("hsn", ""),
-            tsn=vehicle.get("tsn"),
+            tsn=vehicle.get("tsn", ""),
             vin=vehicle.get("vin")
         )
 
