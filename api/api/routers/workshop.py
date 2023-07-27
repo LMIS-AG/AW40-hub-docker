@@ -646,7 +646,8 @@ async def start_diagnosis(
     else:
         # New diagnosis is initialized
         diag_db = DiagnosisDB(
-            case_id=case.id
+            case_id=case.id,
+            status="scheduled"
         )
         await diag_db.create()
         case.diagnosis_id = diag_db.id
