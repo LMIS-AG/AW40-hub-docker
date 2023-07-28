@@ -12,7 +12,8 @@ from ..data_management import (
     Vehicle,
     Component,
     ToDo,
-    Action
+    Action,
+    Symptom
 )
 
 tags_metadata = [
@@ -76,6 +77,18 @@ async def get_oscillograms(diag_id: str, component: Component):
                 await tsd.get_signal()
             )
     return signals
+
+
+@router.get(
+    "/{diag_id}/symptoms",
+    status_code=200,
+    response_model=List[Symptom]
+)
+async def get_symptoms(diag_id: str, component: Component):
+    """Get all symptoms for a specific component."""
+    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
+    symptoms = [s for s in case.symptoms if s.component == component]
+    return symptoms
 
 
 @router.get(
