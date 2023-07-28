@@ -1,7 +1,6 @@
 from collections import namedtuple
 from tempfile import TemporaryFile
 from unittest import mock
-from bson import ObjectId
 
 import pytest
 from api.data_management import (
@@ -22,8 +21,10 @@ from api.routers.workshop import (
     router, case_from_workshop, DiagnosticTaskManager
 )
 from beanie import init_beanie
+from bson import ObjectId
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 
 @pytest.fixture
@@ -1345,123 +1346,144 @@ def test_get_diagnosis_no_diag(case_data, test_app):
     assert response.json() is None
 
 
-def test_get_diagnosis(case_data, test_app):
-    workshop_id = case_data["workshop_id"]
-    case_id = case_data["_id"]
-
-    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
-
-    @test_app.on_event("startup")
-    async def add_test_data_to_db():
+@pytest.mark.asyncio
+async def test_get_diagnosis(case_data, test_app, initialized_beanie_context):
+    async with initialized_beanie_context:
+        workshop_id = case_data["workshop_id"]
+        case_id = case_data["_id"]
+        # seed db with diagnosis and associated case
+        diag_db_data = {
+            "case_id": case_id,
+            "state_machine_log": ["msg1", "msg2"]
+        }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
         case_data["diagnosis_id"] = diag_db.id
         await Case(**case_data).create()
 
-    with TestClient(test_app) as client:
-        response = client.get(f"/{workshop_id}/cases/{case_id}/diag")
+        # execute test request
+        client = AsyncClient(app=test_app, base_url="http://")
+        response = await client.get(f"{workshop_id}/cases/{case_id}/diag")
 
-    assert response.status_code == 200
-    diag_response = response.json()
-    assert diag_response["case_id"] == case_id
-    assert diag_response["state_machine_log"] == diag_db_data[
-        "state_machine_log"
-    ]
+        # confirm expected response data
+        assert response.status_code == 200
+        diag_response = response.json()
+        assert diag_response["case_id"] == case_id
+        assert diag_response["state_machine_log"] == diag_db_data[
+            "state_machine_log"
+        ]
 
 
-def test_start_diagnosis_already_exists(case_data, test_app):
-    workshop_id = case_data["workshop_id"]
-    case_id = case_data["_id"]
-
-    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
-
-    @test_app.on_event("startup")
-    async def add_test_data_to_db():
+@pytest.mark.asyncio
+async def test_start_diagnosis_already_exists(
+        case_data, test_app, initialized_beanie_context
+):
+    async with initialized_beanie_context:
+        workshop_id = case_data["workshop_id"]
+        case_id = case_data["_id"]
+        # seed db with diagnosis and associated case
+        diag_db_data = {
+            "case_id": case_id,
+            "state_machine_log": ["msg1", "msg2"]
+        }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
         case_data["diagnosis_id"] = diag_db.id
         await Case(**case_data).create()
 
-    class TestDiagnosticTaskManager:
-        def __call__(self, diagnosis_id):
-            raise Exception("This dependency is not expected to be called")
+        # overwrite DiagnosticTaskManager dependency. It should not be called.
+        class TestDiagnosticTaskManager:
+            async def __call__(self, diagnosis_id):
+                raise Exception("This dependency is not expected to be called")
 
-    test_app.dependency_overrides[
-        DiagnosticTaskManager
-    ] = TestDiagnosticTaskManager
+        test_app.dependency_overrides[
+            DiagnosticTaskManager
+        ] = TestDiagnosticTaskManager
 
-    with TestClient(test_app) as client:
-        response = client.post(f"/{workshop_id}/cases/{case_id}/diag")
+        # execute test request
+        client = AsyncClient(app=test_app, base_url="http://")
+        response = await client.post(f"{workshop_id}/cases/{case_id}/diag")
 
-    assert response.status_code == 201
-    diag_response = response.json()
-    assert diag_response["case_id"] == case_id
-    assert diag_response["state_machine_log"] == diag_db_data[
-        "state_machine_log"
-    ]
+        # confirm expected response data
+        assert response.status_code == 201
+        diag_response = response.json()
+        assert diag_response["case_id"] == case_id
+        assert diag_response["state_machine_log"] == diag_db_data[
+            "state_machine_log"
+        ]
 
 
-def test_start_diagnosis(case_data, test_app):
-    workshop_id = case_data["workshop_id"]
-    case_id = case_data["_id"]
-
-    @test_app.on_event("startup")
-    async def add_test_data_to_db():
+@pytest.mark.asyncio
+async def test_start_diagnosis(
+        case_data, test_app, initialized_beanie_context
+):
+    async with initialized_beanie_context:
+        workshop_id = case_data["workshop_id"]
+        case_id = case_data["_id"]
+        # seed db with case
         await Case(**case_data).create()
 
-    class TestDiagnosticTaskManager:
-        calls = []
+        # overwrite DiagnosticTaskManager dependency
+        class TestDiagnosticTaskManager:
+            calls = []
 
-        async def __call__(self, diagnosis_id):
-            self.calls.append(diagnosis_id)
+            async def __call__(self, diagnosis_id):
+                self.calls.append(diagnosis_id)
 
-    test_app.dependency_overrides[
-        DiagnosticTaskManager
-    ] = TestDiagnosticTaskManager
+        test_app.dependency_overrides[
+            DiagnosticTaskManager
+        ] = TestDiagnosticTaskManager
 
-    with TestClient(test_app) as client:
-        response = client.post(f"/{workshop_id}/cases/{case_id}/diag")
+        # execute test request
+        client = AsyncClient(app=test_app, base_url="http://")
+        response = await client.post(f"{workshop_id}/cases/{case_id}/diag")
 
+        # confirm expected response data
         assert response.status_code == 201
         diag_response = response.json()
         assert diag_response["case_id"] == case_id
         assert diag_response["status"] == "scheduled"
+
+        # confirm that diagnosis id was handed over to task manager
         assert TestDiagnosticTaskManager.calls == [
             ObjectId(diag_response["_id"])
         ]
 
-        # Not so pretty: Endpoints that are not under test are used to confirm
-        # expected change of db state
-        client.get(f"/{workshop_id}/cases/{case_id}/diag").json()[
-            "case_id"
-        ] == case_id
-        client.get(f"/{workshop_id}/cases/{case_id}").json()[
-            "diagnosis_id"
-        ] == diag_response["_id"]
+        # confirm expected state in db
+        case_db = await Case.get(case_id)
+        diag_db = await DiagnosisDB.get(diag_response["_id"])
+        assert case_db.diagnosis_id == diag_db.id
 
 
-def test_delete_diagnosis(case_data, test_app):
-    workshop_id = case_data["workshop_id"]
-    case_id = case_data["_id"]
-
-    diag_db_data = {"case_id": case_id, "state_machine_log": ["msg1", "msg2"]}
-
-    @test_app.on_event("startup")
-    async def add_test_data_to_db():
+@pytest.mark.asyncio
+async def test_delete_diagnosis(
+        case_data,
+        test_app,
+        initialized_beanie_context
+):
+    async with initialized_beanie_context:
+        workshop_id = case_data["workshop_id"]
+        case_id = case_data["_id"]
+        # seed db with diagnosis and associated case
+        diag_db_data = {
+            "case_id": case_id,
+            "state_machine_log": ["msg1", "msg2"]
+        }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
         case_data["diagnosis_id"] = diag_db.id
         await Case(**case_data).create()
 
-    with TestClient(test_app) as client:
-        response = client.delete(f"/{workshop_id}/cases/{case_id}/diag")
+        # execute test request
+        client = AsyncClient(app=test_app, base_url="http://")
+        response = await client.delete(f"{workshop_id}/cases/{case_id}/diag")
 
+        # confirm expected response data
         assert response.status_code == 200
         assert response.json() is None
 
-        # Not so pretty: Endpoints that are not under test are used to confirm
-        # expected change of db state
-        client.get(f"/{workshop_id}/cases/{case_id}/diag").json() is None
-        client.get(f"/{workshop_id}/cases/{case_id}").json()[
-            "diagnosis_id"
-        ] is None
+        # confirm expected state in db
+        case_db = await Case.get(case_id)
+        diag_db = await DiagnosisDB.get(diag_db.id)
+        assert case_db.diagnosis_id is None
+        assert diag_db is None
