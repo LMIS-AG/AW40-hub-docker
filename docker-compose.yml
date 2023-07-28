@@ -126,6 +126,21 @@ services:
           - ./edc/vaults:/vaults
           - ./edc/certs:/certs
 
+  edc-database:
+      build:
+          context: ./edc-db
+      env_file:
+          - edc-db/edc-db.env
+      hostname: "edc-db"
+      networks:
+          - hubnet
+      ports:
+          - '5432:5432'
+      volumes:
+          - ./edc-db-data:/var/lib/postgresql/data:/var/lib/postgresql/data
+          - ./edc/sql_tables/asset_schema.sql:/docker-entrypoint-initdb.d/asset_schema.sql
+          - ./edc/sql_tables/policy_schema.sql:/docker-entrypoint-initdb.d/policy_schema.sql
+
   api:
     build:
       context: ./api
