@@ -35,6 +35,10 @@ class HubClient:
         return f"{self.diag_url}/oscillograms"
 
     @property
+    def symptoms_url(self) -> str:
+        return f"{self.diag_url}/symptoms"
+
+    @property
     def todos_url(self) -> str:
         return f"{self.diag_url}/todos"
 
@@ -46,7 +50,7 @@ class HubClient:
         httpx.get(self.ping_url).raise_for_status()
 
     @staticmethod
-    def _get_from_url(url: str, query_params: dict = {}) -> dict:
+    def _get_from_url(url: str, query_params: dict = {}):
         response = httpx.get(url, params=query_params)
         response.raise_for_status()
         return response.json()
@@ -63,6 +67,11 @@ class HubClient:
     def get_oscillograms(self, component: str) -> List[List[float]]:
         return self._get_from_url(
             self.oscillograms_url, query_params={"component": component}
+        )
+
+    def get_symptoms(self, component: str) -> List[dict]:
+        return self._get_from_url(
+            self.symptoms_url, query_params={"component": component}
         )
 
     def get_todos(self) -> List[dict]:
@@ -92,6 +101,14 @@ class HubClient:
 
     def unrequire_oscillogram(self, component: str):
         action_id = f"add-data-oscillogram-{component.lower()}"
+        return self._unrequire_action(action_id)
+
+    def require_symptom(self, component: str):
+        action_id = f"add-data-symptom-{component.lower()}"
+        return self._require_action(action_id)
+
+    def unrequire_symptom(self, component: str):
+        action_id = f"add-data-symptom-{component.lower()}"
         return self._unrequire_action(action_id)
 
     def clear_state_machine_log(self):

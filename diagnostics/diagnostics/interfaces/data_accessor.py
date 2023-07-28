@@ -108,8 +108,42 @@ class HubDataAccessor(DataAccessor):
     def get_customer_complaints(self) -> CustomerComplaintData:
         return CustomerComplaintData()
 
+    def _wait_for_symptom(self, component: str) -> List:
+        print(
+            f"Waiting for Hub symptom for '{component}' ..."
+        )
+        symptoms = []
+        while symptoms == []:
+            sleep(self.data_poll_interval)
+            symptoms = self.hub_client.get_symptoms(component)
+        return symptoms
+
+    def _get_symptom(self, component: str) -> dict:
+        symptoms = self.hub_client.get_symptoms(component)
+        if symptoms == []:
+            self.hub_client.require_symptom(component)
+            self.hub_client.set_diagnosis_status("action_required")
+            symptoms = self._wait_for_symptom(component)
+            self.hub_client.set_diagnosis_status("processing")
+            self.hub_client.unrequire_symptom(component)
+
+        if len(symptoms) == 1:
+            return symptoms[0]
+        else:
+            raise ValueError(
+                f"Got more than one Symptom for "
+                f"component {component}. This cannot be handled yet."
+            )
+
     def get_manual_judgement_for_component(self, component: str) -> bool:
-        return False
+        symptom = self._get_symptom(component=component)
+        label = symptom["label"]
+        if label == "defekt":
+            return True
+        elif label in ["nicht defekt", "keine Angabe"]:
+            return False
+        else:
+            raise ValueError("Unknown symptom label '{label}'")
 
     def get_manual_judgement_for_sensor(self) -> bool:
         return False
