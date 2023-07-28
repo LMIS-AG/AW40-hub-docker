@@ -1,7 +1,7 @@
 from typing import List
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException, Body, Depends
 
 from ..data_management import (
     Case,
@@ -23,8 +23,25 @@ tags_metadata = [
     }
 ]
 
-
 router = APIRouter(tags=["Diagnostics"])
+
+
+async def _diag_db_by_id_or_404(diag_id: str):
+    diag_db = await DiagnosisDB.get(diag_id)
+    if diag_db is None:
+        raise HTTPException(
+            status_code=404, detail=f"No diagnosis with ID '{diag_id}'"
+        )
+    return diag_db
+
+
+async def _case_by_diag_id_or_404(diag_id: str):
+    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
+    if case is None:
+        raise HTTPException(
+            status_code=404, detail=f"No diagnosis with ID '{diag_id}'"
+        )
+    return case
 
 
 @router.get(
@@ -32,9 +49,8 @@ router = APIRouter(tags=["Diagnostics"])
     status_code=200,
     response_model=Diagnosis
 )
-async def get_diagnosis(diag_id: str):
+async def get_diagnosis(diag_db: DiagnosisDB = Depends(_diag_db_by_id_or_404)):
     """Get data of a diagnosis."""
-    diag_db = await DiagnosisDB.get(diag_id)
     diag = await diag_db.to_diagnosis()
     return diag
 
@@ -44,9 +60,8 @@ async def get_diagnosis(diag_id: str):
     status_code=200,
     response_model=List[OBDData]
 )
-async def get_obd_data(diag_id: str):
+async def get_obd_data(case: Case = Depends(_case_by_diag_id_or_404)):
     """Get OBD data for a diagnosis."""
-    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
     return case.obd_data
 
 
@@ -55,9 +70,8 @@ async def get_obd_data(diag_id: str):
     status_code=200,
     response_model=Vehicle
 )
-async def get_vehicle(diag_id: str):
+async def get_vehicle(case: Case = Depends(_case_by_diag_id_or_404)):
     """Get vehicle data for a diagnosis."""
-    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
     vehicle = await Vehicle.find_one({"vin": case.vehicle_vin})
     return vehicle
 
@@ -67,9 +81,11 @@ async def get_vehicle(diag_id: str):
     status_code=200,
     response_model=List[List[float]]
 )
-async def get_oscillograms(diag_id: str, component: Component):
+async def get_oscillograms(
+        component: Component,
+        case: Case = Depends(_case_by_diag_id_or_404)
+):
     """Get all oscillograms for a specific component."""
-    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
     signals = []
     for tsd in case.timeseries_data:
         if tsd.component == component:
@@ -84,9 +100,10 @@ async def get_oscillograms(diag_id: str, component: Component):
     status_code=200,
     response_model=List[Symptom]
 )
-async def get_symptoms(diag_id: str, component: Component):
+async def get_symptoms(
+        component: Component, case: Case = Depends(_case_by_diag_id_or_404)
+):
     """Get all symptoms for a specific component."""
-    case = await Case.find_one({"diagnosis_id": ObjectId(diag_id)})
     symptoms = [s for s in case.symptoms if s.component == component]
     return symptoms
 
@@ -96,17 +113,16 @@ async def get_symptoms(diag_id: str, component: Component):
     status_code=201,
     response_model=ToDo
 )
-async def create_todo(diag_id: str, action_id: str):
+async def create_todo(
+        action_id: str, diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
+):
     """Require a user action for a diagnosis."""
-    diag = await DiagnosisDB.get(diag_id)
     action = await Action.get(action_id)
-    if diag is None:
-        raise HTTPException(404, detail=f"No diagnosis '{diag_id}'")
     if action is None:
         raise HTTPException(404, detail=f"No action '{action_id}'")
     # Requireing a user action is done by inserting a new entry for this
     # diagnosis-action pair in the todos collection
-    todo = ToDo(diagnosis_id=diag_id, action_id=action_id)
+    todo = ToDo(diagnosis_id=diag.id, action_id=action_id)
     todo = await todo.create()
     return todo
 
@@ -116,14 +132,15 @@ async def create_todo(diag_id: str, action_id: str):
     status_code=200,
     response_model=None
 )
-async def delete_todo(diag_id: str, action_id: str):
+async def delete_todo(
+        action_id: str, diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
+):
     """Remove a required user action from a diagnosis."""
-    diag = await DiagnosisDB.get(diag_id)
     action = await Action.get(action_id)
-    if diag is None or action is None:
-        raise HTTPException(404)
+    if action is None:
+        raise HTTPException(404, detail=f"No action '{action_id}'")
     todo = await ToDo.find_one(
-        {"action_id": action_id, "diagnosis_id": ObjectId(diag_id)}
+        {"action_id": action_id, "diagnosis_id": diag.id}
     )
     if todo is not None:
         await todo.delete()
@@ -136,9 +153,9 @@ async def delete_todo(diag_id: str, action_id: str):
     response_model=List[str]
 )
 async def add_message_to_state_machine_log(
-        diag_id: str, message: str = Body(title="Message to be added to log.")
+        message: str = Body(title="Message to be added to log."),
+        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
 ):
-    diag = await DiagnosisDB.get(diag_id)
     diag.state_machine_log.append(message)
     await diag.save()
     return diag.state_machine_log
@@ -150,9 +167,9 @@ async def add_message_to_state_machine_log(
     response_model=List[str]
 )
 async def set_state_machine_log(
-        diag_id: str, log: List[str]
+        log: List[str],
+        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
 ):
-    diag = await DiagnosisDB.get(diag_id)
     diag.state_machine_log = log
     await diag.save()
     return diag.state_machine_log
@@ -164,9 +181,9 @@ async def set_state_machine_log(
     response_model=DiagnosisStatus
 )
 async def set_state_machine_status(
-        diag_id: str, status: DiagnosisStatus = Body(title="New status")
+        status: DiagnosisStatus = Body(title="New status"),
+        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
 ):
-    diag = await DiagnosisDB.get(diag_id)
     diag.status = status
     await diag.save()
     return diag.status
