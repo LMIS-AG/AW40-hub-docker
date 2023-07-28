@@ -91,18 +91,6 @@ async def get_symptoms(diag_id: str, component: Component):
     return symptoms
 
 
-@router.get(
-    "/{diag_id}/todos",
-    status_code=200,
-    response_model=List[Action]
-)
-async def get_todos(diag_id: str):
-    """Get data of a diagnosis."""
-    diag_db = await DiagnosisDB.get(diag_id)
-    diag = await diag_db.to_diagnosis()
-    return diag.todos
-
-
 @router.post(
     "/{diag_id}/todos/{action_id}",
     status_code=201,
