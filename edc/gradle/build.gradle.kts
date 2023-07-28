@@ -47,7 +47,13 @@ dependencies {
 
     implementation("$edcGroupId:asset-index-sql:$edcVersion")
     implementation("$edcGroupId:policy-definition-store-sql:$edcVersion")
+    implementation("$edcGroupId:contract-definition-store-sql:$edcVersion")
+    implementation("$edcGroupId:contract-negotiation-store-sql:$edcVersion")
+    implementation("$edcGroupId:transfer-process-store-sql:$edcVersion")
+
     implementation("$edcGroupId:sql-pool-apache-commons:$edcVersion")
+    implementation("$edcGroupId:transaction-local:$edcVersion")
+    implementation("$edcGroupId:transaction-datasource-spi:$edcVersion")
     implementation("$postgresqlGroupId:postgresql:$postgresqlVersion")
 }
 
