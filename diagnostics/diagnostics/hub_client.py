@@ -74,9 +74,6 @@ class HubClient:
             self.symptoms_url, query_params={"component": component}
         )
 
-    def get_todos(self) -> List[dict]:
-        return self._get_from_url(self.todos_url)
-
     def _require_action(self, action_id) -> dict:
         url = f"{self.todos_url}/{action_id}"
         response = httpx.post(url)
