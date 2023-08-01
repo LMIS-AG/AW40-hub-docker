@@ -2,7 +2,12 @@ from typing import List, Union, Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi import (
+    APIRouter, HTTPException, Depends, UploadFile, File, Form
+)
+from fastapi import Request
+from fastapi.responses import Response, HTMLResponse
+from motor import motor_asyncio
 from pydantic import NonNegativeInt, PositiveInt
 
 from ..data_management import (
@@ -24,7 +29,8 @@ from ..data_management import (
     VehicleUpdate,
     Customer,
     Diagnosis,
-    DiagnosisDB
+    DiagnosisDB,
+    AttachmentBucket
 )
 from ..diagnostics_management import DiagnosticTaskManager
 from ..upload_filereader import filereader_factory, FileReaderException
@@ -43,7 +49,6 @@ tags_metadata = [
         "description": "Manage diagnosis of a case."
     }
 ]
-
 
 router = APIRouter()
 
@@ -86,10 +91,10 @@ async def case_from_workshop(workshop_id: str, case_id: str) -> Case:
     """
 
     no_case_with_id_exception = HTTPException(
-            status_code=404,
-            detail=f"No case with id '{case_id}' found "
-                   f"for workshop '{workshop_id}'."
-        )
+        status_code=404,
+        detail=f"No case with id '{case_id}' found "
+               f"for workshop '{workshop_id}'."
+    )
 
     try:
         case_id = ObjectId(case_id)
@@ -215,25 +220,29 @@ def read_file_or_400(upload: UploadFile, file_format: str) -> list:
 
 def channel_description_form(
         component_A: Component = Form(
-            default=None, description="The investigated vehicle component"),
+            default=None, description="The investigated vehicle component"
+        ),
         label_A: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
         component_B: Component = Form(
-            default=None, description="The investigated vehicle component"),
+            default=None, description="The investigated vehicle component"
+        ),
         label_B: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
         component_C: Component = Form(
-            default=None, description="The investigated vehicle component"),
+            default=None, description="The investigated vehicle component"
+        ),
         label_C: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
         component_D: Component = Form(
-            default=None, description="The investigated vehicle component"),
+            default=None, description="The investigated vehicle component"
+        ),
         label_D: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
@@ -383,7 +392,8 @@ async def get_timeseries_data(
 @router.get(
     "/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/signal",
     status_code=200,
-    tags=["Workshop - Data Management"])
+    tags=["Workshop - Data Management"]
+)
 async def get_timeseries_data_signal(
         data_id: NonNegativeInt, case: Case = Depends(case_from_workshop)
 ) -> TimeseriesData:
@@ -673,3 +683,76 @@ async def delete_diagnosis(case: Case = Depends(case_from_workshop)):
     case.diagnosis_id = None
     await case.save()
     return None
+
+
+@router.get(
+    "/{workshop_id}/cases/{case_id}/diag/report",
+    status_code=200,
+    response_class=HTMLResponse,
+    tags=["Workshop - Diagnostics"]
+)
+async def get_diagnosis_report(
+        request: Request,
+        case: Case = Depends(case_from_workshop)
+):
+    """
+    Dynamically generates a HTML report for a diagnosis until we have a proper
+    user interface.
+    """
+    diag_db = await DiagnosisDB.get(case.diagnosis_id)
+    diag = await diag_db.to_diagnosis()
+    report_rows = ""
+    for log_entry in diag.state_machine_log:
+        link_to_attachment = ""
+        if log_entry.attachment:
+            href = f"{request.url}/attachments/{log_entry.attachment}"
+            link_to_attachment = f"<a href={href}> link </a>"
+        report_rows += (
+            f"<tr><td>{log_entry.message}</td><td>"
+            f"{link_to_attachment}</td></tr>"
+        )
+    for todo in diag.todos:
+        report_rows += f"<tr><td><b>{todo.instruction}</b></td><td></td></tr>"
+    report = f"""
+    <html>
+        <head>
+            <style>
+                th {{text-align: left;}}
+            </style>
+            <title>Diagnose Report</title>
+        </head>
+        <body>
+            <p><b>Fall</b> {case.id} <b>Diagnose Status</b> {diag.status}</p>
+            <h2> Diagnose Log </h2>
+            <table>
+                <tr>
+                    <th>Nachricht</th>
+                    <th>Anhang</th>
+                </tr>
+                {report_rows}
+            </table>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=report)
+
+
+@router.get(
+    "/{workshop_id}/cases/{case_id}/diag/report/attachments/{attachment_id}",
+    status_code=200,
+    response_class=Response,
+    tags=["Workshop - Diagnostics"]
+)
+async def get_report_attachment(
+        attachment_id: str,
+        case: Case = Depends(case_from_workshop),
+        attachment_bucket: motor_asyncio.AsyncIOMotorGridFSBucket = Depends(
+            AttachmentBucket.create
+        )
+):
+    """Retrieve a specific attachment from a diagnosis report."""
+    attachment = await attachment_bucket.open_download_stream(
+        ObjectId(attachment_id)
+    )
+    content = await attachment.read()
+    return Response(content=content, media_type="image/png")
