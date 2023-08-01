@@ -109,11 +109,18 @@ class HubClient:
         return self._unrequire_action(action_id)
 
     def clear_state_machine_log(self):
-        httpx.put(self.state_machine_log_url, json=[])
+        raise NotImplementedError
 
-    def add_to_state_machine_log(self, message: str):
-        httpx.post(self.state_machine_log_url, json=message)
+    def add_to_state_machine_log(self, message: str, attachment=None):
+        files = None
+        if attachment is not None:
+            files = {"attachment": attachment}
+        httpx.post(
+            self.state_machine_log_url,
+            data={"message": message},
+            files=files
+        ).raise_for_status()
 
     def set_diagnosis_status(self, status: str):
         url = f"{self.diag_url}/status"
-        httpx.put(url, json=status)
+        httpx.put(url, json=status).raise_for_status()
