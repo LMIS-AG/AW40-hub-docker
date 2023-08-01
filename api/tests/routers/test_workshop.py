@@ -1354,7 +1354,7 @@ async def test_get_diagnosis(case_data, test_app, initialized_beanie_context):
         # seed db with diagnosis and associated case
         diag_db_data = {
             "case_id": case_id,
-            "state_machine_log": ["msg1", "msg2"]
+            "state_machine_log": [{"message": "msg", "attachment": None}]
         }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
@@ -1384,7 +1384,7 @@ async def test_start_diagnosis_already_exists(
         # seed db with diagnosis and associated case
         diag_db_data = {
             "case_id": case_id,
-            "state_machine_log": ["msg1", "msg2"]
+            "state_machine_log": [{"message": "msg", "attachment": None}]
         }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
@@ -1467,7 +1467,7 @@ async def test_delete_diagnosis(
         # seed db with diagnosis and associated case
         diag_db_data = {
             "case_id": case_id,
-            "state_machine_log": ["msg1", "msg2"]
+            "state_machine_log": [{"message": "msg", "attachment": None}]
         }
         diag_db = DiagnosisDB(**diag_db_data)
         await diag_db.create()
