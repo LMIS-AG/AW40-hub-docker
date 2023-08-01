@@ -69,6 +69,19 @@ def initialized_beanie_context(motor_db):
 
 
 @pytest.fixture
+def signal_bucket(motor_db):
+    test_bucket_name = "signals-pytest"  # dedicated test bucket
+    test_bucket = motor_asyncio.AsyncIOMotorGridFSBucket(
+        motor_db, bucket_name=test_bucket_name
+    )
+    yield test_bucket
+
+    # teardown by dropping the test bucket gridfs collections
+    motor_db.drop_collection(f"{test_bucket_name}.files")
+    motor_db.drop_collection(f"{test_bucket_name}.chunks")
+
+
+@pytest.fixture
 def timeseries_meta_data():
     """Valid timeseries meta data"""
     return {
