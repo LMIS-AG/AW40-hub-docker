@@ -6,7 +6,7 @@ from motor import motor_asyncio
 
 from .data_management import (
     Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
-    ToDo
+    ToDo, AttachmentBucket
 )
 from .data_management.timeseries_data import GridFSSignalStore
 from .diagnostics_management import DiagnosticTaskManager
@@ -46,6 +46,11 @@ async def init_mongo():
     for data in create_action_data():
         action = Action(**data)
         await action.save()
+
+    # initialized attachment store for diagnostics api
+    AttachmentBucket.bucket = motor_asyncio.AsyncIOMotorGridFSBucket(
+        client[settings.mongo_db], bucket_name="attachments"
+    )
 
 
 @app.on_event("startup")

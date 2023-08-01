@@ -1,8 +1,9 @@
 from datetime import datetime
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from beanie import Document, Indexed, PydanticObjectId, before_event, Delete
+from motor import motor_asyncio
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
@@ -47,11 +48,30 @@ class DiagnosisStatus(str, Enum):
     finished = "finished"
 
 
+class DiagnosisLogEntry(BaseModel):
+    message: str
+    attachment: Optional[PydanticObjectId] = None
+
+
+class AttachmentBucket:
+    bucket: motor_asyncio.AsyncIOMotorGridFSBucket = None
+
+    @classmethod
+    def create(cls):
+        """
+        Factory to use in endpoints handlers to create gridfs bucket
+        to store attachments
+        """
+        if cls.bucket is None:
+            raise AttributeError("No bucket configured to store attachments")
+        return cls.bucket
+
+
 class DiagnosisBase(BaseModel):
     """Diagnosis Meta Data"""
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     status: DiagnosisStatus = None
-    state_machine_log: List[str] = []
+    state_machine_log: List[DiagnosisLogEntry] = []
     case_id: PydanticObjectId
 
 

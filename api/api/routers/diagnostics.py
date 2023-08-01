@@ -1,19 +1,24 @@
-from typing import List
+from typing import List, Union
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi import (
+    APIRouter, HTTPException, Body, Form, Depends, UploadFile, File
+)
+from motor import motor_asyncio
 
 from ..data_management import (
     Case,
     Diagnosis,
     DiagnosisDB,
     DiagnosisStatus,
+    DiagnosisLogEntry,
     OBDData,
     Vehicle,
     Component,
     ToDo,
     Action,
-    Symptom
+    Symptom,
+    AttachmentBucket
 )
 
 tags_metadata = [
@@ -150,27 +155,30 @@ async def delete_todo(
 @router.post(
     "/{diag_id}/state-machine-log",
     status_code=201,
-    response_model=List[str]
+    response_model=List[DiagnosisLogEntry]
 )
 async def add_message_to_state_machine_log(
-        message: str = Body(title="Message to be added to log."),
-        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
+        message: str = Form(title="Message to be added to log."),
+        attachment: Union[UploadFile, None] = File(default=None),
+        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404),
+        attachment_bucket: motor_asyncio.AsyncIOMotorGridFSBucket = Depends(
+            AttachmentBucket.create
+        )
 ):
-    diag.state_machine_log.append(message)
-    await diag.save()
-    return diag.state_machine_log
+    attachment_id = None
+    # if a file attachments was uploaded, store it and generate an id
+    if attachment is not None:
+        attachment_content = await attachment.read()
+        attachment_id = await attachment_bucket.upload_from_stream(
+            filename=attachment.filename,
+            source=attachment_content
+        )
 
-
-@router.put(
-    "/{diag_id}/state-machine-log",
-    status_code=201,
-    response_model=List[str]
-)
-async def set_state_machine_log(
-        log: List[str],
-        diag: DiagnosisDB = Depends(_diag_db_by_id_or_404)
-):
-    diag.state_machine_log = log
+    new_log_entry = DiagnosisLogEntry(
+        message=message,
+        attachment=attachment_id
+    )
+    diag.state_machine_log.append(new_log_entry)
     await diag.save()
     return diag.state_machine_log
 
