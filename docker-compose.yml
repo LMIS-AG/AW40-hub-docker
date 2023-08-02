@@ -119,8 +119,12 @@ services:
         - 8181:8181
         - 8182:8182
         - 8282:8282
+        - 8183:8183
+        - 8185:8185
       volumes:
           - ./edc/configs:/configs
+          - ./edc/vaults:/vaults
+          - ./edc/certs:/certs
 
   api:
     build:
