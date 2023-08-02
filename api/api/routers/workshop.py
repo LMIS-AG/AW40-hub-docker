@@ -720,6 +720,7 @@ async def get_diagnosis_report(
         <head>
             <style>
                 th {{text-align: left;}}
+                th, td {{border: 1px solid black;}}
             </style>
             <title>Diagnose Report</title>
         </head>
