@@ -705,8 +705,10 @@ async def get_diagnosis_report(
     for log_entry in diag.state_machine_log:
         link_to_attachment = ""
         if log_entry.attachment:
-            href = f"{request.url}/attachments/{log_entry.attachment}"
-            link_to_attachment = f"<a href={href}> link </a>"
+            image_url = f"{request.url}/attachments/{log_entry.attachment}"
+            link_to_attachment = f"<a href={image_url}> <img src='" \
+                                 f"{image_url}' " \
+                                 f"style='width:150px;height:150;'> </a>"
         report_rows += (
             f"<tr><td>{log_entry.message}</td><td>"
             f"{link_to_attachment}</td></tr>"
