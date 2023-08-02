@@ -9,14 +9,16 @@ RUN groupadd -r runtime && \
 
 # use runtime users home directory as workdir
 WORKDIR /home/runtime
+# chown whole workdir to runtime user for interaction with model files
+RUN chown runtime /home/runtime
 
 # install requirements
 COPY ./requirements.txt /home/runtime/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# copy python package and chown to runtime user
-COPY --chown=runtime:runtime ./diagnostics /home/runtime/diagnostics
+# copy python package
+COPY ./diagnostics /home/runtime/diagnostics
 
 # production image runs with non-root runtime user
 FROM base as prod
