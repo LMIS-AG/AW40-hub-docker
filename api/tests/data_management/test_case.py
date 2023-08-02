@@ -25,7 +25,7 @@ def new_case():
     return {
         "vehicle_vin": "test-vin",
         "customer_id": "test.customer",
-        "occasion": "keine Angabe",
+        "occasion": "unknown",
         "milage": 42
     }
 
@@ -35,8 +35,8 @@ def case_with_diagnostic_data(new_case, timeseries_data):
     """Valid data for a case"""
     new_case["timeseries_data"] = timeseries_data
     new_case["obd_data"] = {"dtcs": ["P0001"]}
-    new_case["symtpoms"] = {
-                "component": "Batterie",
+    new_case["symptoms"] = {
+                "component": "battery",
                 "label": "defekt"
             }
     return new_case
