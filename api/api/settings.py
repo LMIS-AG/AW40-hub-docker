@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     mongo_password: str
     mongo_db: str
 
-    redis_host: str
+    redis_host: str = "redis"
+    redis_port: str = "6379"
 
     @property
     def mongo_uri(self):
@@ -25,7 +26,7 @@ class Settings(BaseSettings):
 
     @property
     def redis_uri(self):
-        return f"redis://{self.redis_host}:6379"
+        return f"redis://{self.redis_host}:{self.redis_port}"
 
 
 settings = Settings()
