@@ -115,6 +115,9 @@ services:
       hostname: "edc"
       networks:
         - hubnet
+      depends_on:
+          edc-database:
+              condition: service_healthy
       ports:
         - 8181:8181
         - 8182:8182
