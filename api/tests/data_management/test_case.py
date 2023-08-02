@@ -235,8 +235,8 @@ class TestCase:
         test_signal_id = "5eb7cf5a86d9755df3a6c593"
 
         new_timeseries_data = {
-            "component": "Batterie",
-            "label": "keine Angabe",
+            "component": "battery",
+            "label": "unknown",
             "sampling_rate": 1,
             "duration": 2,
             "type": "oscillogram",
@@ -318,7 +318,7 @@ class TestCase:
             case.symptoms_added = previous_adds
 
             await case.add_symptom(
-                NewSymptom(**{"component": "Batterie", "label": "defekt"})
+                NewSymptom(**{"component": "battery", "label": "defect"})
             )
 
             # refetch case and assert existence of single symptom
