@@ -149,6 +149,35 @@ services:
     ports:
       - 127.0.0.1:8001:80
 
+  redis:  # broker for communication between api and diagnostics
+    image: redis:alpine
+    <<: *default_restart_policy
+    expose:
+      - 6379
+    networks:
+      - hubintranet
+    command: redis-server
+
+  diagnostics:  # background service that integrates the dfki state machine
+    build:
+      context: ./diagnostics
+    <<: *default_restart_policy
+    command: celery -A diagnostics.tasks worker --loglevel=INFO
+    networks:
+      - hubintranet
+    volumes:
+      - ./diagnostics/diagnostics:/home/runtime/diagnostics
+      - ./diagnostics/models:/home/runtime/models
+
+  knowledge-graph:  # utilized by the diagnostics service
+    build: ./knowledge-graph
+    <<: *default_restart_policy
+    ports:
+      - 3030:3030
+    networks:
+      - hubintranet
+      - hubnet
+
 networks:
   hubnet:
   hubintranet:
