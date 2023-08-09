@@ -137,8 +137,6 @@ services:
       hostname: "edc-db"
       networks:
           - hubnet
-      ports:
-          - '5432:5432'
       volumes:
           - ./edc-db-data:/var/lib/postgresql/data
           - ./edc/sql_tables:/docker-entrypoint-initdb.d/
