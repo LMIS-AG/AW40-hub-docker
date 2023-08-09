@@ -25,7 +25,7 @@ dependencies {
     implementation("$groupId:vault-filesystem:$edcVersion")
     implementation("$groupId:iam-mock:$edcVersion")
 
-    implementation("$groupId:auth-tokenbased:$edcVersion")
+//    implementation("$groupId:auth-tokenbased:$edcVersion")
     implementation("$groupId:management-api:$edcVersion")
 
     implementation("$groupId:dsp:$edcVersion")
@@ -42,6 +42,8 @@ dependencies {
     implementation("$groupId:data-plane-selector-api:$edcVersion")
 
     implementation("$groupId:transfer-data-plane:$edcVersion")
+
+    implementation(project(":extensions:node-directory"))
 }
 
 application {
