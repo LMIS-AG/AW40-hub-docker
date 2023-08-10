@@ -23,5 +23,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":extensions:node-directory")
-include(":extensions:ag-node-directory-spi")
+include(":federated-catalog")
