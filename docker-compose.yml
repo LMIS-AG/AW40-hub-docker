@@ -126,19 +126,6 @@ services:
           - ./edc/vaults:/vaults
           - ./edc/certs:/certs
 
-  edc-backend:
-      build:
-          context: ./edc-backend
-      <<: *default_restart_policy
-      networks:
-          - hubnet
-      ports:
-          - 8181:8181
-          - 8182:8182
-          - 8282:8282
-          - 8183:8183
-          - 8185:8185
-
   api:
     build:
       context: ./api
