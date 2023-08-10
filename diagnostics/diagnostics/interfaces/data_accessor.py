@@ -143,7 +143,7 @@ class HubDataAccessor(DataAccessor):
         elif label in ["nicht defekt", "keine Angabe"]:
             return False
         else:
-            raise ValueError("Unknown symptom label '{label}'")
+            raise ValueError(f"Unknown symptom label '{label}'")
 
     def get_manual_judgement_for_sensor(self) -> bool:
         return False
