@@ -16,10 +16,9 @@ class HubDataProvider(DataProvider):
     def _log(self, message: str, attachment: Image = None):
         if attachment is not None:
             with TemporaryFile() as file:
-                if attachment is not None:
-                    attachment.save(file, format="png")
-                    file.seek(0)
-                    self.hub_client.add_to_state_machine_log(message, file)
+                attachment.save(file, format="png")
+                file.seek(0)
+                self.hub_client.add_to_state_machine_log(message, file)
         else:
             self.hub_client.add_to_state_machine_log(message)
 
