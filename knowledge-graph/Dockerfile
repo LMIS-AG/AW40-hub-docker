@@ -10,3 +10,6 @@ COPY shiro.ini /apache-jena-fuseki-4.9.0
 ENV FUSEKI_BASE=/apache-jena-fuseki-4.9.0
 
 ENTRYPOINT ./apache-jena-fuseki-4.9.0/fuseki-server
+
+HEALTHCHECK --interval=30s --timeout=2s --retries=5 \
+  CMD curl -fs http://localhost:3030 || exit 1
