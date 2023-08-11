@@ -161,6 +161,11 @@ services:
     networks:
       - hubintranet
     command: redis-server
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 2s
+      retries: 5
 
   diagnostics:  # background service that integrates the dfki state machine
     build:
