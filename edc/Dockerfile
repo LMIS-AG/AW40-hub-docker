@@ -4,14 +4,14 @@ FROM gradle:8.0.0 AS builder
 # Create a directory for the project
 WORKDIR /app
 
-# Copy the build files
-COPY gradle/* ./
+COPY gradle/build.gradle.kts gradle/gradle.properties gradle/settings.gradle.kts /app/
+COPY gradle/federated-catalog/ /app/federated-catalog/
 
 # Setup wrapper
 RUN gradle wrapper
 
-# Perform the build
-RUN ./gradlew clean build
+## Perform the build
+RUN gradle clean shadowJar
 
 # Stage 2: Production stage
 FROM eclipse-temurin:17-alpine
