@@ -24,3 +24,6 @@ COPY ./diagnostics /home/runtime/diagnostics
 FROM base as prod
 
 USER runtime
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=5 \
+  CMD celery -A diagnostics.tasks inspect ping
