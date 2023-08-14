@@ -12,6 +12,7 @@ from .interfaces import (
 
 
 class Settings(BaseSettings):
+    redis_password: str
     redis_host: str = "redis"
     redis_port: str = "6379"
     hub_url: str = "http://api:8000/v1"
@@ -38,7 +39,8 @@ smach.set_loggers(
 
 
 # set up celery app
-redis_uri = f"redis://{settings.redis_host}:{settings.redis_port}"
+redis_uri = f"redis://:{settings.redis_password}@{settings.redis_host}" \
+            f":{settings.redis_port}"
 app = Celery("tasks", broker=redis_uri, backend=redis_uri)
 app.conf.update(timezone="UTC")
 

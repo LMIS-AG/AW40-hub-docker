@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     mongo_password: str
     mongo_db: str
 
+    redis_password: str
     redis_host: str = "redis"
     redis_port: str = "6379"
 
@@ -17,8 +18,10 @@ class Settings(BaseSettings):
         password = self.mongo_password
         host = self.mongo_host
 
-        return f"mongodb://{username}:{password}" \
-               f"@{host}:27017/?authSource=admin"
+        return (
+            f"mongodb://{username}:{password}"
+            f"@{host}:27017/?authSource=admin"
+        )
 
     @property
     def allowed_origins(self):
@@ -26,7 +29,10 @@ class Settings(BaseSettings):
 
     @property
     def redis_uri(self):
-        return f"redis://{self.redis_host}:{self.redis_port}"
+        return (
+            f"redis://:{self.redis_password}@{self.redis_host}"
+            f":{self.redis_port}"
+        )
 
 
 settings = Settings()
