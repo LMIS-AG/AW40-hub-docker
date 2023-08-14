@@ -45,7 +45,7 @@ def obd_data():
 @pytest.fixture
 def symptom():
     """Valid symptom data."""
-    return {"component": "Batterie", "label": "defekt"}
+    return {"component": "battery", "label": "defect"}
 
 
 @pytest.fixture
@@ -146,7 +146,7 @@ def test_add_case(client):
     new_case = {
         "vehicle_vin": "test-vin",
         "customer_id": "test.customer",
-        "occasion": "keine Angabe",
+        "occasion": "unknown",
         "milage": 42
     }
     with client:
@@ -254,8 +254,8 @@ def test_update_case(case_set, case_data, test_app):
     workshop_id = case_data["workshop_id"]
     case_id = case_data["_id"]
 
-    case_data["status"] = "offen"
-    new_status = "abgeschlossen"
+    case_data["status"] = "open"
+    new_status = "closed"
 
     test_app.dependency_overrides = {
         case_from_workshop: lambda case_id, workshop_id: Case(**case_data)
@@ -404,7 +404,7 @@ def test_upload_picoscope_data_single_channel(
 
     # upload file and only specify component for one channel
     channel = "A"
-    component = "Luftmassenmesser"
+    component = "maf_sensor"
     with TestClient(test_app) as client:
         response = client.post(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
@@ -459,9 +459,9 @@ def test_upload_picoscope_data_multi_channel(
 
     # upload file and specify components for two channels
     channel_0 = "B"
-    component_0 = "Luftmassenmesser"
+    component_0 = "maf_sensor"
     channel_1 = "C"
-    component_1 = "Batterie"
+    component_1 = "battery"
     with TestClient(test_app) as client:
         response = client.post(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
@@ -516,7 +516,7 @@ def test_upload_picoscope_data_wrong_channel_specs(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
             files={"upload": ("filename", file)},
             data={
-                "component_B": "Batterie",
+                "component_B": "battery",
                 "file_format": file_format
             }
         )
@@ -543,7 +543,7 @@ def test_upload_picoscope_data_wrong_file(
         response = client.post(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/picoscope",
             files={"upload": ("filename", TemporaryFile())},
-            data={"componant_A": "Batterie", "file_format": file_format}
+            data={"componant_A": "battery", "file_format": file_format}
         )
 
     # confirm expected http exception
@@ -574,7 +574,7 @@ def test_upload_omniscope_data(
         response = client.post(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
             files={"upload": ("filename", omniscope_v1_file)},
-            data={"component": "Batterie", "sampling_rate": 1}
+            data={"component": "battery", "sampling_rate": 1}
         )
 
     # confirm expected status code and response shape
@@ -596,7 +596,7 @@ def test_upload_omniscope_data_empty_signal(case_data, test_app):
                 f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/"
                 f"omniscope",
                 files={"upload": ("filename", empty_file)},
-                data={"component": "Batterie", "sampling_rate": 1}
+                data={"component": "battery", "sampling_rate": 1}
             )
 
     # confirm http exception
@@ -618,7 +618,7 @@ def test_upload_omniscope_data_invalid_sampling_rate(
         response = client.post(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/upload/omniscope",
             files={"upload": ("filename", omniscope_v1_file)},
-            data={"component": "Batterie", "sampling_rate": sr}
+            data={"component": "battery", "sampling_rate": sr}
         )
 
     # confirm http exception
@@ -751,7 +751,7 @@ def test_update_timeseries_data_not_found(case_data, test_app):
     with TestClient(test_app) as client:
         response = client.put(
             f"/{workshop_id}/cases/{case_id}/timeseries_data/1",
-            json={"label": "Regelfall / Unauffällig"}
+            json={"label": "norm"}
         )
 
     # confirm expected status code
@@ -764,8 +764,8 @@ def test_update_timeseries_data(save, case_data, timeseries_data, test_app):
     case_id = case_data["_id"]
 
     # define current label and updated label
-    old_label = "keine Angabe"
-    new_label = "Regelfall / Unauffällig"
+    old_label = "unknown"
+    new_label = "norm"
     timeseries_data["label"] = old_label
 
     # add a single timeseries_data with old label to the case
@@ -1221,7 +1221,7 @@ def test_update_symptom_not_found(case_data, test_app):
     with TestClient(test_app) as client:
         response = client.put(
             f"/{workshop_id}/cases/{case_id}/symptoms/1",
-            json={"label": "nicht defekt"}
+            json={"label": "ok"}
         )
 
     # confirm expected status code
@@ -1234,8 +1234,8 @@ def test_update_symptom(save, case_data, symptom, test_app):
     case_id = case_data["_id"]
 
     # define current label and updated label
-    old_label = "keine Angabe"
-    new_label = "defekt"
+    old_label = "unknown"
+    new_label = "defect"
     symptom["label"] = old_label
 
     # add a single symptom with old label to the case
