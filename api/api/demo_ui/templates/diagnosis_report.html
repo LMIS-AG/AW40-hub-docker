@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnose Report</title>
+  <style>
+    th {text-align: left;}
+    th, td {border: 1px solid black;}
+  </style>
+</head>
+<body>
+
+  <p><b>Fall</b> {{ case_id }} <b>Diagnose Status</b> {{ diag_status }}</p>
+
+  <h2> Diagnose Log </h2>
+  <table>
+    <tr>
+      <th>Nachricht</th>
+      <th>Anhang</th>
+      {% for entry in state_machine_log %}
+        <tr>
+          <td>{{ entry["message"] }}</td>
+          <td>
+          {% if entry["attachment"] %}
+            <a href={{ entry["attachment"] }}>
+              <img src={{ entry["attachment"] }} style="width:150px;height:150px;">
+            </a>
+          {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+  </table>
+
+  {% for todo in todos %}
+    <p>{{ todo["instruction"] }}</p>
+  {% endfor %}
+
+</body>
+</html>

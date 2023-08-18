@@ -13,6 +13,7 @@ from .diagnostics_management import DiagnosticTaskManager
 from .settings import settings
 from .utils import create_action_data
 from .v1 import api_v1
+from .demo_ui import ui
 
 app = FastAPI()
 app.add_middleware(
@@ -22,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.mount("/v1", api_v1)
+
+app.mount("/ui", ui.app)
 
 
 @app.on_event("startup")

@@ -5,8 +5,7 @@ from bson.errors import InvalidId
 from fastapi import (
     APIRouter, HTTPException, Depends, UploadFile, File, Form
 )
-from fastapi import Request
-from fastapi.responses import Response, HTMLResponse
+from fastapi.responses import Response
 from motor import motor_asyncio
 from pydantic import NonNegativeInt, PositiveInt
 
@@ -686,74 +685,19 @@ async def delete_diagnosis(case: Case = Depends(case_from_workshop)):
 
 
 @router.get(
-    "/{workshop_id}/cases/{case_id}/diag/report",
-    status_code=200,
-    response_class=HTMLResponse,
-    tags=["Workshop - Diagnostics"]
-)
-async def get_diagnosis_report(
-        request: Request,
-        case: Case = Depends(case_from_workshop)
-):
-    """
-    Dynamically generates a HTML report for a diagnosis until we have a proper
-    user interface.
-    """
-    diag_db = await DiagnosisDB.get(case.diagnosis_id)
-    diag = await diag_db.to_diagnosis()
-    report_rows = ""
-    for log_entry in diag.state_machine_log:
-        link_to_attachment = ""
-        if log_entry.attachment:
-            image_url = f"{request.url}/attachments/{log_entry.attachment}"
-            link_to_attachment = f"<a href={image_url}> <img src='" \
-                                 f"{image_url}' " \
-                                 f"style='width:150px;height:150;'> </a>"
-        report_rows += (
-            f"<tr><td>{log_entry.message}</td><td>"
-            f"{link_to_attachment}</td></tr>"
-        )
-    for todo in diag.todos:
-        report_rows += f"<tr><td><b>{todo.instruction}</b></td><td></td></tr>"
-    report = f"""
-    <html>
-        <head>
-            <style>
-                th {{text-align: left;}}
-                th, td {{border: 1px solid black;}}
-            </style>
-            <title>Diagnose Report</title>
-        </head>
-        <body>
-            <p><b>Fall</b> {case.id} <b>Diagnose Status</b> {diag.status}</p>
-            <h2> Diagnose Log </h2>
-            <table>
-                <tr>
-                    <th>Nachricht</th>
-                    <th>Anhang</th>
-                </tr>
-                {report_rows}
-            </table>
-        </body>
-    </html>
-    """
-    return HTMLResponse(content=report)
-
-
-@router.get(
-    "/{workshop_id}/cases/{case_id}/diag/report/attachments/{attachment_id}",
+    "/{workshop_id}/cases/{case_id}/diag/attachments/{attachment_id}",
     status_code=200,
     response_class=Response,
     tags=["Workshop - Diagnostics"]
 )
-async def get_report_attachment(
+async def get_diagnosis_attachment(
         attachment_id: str,
         case: Case = Depends(case_from_workshop),
         attachment_bucket: motor_asyncio.AsyncIOMotorGridFSBucket = Depends(
             AttachmentBucket.create
         )
 ):
-    """Retrieve a specific attachment from a diagnosis report."""
+    """Retrieve a specific diagnosis attachment."""
     attachment = await attachment_bucket.open_download_stream(
         ObjectId(attachment_id)
     )
