@@ -1,8 +1,8 @@
 FROM ubuntu:20.04 as build
 
-RUN apt-get update
-RUN apt-get install -y bash curl file git libglu1-mesa unzip xz-utils zip
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+ && apt-get install -y bash curl file git libglu1-mesa unzip xz-utils zip \
+ && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -r -g 1234 flutter
 RUN useradd --no-log-init -r -u 1234 -g flutter -m flutter
