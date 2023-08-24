@@ -156,10 +156,26 @@ services:
     networks:
       - hubintranet
       - hubnet
+      - frontend-backend
     ports:
       - 8000:8000
     volumes:
       - ./api/api/:/home/api/api/
+
+  frontend:
+    build:
+      context: ./frontend
+    <<: *default_restart_policy
+    depends_on:
+      api:
+        condition: service_healthy
+    env_file:
+      - frontend/frontend.env
+    hostname: "frontend"
+    networks:
+      - frontend-backend
+    ports:
+      - "4200:80"
 
   docs:
     build:
@@ -174,6 +190,7 @@ networks:
     internal: true
   keycloaknet:
     internal: true
+  frontend-backend:
 
 volumes:
   mongo-data:
