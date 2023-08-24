@@ -1,0 +1,61 @@
+general:
+  cancel: "Cancel"
+  close: "Close"
+  customer: "Customer"
+  customerId: "Customer id"
+  date: "Date"
+  delete: "Delete"
+  filter: "Filter"
+  language: "Language"
+  logout: "Logout"
+  milage: "Milage"
+  notFound: "Not found"
+  notSpecified: "Not specified"
+  obligatoryField: "Obligatory"
+  occasion: "Occasion"
+  problem: "Problem"
+  repair: "Repair"
+  save: "Save"
+  service: "Service"
+  sort: "Sort"
+  status: "Status"
+  unnamed: "Unnamed"
+  vehicle: "Vehicle"
+  vehicleVin: "Vehicle vin"
+  workshop: "Workshop"
+  yes: "Yes"
+  no:
+    date: "No Date"
+    customerId: "No customer id"
+    vehiclevin: "No vehicle vin"
+    workshopid: "No workshop id"
+cases:
+  title: "Cases"
+  actions:
+    addCase: "Add case"
+    sortCases: "@:general.sort"
+    filterCases: "@:general.filter"
+  occasions:
+    notSpecified: "@:general.notSpecified"
+    service: "@:general.service"
+    problem: "@:general.repair"
+  filterDialog:
+    title: "Filter cases"
+    toggleShared: "Show cases from all workshops"
+  addCaseDialog:
+    vinCharactersInvalid: "The @:general.vehicleVin must not contain I, O, or Q"
+    vinLengthInvalid: "The @:general.vehicleVin must be 17 characters long"
+  details:
+    dialog:
+      title: "Delete case"
+      description: "Do you really want to delete the case?"
+    deleteCaseSuccessMessage: "The case was successfully deleted.",
+    deleteCaseErrorMessage: "The case could not be deleted.",
+customers:
+  title: "Customers"
+vehicles:
+  title: "Vehicles"
+training:
+  title: "Training"
+pageNotFound:
+  title: "Page @:general.notFound"
