@@ -19,15 +19,15 @@ ENV PATH="$PATH:/home/flutter/flutter-sdk/bin:/home/flutter/flutter-sdk/bin/cach
 RUN flutter precache
 RUN flutter config --no-analytics
 
-# Dummy project, to be replaced by the real deal.
-RUN flutter create --sample=widgets.SingleChildScrollView.1 myapp
-WORKDIR /home/flutter/myapp
+COPY --chown=flutter:flutter ./app /home/flutter/app
+WORKDIR /home/flutter/app
+RUN flutter pub get
+RUN flutter pub run build_runner build --delete-conflicting-outputs --release
 RUN flutter build web
 
 FROM nginx:alpine as serve
 
-COPY --from=build /home/flutter/myapp/build/web /usr/share/nginx/html
+COPY --from=build /home/flutter/app/build/web /usr/share/nginx/html
 
 HEALTHCHECK --interval=30s --timeout=2s --retries=5 \
   CMD curl -fs http://localhost:80 || exit 1
-#CMD ["nginx", "-g", "daemon off;"]
