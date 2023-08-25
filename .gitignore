@@ -64,7 +64,6 @@ frontend/app/dev.env
 frontend/app/coverage/lcov.info
 frontend/app/**/doc/api/
 frontend/app/**/ios/Flutter/.last_build_id
-#frontend/app/.dart_tool/
 frontend/app/.dart_tool/
 frontend/app/**/*.g.dart
 frontend/app/**/*.mocks.dart
