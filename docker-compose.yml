@@ -115,6 +115,9 @@ services:
       hostname: "edc"
       networks:
         - hubnet
+      depends_on:
+          edc-database:
+              condition: service_healthy
       ports:
         - 8181:8181
         - 8182:8182
@@ -125,6 +128,18 @@ services:
           - ./edc/configs:/configs
           - ./edc/vaults:/vaults
           - ./edc/certs:/certs
+
+  edc-database:
+      build:
+          context: ./edc-db
+      env_file:
+          - edc-db/edc-db.env
+      hostname: "edc-db"
+      networks:
+          - hubnet
+      volumes:
+          - ./edc-db-data:/var/lib/postgresql/data
+          - ./edc/sql_tables:/docker-entrypoint-initdb.d/
 
   api:
     build:
