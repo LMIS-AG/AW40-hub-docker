@@ -10,20 +10,20 @@ class MinIOStorageData(StorageData):
     def __init__(self, data_handle) -> None:
         self.data = data_handle
         self.content_type = data_handle.headers['Content-Type']
-        self.file = None
+        self.file_buffer = None
 
     def get_content_type(self):
         return self.content_type
 
     def file_view(self):
-        self.__to_file()
-        return self.file
+        self.__to_buffer()
+        return self.file_buffer
 
     def stream_view(self):
-        if not self.file:
+        if not self.file_buffer:
             return self.__iter()
         else:
-            self.file.seek(0)
+            self.file_buffer.seek(0)
             return self.__file_iter()
 
     def __iter(self):
@@ -31,15 +31,15 @@ class MinIOStorageData(StorageData):
             yield chunk
 
     def __file_iter(self):
-        for chunk in self.file.read(1024*1024):
+        for chunk in self.file_buffer.read(1024*1024):
             yield chunk
 
-    def __to_file(self):
-        if not self.file:
-            self.file = SpooledTemporaryFile(1024*1024)
+    def __to_buffer(self):
+        if not self.file_buffer:
+            self.file_buffer = SpooledTemporaryFile(1024*1024)
             for chunk in self.__iter():
-                self.file.write(chunk)
-            self.file.seek(0)
+                self.file_buffer.write(chunk)
+            self.file_buffer.seek(0)
 
     def __del__(self):
         self.data.close()

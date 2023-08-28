@@ -3,17 +3,17 @@ from .storages.storages import SUPPORTED_STORAGES
 
 
 class StorageFactory():
-    config = dict()
+    _config = None
 
     def get_storage(self, Name: str) -> Storage:
-        cfg = self.config[Name]
+        cfg = self._config[Name]
         constructor = SUPPORTED_STORAGES[Name]
         return constructor(**cfg)
 
-
-def initialise_storages(**kwargs):
-    for name in SUPPORTED_STORAGES.keys():
-        prefix = f"{name.lower()}_"
-        args = {k.removeprefix(prefix): v for (k, v) in kwargs.items()
-                if k.startswith(prefix)}
-        StorageFactory.config[name] = args
+    @classmethod
+    def initialise_storages(cls, **kwargs):
+        for name in SUPPORTED_STORAGES.keys():
+            prefix = f"{name.lower()}_"
+            args = {k.removeprefix(prefix): v for (k, v) in kwargs.items()
+                    if k.startswith(prefix)}
+            cls._config[name] = args
