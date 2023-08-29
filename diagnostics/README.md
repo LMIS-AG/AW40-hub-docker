@@ -43,7 +43,9 @@ results the demo ui can be
 
 # Examples
 
-After starting the docker compose stack, run the first example via
+After installing the development requirements via `pip install -r requirements.txt`
+(preferably into a virtualenv) and starting the docker compose stack, run the 
+first example via
 ```
 python diagnostics/examples/example_1
 ```
