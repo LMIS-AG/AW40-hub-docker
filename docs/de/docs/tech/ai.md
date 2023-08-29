@@ -63,9 +63,9 @@ von Fällen*, *Hochladen von Fahrzeugdaten* (Fehlercodes, Oszillogramme), das
 *Starten der Diagnose* für einen Fall und der *Abruf von Informationen zum
 aktuellen Diagnosezustand*.
 
-Die Aktionen *Starten der Diagnose* und *Hochladen von Fahrzeugdaten* (für Fall
-mit gestarteter Diagnose) triggern die Erzeugung eines Diagnose Tasks, der vom
-API Service in einer Task Queue abgelegt wird. 
+Wird mittels der `werkstatt.api` die Aktionen *Starten der Diagnose* durchgeführt,
+triggert dies die Erzeugung eines Diagnose Tasks, der vom API Service in einer 
+Task Queue abgelegt wird. 
 
 Diese wird kontinuierlich vom Diagnose Backend Service bearbeitet.
 In diesen ist die State Machine als Softwarebibliothek eingebunden. Die
