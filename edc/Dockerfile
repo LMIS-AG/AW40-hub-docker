@@ -10,8 +10,8 @@ COPY gradle/edc-extensions/ /app/edc-extensions/
 # Setup wrapper
 RUN gradle wrapper
 
-## Perform the build
-RUN gradle clean shadowJar
+# Perform the build
+RUN ./gradlew clean build
 
 # Stage 2: Production stage
 FROM eclipse-temurin:17-alpine
