@@ -4,6 +4,7 @@ FROM gradle:8.0.0 AS builder
 # Create a directory for the project
 WORKDIR /app
 
+# Copy the build files
 COPY gradle/* /app/
 COPY gradle/edc-extensions/ /app/edc-extensions/
 
