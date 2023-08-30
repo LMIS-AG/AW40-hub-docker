@@ -2,7 +2,7 @@ package query;
 
 import java.util.List;
 
-public class CacheNode {
+public class FederatedCacheNode {
     private String name;
     private String url;
     private List<String> protocols;
