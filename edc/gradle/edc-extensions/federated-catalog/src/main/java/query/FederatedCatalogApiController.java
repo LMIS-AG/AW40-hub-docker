@@ -85,6 +85,7 @@ public class FederatedCatalogApiController implements FederatedCatalogApi {
     @Path("/participants")
     @Produces(MediaType.APPLICATION_JSON)
     public List<FederatedCacheNode> getNodes() {
+
         return nodeDirectory.getAll();
     }
 
