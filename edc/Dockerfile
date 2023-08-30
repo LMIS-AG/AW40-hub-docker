@@ -4,8 +4,8 @@ FROM gradle:8.0.0 AS builder
 # Create a directory for the project
 WORKDIR /app
 
-COPY gradle/build.gradle.kts gradle/gradle.properties gradle/settings.gradle.kts /app/
-COPY gradle/federated-catalog/ /app/federated-catalog/
+COPY gradle/* /app/
+COPY gradle/edc-extensions/ /app/edc-extensions/
 
 # Setup wrapper
 RUN gradle wrapper

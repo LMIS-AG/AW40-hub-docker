@@ -23,4 +23,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":federated-catalog")
+include(":edc-extensions:federated-catalog")

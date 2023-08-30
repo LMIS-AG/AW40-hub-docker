@@ -43,7 +43,7 @@ dependencies {
 
     implementation("$groupId:transfer-data-plane:$edcVersion")
 
-    implementation(project(":federated-catalog"))
+    implementation(project(":edc-extensions:federated-catalog"))
 }
 
 application {
