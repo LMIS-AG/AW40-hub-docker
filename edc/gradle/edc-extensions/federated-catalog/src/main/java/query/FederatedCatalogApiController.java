@@ -25,6 +25,7 @@ import org.eclipse.edc.catalog.spi.model.FederatedCatalogCacheQuery;
 import org.eclipse.edc.spi.result.AbstractResult;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
+import org.eclipse.edc.catalog.spi.FederatedCacheNode;
 import org.eclipse.edc.catalog.spi.FederatedCacheNodeDirectory;
 import java.util.List;
 
@@ -37,7 +38,6 @@ public class FederatedCatalogApiController implements FederatedCatalogApi {
 
     private final QueryEngine queryEngine;
     private final TypeTransformerRegistry transformerRegistry;
-
     private final FederatedCacheNodeDirectory nodeDirectory;
 
     public FederatedCatalogApiController(QueryEngine queryEngine, TypeTransformerRegistry transformerRegistry, FederatedCacheNodeDirectory nodeDirectory) {
@@ -69,10 +69,10 @@ public class FederatedCatalogApiController implements FederatedCatalogApi {
     @Path("/insert")
     public Response insertNode(FederatedCacheNode federatedCacheNode) {
 
-        org.eclipse.edc.catalog.spi.FederatedCacheNode newNode = new org.eclipse.edc.catalog.spi.FederatedCacheNode(
+        FederatedCacheNode newNode = new FederatedCacheNode(
             federatedCacheNode.getName(),
-            federatedCacheNode.getUrl(),
-            federatedCacheNode.getProtocols()
+            federatedCacheNode.getTargetUrl(),
+            federatedCacheNode.getSupportedProtocols()
         );
 
         nodeDirectory.insert(newNode);

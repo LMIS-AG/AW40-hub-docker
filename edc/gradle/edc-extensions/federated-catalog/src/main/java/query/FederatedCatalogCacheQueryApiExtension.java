@@ -14,6 +14,7 @@
 
 package query;
 
+import org.eclipse.edc.catalog.spi.FederatedCacheNode;
 import org.eclipse.edc.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.edc.catalog.spi.QueryEngine;
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
@@ -44,9 +45,8 @@ public class FederatedCatalogCacheQueryApiExtension implements ServiceExtension 
 
     @Inject
     private TypeTransformerRegistry transformerRegistry;
-
     @Inject
-    private FederatedCacheNodeDirectory nodeDirectory;
+    private FederatedCacheNodeDirectory federatedCacheNodeDirectory;
 
     @Override
     public String name() {
@@ -55,7 +55,7 @@ public class FederatedCatalogCacheQueryApiExtension implements ServiceExtension 
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        var catalogController = new FederatedCatalogApiController(queryEngine, transformerRegistry, nodeDirectory);
+        var catalogController = new FederatedCatalogApiController(queryEngine, transformerRegistry, federatedCacheNodeDirectory);
         webService.registerResource(config.getContextAlias(), catalogController);
 
         // contribute to the liveness probe
