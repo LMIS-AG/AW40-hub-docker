@@ -1,7 +1,7 @@
 from abc import ABC
 from datetime import datetime
 from enum import Enum
-from typing import List, ClassVar
+from typing import List, ClassVar, Literal
 
 import numpy as np
 from beanie import PydanticObjectId
@@ -68,7 +68,7 @@ class TimeseriesMetaData(BaseModel):
     label: TimeseriesDataLabel
     sampling_rate: int
     duration: int
-    type: str
+    type: Literal["oscillogram"] = "oscillogram"
     device_specs: dict = None
 
     # signal_store to convert between actual signal data and signal data
