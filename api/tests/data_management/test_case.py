@@ -6,7 +6,6 @@ from api.data_management import (
     Case,
     Vehicle,
     Customer,
-    Workshop,
     TimeseriesDataUpdate,
     NewTimeseriesData,
     TimeseriesData,
@@ -15,7 +14,6 @@ from api.data_management import (
     NewSymptom,
     SymptomUpdate
 )
-from beanie import init_beanie
 from pydantic import ValidationError
 
 
@@ -55,40 +53,6 @@ class TestNewCase:
 
     def test_non_default_input(self, new_case):
         NewCase(**new_case)
-
-
-@pytest.fixture
-def initialized_beanie_context(motor_db):
-    """
-    Could not get standard pytest fixture setup and teardown to work for
-    beanie initialization. As a workaround this fixture creates an async
-    context manager to handle test setup and teardown.
-    """
-    models = [
-        Case,
-        Vehicle,
-        Customer,
-        Workshop
-    ]
-
-    class InitializedBeanieContext:
-        async def __aenter__(self):
-            await init_beanie(
-                motor_db,
-                document_models=models
-            )
-            for model in models:
-                # make sure all collections are empty at the beginning of each
-                # test
-                await model.delete_all()
-
-        async def __aexit__(self, exc_type, exc, tb):
-            for model in models:
-                # drop all collections and indexes after each test
-                await model.get_motor_collection().drop()
-                await model.get_motor_collection().drop_indexes()
-
-    return InitializedBeanieContext()
 
 
 class TestCase:
