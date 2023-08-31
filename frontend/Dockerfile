@@ -20,6 +20,7 @@ RUN flutter precache
 RUN flutter config --no-analytics
 
 COPY --chown=flutter:flutter ./app /home/flutter/app
+COPY --chown=flutter:flutter ./frontend.env /home/flutter/frontend.env
 WORKDIR /home/flutter/app
 RUN flutter pub get
 RUN flutter pub run build_runner build --delete-conflicting-outputs --release
