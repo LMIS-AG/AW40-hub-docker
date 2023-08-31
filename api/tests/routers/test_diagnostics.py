@@ -139,11 +139,11 @@ async def test_get_oscillograms(
 
         # seed database with oscillogram data
         case = await Case.get(case_id)
-        component = "Batterie"
+        component = "battery"
         oscillogram_data = {
             "signal": [42, 43],
             "component": component,
-            "label": "keine Angabe",
+            "label": "unknown",
             "sampling_rate": 1,
             "duration": 2
         }
@@ -169,7 +169,7 @@ async def test_get_oscillograms_no_data(
         # Requesting data for case without data should return an empty
         # array in response
         response = await client.get(
-            f"/{diag_id}/oscillograms?component=Batterie"
+            f"/{diag_id}/oscillograms?component=battery"
         )
         # confirm expected response
         assert response.status_code == 200
@@ -189,10 +189,10 @@ async def test_get_symptoms(
 ):
     async with initialized_beanie_context, data_context:
         # seed database with data
-        component = "Batterie"
+        component = "battery"
         symptom_data = {
             "component": component,
-            "label": "defekt"
+            "label": "defect"
         }
         case = await Case.get(case_id)
         await case.add_symptom(
@@ -216,7 +216,7 @@ async def test_get_symptoms_no_data(
         # Requesting data for case without data should return an empty
         # array in response
         response = await client.get(
-            f"/{diag_id}/symptoms?component=Batterie"
+            f"/{diag_id}/symptoms?component=battery"
         )
         # confirm expected response
         assert response.status_code == 200
