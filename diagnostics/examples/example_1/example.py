@@ -34,14 +34,14 @@ def setup_model():
     into the diagnostics container.
     The model was provided by DFKI and is supposed to detect anomalies for
     the battery, however, we act as if this model was designed to detect
-    anomalies for Ladedruck-Regelventil, which is in the example
+    anomalies for boost_pressure_control_valve, which is in the example
     knowledge-graph.
     """
     model_destination = os.path.join(
         os.path.dirname(os.path.dirname(EXAMPLE_DIR)),
-        "models/Ladedruck-Regelventil.h5"
+        "models/boost_pressure_control_valve.h5"
     )
-    model_src = os.path.join(EXAMPLE_DIR, "Ladedruck-Regelventil.h5")
+    model_src = os.path.join(EXAMPLE_DIR, "boost_pressure_control_valve.h5")
     shutil.copy(src=model_src, dst=model_destination)
 
 
@@ -56,7 +56,7 @@ def create_case(workshop_id):
         json={
             "vehicle_vin": "1234567890ABCDEFGHJKLMNPRSTUVWXYZ",
             "customer_id": "firstname.lastname",
-            "occasion": "Service / Routine",
+            "occasion": "service_routine",
             "milage": 42
         }
     )
@@ -92,7 +92,7 @@ def provide_oscillogram(case_url):
     """
     Upload an oscillogram. Data was provided by DFKI and is supposed to be
     an anomalous battery signal. Again, we declare it a signal for
-    Ladedruck-Regelventil, to match knowledge-graph and model.
+    boost pressure control valve, to match knowledge-graph and model.
     """
     oscillogram_file = os.path.join(EXAMPLE_DIR, "dummy_isolation_NEG1.csv")
     with open(oscillogram_file, "rb") as file:
@@ -101,7 +101,7 @@ def provide_oscillogram(case_url):
             files={"upload": file},
             data={
                 "file_format": "Picoscope CSV",
-                "component_A": "Ladedruck-Regelventil"
+                "component_A": "boost_pressure_control_valve"
             }
         )
         response.raise_for_status()
@@ -109,13 +109,13 @@ def provide_oscillogram(case_url):
 
 def provide_symptom(case_url):
     """
-    Provide the information, that the Ladedruck-Magentventil is broken.
+    Provide the information, that the boost pressure solenoid valve is broken.
     """
     response = httpx.post(
         url=f"{case_url}/symptoms",
         json={
-            "component": "Ladedruck-Magnetventil",
-            "label": "defekt"
+            "component": "boost_pressure_solenoid_valve",
+            "label": "defect"
         }
     )
     response.raise_for_status()

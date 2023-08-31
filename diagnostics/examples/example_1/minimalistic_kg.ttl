@@ -312,11 +312,11 @@ _:Bb89ba4a3X2D28e5X2D4a03X2Da741X2Db68659e64a8c <http://www.w3.org/2002/07/owl#o
 _:Bb89ba4a3X2D28e5X2D4a03X2Da741X2Db68659e64a8c <http://www.w3.org/2002/07/owl#qualifiedCardinality> "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
 _:Bb89ba4a3X2D28e5X2D4a03X2Da741X2Db68659e64a8c <http://www.w3.org/2002/07/owl#onDataRange> <http://www.w3.org/2001/XMLSchema#string> .
 <http://www.semanticweb.org/diag_ontology#comp_f8f60074d9cd4de780e2a89d719135bb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.semanticweb.org/diag_ontology#SuspectComponent> .
-<http://www.semanticweb.org/diag_ontology#comp_f8f60074d9cd4de780e2a89d719135bb> <http://www.semanticweb.org/diag_ontology#component_name> "Ladedruck-Magnetventil" .
+<http://www.semanticweb.org/diag_ontology#comp_f8f60074d9cd4de780e2a89d719135bb> <http://www.semanticweb.org/diag_ontology#component_name> "boost_pressure_solenoid_valve" .
 <http://www.semanticweb.org/diag_ontology#comp_f8f60074d9cd4de780e2a89d719135bb> <http://www.semanticweb.org/diag_ontology#use_oscilloscope> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 <http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.semanticweb.org/diag_ontology#SuspectComponent> .
-<http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.semanticweb.org/diag_ontology#affected_by> "Ladedruck-Magnetventil" .
-<http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.semanticweb.org/diag_ontology#component_name> "Ladedruck-Regelventil" .
+<http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.semanticweb.org/diag_ontology#affected_by> "boost_pressure_solenoid_valve" .
+<http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.semanticweb.org/diag_ontology#component_name> "boost_pressure_control_valve" .
 <http://www.semanticweb.org/diag_ontology#comp_7fb250d0f9e94c5484f9d70c201d1547> <http://www.semanticweb.org/diag_ontology#use_oscilloscope> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 <http://www.semanticweb.org/diag_ontology#dtc_c4cbde322d8c421d9cb98e0427b57387> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.semanticweb.org/diag_ontology#DTC> .
 <http://www.semanticweb.org/diag_ontology#dtc_c4cbde322d8c421d9cb98e0427b57387> <http://www.semanticweb.org/diag_ontology#hasAssociation> <http://www.semanticweb.org/diag_ontology#diag_association_d1b44ff1ebea4d66be53d4de51a7e5fd> .
