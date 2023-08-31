@@ -10,11 +10,11 @@ class Component(str, Enum):
     maf_sensor = "maf_sensor"
     lambda_sensor_before_cat = "lambda_sensor_before_cat"
     lambda_sensor_behind_cat = "lambda_sensor_behind_cat"
-    boost_pressure_solenoid_valve = "Ladedruck-Magnetventil"
-    boost_pressure_control_valve = "Ladedruck-Regelventil"
-    tc_boost_control_position_sensor = "Ladedrucksteller-Positionssensor"
-    engine_control_unit = "Motor-Steuergerät"
-    variable_nozzle_tc = "VTG-Abgasturbolader"
+    boost_pressure_solenoid_valve = "boost_pressure_solenoid_valve"
+    boost_pressure_control_valve = "boost_pressure_control_valve"
+    tc_boost_control_position_sensor = "tc_boost_control_position_sensor"
+    engine_control_unit = "engine_control_unit"
+    variable_nozzle_tc = "variable_nozzle_tc"
 
 
 class Vehicle(Document):
