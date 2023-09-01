@@ -138,7 +138,7 @@ services:
       networks:
           - hubnet
       volumes:
-          - ./edc-db-data:/var/lib/postgresql/data
+          - edc-db-data:/var/lib/postgresql/data
           - ./edc/sql_tables:/docker-entrypoint-initdb.d/
 
   api:
@@ -218,3 +218,4 @@ volumes:
   mongo-data:
   postgres-data:
   minio-data:
+  edc-db-data:
