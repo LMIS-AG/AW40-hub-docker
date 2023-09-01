@@ -68,7 +68,7 @@ services:
     networks:
       - keycloaknet
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - keycloak-db-data:/var/lib/postgresql/data
 
   minio:
     build:
@@ -138,7 +138,7 @@ services:
       networks:
           - hubnet
       volumes:
-          - ./edc-db-data:/var/lib/postgresql/data
+          - edc-db-data:/var/lib/postgresql/data
           - ./edc/sql_tables:/docker-entrypoint-initdb.d/
 
   api:
@@ -216,5 +216,6 @@ networks:
 
 volumes:
   mongo-data:
-  postgres-data:
+  keycloak-db-data:
   minio-data:
+  edc-db-data:
