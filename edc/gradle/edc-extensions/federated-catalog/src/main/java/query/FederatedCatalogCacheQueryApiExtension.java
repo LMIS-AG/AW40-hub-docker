@@ -9,6 +9,7 @@
  *
  *  Contributors:
  *       Microsoft Corporation - initial API and implementation
+ *       LMIS AG - Modifications made to the original code
  *
  */
 

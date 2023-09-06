@@ -9,6 +9,7 @@
  *
  *  Contributors:
  *       Microsoft Corporation - Initial implementation
+ *       LMIS AG - Modifications made to the original code
  *
  */
 
