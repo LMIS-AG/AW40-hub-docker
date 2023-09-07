@@ -55,6 +55,8 @@ dependencies {
     implementation("$edcGroupId:transaction-local:$edcVersion")
     implementation("$edcGroupId:transaction-datasource-spi:$edcVersion")
     implementation("$postgresqlGroupId:postgresql:$postgresqlVersion")
+    
+    implementation(project(":edc-extensions:federated-catalog"))
 }
 
 application {

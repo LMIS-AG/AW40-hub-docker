@@ -5,7 +5,7 @@ FROM gradle:8.0.0 AS builder
 WORKDIR /app
 
 # Copy the build files
-COPY gradle/* .
+COPY gradle/ /app/
 
 # Setup wrapper
 RUN gradle wrapper
