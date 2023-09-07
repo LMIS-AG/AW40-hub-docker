@@ -155,3 +155,37 @@ Beispiel:
     }
 ]
 ````
+
+## Konfigurationsmöglichkeiten
+
+Es gibt insgesamt drei Eigenschaften, die in der properties-Datei des EDC bezüglich des FC gesetzt werden können:
+
+### edc.catalog.cache.execution.delay.seconds
+
+Anzahl an Sekunden, bis der EDC initial den ersten Crawling-Vorgang startet.
+
+Beispiel:
+
+edc.catalog.cache.execution.delay.seconds=10
+
+bedeutet, dass der FC das erste Mal 10 Sekunden nach Start des EDC aktualisiert wird.
+
+### edc.catalog.cache.execution.period.seconds
+
+Häufigkeit des Crawling-Prozesses in Sekunden.
+
+Beispiel:
+
+edc.catalog.cache.execution.period.seconds=5
+
+bedeutet, dass der Federated Catalog sich alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorang, s. vorheriger Absatz).
+
+### edc.catalog.cache.partition.num.crawlers
+
+Anzahl an Crawlern, die die sogenannten "Work Items" crawlen.
+
+Beispiel:
+
+edc.catalog.cache.partition.num.crawlers=2
+
+bedeutet, dass im Falle von 10 Work Items jeder Crawler 5 Work Items crawled.
