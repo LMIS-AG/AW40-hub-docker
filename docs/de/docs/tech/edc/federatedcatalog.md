@@ -6,7 +6,7 @@ n FCs. Das Gegenstück zu diesem Konzept wäre ein zentral-organisierter FC, n T
 
 ![img_1.png](fc.png)
 
-Der FederatedCatalogApiController der FC-Extension liefert drei weitere Endpunkte zu den bereits vorhandenen:
+Der FederatedCatalogApiController der FC-Extension liefert drei weitere Endpunkte zu den bereits vorhandenen. Die Beispiele sind aus Sicht eines hypothetischen Datenraumteilnehmers "LMIS" beschrieben:
 
 ## /federatedcatalog
 
