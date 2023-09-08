@@ -140,7 +140,7 @@ Falls "HSOS" zusätzlich ein Asset mit ID "Messergebnis" bei sich registriert, e
     }
 ]
 ````
-Beachte, dass mit der Registrierung eines ersten Assets durch "HSOS" auch Informationen über dessen unterstützte Dataplanes bezüglich eben jenes Assets im Federated Catalog auftauchen. Hat "HSOS" keine Dataplanes bei sich registriert, wirft wirft der "LMIS"-EDC nach Aufruf des Endpunkts eine Fehlermeldung,
+Beachte, dass mit der Registrierung eines ersten Assets durch "HSOS" auch Informationen über dessen unterstützte Dataplanes bezüglich eben jenes Assets im Federated Catalog auftauchen. Hat "HSOS" keine Dataplanes bei sich registriert, wirft der "LMIS"-EDC nach Aufruf des Endpunkts eine Fehlermeldung,
 ## /participants
 
 Dieser Endpunkt liefert eine Liste aller Datenraumteilnehmer gemäß der Attribute Name, Connector-Url und Protokoll-Spezifikation zurück, die beim Registrieren gesetzt worden sind.
