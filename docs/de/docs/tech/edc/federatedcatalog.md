@@ -15,6 +15,10 @@ Dieser Endpunkt gibt die zuvor beschriebene Liste sämtlicher Datenraumteilnehme
 Beispiel:
 
 ````
+POST http://<LMIS-Adresse>/management/federatedcatalog/
+````
+mit Body
+````
 {
     "@context": {
     "edc": "https://w3id.org/edc/v0.0.1/ns/"
@@ -28,25 +32,32 @@ Beispiel:
     }
 }
 ````
+Unmittelbar nach dem Start des EDC ist der Federated Catalog leer, der Post-Request liefert also eine leere Liste zurück.
 ## /insert
 
-Mithilfe dieses Endpunkts könnten weitere Datenraumteilnehmer in dem jeweils eigenen Federated Catalog registriert werden.
+Mithilfe dieses Endpunkts könnten erste beziehungsweise weitere Datenraumteilnehmer in dem jeweils eigenen Federated Catalog registriert werden.
 
 Beispiel:
 
-Ein neuer Datenraumteilnehmer (HSOS) ist im Besitz des EDC_2, der Datenraumteilnehmer LMIS mit EDC_1 möchte diesen crawlen. Hierzu sendet dieser einen POST-Request an seinen eigenen /insert-Endpunkt mit dem folgenden Body:
+Ein neuer Datenraumteilnehmer "HSOS" ist im Besitz des EDC_2, der Datenraumteilnehmer "LMIS" mit EDC_1 möchte diesen crawlen.
+
+
+````
+POST http://<LMIS-Adresse>/management/federatedcatalog/insert
+````
+mit Body
 
 ````
 {
     "name": "HSOS",
-    "url": "http://host.docker.internal:8282/protocol",
+    "url": "http://<HSOS-Adresse>:8282/protocol",
     "supportedProtocols": [
         "dataspace-protocol-http"
     ]
 }
 ````
 
-Der Datenraumteilnehmer LMIS kann nun seinen eigenen /federatedcatalog-Endpunkt mit der im Beispiel hinterlegten Query ansprechen und erhält den folgenden Eintrag:
+"LMIS" kann nun seinen eigenen /federatedcatalog-Endpunkt mit der im vorherigen Beispiel gezeigten Query ansprechen und erhält den folgenden Eintrag:
 
 ````
 [
@@ -58,9 +69,9 @@ Der Datenraumteilnehmer LMIS kann nun seinen eigenen /federatedcatalog-Endpunkt 
             "@id": "135543b0-2aa1-49e8-9079-bd307020fea0",
             "@type": "dcat:DataService",
             "dct:terms": "connector",
-            "dct:endpointUrl": "http://host.docker.internal:8282/protocol"
+            "dct:endpointUrl": "http://<HSOS-Adresse>:8282/protocol"
         },
-        "edc:originator": "http://host.docker.internal:8282/protocol",
+        "edc:originator": "http://<HSOS-Adresse>:8282/protocol",
         "edc:participantId": "provider",
         "@context": {
             "dct": "https://purl.org/dc/terms/",
@@ -73,7 +84,7 @@ Der Datenraumteilnehmer LMIS kann nun seinen eigenen /federatedcatalog-Endpunkt 
 ]
 ````
 
-Falls "HSOS" zusätzlich ein Asset bei sich registriert, erweitert sich der Eintrag zu:
+Falls "HSOS" zusätzlich ein Asset mit ID "Messergebnis" bei sich registriert, erweitert sich der Eintrag zu:
 
 ````
 [
@@ -115,9 +126,9 @@ Falls "HSOS" zusätzlich ein Asset bei sich registriert, erweitert sich der Eint
             "@id": "135543b0-2aa1-49e8-9079-bd307020fea0",
             "@type": "dcat:DataService",
             "dct:terms": "connector",
-            "dct:endpointUrl": "http://host.docker.internal:8282/protocol"
+            "dct:endpointUrl": "http://<HSOS-Adresse>:8282/protocol"
         },
-        "edc:originator": "http://host.docker.internal:8282/protocol",
+        "edc:originator": "http://<HSOS-Adresse>:8282/protocol",
         "edc:participantId": "provider",
         "@context": {
             "dct": "https://purl.org/dc/terms/",
@@ -129,26 +140,30 @@ Falls "HSOS" zusätzlich ein Asset bei sich registriert, erweitert sich der Eint
     }
 ]
 ````
-
+Beachte, dass mit der Registrierung eines ersten Assets durch "HSOS" auch Informationen über dessen unterstützte Dataplanes bezüglich eben jenes Assets im Federated Catalog auftauchen. Hat "HSOS" keine Dataplanes bei sich registriert, wirft wirft der "LMIS"-EDC nach Aufruf des Endpunkts eine Fehlermeldung,
 ## /participants
 
 Dieser Endpunkt liefert eine Liste aller Datenraumteilnehmer gemäß der Attribute Name, Connector-Url und Protokoll-Spezifikation zurück, die beim Registrieren gesetzt worden sind.
 
 Beispiel:
 
+````
+GET http://<LMIS-Adresse>/management/federatedcatalog/participants
+````
+mit den Datenraumteilnehmern "HSOS" und "THGA":
 
 ````
 [
     {
         "name": "HSOS",
-        "url": "http://host.docker.internal:8282/protocol",
+        "url": "http://<HSOS-Adresse>:8282/protocol",
         "supportedProtocols": [
             "dataspace-protocol-http"
         ]
     },
     {
         "name": "THGA",
-        "url": "http://edc-thga:8282/protocol",
+        "url": "http://<THGA-Adresse>:8282/protocol",
         "supportedProtocols": [
             "dataspace-protocol-http"
         ]
@@ -180,11 +195,11 @@ Beispiel:
 ````
 edc.catalog.cache.execution.period.seconds=5
 ````
-bedeutet, dass der Federated Catalog sich alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorang, s. vorheriger Absatz).
+bedeutet, dass sich der Federated Catalog alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorang, s. vorheriger Absatz).
 
 ### edc.catalog.cache.partition.num.crawlers
 
-Anzahl an Crawlern, die die sogenannten "Work Items" crawlen.
+Anzahl an Crawlern, die die sogenannten "Work Items" (also das Tripel aus Name, Connector-Url und supportedProtocols-Liste) crawlen.
 
 Beispiel:
 ````
