@@ -195,7 +195,7 @@ Beispiel:
 ````
 edc.catalog.cache.execution.period.seconds=5
 ````
-bedeutet, dass sich der Federated Catalog alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorang, s. vorheriger Absatz).
+bedeutet, dass sich der Federated Catalog alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorgang, s. vorheriger Absatz).
 
 ### edc.catalog.cache.partition.num.crawlers
 
