@@ -23,7 +23,7 @@ def new_case():
     return {
         "vehicle_vin": "test-vin",
         "customer_id": "test.customer",
-        "occasion": "keine Angabe",
+        "occasion": "unknown",
         "milage": 42
     }
 
@@ -33,9 +33,9 @@ def case_with_diagnostic_data(new_case, timeseries_data):
     """Valid data for a case"""
     new_case["timeseries_data"] = timeseries_data
     new_case["obd_data"] = {"dtcs": ["P0001"]}
-    new_case["symtpoms"] = {
-                "component": "Batterie",
-                "label": "defekt"
+    new_case["symptoms"] = {
+                "component": "battery",
+                "label": "defect"
             }
     return new_case
 
@@ -199,8 +199,8 @@ class TestCase:
         test_signal_id = "5eb7cf5a86d9755df3a6c593"
 
         new_timeseries_data = {
-            "component": "Batterie",
-            "label": "keine Angabe",
+            "component": "battery",
+            "label": "unknown",
             "sampling_rate": 1,
             "duration": 2,
             "type": "oscillogram",
@@ -282,7 +282,7 @@ class TestCase:
             case.symptoms_added = previous_adds
 
             await case.add_symptom(
-                NewSymptom(**{"component": "Batterie", "label": "defekt"})
+                NewSymptom(**{"component": "battery", "label": "defect"})
             )
 
             # refetch case and assert existence of single symptom
@@ -356,7 +356,7 @@ class TestCase:
         async with initialized_beanie_context:
             data_id = 5
             symptom = {
-                "component": "Batterie", "label": "defekt", "data_id": data_id
+                "component": "battery", "label": "defect", "data_id": data_id
             }
             new_case["symptoms"] = [symptom]
             case = Case(workshop_id=1, **new_case)
@@ -452,7 +452,7 @@ class TestCase:
 
             # seed case with symptom and save to db
             symptom = {
-                "component": "Batterie", "label": "defekt", "data_id": data_id
+                "component": "battery", "label": "defect", "data_id": data_id
             }
             new_case["symptoms"] = [symptom]
             case = Case(workshop_id=1, **new_case)
@@ -483,8 +483,8 @@ class TestCase:
     ):
         async with initialized_beanie_context:
             data_id = 42
-            old_label = "keine Angabe"
-            new_label = "Anomalie / Auffälligkeit"
+            old_label = "unknown"
+            new_label = "anomaly"
             timeseries_data["label"] = old_label
             timeseries_data["data_id"] = data_id
 
@@ -558,9 +558,9 @@ class TestCase:
     ):
         async with initialized_beanie_context:
             data_id = 100
-            symptom = {"component": "Batterie", "data_id": data_id}
-            old_label = "keine Angabe"
-            new_label = "defekt"
+            symptom = {"component": "battery", "data_id": data_id}
+            old_label = "unknown"
+            new_label = "defect"
             symptom["label"] = old_label
 
             # seed case with symptom that has old label
@@ -611,7 +611,7 @@ class TestCase:
         async with initialized_beanie_context:
             data_ids = [0, 42]
             new_case["symptoms"] = [
-                {"component": "Batterie", "label": "defekt", "data_id": d_id}
+                {"component": "battery", "label": "defect", "data_id": d_id}
                 for d_id in data_ids
             ]
             case = Case(workshop_id=1, **new_case)

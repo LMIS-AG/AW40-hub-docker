@@ -138,9 +138,9 @@ class HubDataAccessor(DataAccessor):
     def get_manual_judgement_for_component(self, component: str) -> bool:
         symptom = self._get_symptom(component=component)
         label = symptom["label"]
-        if label == "defekt":
+        if label == "defect":
             return True
-        elif label in ["nicht defekt", "keine Angabe"]:
+        elif label in ["ok", "unknown"]:
             return False
         else:
             raise ValueError(f"Unknown symptom label '{label}'")

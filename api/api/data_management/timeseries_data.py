@@ -52,9 +52,9 @@ class GridFSSignalStore(BaseSignalStore):
 
 
 class TimeseriesDataLabel(str, Enum):
-    unknown = "keine Angabe"
-    norm = "Regelfall / Unauffällig"
-    anomaly = "Anomalie / Auffälligkeit"
+    unknown = "unknown"
+    norm = "norm"
+    anomaly = "anomaly"
 
 
 class TimeseriesMetaData(BaseModel):
@@ -82,7 +82,7 @@ class TimeseriesDataUpdate(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "label": "Anomalie / Auffälligkeit",
+                "label": "anomaly",
             }
         }
 
@@ -105,8 +105,8 @@ class TimeseriesData(TimeseriesMetaData):
         schema_extra = {
             "example": {
                 "timestamp": "2023-04-04T07:07:22.643103",
-                "component": "Batterie",
-                "label": "Regelfall / Unauffällig",
+                "component": "battery",
+                "label": "norm",
                 "sampling_rate": 1,
                 "duration": 3,
                 "type": "oscillogram",
@@ -136,8 +136,8 @@ class NewTimeseriesData(TimeseriesMetaData):
     class Config:
         schema_extra = {
             "example": {
-                "component": "Batterie",
-                "label": "Regelfall / Unauffällig",
+                "component": "battery",
+                "label": "norm",
                 "sampling_rate": 1,
                 "duration": 3,
                 "type": "oscillogram",

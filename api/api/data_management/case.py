@@ -18,14 +18,14 @@ from .vehicle import Vehicle
 
 
 class Occasion(str, Enum):
-    unkown = "keine Angabe"
-    service_routine = "Service / Routine"
-    problem_defect = "Problem / Defekt"
+    unknown = "unknown"
+    service_routine = "service_routine"
+    problem_defect = "problem_defect"
 
 
 class Status(str, Enum):
-    open = "offen"
-    closed = "abgeschlossen"
+    open = "open"
+    closed = "closed"
 
 
 class NewCase(BaseModel):
@@ -43,7 +43,7 @@ class NewCase(BaseModel):
 
     vehicle_vin: str
     customer_id: Indexed(str, unique=False) = Customer.unknown_id
-    occasion: Occasion = Occasion.unkown
+    occasion: Occasion = Occasion.unknown
     milage: int = None
 
 
@@ -67,7 +67,7 @@ class Case(Document):
 
     # case descriptions
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    occasion: Occasion = Occasion.unkown
+    occasion: Occasion = Occasion.unknown
     milage: int = None
     status: Status = Status.open
 

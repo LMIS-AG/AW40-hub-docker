@@ -85,8 +85,8 @@ def signal_bucket(motor_db):
 def timeseries_meta_data():
     """Valid timeseries meta data"""
     return {
-        "component": "Batterie",
-        "label": "keine Angabe",
+        "component": "battery",
+        "label": "unknown",
         "sampling_rate": 1,
         "duration": 3,
         "type": "oscillogram"
