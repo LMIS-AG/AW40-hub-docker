@@ -60,7 +60,6 @@ frontend/app/.project
 frontend/app/.settings/
 
 # Flutter/Dart/Pub related
-frontend/app/dev.env
 frontend/app/coverage/lcov.info
 frontend/app/**/doc/api/
 frontend/app/**/ios/Flutter/.last_build_id
