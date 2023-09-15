@@ -65,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _logger.finest("_webProcessKeycloakCodeInBrowserUrl()");
     if (!kIsWeb) {
       throw AppException(
-        exceptionMessage: "KIsWeb == false",
+        exceptionMessage:
+            "KIsWeb == false, but called _webProcessKeycloakCodeInBrowserUrl()",
         exceptionType: ExceptionType.other,
       );
     }
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final String? code = webRemoveQueryFromUrlAndReturnKeycloakCode();
 
     final String? redirectUri = await webRetrieveRedirectUri();
-    _logger.info("loginPop: $redirectUri");
+    _logger.info("Retrieved redirectUri: $redirectUri");
 
     if (code == null) {
       throw AppException(
@@ -159,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
+    _logger.info("storing redirectUri: $currentBrowserUrl");
     await webStoreRedirectUri(redirectUri: currentBrowserUrl);
 
     final String keyCloakLoginUrl = AuthService().generateKeyCloakLoginUrl(
