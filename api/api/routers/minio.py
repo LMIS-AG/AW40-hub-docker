@@ -71,7 +71,7 @@ async def get_file(
         raise HTTPException(status_code=403, detail="Item not found")
 
 
-@router.post(
+@router.put(
     "/{bucket_name}/{key_name}",
     status_code=200
 )
