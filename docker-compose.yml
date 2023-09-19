@@ -124,10 +124,12 @@ services:
         - 8282:8282
         - 8183:8183
         - 8185:8185
+        - 8186:8186
       volumes:
           - ./edc/configs:/configs
           - ./edc/vaults:/vaults
           - ./edc/certs:/certs
+          - ./edc/self-descriptions:/self-descriptions
 
   edc-database:
       build:
