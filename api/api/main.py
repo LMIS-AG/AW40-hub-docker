@@ -9,7 +9,7 @@ from .data_management import (
 from .data_management.timeseries_data import GridFSSignalStore
 from .settings import settings
 from .v1 import api_v1
-from .storage.storage_factory import initialise_storages
+from .storage.storage_factory import StorageFactory
 
 app = FastAPI()
 app.add_middleware(
@@ -40,7 +40,7 @@ async def init_mongo():
 
 @app.on_event("startup")
 def init_storages():
-    initialise_storages(
+    StorageFactory.initialise_storages(
         minio_host=settings.minio_host,
         minio_password=settings.minio_password,
         minio_username=settings.minio_username

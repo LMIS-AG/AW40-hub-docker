@@ -3,7 +3,7 @@ from .storages.storages import SUPPORTED_STORAGES
 
 
 class StorageFactory():
-    _config = None
+    _config = {}
 
     def get_storage(self, Name: str) -> Storage:
         cfg = self._config[Name]
