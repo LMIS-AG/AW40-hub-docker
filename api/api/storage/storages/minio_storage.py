@@ -11,16 +11,20 @@ class MinIOStorageData(StorageData):
         self.data = data_handle
         self.content_type = data_handle.headers['Content-Type']
         self.file_buffer = None
+        self.file_view_disabled = False
 
     def get_content_type(self):
         return self.content_type
 
     def file_view(self):
-        self.__to_buffer()
-        return self.file_buffer
+        if not self.file_view_disabled:
+            self.__to_buffer()
+            return self.file_buffer
+        return None
 
     def stream_view(self):
         if not self.file_buffer:
+            self.file_view_disabled = True
             return self.__iter()
         else:
             self.file_buffer.seek(0)
