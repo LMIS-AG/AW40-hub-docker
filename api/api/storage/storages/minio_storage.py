@@ -51,7 +51,7 @@ class MinIOStorageData(StorageData):
 
 
 class MinIOStorage(Storage):
-    
+
     def __init__(self, **kwargs) -> None:
         self.host = kwargs["host"]
         self.username = kwargs["username"]

@@ -65,6 +65,7 @@ async def init_diagnostics_management():
         )
     )
 
+
 @app.on_event("startup")
 def init_storages():
     StorageFactory.initialise_storages(

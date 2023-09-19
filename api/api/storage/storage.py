@@ -19,7 +19,7 @@ class StorageData(ABC):
 class Storage(ABC):
     def __init__(self, **kwargs) -> None:
         pass
-    
+
     def get_data(self, key: str, **attributes):
         raise NotImplementedError
 
