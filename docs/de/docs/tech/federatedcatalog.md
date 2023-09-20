@@ -1,8 +1,8 @@
 # Federated Catalog
 
 Der Federated Catalog (FC) entspricht einer Liste sämtlicher Teilnehmer eines Datenraumes mitsamt ihrer angebotenen Services und Assets. Die FC-Implementierung des AW4.0-EDC
-sieht vor, dass jeder Teilnehmer im Datenraum einen eigenen FC enthält, dieser also dezentral organisiert ist. In einem Datenraum mit n Teilnehmern gibt es also
-n FCs. Das Gegenstück zu diesem Konzept wäre ein zentral-organisierter FC, n Teilnehmer greifen also auf 1 FC zu.
+sieht vor, dass jeder Teilnehmer im Datenraum einen eigenen FC enthält, dieser also dezentral organisiert ist. In einem Datenraum mit ``n`` Teilnehmern gibt es also
+``n`` FCs. Das Gegenstück zu diesem Konzept wäre ein zentral-organisierter FC, ``n`` Teilnehmer greifen also auf ``1`` FC zu.
 
 ![img_1.png](fc.png)
 
