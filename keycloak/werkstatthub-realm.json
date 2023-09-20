@@ -622,9 +622,10 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
       "redirectUris": [
-        "*"
+        "http://10.0.2.2:8443",
+        "http://localhost:4200/*",
+        "http://localhost:4300/*"
       ],
       "webOrigins": [
         "*"
