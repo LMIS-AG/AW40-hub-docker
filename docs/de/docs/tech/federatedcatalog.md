@@ -1,7 +1,7 @@
 # Federated Catalog
 
-Der Federated Catalog (FC) entspricht einer Liste sämtlicher Teilnehmer eines Datenraumes mitsamt ihrer angebotenen Services und Assets. Die Federated Catalog-Implementierung des AW4.0-EDC
-sieht vor, dass jeder Teilnehmer im Datenraum einen eigenen Federated Catalog enthält, dieser also dezentral organisiert ist. In einem Datenraum mit n Teilnehmern gibt es also
+Der Federated Catalog (FC) entspricht einer Liste sämtlicher Teilnehmer eines Datenraumes mitsamt ihrer angebotenen Services und Assets. Die FC-Implementierung des AW4.0-EDC
+sieht vor, dass jeder Teilnehmer im Datenraum einen eigenen FC enthält, dieser also dezentral organisiert ist. In einem Datenraum mit n Teilnehmern gibt es also
 n FCs. Das Gegenstück zu diesem Konzept wäre ein zentral-organisierter FC, n Teilnehmer greifen also auf 1 FC zu.
 
 ![img_1.png](fc.png)
@@ -175,7 +175,7 @@ mit den Datenraumteilnehmern "HSOS" und "THGA":
 
 Es gibt insgesamt drei Eigenschaften, die in der properties-Datei des EDC bezüglich des FC gesetzt werden können:
 
-### edc.catalog.cache.execution.delay.seconds
+*edc.catalog.cache.execution.delay.seconds*
 
 Anzahl an Sekunden, bis der EDC initial den ersten Crawling-Vorgang startet.
 
@@ -187,7 +187,7 @@ edc.catalog.cache.execution.delay.seconds=10
 
 bedeutet, dass der FC das erste Mal 10 Sekunden nach Start des EDC aktualisiert wird.
 
-### edc.catalog.cache.execution.period.seconds
+*edc.catalog.cache.execution.period.seconds*
 
 Häufigkeit des Crawling-Prozesses in Sekunden.
 
@@ -197,7 +197,7 @@ edc.catalog.cache.execution.period.seconds=5
 ````
 bedeutet, dass sich der Federated Catalog alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorgang, s. vorheriger Absatz).
 
-### edc.catalog.cache.partition.num.crawlers
+*edc.catalog.cache.partition.num.crawlers*
 
 Anzahl an Crawlern, die die sogenannten "Work Items" (also das Tripel aus Name, Connector-Url und supportedProtocols-Liste) crawlen.
 
