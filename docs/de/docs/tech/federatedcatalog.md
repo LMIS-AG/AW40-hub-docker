@@ -189,7 +189,7 @@ bedeutet, dass der FC das erste Mal 10 Sekunden nach Start des EDC aktualisiert 
 
 *edc.catalog.cache.execution.period.seconds*
 
-Häufigkeit des Crawling-Prozesses in Sekunden.
+Häufigkeit des Abfrage-Prozesses in Sekunden.
 
 Beispiel:
 ````
