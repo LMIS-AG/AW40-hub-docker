@@ -32,14 +32,14 @@ mit Body
     }
 }
 ````
-Unmittelbar nach dem Start des EDC ist der Federated Catalog leer, der Post-Request liefert also eine leere Liste zurück.
+Unmittelbar nach dem Start des EDC ist der FC leer, der Post-Request liefert also eine leere Liste zurück.
 ## /insert
 
-Mithilfe dieses Endpunkts könnten erste beziehungsweise weitere Datenraumteilnehmer in dem jeweils eigenen Federated Catalog registriert werden.
+Mithilfe dieses Endpunkts könnten erste beziehungsweise weitere Datenraumteilnehmer in dem jeweils eigenen FC registriert werden.
 
 Beispiel:
 
-Ein neuer Datenraumteilnehmer "HSOS" ist im Besitz des EDC_2, der Datenraumteilnehmer "LMIS" mit EDC_1 möchte diesen crawlen.
+Ein neuer Datenraumteilnehmer "HSOS" ist im Besitz des EDC_2, der Datenraumteilnehmer "LMIS" mit EDC_1 möchte diesen abfragen.
 
 
 ````
@@ -140,7 +140,7 @@ Falls "HSOS" zusätzlich ein Asset mit ID "Messergebnis" bei sich registriert, e
     }
 ]
 ````
-Beachte, dass mit der Registrierung eines ersten Assets durch "HSOS" auch Informationen über dessen unterstützte Dataplanes bezüglich eben jenes Assets im Federated Catalog auftauchen. Hat "HSOS" keine Dataplanes bei sich registriert, wirft der "LMIS"-EDC nach Aufruf des Endpunkts eine Fehlermeldung,
+Beachte, dass mit der Registrierung eines ersten Assets durch "HSOS" auch Informationen über dessen unterstützte Dataplanes bezüglich eben jenes Assets im FC auftauchen. Hat "HSOS" keine Dataplanes bei sich registriert, wirft der "LMIS"-EDC nach Aufruf des Endpunkts eine Fehlermeldung,
 ## /participants
 
 Dieser Endpunkt liefert eine Liste aller Datenraumteilnehmer gemäß der Attribute Name, Connector-Url und Protokoll-Spezifikation zurück, die beim Registrieren gesetzt worden sind.
@@ -177,7 +177,7 @@ Es gibt insgesamt drei Eigenschaften, die in der properties-Datei des EDC bezüg
 
 *edc.catalog.cache.execution.delay.seconds*
 
-Anzahl an Sekunden, bis der EDC initial den ersten Crawling-Vorgang startet.
+Anzahl an Sekunden, bis der EDC initial den ersten Abfrage-Vorgang startet.
 
 Beispiel:
 
@@ -195,14 +195,14 @@ Beispiel:
 ````
 edc.catalog.cache.execution.period.seconds=5
 ````
-bedeutet, dass sich der Federated Catalog alle 5 Sekunden aktualisiert (nach dem initalen Crawling-Vorgang, s. vorheriger Absatz).
+bedeutet, dass sich der FC alle 5 Sekunden aktualisiert (nach dem initalen Abfrage-Vorgang, s. vorheriger Absatz).
 
 *edc.catalog.cache.partition.num.crawlers*
 
-Anzahl an Crawlern, die die sogenannten "Work Items" (also das Tripel aus Name, Connector-Url und supportedProtocols-Liste) crawlen.
+Anzahl an ``Crawler``-Objekten, die die sogenannten "Work Items" (also das Tripel aus Name, Connector-Url und supportedProtocols-Liste) verarbeiten.
 
 Beispiel:
 ````
 edc.catalog.cache.partition.num.crawlers=2
 ````
-bedeutet, dass im Falle von 10 Work Items jeder Crawler 5 Work Items crawled.
+bedeutet, dass im Falle von 10 Work Items jeder ``Crawler`` 5 Work Items abfragt.
