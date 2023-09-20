@@ -80,9 +80,4 @@ void _initRootLogger() {
       "${record.time}: ${record.message}",
     );
   });
-  Logger("main-initRootLogger()").shout(
-    "Log level from config map: $logLevelFromConfigMap\n"
-    "Actual log level: ${Logger.root.level}",
-  );
-  Logger.root.level = Level.FINEST; // TODO: Remove.
 }
