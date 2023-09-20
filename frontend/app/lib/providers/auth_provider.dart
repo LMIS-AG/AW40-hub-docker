@@ -127,7 +127,7 @@ class AuthProvider with ChangeNotifier {
 
     _jwt = JwtModel.fromJwtString(returnedJwt);
 
-    _logger.info("LANG FROM JWT: ${_jwt?.locale}");
+    _logger.info("Lang from jwt: ${_jwt?.locale}");
 
     final Locale? locale = _jwt?.locale != null
         ? kSupportedLocales[_jwt?.locale]
