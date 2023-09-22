@@ -94,6 +94,18 @@ jobs:
 
       - name: Run flake8
         run: flake8 ./api
+    # Test Frontend
+      - name: Check if Frontend is reachable
+        run: |
+          curl -fs \
+          http://localhost:4200 \
+          || exit 1
+
+      - name: Disable dart/flutter analytics
+        run: dart --no-analytics && flutter config --no-analytics
+
+      - name: Verify frontend formatting
+        run: dart format --set-exit-if-changed ./frontend/app/
         
     # Clean up
       - name: Stop containers
