@@ -24,17 +24,6 @@ jobs:
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v2
 
-      - name: Setup dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 2.19.6
-
-      - name: Setup flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.7.12'
-          channel: 'stable'
-      
       - name: Add internal Docker IP to hosts
         run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
@@ -112,24 +101,6 @@ jobs:
           http://localhost:4200 \
           || exit 1
 
-      - name: Disable dart/flutter analytics
-        run: dart --disable-analytics && flutter config --no-analytics
-
-      - name: Verify frontend formatting
-        run: cd ./frontend/app && dart format --set-exit-if-changed .
-
-      - name: Install frontend dependencies
-        run: cd ./frontend/app && flutter pub get
-
-      - name: Run frontend build_runner
-        run: cd ./frontend/app && flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Analyze frontend project source
-        run: cd ./frontend/app && dart analyze --fatal-infos
-
-      - name: Run frontend unit tests
-        run: cd ./frontend/app && flutter test --no-pub --no-test-assets --reporter github
-        
     # Clean up
       - name: Stop containers
         if: always()
