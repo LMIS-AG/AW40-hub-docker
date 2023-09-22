@@ -12,11 +12,32 @@ flutter pub run build_runner build
 
 ## Run tests
 
+You can use the `run_checks.sh` script to check formatting, linting, and run tests before pushing your code.
+Do run this from the `frontend` directory directly, not the `frontend/app` directory.
+
+Check your formatting with:
+
+```bash
+dart format --output=none .
+```
+Autoformat your code with:
+
+```bash
+dart format .
+```
+
+Analyze your code with:
+
+```bash
+dart analyze
+```
+
 Run tests via:
 
 ```
 flutter test
 ```
+
 
 ## Development
 
