@@ -128,7 +128,7 @@ jobs:
         run: cd ./frontend/app && dart analyze --fatal-infos
 
       - name: Run frontend unit tests
-        run: cd ./frontend/app && flutter test --no-pub --reporter github
+        run: cd ./frontend/app && flutter test --no-pub --no-test-assets --reporter github
         
     # Clean up
       - name: Stop containers
