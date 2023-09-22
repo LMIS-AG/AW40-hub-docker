@@ -23,7 +23,7 @@
           run: dart --disable-analytics && flutter config --no-analytics
 
         - name: Verify formatting
-          run: cd ./frontend/app && dart format --set-exit-if-changed .
+          run: cd ./frontend/app && dart format --output=none --set-exit-if-changed .
 
         - name: Install dependencies
           run: cd ./frontend/app && flutter pub get
