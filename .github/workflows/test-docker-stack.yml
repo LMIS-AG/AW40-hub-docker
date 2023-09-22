@@ -116,7 +116,19 @@ jobs:
         run: dart --disable-analytics && flutter config --no-analytics
 
       - name: Verify frontend formatting
-        run: dart format --set-exit-if-changed ./frontend/app/
+        run: cd ./frontend/app && dart format --set-exit-if-changed .
+
+      - name: Install frontend dependencies
+        run: cd ./frontend/app && flutter pub get
+
+      - name: Run frontend build_runner
+        run: cd ./frontend/app && flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze frontend project source
+        run: cd ./frontend/app && dart analyze --fatal-infos
+
+      - name: Run frontend unit tests
+        run: cd ./frontend/app && flutter test --no-pub --reporter github
         
     # Clean up
       - name: Stop containers
