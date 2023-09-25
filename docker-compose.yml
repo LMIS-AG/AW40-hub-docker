@@ -150,6 +150,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+      minio-config:
+        condition: service_completed_successfully
     env_file:
       - api/api.env
     hostname: "api"
