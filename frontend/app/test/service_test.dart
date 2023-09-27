@@ -38,6 +38,25 @@ void main() {
         "DtjMyISfWjcfCUdjMocTvlj9d63JidFyVKagdWwEGTk",
       );
     });
+    group("webGetKeycloakLogoutUrl", () {
+      test("returns logout url without redirect if idToken == null", () {
+        final String actual = authService.webGetKeycloakLogoutUrl(null);
+        assert(actual.endsWith("logout"));
+        assert(
+          !(actual.contains("redirect") || actual.contains("id_token_hint")),
+        );
+      });
+      test("returns logout url with redirect if idToken != null", () {
+        const String idToken = "some_id_token";
+        final String actual = authService.webGetKeycloakLogoutUrl(idToken);
+        assert(!actual.endsWith("logout"));
+        assert(
+          actual.contains("post_logout_redirect") &&
+              actual.contains("id_token_hint") &&
+              actual.contains(idToken),
+        );
+      });
+    });
   });
 
   group("HttpService", () {});
