@@ -106,6 +106,7 @@ class AuthProvider with ChangeNotifier {
 
     final String? returnedJwt = tokenMap[TokenType.jwt];
     _refreshToken = tokenMap[TokenType.refresh];
+    _idToken = tokenMap[TokenType.id];
     final String? refreshTokenSnapshot = _refreshToken;
 
     if (returnedJwt == null) {
