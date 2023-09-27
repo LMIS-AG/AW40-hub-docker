@@ -15,6 +15,7 @@ class TokenService {
     final Map<TokenType, String> retMap = <TokenType, String>{};
     retMap[TokenType.jwt] = map["access_token"] as String;
     retMap[TokenType.refresh] = map["refresh_token"] as String;
+    retMap[TokenType.id] = map["id_token"] as String;
     return retMap;
   }
 }
