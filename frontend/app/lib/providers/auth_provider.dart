@@ -154,6 +154,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _checkAuth() async {
+    _logger.finest("_checkAuth()");
     if (_pendingAuthCheck != null) {
       await _pendingAuthCheck?.future;
       return;
@@ -189,8 +190,8 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (_refreshToken != null) {
-      await _checkAuth();
       _logger.fine("found stored refresh token");
+      await _checkAuth();
       notifyListeners();
     } else {
       _logger.fine("no stored refresh token");
@@ -274,7 +275,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _refreshJWT() async {
-    _logger.info("refreshing JWT");
+    _logger.info("refreshJWT");
 
     final Map<String, dynamic> jsonMap = <String, dynamic>{
       "refresh_token": _refreshToken,
@@ -340,6 +341,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
+    _logger.finest("logout()");
     if (kIsWeb) {
       _logger.info("Web logout.");
       final String? idToken = _idToken;
