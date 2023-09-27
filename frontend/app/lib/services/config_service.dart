@@ -10,7 +10,7 @@ class ConfigService {
   static final ConfigService _configService = ConfigService._singleton();
 
   final Logger _logger = Logger("config_service");
-  Map<ConfigKey, String> configMap = {};
+  final Map<ConfigKey, String> _configMap = {};
   bool _initialized = false;
 
   Future<void> initialize() async {
@@ -19,19 +19,19 @@ class ConfigService {
   }
 
   Future<void> _importConfigValues() async {
-    configMap[ConfigKey.logLevel] = Env.logLevel;
-    configMap[ConfigKey.backendUrl] = Env.backendUrl;
-    configMap[ConfigKey.basicAuthKey] = Env.basicAuthKey;
-    configMap[ConfigKey.kcClient] = Env.kcClient;
-    configMap[ConfigKey.kcBaseUrl] = Env.kcBaseUrl;
-    configMap[ConfigKey.kcRealm] = Env.kcRealm;
-    configMap[ConfigKey.rootDomain] = Env.rootDomain;
-    configMap[ConfigKey.redirectUriMobile] = Env.redirectUriMobile;
+    _configMap[ConfigKey.logLevel] = Env.logLevel;
+    _configMap[ConfigKey.backendUrl] = Env.backendUrl;
+    _configMap[ConfigKey.basicAuthKey] = Env.basicAuthKey;
+    _configMap[ConfigKey.kcClient] = Env.kcClient;
+    _configMap[ConfigKey.kcBaseUrl] = Env.kcBaseUrl;
+    _configMap[ConfigKey.kcRealm] = Env.kcRealm;
+    _configMap[ConfigKey.rootDomain] = Env.rootDomain;
+    _configMap[ConfigKey.redirectUriMobile] = Env.redirectUriMobile;
     if (EnvironmentService().hostPlatform == HostPlatform.android) {
       for (final key in ConfigKey.values) {
-        final String value = configMap[key]!;
+        final String value = _configMap[key]!;
         if (value.contains("localhost")) {
-          configMap[key] = _androidifyUrl(value);
+          _configMap[key] = _androidifyUrl(value);
         }
       }
     }
@@ -39,7 +39,7 @@ class ConfigService {
 
   String getConfigValue(ConfigKey configKey) {
     _ensureInitDone();
-    final String? configValue = configMap[configKey];
+    final String? configValue = _configMap[configKey];
     if (configValue == null) {
       throw AppException(
         exceptionMessage: "ConfigService getConfigValue: "
