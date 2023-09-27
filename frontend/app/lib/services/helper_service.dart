@@ -7,9 +7,8 @@ import "package:logging/logging.dart";
 
 class HelperService {
   static Level? getLogLevelFromConfigMap() {
-    final String? logLevelValueFromConfigMap =
-        ConfigService().configMap[ConfigKey.logLevel];
-    if (logLevelValueFromConfigMap == null) return null;
+    final String logLevelValueFromConfigMap =
+        ConfigService().getConfigValue(ConfigKey.logLevel);
     return HelperService._stringToLogLevel(logLevelValueFromConfigMap);
   }
 
