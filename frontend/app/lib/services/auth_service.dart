@@ -60,13 +60,16 @@ class AuthService {
     return keyCloakBaseUrl.replaceFirst(kRealmPlaceholder, kcRealm);
   }
 
-  String webGetKeycloakLogoutUrl() {
+  String webGetKeycloakLogoutUrl(String idToken) {
     String rootDomain = ConfigService().getConfigValue(ConfigKey.rootDomain);
     final bool isHttps = !html.window.location.href.contains("localhost");
     if (rootDomain.contains("*")) {
       final String realm = ConfigService().getConfigValue(ConfigKey.kcRealm);
       rootDomain = rootDomain.replaceAll("*", realm);
     }
-    return "${getKeyCloakUrlWithRealm()}logout?redirect_uri=http${isHttps ? "s" : ""}://$rootDomain";
+    return "${getKeyCloakUrlWithRealm()}logout?post_logout_redirect_uri=http${isHttps ? "s" : ""}://$rootDomain&id_token_hint=$idToken";
   }
+
+  String webGetKeyCloakLogoutUrlNoRedirect() =>
+      "${getKeyCloakUrlWithRealm()}logout";
 }

@@ -342,7 +342,15 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     if (kIsWeb) {
       _logger.info("Web logout.");
-      window.location.href = _authService.webGetKeycloakLogoutUrl();
+      final String? idToken = _idToken;
+      if (idToken == null) {
+        _logger.warning(
+          "idToken == null, cannot perform keycloak post logout redirect",
+        );
+        window.location.href = _authService.webGetKeyCloakLogoutUrlNoRedirect();
+        return;
+      }
+      window.location.href = _authService.webGetKeycloakLogoutUrl(idToken);
     } else {
       _logger.info("Mobile logout.");
       _mobileRedirectNextLoginToHome = true;
