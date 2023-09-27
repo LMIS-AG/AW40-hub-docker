@@ -350,8 +350,6 @@ class AuthProvider with ChangeNotifier {
         _logger.warning(
           "idToken == null, cannot perform keycloak post logout redirect",
         );
-        window.location.href = _authService.webGetKeyCloakLogoutUrlNoRedirect();
-        return;
       }
       window.location.href = _authService.webGetKeycloakLogoutUrl(idToken);
     } else {
