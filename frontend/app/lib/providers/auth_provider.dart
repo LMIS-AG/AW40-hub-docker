@@ -27,6 +27,7 @@ class AuthProvider with ChangeNotifier {
   ]);
   JwtModel? _jwt;
   String? _refreshToken;
+  String? _idToken;
   Completer<void>? _pendingAuthCheck;
   bool _mobileRedirectNextLoginToHome = false;
 
@@ -306,8 +307,10 @@ class AuthProvider with ChangeNotifier {
 
         final String? newJwt = tokenMap[TokenType.jwt];
         final String? newRefreshToken = tokenMap[TokenType.refresh];
+        final String? newIdToken = tokenMap[TokenType.id];
         if (newJwt == null || newRefreshToken == null) return;
         _refreshToken = newRefreshToken;
+        _idToken = newIdToken;
         _jwt = JwtModel.fromJwtString(newJwt);
 
         unawaited(
