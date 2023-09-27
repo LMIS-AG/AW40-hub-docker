@@ -22,6 +22,7 @@ enum HostPlatform {
 enum TokenType {
   jwt,
   refresh,
+  id,
 }
 
 enum ConfigKey {
