@@ -10,6 +10,7 @@ from .data_management import (
 )
 from .data_management.timeseries_data import GridFSSignalStore
 from .diagnostics_management import DiagnosticTaskManager
+from .middleware import STSMiddleware
 from .settings import settings
 from .utils import create_action_data
 from .v1 import api_v1
@@ -23,6 +24,7 @@ app.add_middleware(
     allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allow_headers=["*"],
 )
+app.add_middleware(STSMiddleware)
 app.mount("/v1", api_v1)
 
 app.mount("/ui", ui.app)
@@ -30,7 +32,6 @@ app.mount("/ui", ui.app)
 
 @app.on_event("startup")
 async def init_mongo():
-
     # initialize beanie
     client = motor_asyncio.AsyncIOMotorClient(settings.mongo_uri)
     await init_beanie(
