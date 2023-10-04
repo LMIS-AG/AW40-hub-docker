@@ -37,12 +37,24 @@ def setup_model():
     anomalies for boost_pressure_control_valve, which is in the example
     knowledge-graph.
     """
-    model_destination = os.path.join(
+    model_destination_folder = os.path.join(
         os.path.dirname(os.path.dirname(EXAMPLE_DIR)),
-        "models/boost_pressure_control_valve.h5"
+        "models"
     )
-    model_src = os.path.join(EXAMPLE_DIR, "boost_pressure_control_valve.h5")
-    shutil.copy(src=model_src, dst=model_destination)
+    model_destination_path = os.path.join(
+        model_destination_folder, "boost_pressure_control_valve.h5"
+    )
+    meta_info_destination_path = os.path.join(
+        model_destination_folder, "boost_pressure_control_valve_meta_info.json"
+    )
+    model_src_path = os.path.join(
+        EXAMPLE_DIR, "boost_pressure_control_valve.h5"
+    )
+    meta_info_src_path = os.path.join(
+        EXAMPLE_DIR, "boost_pressure_control_valve_meta_info.json"
+    )
+    shutil.copy(src=model_src_path, dst=model_destination_path)
+    shutil.copy(src=meta_info_src_path, dst=meta_info_destination_path)
 
 
 def create_case(workshop_id):
