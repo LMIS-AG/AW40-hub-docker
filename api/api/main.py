@@ -1,16 +1,14 @@
 from beanie import init_beanie
 from celery import Celery
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
-
 from .data_management import (
     Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
     ToDo, AttachmentBucket
 )
 from .data_management.timeseries_data import GridFSSignalStore
 from .diagnostics_management import DiagnosticTaskManager
-from .middleware import STSMiddleware
 from .settings import settings
 from .utils import create_action_data
 from .v1 import api_v1
@@ -24,7 +22,16 @@ app.add_middleware(
     allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allow_headers=["*"],
 )
-app.add_middleware(STSMiddleware)
+
+
+@app.middleware("http")
+async def add_strict_transport_security(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Strict-Transport-Security"] = \
+        "max-age=31536000; includeSubDomains"
+    return response
+
+
 app.mount("/v1", api_v1)
 
 app.mount("/ui", ui.app)
