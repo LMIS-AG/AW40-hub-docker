@@ -85,7 +85,13 @@ jobs:
           curl -fs \
           http://localhost:8000/v1/health/ping \
           || exit 1
-      
+
+      - name: Check for strict-transport-security header
+        run: |
+          curl -sIX GET http://localhost:8000/v1/health/ping \
+            | grep -iq "strict-transport-security" \
+            || exit 1
+
       - name: Install python dependencies
         run: pip install -r requirements.txt
     
