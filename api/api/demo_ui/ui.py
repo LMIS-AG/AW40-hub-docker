@@ -115,6 +115,15 @@ def login(request: Request, workshop_id: str = Form()):
 @app.get("/ui/{workshop_id}/cases", response_class=HTMLResponse)
 def cases(request: Request, ressource_url: str = Depends(get_cases_url)):
     cases = get_from_api(ressource_url)
+    for case in cases:
+        if case["diagnosis_id"] is not None:
+            case["diagnosis"] = get_from_api(
+                get_diagnosis_url(
+                    case["workshop_id"], case["_id"]
+                )
+            )
+        else:
+            case["diagnosis"] = {"status": "-"}
     return templates.TemplateResponse(
         "cases.html",
         {
