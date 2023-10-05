@@ -25,7 +25,7 @@ app.add_middleware(
 )
 app.mount("/v1", api_v1)
 
-app.mount("/ui", ui.app)
+app.mount("/", ui.app)
 
 
 @app.on_event("startup")
