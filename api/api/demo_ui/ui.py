@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request, Form, UploadFile, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from . import template_filters
 
 from .settings import settings
 
@@ -13,6 +14,8 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="api/demo_ui/static"), name="static")
 
 templates = Jinja2Templates(directory="api/demo_ui/templates")
+templates.env.filters["schema_format"] = template_filters.schema_format
+templates.env.filters["timestamp_format"] = template_filters.timestamp_format
 
 
 @app.exception_handler(httpx.HTTPStatusError)
