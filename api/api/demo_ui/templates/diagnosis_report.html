@@ -1,43 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Diagnose Report</title>
-  <style>
-    * {
-      font-family: monospace;
-    }
-    hr {
-      color: #ddd;
-    }
-    table {
-      width: 100%;
-    }
-    th {
-      background-color: #2e86c1;
-      color: white;
-      border-radius: 10px;
-    }
-    th, td {
-      padding: 5px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    tr:hover {
-      background-color: #aed6f1;
-    }
-    .todo {
-      border-style: solid;
-      border-width: 1px;
-      border-color: #ddd;
-      border-radius: 10px;
-      background-color: #f0b27a;
-      text-align: center
-    }
-  </style>
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block sidebar %}
+<a href="/ui">Anmeldung Werkstatt</a>
+<a href="/ui/{{ request.path_params['workshop_id'] }}/cases">Fälle</a>
+<a href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ case_id }}" style="margin-left: 10px;">Ausgewählt: {{ case_id }}</a>
+<a href="#" style="margin-left: 20px;"><b>Diagnose</b></a>
+{% endblock %}
+
+{% block content %}
   <h1>Diagnose Report</h1>
   <hr>
 
@@ -69,5 +39,4 @@
       {% endfor %}
   </table>
 
-</body>
-</html>
+{% endblock %}

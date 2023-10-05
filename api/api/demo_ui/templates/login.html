@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+    <a href="#"><b>Anmeldung Werkstatt</b></a>
+{% endblock %}
+
+{% block content %}
+<h1> Demo Firma </h1>
+<h2> Anmeldung Werkstatt </h2>
+<form method="post">
+    <p>
+        <label for="workshop"><b>Werkstatt auswählen</b></label>
+        <input type="text" id="workshop" name="workshop_id" value="demo-werkstatt" readonly required>
+    </p>
+    <p>
+        <input type="submit" value="Anmelden">
+    </p>
+</form>
+{% endblock %}

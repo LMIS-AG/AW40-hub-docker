@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+    <a href="/ui">Anmeldung Werkstatt</a>
+    <a href="#"><b>Fälle</b></a>
+{% endblock %}
+
+{% block content %}
+<h1> Offene Fälle <a href="cases/new">Neuen Fall anlegen</a></h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Zeitstempel</th>
+    <th>Anlass</th>
+    <th>Kilometerstand</th>
+    <th>Kunde</th>
+    <th>Diagnose</th>
+    <th>Details</th>
+    {% for entry in cases %}
+  <tr>
+    <td>{{ entry["_id"] }}</td>
+    <td>{{ entry["timestamp"] }}</td>
+    <td>{{ entry["occasion"] }}</td>
+    <td>{{ entry["milage"] }}</td>
+    <td>{{ entry["customer_id"] }}</td>
+    <td>DIAGNOSE STATUS</td>
+    <td> <a href="cases/{{ entry['_id'] }}">Details</a> </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

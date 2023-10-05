@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+<a href="/ui">Anmeldung Werkstatt</a>
+<a href="/ui/{{ request.path_params['workshop_id'] }}/cases">Fälle</a>
+<a href="#" style="margin-left: 10px;"><b>Ausgewählt:</b> {{ case["_id"] }}</a>
+{% endblock %}
+
+{% block content %}
+<h1> Fall {{ case["_id"] }} </h1>
+<div style="display:grid;grid-template-columns: 1fr 1fr;">
+    <div>
+        <h2> Details </h2>
+        <table>
+            <tr>
+                <td><b>Zeitstempel</b></td>
+                <td> {{ case["timestamp"] }} </td>
+            </tr>
+            <tr>
+                <td><b>Anlass</b></td>
+                <td> {{ case["occasion"] }} </td>
+            </tr>
+            <tr>
+                <td><b>Kilometerstand</b></td>
+                <td> {{ case["milage"] }} </td>
+            </tr>
+            <tr>
+                <td><b>Kunde</b></td>
+                <td> {{ case["customer_id"] }} </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h2> Diagnose </h2>
+        <div style="margin: 0px 20px 0px 20px;">
+            {% if not case["diagnosis_id"] %}
+            <form action="{{ request.path_params['case_id'] }}/diag" method="post">
+                <button type="submit">Diagnose starten</button>
+            </form>
+            {% else %}
+            <p><b>Status:</b> {{ case["diagnosis"]["status"] }}</p>
+            <p><hr></p>
+            <p>
+            {% for todo in case["diagnosis"]["todos"] %}
+            <div class="todo">
+                <p><b>{{ todo["instruction"] }}</b></p>
+            </div>
+            {% endfor %}
+            <p>
+            <a href="{{ case['_id'] }}/diag">Detailierter Report</a>
+            </p>
+            {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+<h2> Datensätze </h2>
+<h3> OBD <a href="{{ case['_id'] }}/obd_data/new">Neuen Datensatz hinzufügen</a></h3>
+<table>
+    <tr>
+        <th>Datensatz ID</th>
+        <th>Zeitstempel</th>
+        <th>Fehlercodes</th>
+        <th>Details</th>
+    </tr>
+    {% for entry in case["obd_data"] %}
+    <tr>
+        <td>{{ entry["data_id"] }}</td>
+        <td>{{ entry["timestamp"] }}</td>
+        {% set dtcs = entry["dtcs"][:3] %}
+        {% if entry["dtcs"] | length > 3 %}
+        {% set dtcs = dtcs + ["..."] %}
+        {% endif %}
+        <td>{{ dtcs }}</td>
+        <td> <a href="{{ case['_id']}}/obd_data/{{entry['data_id'] }}">Details</a> </td>
+    </tr>
+    {% endfor %}
+</table>
+<h3> Oszillogramme <a href="{{ case['_id'] }}/timeseries_data/new">Neuen Datensatz hinzufügen</a></h3>
+<table>
+    <tr>
+        <th>Datensatz ID</th>
+        <th>Zeitstempel</th>
+        <th>Bauteil</th>
+        <th>Bewertung</th>
+        <th>Abtastrate [Hz]</th>
+        <th>Länge [s]</th>
+        <th>Details</th>
+    </tr>
+    {% for entry in case["timeseries_data"] %}
+    <tr>
+        <td>{{ entry["data_id"] }}</td>
+        <td>{{ entry["timestamp"] }}</td>
+        <td>{{ entry["component"] }}</td>
+        <td>{{ entry["label"] }}</td>
+        <td>{{ entry["sampling_rate"] }}</td>
+        <td>{{ entry["duration"] }}</td>
+        <td> <a href="{{ case['_id'] }}/timeseries_data/{{ entry['data_id'] }}">Details</a> </td>
+    </tr>
+    {% endfor %}
+</table>
+<h3> Symptome <a href="{{ case['_id'] }}/symptoms/new">Neuen Datensatz hinzufügen</a></h3>
+<table>
+    <tr>
+        <th>Datensatz ID</th>
+        <th>Zeitstempel</th>
+        <th>Bauteil</th>
+        <th>Bewertung</th>
+        <th>Details</th>
+    </tr>
+    {% for entry in case["symptoms"] %}
+    <tr>
+        <td>{{ entry["data_id"] }}</td>
+        <td>{{ entry["timestamp"] }}</td>
+        <td>{{ entry["component"] }}</td>
+        <td>{{ entry["label"] }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
