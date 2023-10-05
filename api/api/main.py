@@ -1,9 +1,8 @@
 from beanie import init_beanie
 from celery import Celery
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
-
 from .data_management import (
     Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
     ToDo, AttachmentBucket
@@ -23,6 +22,16 @@ app.add_middleware(
     allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def add_strict_transport_security(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Strict-Transport-Security"] = \
+        "max-age=31536000; includeSubDomains"
+    return response
+
+
 app.mount("/v1", api_v1)
 
 app.mount("/", ui.app)
@@ -30,7 +39,6 @@ app.mount("/", ui.app)
 
 @app.on_event("startup")
 async def init_mongo():
-
     # initialize beanie
     client = motor_asyncio.AsyncIOMotorClient(settings.mongo_uri)
     await init_beanie(

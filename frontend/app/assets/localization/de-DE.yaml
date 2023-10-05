@@ -1,0 +1,61 @@
+general:
+  cancel: "Abbrechen"
+  close: "Schließen"
+  customer: "Kunde"
+  customerId: "Kunden ID"
+  date: "Datum"
+  delete: "Löschen"
+  filter: "Filtern"
+  language: "Sprache"
+  logout: "Logout"
+  milage: "Kilometerstand"
+  notFound: "nicht gefunden"
+  notSpecified: "keine Angabe"
+  obligatoryField: "Pflichtfeld"
+  occasion: "Anlass"
+  problem: "Problem"
+  repair: "Reparatur"
+  save: "Speichern"
+  service: "Service"
+  sort: "Sortieren"
+  status: "Status"
+  unnamed: "Unbenannt"
+  vehicle: "Fahrzeug"
+  vehicleVin: "Fahrzeug VIN"
+  workshop: "Werkstatt"
+  yes: "Ja"
+  no:
+    date: "Kein Datum"
+    customerId: "Keine Kunden ID"
+    vehicleVin: "Keine @:general.vehicleVin"
+    workshopId: "Keine @:general.workshop ID"
+cases:
+  title: "Fälle"
+  actions:
+    addCase: "Neuen Fall anlegen"
+    sortCases: "@:general.sort"
+    filterCases: "@:general.filter"
+  occasions:
+    notSpecified: "@:general.notSpecified"
+    service: "@:general.service"
+    problem: "@:general.repair"
+  filterDialog:
+    title: "Fälle filtern"
+    toggleShared: "Fälle aus allen Werkstätten anzeigen"
+  addCaseDialog:
+    vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
+    vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
+  details:
+    dialog:
+      title: "Fall löschen"
+      description: "Möchten Sie den Fall wirklich löschen?"
+    deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
+    deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
+customers:
+  title: "Kunden"
+vehicles:
+  title: "Fahrzeuge"
+training:
+  title: "Schulung"
+pageNotFound:
+  title: "Seite @:general.notFound"
