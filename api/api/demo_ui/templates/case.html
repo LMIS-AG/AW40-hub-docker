@@ -31,14 +31,17 @@
         </table>
     </div>
     <div>
-        <h2> Diagnose </h2>
+        <h2>Diagnose</h2>
         <div style="margin: 0px 20px 0px 20px;">
             {% if not case["diagnosis_id"] %}
             <form action="{{ request.path_params['case_id'] }}/diag" method="post">
                 <button type="submit">Diagnose starten</button>
             </form>
             {% else %}
-            <p><b>Status:</b> {{ case["diagnosis"]["status"]|schema_format("diagnosis_status") }}</p>
+            <p>
+                <b>Status:</b> {{ case["diagnosis"]["status"]|schema_format("diagnosis_status") }}
+                <button onClick="window.location.reload();" style="margin-left:10px">&#128472 Aktualisieren</button>
+            </p>
             <p><hr></p>
             <p>
             {% for todo in case["diagnosis"]["todos"] %}
