@@ -7,7 +7,7 @@
 <a href="#" style="margin-left: 20px;"><b>Oscillogramm:</b> {{ request.path_params["data_id"] }}</a>
 {% endblock %}
 {% block content %}
-<h1>Oszillogramm {{ request.path_params["data_id"] }}</h1>
+<h1>Oszillogramm {{ request.path_params["data_id"] }} <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ request.path_params['case_id'] }}">Zurück zum Fall</a></h1>
 <div style="display:grid;grid-template-columns: 1fr 1fr;">
     <div>
         <table>

@@ -7,7 +7,7 @@
 <a href="#" style="margin-left: 20px;"><b>OBD:</b> Neuer Datensatz</a>
 {% endblock %}
 {% block content %}
-<h1> Neuen OBD Datensatz anlegen</h1>
+<h1> Neuen OBD Datensatz anlegen <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ request.path_params['case_id'] }}">Abbrechen</a></h1>
 <div style="display:grid;grid-template-columns: 1fr 1fr;">
     <div>
         <h2> Option 1: Fehlercodes manuell bereitstellen </h2>

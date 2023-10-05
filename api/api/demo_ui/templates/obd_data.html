@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<h1> OBD Datensatz {{ obd_data["data_id"] }}</h1>
+<h1> OBD Datensatz {{ obd_data["data_id"] }} <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ request.path_params['case_id'] }}">Zurück zum Fall</a></h1>
 
 <p>
     <b>Zeitstempel: </b> {{ obd_data["timestamp"] }}

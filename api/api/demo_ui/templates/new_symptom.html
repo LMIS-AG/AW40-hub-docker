@@ -7,7 +7,7 @@
 <a href="#" style="margin-left: 20px;"><b>Symptome:</b> Neuer Datensatz</a>
 {% endblock %}
 {% block content %}
-<h1> Neues Symptom hinzufügen</h1>
+<h1> Neues Symptom hinzufügen <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ request.path_params['case_id'] }}">Abbrechen</a></h1>
 <form method="post">
     <p>
         <label for="component"><b>Bauteil</b></label><br>

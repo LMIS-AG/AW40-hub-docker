@@ -7,7 +7,7 @@
 <a href="#" style="margin-left: 20px;"><b>OBD:</b> Neuer Datensatz</a>
 {% endblock %}
 {% block content %}
-<h1> Neues Oszillogramm hochladen</h1>
+<h1> Neues Oszillogramm hochladen <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ request.path_params['case_id'] }}">Abbrechen</a></h1>
 <div>
     <h2> Option 1: Picoscope CSV Export </h2>
     <form method="post" enctype="multipart/form-data">
