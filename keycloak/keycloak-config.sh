@@ -72,4 +72,26 @@ echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIE
     -r werkstatt-hub \
     -s secret=${HUB_UI_CLIENT_SECRET}
 
+# Remove Whitespaces
+FRONTEND_REDIRECT_URIS="$(echo -e "${FRONTEND_REDIRECT_URIS}" | tr -d '[:space:]')"
+
+# Split into array using ',' as seperator
+IFS=',' read -ra redir_arr <<< "$FRONTEND_REDIRECT_URIS"
+
+REDIR_URI=""
+REDIR_LEN=${#redir_arr[@]}
+
+for (( i=0; i<$REDIR_LEN; i++ ))
+do
+    REDIR_URI+="\"${redir_arr[$i]}\""
+    if [ $i -ne $((REDIR_LEN-1)) ]
+    then
+        REDIR_URI+=","
+    fi
+done
+
+/opt/keycloak/bin/kcadm.sh update clients/$CLIENT_ID \
+    -r werkstatt-hub \
+    -s redirectUris=[$REDIR_URI]
+
 exit 0
