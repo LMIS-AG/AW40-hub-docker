@@ -13,7 +13,7 @@
         <table>
             <tr>
                 <td><b>Zeitstempel</b></td>
-                <td>{{ timeseries_data["timestamp"] }} </td>
+                <td>{{ timeseries_data["timestamp"]|timestamp_format }} </td>
             </tr>
             <tr>
                 <td><b>Bauteil</b></td>
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td><b>Bewertung</b></td>
-                <td>{{ timeseries_data["label"] }} </td>
+                <td>{{ timeseries_data["label"]|schema_format("timeseries_data_label") }} </td>
             </tr>
             <tr>
                 <td><b>Abtastrate [Hz]</b></td>

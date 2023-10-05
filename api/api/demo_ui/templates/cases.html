@@ -19,8 +19,8 @@
     {% for entry in cases %}
   <tr>
     <td>{{ entry["_id"] }}</td>
-    <td>{{ entry["timestamp"] }}</td>
-    <td>{{ entry["occasion"] }}</td>
+    <td>{{ entry["timestamp"]|timestamp_format }}</td>
+    <td>{{ entry["occasion"]|schema_format("occasion") }}</td>
     <td>{{ entry["milage"] }}</td>
     <td>{{ entry["customer_id"] }}</td>
     <td>DIAGNOSE STATUS</td>

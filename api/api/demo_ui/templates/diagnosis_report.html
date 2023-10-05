@@ -12,7 +12,7 @@
   <hr>
 
   <p><b>Fall:</b> {{ case_id }}</p>
-  <p><b>Status der Diagnose:</b> {{ diag_status }}</p>
+  <p><b>Status der Diagnose:</b> {{ diag_status|schema_format("diagnosis_status") }}</p>
   <hr>
   {% for todo in todos %}
     <div class="todo" background-color:red>
