@@ -75,5 +75,9 @@ def diagnose(diag_id):
 
     # execute diagnosis
     hub_client.set_diagnosis_status("processing")
-    sm.execute()
-    hub_client.set_diagnosis_status("finished")
+    try:
+        sm.execute()
+        hub_client.set_diagnosis_status("finished")
+    except Exception as e:
+        hub_client.add_to_state_machine_log(str(e))
+        hub_client.set_diagnosis_status("failed")
