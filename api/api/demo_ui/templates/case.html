@@ -47,7 +47,7 @@
             </div>
             {% endfor %}
             <p>
-            <a href="{{ case['_id'] }}/diag">Detailierter Report</a>
+            <a class="linkbutton" href="{{ case['_id'] }}/diag">Detailierter Report</a>
             </p>
             {% endif %}
             </p>
@@ -55,7 +55,7 @@
     </div>
 </div>
 <h2> Datensätze </h2>
-<h3> OBD <a href="{{ case['_id'] }}/obd_data/new">Neuen Datensatz hinzufügen</a></h3>
+<h3> OBD <a class="linkbutton" href="{{ case['_id'] }}/obd_data/new">Neuen Datensatz hinzufügen</a></h3>
 <table>
     <tr>
         <th>Datensatz ID</th>
@@ -72,11 +72,11 @@
         {% set dtcs = dtcs + ["..."] %}
         {% endif %}
         <td>{{ dtcs }}</td>
-        <td> <a href="{{ case['_id']}}/obd_data/{{entry['data_id'] }}">Details</a> </td>
+        <td> <a class="linkbutton" href="{{ case['_id']}}/obd_data/{{entry['data_id'] }}">Details</a> </td>
     </tr>
     {% endfor %}
 </table>
-<h3> Oszillogramme <a href="{{ case['_id'] }}/timeseries_data/new">Neuen Datensatz hinzufügen</a></h3>
+<h3> Oszillogramme <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/new">Neuen Datensatz hinzufügen</a></h3>
 <table>
     <tr>
         <th>Datensatz ID</th>
@@ -95,11 +95,11 @@
         <td>{{ entry["label"] }}</td>
         <td>{{ entry["sampling_rate"] }}</td>
         <td>{{ entry["duration"] }}</td>
-        <td> <a href="{{ case['_id'] }}/timeseries_data/{{ entry['data_id'] }}">Details</a> </td>
+        <td> <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/{{ entry['data_id'] }}">Details</a> </td>
     </tr>
     {% endfor %}
 </table>
-<h3> Symptome <a href="{{ case['_id'] }}/symptoms/new">Neuen Datensatz hinzufügen</a></h3>
+<h3> Symptome <a class="linkbutton" href="{{ case['_id'] }}/symptoms/new">Neuen Datensatz hinzufügen</a></h3>
 <table>
     <tr>
         <th>Datensatz ID</th>

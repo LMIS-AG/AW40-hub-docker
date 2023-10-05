@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Diagnose Report</h1>
+  <h1>Diagnose Report <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ case_id }}">Zurück zum Fall</a></h1>
   <hr>
 
   <p><b>Fall:</b> {{ case_id }}</p>
