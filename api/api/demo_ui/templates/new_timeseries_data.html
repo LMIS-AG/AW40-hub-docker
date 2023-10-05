@@ -15,7 +15,12 @@
         <p>
             <label><b>Kanal {{ channel }}</b></label><br>
             <label for="component_{{ channel }}">Komponente</label>
-            <input type="text" id="component_{{ channel }}", name="component_{{ channel }}">
+            <input list="components" id="component_{{ channel }}" name="component_{{ channel }}" style="width:30%">
+            <datalist id="components">
+                {% for component in components %}
+                <option value="{{ component }}">
+                {% endfor %}
+            </datalist>
             <label for="label_{{ channel }}">Bewertung</label>
             <select id="label_{{ channel }}", name="label_{{ channel }}">
                 <option value="unknown">Unbekannt</option>

@@ -1,3 +1,5 @@
+from typing import List
+
 import httpx
 from fastapi import FastAPI, Request, Form, UploadFile, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -77,6 +79,21 @@ async def post_to_api(url: str, **kwargs) -> dict:
         response = await client.post(url, **kwargs)
         response.raise_for_status()
         return response.json()
+
+
+def get_shared_url() -> str:
+    return f"{settings.hub_api_base_url}/shared"
+
+
+def get_components_url() -> str:
+    shared_url = get_shared_url()
+    return f"{shared_url}/components"
+
+
+def get_components(url: str = Depends(get_components_url)) -> List[str]:
+    """Retrieve list of alphabetically sorted components from the API."""
+    components = get_from_api(url)
+    return sorted(components)
 
 
 @app.get("/ui", response_class=HTMLResponse)
@@ -219,12 +236,13 @@ def obd_data(
     response_class=HTMLResponse
 )
 def new_timeseries_data_get(
-        request: Request
+        request: Request, components: List[str] = Depends(get_components)
 ):
     return templates.TemplateResponse(
         "new_timeseries_data.html",
         {
-            "request": request
+            "request": request,
+            "components": components
         }
     )
 
@@ -288,11 +306,14 @@ def timeseries_data(
     "/ui/{workshop_id}/cases/{case_id}/symptoms/new",
     response_class=HTMLResponse
 )
-def new_symptom_get(request: Request):
+def new_symptom_get(
+        request: Request, components: List[str] = Depends(get_components)
+):
     return templates.TemplateResponse(
         "new_symptom.html",
         {
-            "request": request
+            "request": request,
+            "components": components
         }
     )
 
