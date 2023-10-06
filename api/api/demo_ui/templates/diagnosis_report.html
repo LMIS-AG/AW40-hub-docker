@@ -8,11 +8,16 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Diagnose Report <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ case_id }}">Zurück zum Fall</a></h1>
+  <h1>
+    Diagnose Report
+    <a class="linkbutton" href="/ui/{{ request.path_params['workshop_id'] }}/cases/{{ case_id }}">Zurück zum Fall</a>
+  </h1>
   <hr>
-
   <p><b>Fall:</b> {{ case_id }}</p>
-  <p><b>Status der Diagnose:</b> {{ diag_status|schema_format("diagnosis_status") }}</p>
+  <p>
+    <b>Status der Diagnose:</b> {{ diag_status|schema_format("diagnosis_status") }}
+    <button onClick="window.location.reload();" style="margin-left:10px">&#128472 Aktualisieren</button>
+  </p>
   <hr>
   {% for todo in todos %}
     <div class="todo" background-color:red>
