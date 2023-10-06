@@ -11,7 +11,7 @@
 <form method="post">
     <p>
         <label for="component"><b>Bauteil</b></label><br>
-        <input list="components" id="component" name="component" style="width:30%"required>
+        <input list="components" id="component" name="component" style="width:30%" value="{{ suggested_component }}" required>
         <datalist id="components">
             {% for component in components %}
             <option value="{{ component }}">

@@ -264,13 +264,17 @@ def obd_data(
     response_class=HTMLResponse
 )
 def new_timeseries_data_get(
-        request: Request, components: List[str] = Depends(get_components)
+        request: Request,
+        components: List[str] = Depends(get_components),
+        suggested_component: str = ""
+
 ):
     return templates.TemplateResponse(
         "new_timeseries_data.html",
         {
             "request": request,
-            "components": components
+            "components": components,
+            "suggested_component": suggested_component
         }
     )
 
@@ -335,13 +339,16 @@ def timeseries_data(
     response_class=HTMLResponse
 )
 def new_symptom_get(
-        request: Request, components: List[str] = Depends(get_components)
+        request: Request,
+        components: List[str] = Depends(get_components),
+        suggested_component: str = ""
 ):
     return templates.TemplateResponse(
         "new_symptom.html",
         {
             "request": request,
-            "components": components
+            "components": components,
+            "suggested_component": suggested_component
         }
     )
 
