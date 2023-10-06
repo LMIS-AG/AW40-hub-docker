@@ -43,6 +43,9 @@ results the demo ui can be
 
 # Examples
 
+## Example 1
+The first example illustrates a successful diagnosis.
+
 After installing the development requirements via `pip install -r requirements.txt`
 (preferably into a virtualenv) and starting the docker compose stack, run the 
 first example via
@@ -61,6 +64,16 @@ The first example is specified in [examples/example_1/example.py](examples/examp
 Refer to this file to learn more about the different steps that a basic diagnosis might
 comprise.
 
+## Example 2
+In the second example a failed diagnosis is provoked, by providing an oscillogram
+with a signal length, incompatible with the model used by the state machine.
+
+It can be run via
+```
+python diagnostics/examples/example_2
+```
+
+## Using the examples for testing
 The examples can also be used for basic QA. Running
 ```
 pytest diagnostics
