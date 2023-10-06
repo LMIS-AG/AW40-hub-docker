@@ -63,7 +63,7 @@ $kcadm add-roles \
     --rolename ${WERKSTATT_MECHANIC_ROLE}
 
 # Get the ID of the 'minio' client in the 'werkstatt-hub' realm
-CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
+CLIENT_ID=$($kcadm get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
 
 echo "The client ID of 'minio' in the 'werkstatt-hub' realm is: $CLIENT_ID"
 
@@ -74,7 +74,7 @@ $kcadm update clients/$CLIENT_ID \
 
 
 # Get the ID of the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
-CLIENT_ID=$(/opt/keycloak/bin/kcadm.sh get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
+CLIENT_ID=$($kcadm get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
 
 echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIENT_ID"
 
