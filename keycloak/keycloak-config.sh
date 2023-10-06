@@ -77,7 +77,6 @@ FRONTEND_REDIRECT_URIS="$(echo -e "${FRONTEND_REDIRECT_URIS}" | tr -d '[:space:]
 
 # Split into array using ',' as seperator
 IFS=',' read -ra redir_arr <<< "$FRONTEND_REDIRECT_URIS"
-REDIR_LEN=${#redir_arr[@]}
 
 # Create URIs String
 REDIR_URI=$(printf "\"%s\"," "${redir_arr[@]}")
