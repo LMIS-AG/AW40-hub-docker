@@ -44,13 +44,13 @@
             </p>
             <p><hr></p>
             <p>
-            {% for todo in case["diagnosis"]["todos"] %}
+                {% for todo in case["diagnosis"]["todos"] %}
             <div class="todo">
                 <p><b>{{ todo["instruction"] }}</b></p>
             </div>
             {% endfor %}
             <p>
-            <a class="linkbutton" href="{{ case['_id'] }}/diag">Detailierter Report</a>
+                <a class="linkbutton" href="{{ case['_id'] }}/diag">Detailierter Report</a>
             </p>
             {% endif %}
             </p>
@@ -58,7 +58,14 @@
     </div>
 </div>
 <h2> Datensätze </h2>
-<h3> OBD <a class="linkbutton" href="{{ case['_id'] }}/obd_data/new">Neuen Datensatz hinzufügen</a></h3>
+<h3> OBD</h3>
+<p>
+    <a class="linkbutton" href="{{ case['_id'] }}/obd_data/new">Neuen Datensatz hinzufügen</a>
+</p>
+<p>
+    Mittels OBD ausgelesene Fehlercodes.
+</p>
+{% if case["obd_data"]|length > 0 %}
 <table>
     <tr>
         <th>Datensatz ID</th>
@@ -79,7 +86,17 @@
     </tr>
     {% endfor %}
 </table>
-<h3> Oszillogramme <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/new">Neuen Datensatz hinzufügen</a></h3>
+{% else %}
+<p style="color:gray;font-style:italic;margin-left:10px;">Noch keine Daten</p>
+{% endif %}
+<h3> Oszillogramme</h3>
+<p>
+    <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/new">Neuen Datensatz hinzufügen</a>
+</p>
+<p>
+    Oscillogramme von Fahrzeugbauteilen.
+</p>
+{% if case["timeseries_data"]|length > 0 %}
 <table>
     <tr>
         <th>Datensatz ID</th>
@@ -102,7 +119,17 @@
     </tr>
     {% endfor %}
 </table>
-<h3> Symptome <a class="linkbutton" href="{{ case['_id'] }}/symptoms/new">Neuen Datensatz hinzufügen</a></h3>
+{% else %}
+<p style="color:gray;font-style:italic;margin-left:10px;">Noch keine Daten</p>
+{% endif %}
+<h3> Symptome</h3>
+<p>
+    <a class="linkbutton" href="{{ case['_id'] }}/symptoms/new">Neuen Datensatz hinzufügen</a>
+</p>
+<p>
+    Symptome protokollieren den Zustand von Fahrzeugbauteilen, die einer manuellen Untersuchung unterzogen wurden.
+</p>
+{% if case["symptoms"]|length > 0 %}
 <table>
     <tr>
         <th>Datensatz ID</th>
@@ -121,4 +148,7 @@
     </tr>
     {% endfor %}
 </table>
+{% else %}
+<p style="color:gray;font-style:italic;margin-left:10px;">Noch keine Daten</p>
+{% endif %}
 {% endblock %}
