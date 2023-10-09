@@ -78,24 +78,23 @@ class HubDataAccessor(DataAccessor):
     def _get_oscillogram_by_component(
             self, component: str
     ) -> OscillogramData:
-        signals = self.hub_client.get_oscillograms(component)
-        if signals == []:
+        oscillograms = self.hub_client.get_oscillograms(component)
+        if oscillograms == []:
             self.hub_client.require_oscillogram(component)
             self.hub_client.set_diagnosis_status("action_required")
-            signals = self._wait_for_signal(component)
+            oscillograms = self._wait_for_oscillogram(component)
             self.hub_client.set_diagnosis_status("processing")
             self.hub_client.unrequire_oscillogram(component)
 
-        if len(signals) == 1:
-            return OscillogramData(
-                time_series=signals[0],
-                comp_name=component
-            )
-        else:
-            raise ValueError(
-                f"Got more than one Oscillogram for "
-                f"component {component}. This cannot be handled yet."
-            )
+        selected_oscillogram = self._select_latest_dataset(oscillograms)
+        self.hub_client.add_to_state_machine_log(
+            f"RETRIEVED_DATASET: timeseries_data/"
+            f"{selected_oscillogram['data_id']}"
+        )
+        selected_signal = selected_oscillogram["signal"]
+        return OscillogramData(
+            time_series=selected_signal, comp_name=component
+        )
 
     def get_oscillograms_by_components(
             self, components: List[str]
