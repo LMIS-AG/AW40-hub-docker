@@ -46,6 +46,7 @@ class DiagnosisStatus(str, Enum):
     action_required = "action_required"
     processing = "processing"
     finished = "finished"
+    failed = "failed"
 
 
 class DiagnosisLogEntry(BaseModel):
