@@ -44,10 +44,25 @@
             </p>
             <p><hr></p>
             <p>
-                {% for todo in case["diagnosis"]["todos"] %}
-            <div class="todo">
-                <p><b>{{ todo["instruction"] }}</b></p>
-            </div>
+            {% for todo in case["diagnosis"]["todos"] %}
+                {% if todo["data_type"] == "obd" %}
+                  {% set url_data_type = "obd_data" %}
+                  {% set url_query_params = "" %}
+                {% elif todo["data_type"] == "oscillogram" %}
+                  {% set url_data_type = "timeseries_data" %}
+                  {% set url_query_params = "suggested_component=" + todo["component"] %}
+                {% elif todo["data_type"] == "symptom" %}
+                  {% set url_data_type = "symptoms" %}
+                  {% set url_query_params = "suggested_component=" + todo["component"] %}
+                {% endif %}
+                <div class="todo">
+                  <p>
+                      <b>{{ todo["instruction"] }}</b>
+                  </p>
+                  <p>
+                      <a class="linkbutton" href="{{ case['_id'] }}/{{ url_data_type }}/new?{{ url_query_params }}">Zum Upload</a>
+                  </p>
+                </div>
             {% endfor %}
             <p>
                 <a class="linkbutton" href="{{ case['_id'] }}/diag">Detailierter Report</a>

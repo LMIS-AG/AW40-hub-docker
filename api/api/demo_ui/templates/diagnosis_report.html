@@ -20,8 +20,23 @@
   </p>
   <hr>
   {% for todo in todos %}
-    <div class="todo" background-color:red>
-      <p><b>{{ todo["instruction"] }}</b></p>
+    {% if todo["data_type"] == "obd" %}
+      {% set url_data_type = "obd_data" %}
+      {% set url_query_params = "" %}
+    {% elif todo["data_type"] == "oscillogram" %}
+      {% set url_data_type = "timeseries_data" %}
+      {% set url_query_params = "suggested_component=" + todo["component"] %}
+    {% elif todo["data_type"] == "symptom" %}
+      {% set url_data_type = "symptoms" %}
+      {% set url_query_params = "suggested_component=" + todo["component"] %}
+    {% endif %}
+    <div class="todo">
+      <p>
+        <b>{{ todo["instruction"] }}</b>
+      </p>
+      <p>
+        <a class="linkbutton" href="{{ url_data_type }}/new?{{ url_query_params }}">Zum Upload</a>
+      </p>
     </div>
   {% endfor %}
 
