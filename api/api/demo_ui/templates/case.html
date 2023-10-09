@@ -41,6 +41,7 @@
             <p>
                 <b>Status:</b> {{ case["diagnosis"]["status"]|schema_format("diagnosis_status") }}
                 <button onClick="window.location.reload();" style="margin-left:10px">&#128472 Aktualisieren</button>
+                <a class="deletelinkbutton" href="{{ case['_id']}}/diagnosis/delete">Abbrechen und Löschen</a>
             </p>
             <p><hr></p>
             <p>

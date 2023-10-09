@@ -484,3 +484,20 @@ def diagnosis_report(
             "todos": diag["todos"]
         }
     )
+
+
+@app.get(
+    "/ui/{workshop_id}/cases/{case_id}/diagnosis/delete",
+    response_class=RedirectResponse,
+    status_code=303
+)
+def diagnosis_delete_get(
+        request: Request, ressource_url: str = Depends(get_diagnosis_url)
+):
+    delete_via_api(ressource_url)
+    redirect_url = app.url_path_for(
+        "case",
+        workshop_id=request.path_params["workshop_id"],
+        case_id=request.path_params["case_id"]
+    )
+    return redirect_url
