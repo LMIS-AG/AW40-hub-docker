@@ -84,6 +84,11 @@ async def post_to_api(url: str, **kwargs) -> dict:
         return response.json()
 
 
+def delete_via_api(url: str) -> dict:
+    response = httpx.delete(url)
+    return response.json()
+
+
 def get_shared_url() -> str:
     return f"{settings.hub_api_base_url}/shared"
 
@@ -196,6 +201,21 @@ def case(request: Request, ressource_url: str = Depends(get_case_url)):
             "case": case
         }
     )
+
+
+@app.get(
+    "/ui/{workshop_id}/cases/{case_id}/delete",
+    response_class=RedirectResponse,
+    status_code=303
+)
+def case_delete_get(
+        request: Request, ressource_url: str = Depends(get_case_url)
+):
+    delete_via_api(ressource_url)
+    redirect_url = app.url_path_for(
+        "cases", workshop_id=request.path_params["workshop_id"]
+    )
+    return redirect_url
 
 
 @app.get(

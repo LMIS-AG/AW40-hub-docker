@@ -70,7 +70,8 @@ tr:hover {
 	background-color: #aed6f1;
 }
 
-.linkbutton {
+.linkbutton,
+.deletelinkbutton {
 	color: #1f124d;
 	border: 1px solid #1f124d;
 	border-radius: 10px;
@@ -80,6 +81,11 @@ tr:hover {
 
 .linkbutton:hover {
 	background-color: #aed6f1;
+	text-decoration: underline;
+}
+
+.deletelinkbutton:hover {
+	background-color: #c0392b;
 	text-decoration: underline;
 }
 
