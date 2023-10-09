@@ -11,7 +11,9 @@ from .settings import settings
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="api/demo_ui/static"), name="static")
+app.mount(
+    "/static", StaticFiles(directory="api/demo_ui/static"), name="static"
+)
 
 templates = Jinja2Templates(directory="api/demo_ui/templates")
 templates.env.filters["schema_format"] = template_filters.schema_format
@@ -121,14 +123,14 @@ def get_workshops(url: str = Depends(get_shared_cases_url)) -> List[str]:
 
 
 @app.get("/ui", response_class=HTMLResponse)
-def login(request: Request, workshops: List[str] = Depends(get_workshops)):
+def login_get(request: Request, workshops: List[str] = Depends(get_workshops)):
     return templates.TemplateResponse(
         "login.html", {"request": request, "workshops": workshops}
     )
 
 
 @app.post("/ui", response_class=RedirectResponse, status_code=303)
-def login(request: Request, workshop_id: str = Form()):
+def login_post(request: Request, workshop_id: str = Form()):
     redirect_url = app.url_path_for("cases", workshop_id=workshop_id)
     return redirect_url
 
@@ -175,7 +177,6 @@ async def new_case_post(
     # remove empty fields
     form = {k: v for k, v in form.items() if v}
     case = await post_to_api(ressource_url, json=dict(form))
-    case_id = case["_id"]
     redirect_url = app.url_path_for(
         "case", workshop_id=case["workshop_id"], case_id=case["_id"]
     )

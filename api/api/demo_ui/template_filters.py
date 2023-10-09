@@ -1,5 +1,4 @@
-from datetime import datetime, timezone
-
+from datetime import datetime
 
 """
 Custom Jinja2 Filters to format raw values obtained via the API.
