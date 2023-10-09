@@ -158,7 +158,7 @@ async def test_get_oscillograms(
         )
         # confirm expected response
         assert response.status_code == 200
-        assert response.json()[0] == oscillogram_data["signal"]
+        assert response.json()[0]["signal"] == oscillogram_data["signal"]
 
 
 @pytest.mark.asyncio
