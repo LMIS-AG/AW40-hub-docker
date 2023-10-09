@@ -16,7 +16,7 @@
   <p><b>Fall:</b> {{ case_id }}</p>
   <p>
     <b>Status der Diagnose:</b> {{ diag_status|schema_format("diagnosis_status") }}
-    <button onClick="window.location.reload();" style="margin-left:10px">&#128472 Aktualisieren</button>
+    <a class="linkbutton" href="javascript:window.location.href=window.location.href">Aktualisieren</a>
   </p>
   <hr>
   {% for todo in todos %}
