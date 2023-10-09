@@ -280,6 +280,23 @@ def obd_data(
 
 
 @app.get(
+    "/ui/{workshop_id}/cases/{case_id}/obd_data/{data_id}/delete",
+    response_class=RedirectResponse,
+    status_code=303
+)
+def obd_data_delete_get(
+        request: Request, ressource_url: str = Depends(get_obd_data_url)
+):
+    delete_via_api(ressource_url)
+    redirect_url = app.url_path_for(
+        "case",
+        workshop_id=request.path_params["workshop_id"],
+        case_id=request.path_params["case_id"]
+    )
+    return redirect_url
+
+
+@app.get(
     "/ui/{workshop_id}/cases/{case_id}/timeseries_data/new",
     response_class=HTMLResponse
 )
@@ -355,6 +372,23 @@ def timeseries_data(
 
 
 @app.get(
+    "/ui/{workshop_id}/cases/{case_id}/timeseries_data/{data_id}/delete",
+    response_class=RedirectResponse,
+    status_code=303
+)
+def timeseries_data_delete_get(
+        request: Request, ressource_url: str = Depends(get_timeseries_data_url)
+):
+    delete_via_api(ressource_url)
+    redirect_url = app.url_path_for(
+        "case",
+        workshop_id=request.path_params["workshop_id"],
+        case_id=request.path_params["case_id"]
+    )
+    return redirect_url
+
+
+@app.get(
     "/ui/{workshop_id}/cases/{case_id}/symptoms/new",
     response_class=HTMLResponse
 )
@@ -386,6 +420,23 @@ async def new_symptom_post(
     case = await post_to_api(ressource_url, json=dict(form))
     redirect_url = app.url_path_for(
         "case", workshop_id=case["workshop_id"], case_id=case["_id"]
+    )
+    return redirect_url
+
+
+@app.get(
+    "/ui/{workshop_id}/cases/{case_id}/symptoms/{data_id}/delete",
+    response_class=RedirectResponse,
+    status_code=303
+)
+def symptom_delete_get(
+        request: Request, ressource_url: str = Depends(get_symptoms_url)
+):
+    delete_via_api(ressource_url)
+    redirect_url = app.url_path_for(
+        "case",
+        workshop_id=request.path_params["workshop_id"],
+        case_id=request.path_params["case_id"]
     )
     return redirect_url
 

@@ -86,7 +86,7 @@
         <th>Datensatz ID</th>
         <th>Zeitstempel</th>
         <th>Fehlercodes</th>
-        <th>Details</th>
+        <th>Aktionen</th>
     </tr>
     {% for entry in case["obd_data"] %}
     <tr>
@@ -97,7 +97,10 @@
         {% set dtcs = dtcs + ["..."] %}
         {% endif %}
         <td>{{ dtcs }}</td>
-        <td> <a class="linkbutton" href="{{ case['_id']}}/obd_data/{{entry['data_id'] }}">Details</a> </td>
+        <td>
+            <a class="linkbutton" href="{{ case['_id']}}/obd_data/{{ entry['data_id'] }}">Details</a>
+            <a class="deletelinkbutton" href="{{ case['_id']}}/obd_data/{{ entry['data_id'] }}/delete">Löschen</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
@@ -120,7 +123,7 @@
         <th>Bewertung</th>
         <th>Abtastrate [Hz]</th>
         <th>Länge [s]</th>
-        <th>Details</th>
+        <th>Aktionen</th>
     </tr>
     {% for entry in case["timeseries_data"] %}
     <tr>
@@ -130,7 +133,10 @@
         <td>{{ entry["label"]|schema_format("timeseries_data_label") }}</td>
         <td>{{ entry["sampling_rate"] }}</td>
         <td>{{ entry["duration"] }}</td>
-        <td> <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/{{ entry['data_id'] }}">Details</a> </td>
+        <td>
+            <a class="linkbutton" href="{{ case['_id'] }}/timeseries_data/{{ entry['data_id'] }}">Details</a>
+            <a class="deletelinkbutton" href="{{ case['_id']}}/timeseries_data/{{ entry['data_id'] }}/delete">Löschen</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
@@ -151,7 +157,7 @@
         <th>Zeitstempel</th>
         <th>Bauteil</th>
         <th>Bewertung</th>
-        <th>Details</th>
+        <th>Aktionen</th>
     </tr>
     {% for entry in case["symptoms"] %}
     <tr>
@@ -159,7 +165,10 @@
         <td>{{ entry["timestamp"]|timestamp_format }}</td>
         <td>{{ entry["component"] }}</td>
         <td>{{ entry["label"]|schema_format("symptom_label") }}</td>
-        <td></td>
+        <td>
+            <a class="linkbutton" style="color:gray;pointer-events: none;">Details</a>
+            <a class="deletelinkbutton" href="{{ case['_id']}}/symptoms/{{ entry['data_id'] }}/delete">Löschen</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
