@@ -27,6 +27,10 @@ class HubDataAccessor(DataAccessor):
             diag_date=diag["timestamp"]
         )
 
+    @staticmethod
+    def _select_latest_dataset(datasets: list) -> dict:
+        return datasets[-1]
+
     def _wait_for_hub_obd_data(self) -> List:
         print("Waiting for Hub OBD Data ...")
         hub_obd_data = []
@@ -44,13 +48,11 @@ class HubDataAccessor(DataAccessor):
             self.hub_client.set_diagnosis_status("processing")
             self.hub_client.unrequire_obd_data()
 
-        if len(hub_obd_data) == 1:
-            return hub_obd_data[0]["dtcs"]
-        else:
-            raise ValueError(
-                "Case contains more than one OBD Dataset. "
-                "This cannot be handled yet"
-            )
+        selected_hub_obd_data = self._select_latest_dataset(hub_obd_data)
+        self.hub_client.add_to_state_machine_log(
+            f"RETRIEVED_DATASET: obd_data/{selected_hub_obd_data['data_id']}"
+        )
+        return selected_hub_obd_data["dtcs"]
 
     def get_obd_data(self) -> OnboardDiagnosisData:
         dtcs = self._get_dtcs()
@@ -127,13 +129,11 @@ class HubDataAccessor(DataAccessor):
             self.hub_client.set_diagnosis_status("processing")
             self.hub_client.unrequire_symptom(component)
 
-        if len(symptoms) == 1:
-            return symptoms[0]
-        else:
-            raise ValueError(
-                f"Got more than one Symptom for "
-                f"component {component}. This cannot be handled yet."
-            )
+        selected_symptom = self._select_latest_dataset(symptoms)
+        self.hub_client.add_to_state_machine_log(
+            f"RETRIEVED_DATASET: symptoms/{selected_symptom['data_id']}"
+        )
+        return selected_symptom
 
     def get_manual_judgement_for_component(self, component: str) -> bool:
         symptom = self._get_symptom(component=component)
