@@ -64,7 +64,7 @@ class HubClient:
     def get_vehicle(self) -> dict:
         return self._get_from_url(self.vehicle_url)
 
-    def get_oscillograms(self, component: str) -> List[List[float]]:
+    def get_oscillograms(self, component: str) -> List[dict]:
         return self._get_from_url(
             self.oscillograms_url, query_params={"component": component}
         )

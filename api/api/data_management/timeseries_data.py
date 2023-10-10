@@ -157,3 +157,7 @@ class NewTimeseriesData(TimeseriesMetaData):
         meta_data = self.dict(exclude={"signal"})
         meta_data["signal_id"] = signal_id
         return TimeseriesData(**meta_data)
+
+
+class TimeseriesDataFull(TimeseriesData):
+    signal: List[float]

@@ -18,7 +18,8 @@ from ..data_management import (
     ToDo,
     Action,
     Symptom,
-    AttachmentBucket
+    AttachmentBucket,
+    TimeseriesDataFull
 )
 
 tags_metadata = [
@@ -84,20 +85,21 @@ async def get_vehicle(case: Case = Depends(_case_by_diag_id_or_404)):
 @router.get(
     "/{diag_id}/oscillograms",
     status_code=200,
-    response_model=List[List[float]]
+    response_model=List[TimeseriesDataFull]
 )
 async def get_oscillograms(
         component: Component,
         case: Case = Depends(_case_by_diag_id_or_404)
 ):
     """Get all oscillograms for a specific component."""
-    signals = []
+    output_data = []
     for tsd in case.timeseries_data:
         if tsd.component == component:
-            signals.append(
-                await tsd.get_signal()
+            signal = await tsd.get_signal()
+            output_data.append(
+                TimeseriesDataFull(signal=signal, **tsd.dict())
             )
-    return signals
+    return output_data
 
 
 @router.get(
