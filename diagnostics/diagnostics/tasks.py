@@ -1,5 +1,6 @@
 import smach
 from celery import Celery
+from obd_ontology.knowledge_graph_query_tool import KnowledgeGraphQueryTool
 from pydantic import BaseSettings
 from vehicle_diag_smach.high_level_smach import VehicleDiagnosisStateMachine
 
@@ -85,3 +86,13 @@ def diagnose(diag_id):
         )
         hub_client.set_diagnosis_status("failed")
         raise e
+
+
+@app.task
+def get_vehicle_components():
+    """
+    Get the vehicle component instances stored in the configured knowledge
+    graph.
+    """
+    kg_query_tool = KnowledgeGraphQueryTool(settings.knowledge_graph_url)
+    return kg_query_tool.query_all_component_instances()
