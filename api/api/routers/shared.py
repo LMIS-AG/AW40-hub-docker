@@ -2,9 +2,10 @@ from typing import List
 
 from bson import ObjectId
 from bson.errors import InvalidId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from ..data_management import Case, Customer, Vehicle, Workshop
+from ..diagnostics_management import DiagnosticTaskManager
 
 tags_metadata = [
     {
@@ -79,6 +80,20 @@ async def list_vehicles() -> List[Vehicle]:
     """
     vehicles = await Vehicle.find_all().to_list()
     return vehicles
+
+
+@router.get(
+    "/vehicles/components", status_code=200, response_model=List[str]
+)
+async def list_vehicle_components(
+        diagnostic_task_manager: DiagnosticTaskManager =
+        Depends(DiagnosticTaskManager)
+) -> List[str]:
+    """List all vehicle component names known to the Hub's diagnostic
+    backend.
+    """
+    components = diagnostic_task_manager.get_vehicle_components()
+    return components
 
 
 @router.get("/vehicles/{vin}", status_code=200, response_model=Vehicle)
