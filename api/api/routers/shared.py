@@ -83,7 +83,7 @@ async def list_vehicles() -> List[Vehicle]:
 
 
 @router.get(
-    "/vehicles/components", status_code=200, response_model=List[str]
+    "/known-components", status_code=200, response_model=List[str]
 )
 async def list_vehicle_components(
         diagnostic_task_manager: DiagnosticTaskManager =
