@@ -8,13 +8,11 @@ from api.data_management import (
     Vehicle,
     Customer,
     Workshop,
-    DiagnosisDB,
-    Action,
-    ToDo
+    Diagnosis
 )
+from beanie import init_beanie
 from bson import ObjectId
 from motor import motor_asyncio
-from beanie import init_beanie
 
 
 @pytest.fixture
@@ -45,7 +43,7 @@ def initialized_beanie_context(motor_db):
     context manager to handle test setup and teardown.
     """
     models = [
-        Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+        Case, Vehicle, Customer, Workshop, Diagnosis
     ]
 
     class InitializedBeanieContext:

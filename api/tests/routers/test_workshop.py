@@ -13,9 +13,7 @@ from api.data_management import (
     Vehicle,
     Customer,
     Workshop,
-    DiagnosisDB,
-    Action,
-    ToDo
+    Diagnosis
 )
 from api.routers.workshop import (
     router, case_from_workshop, DiagnosticTaskManager
@@ -71,7 +69,7 @@ def test_app(motor_db):
     test_app.include_router(router)
 
     models = [
-        Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+        Case, Vehicle, Customer, Workshop, Diagnosis
     ]
 
     @test_app.on_event("startup")
@@ -1356,9 +1354,9 @@ async def test_get_diagnosis(case_data, test_app, initialized_beanie_context):
             "case_id": case_id,
             "state_machine_log": [{"message": "msg", "attachment": None}]
         }
-        diag_db = DiagnosisDB(**diag_db_data)
-        await diag_db.create()
-        case_data["diagnosis_id"] = diag_db.id
+        diag = Diagnosis(**diag_db_data)
+        await diag.create()
+        case_data["diagnosis_id"] = diag.id
         await Case(**case_data).create()
 
         # execute test request
@@ -1386,9 +1384,9 @@ async def test_start_diagnosis_already_exists(
             "case_id": case_id,
             "state_machine_log": [{"message": "msg", "attachment": None}]
         }
-        diag_db = DiagnosisDB(**diag_db_data)
-        await diag_db.create()
-        case_data["diagnosis_id"] = diag_db.id
+        diag = Diagnosis(**diag_db_data)
+        await diag.create()
+        case_data["diagnosis_id"] = diag.id
         await Case(**case_data).create()
 
         # overwrite DiagnosticTaskManager dependency. It should not be called.
@@ -1451,8 +1449,8 @@ async def test_start_diagnosis(
 
         # confirm expected state in db
         case_db = await Case.get(case_id)
-        diag_db = await DiagnosisDB.get(diag_response["_id"])
-        assert case_db.diagnosis_id == diag_db.id
+        diag = await Diagnosis.get(diag_response["_id"])
+        assert case_db.diagnosis_id == diag.id
 
 
 @pytest.mark.asyncio
@@ -1469,9 +1467,9 @@ async def test_delete_diagnosis(
             "case_id": case_id,
             "state_machine_log": [{"message": "msg", "attachment": None}]
         }
-        diag_db = DiagnosisDB(**diag_db_data)
-        await diag_db.create()
-        case_data["diagnosis_id"] = diag_db.id
+        diag = Diagnosis(**diag_db_data)
+        await diag.create()
+        case_data["diagnosis_id"] = diag.id
         await Case(**case_data).create()
 
         # execute test request
@@ -1484,6 +1482,6 @@ async def test_delete_diagnosis(
 
         # confirm expected state in db
         case_db = await Case.get(case_id)
-        diag_db = await DiagnosisDB.get(diag_db.id)
+        diag = await Diagnosis.get(diag.id)
         assert case_db.diagnosis_id is None
-        assert diag_db is None
+        assert diag is None
