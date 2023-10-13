@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import httpx
 from bson import ObjectId
@@ -6,7 +6,7 @@ from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException, Depends
 
 from ..data_management import Case, Customer, Vehicle, Workshop
-from ..settings import settings
+from ..diagnostics_management import KnowledgeGraph
 
 tags_metadata = [
     {
@@ -83,25 +83,20 @@ async def list_vehicles() -> List[Vehicle]:
     return vehicles
 
 
-def get_knowledge_graph_url() -> Union[None, str]:
-    """Get knowledge graph url configured in settings."""
-    return settings.knowledge_graph_url
-
-
-def get_components_from_knowledge_graph(kg_url: str) -> List[str]:
+def get_components_from_knowledge_graph(kg_obd_url: str) -> List[str]:
     """Try to fetch all vehicle component names stored in knowledge graph.
 
     Returned list will be empty, if retrieval fails.
     """
     # construct sparql endpoint and query
-    sparql_endpoint = f"{kg_url}/OBD/sparql"
+    sparql_endpoint = f"{kg_obd_url}/sparql"
     ontology_prefix = "<http://www.semanticweb.org/diag_ontology#>"
     component_ontology_entry = ontology_prefix.replace(
         "#", "#SuspectComponent"
     )
     name_ontology_entry = ontology_prefix.replace("#", "#component_name")
-    sparql_query = f"SELECT ?name WHERE {{?comp a {component_ontology_entry} . " \
-                   f"?comp {name_ontology_entry} ?name .}}"
+    sparql_query = f"SELECT ?name WHERE {{?comp a {component_ontology_entry}" \
+                   f" . ?comp {name_ontology_entry} ?name .}}"
     # try to send sparql query via knowledge graphs http interface
     try:
         response = httpx.post(
@@ -136,15 +131,15 @@ def get_components_from_knowledge_graph(kg_url: str) -> List[str]:
     "/known-components", status_code=200, response_model=List[str]
 )
 async def list_vehicle_components(
-        kg_url: Optional[str] = Depends(get_knowledge_graph_url)
+        kg_obd_url: Optional[str] = Depends(KnowledgeGraph.get_obd_url)
 ) -> List[str]:
     """List all vehicle component names known to the Hub's diagnostic
     backend.
     """
-    if not kg_url:
+    if not kg_obd_url:
         # No knowledge graph configured
         return []
-    components = get_components_from_knowledge_graph(kg_url)
+    components = get_components_from_knowledge_graph(kg_obd_url)
     return components
 
 

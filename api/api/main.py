@@ -10,7 +10,7 @@ from .data_management import (
 )
 from .data_management.timeseries_data import GridFSSignalStore
 from .demo_ui import ui
-from .diagnostics_management import DiagnosticTaskManager
+from .diagnostics_management import DiagnosticTaskManager, KnowledgeGraph
 from .settings import settings
 from .storage.storage_factory import StorageFactory
 from .v1 import api_v1
@@ -76,3 +76,8 @@ def init_storages():
         minio_password=settings.minio_password,
         minio_username=settings.minio_username
     )
+
+
+@app.on_event("startup")
+def init_knowledge_graph():
+    KnowledgeGraph.set_kg_url(settings.knowledge_graph_url)
