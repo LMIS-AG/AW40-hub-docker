@@ -1,7 +1,4 @@
-import time
-
 from celery import Celery
-from kombu.exceptions import OperationalError
 
 
 class DiagnosticTaskManager:
