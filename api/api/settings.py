@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     redis_host: str = "redis"
     redis_port: str = "6379"
 
-    knowledge_graph_url: Optional[str] = None
+    knowledge_graph_url: Optional[str] = "http://knowledge-graph:3030"
 
     @property
     def mongo_uri(self):
