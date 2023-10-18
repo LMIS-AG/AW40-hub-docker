@@ -78,11 +78,7 @@ CLIENT_ID=$($kcadm get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F 
 
 echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIENT_ID"
 
-# Update the client secret for the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
-$kcadm update clients/$CLIENT_ID \
-    -r werkstatt-hub \
-    -s secret=${HUB_UI_CLIENT_SECRET}
-
+# Update redirect uris for the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
 $kcadm update clients/$CLIENT_ID \
     -r werkstatt-hub \
     -s redirectUris=$(var_to_kc_array "$FRONTEND_REDIRECT_URIS")
