@@ -4,7 +4,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException
 
-from ..data_management import Case, Customer, Vehicle, Workshop
+from ..data_management import Case, Customer, Vehicle, Workshop, Component
 
 tags_metadata = [
     {
@@ -110,3 +110,11 @@ async def get_workshop(workshop_id: str) -> Workshop:
     else:
         exception_detail = f"No workshop with id `{workshop_id}`"
         raise HTTPException(status_code=404, detail=exception_detail)
+
+
+@router.get(
+    "/components", status_code=200, response_model=List[str]
+)
+async def list_components() -> List[str]:
+    """Get all vehicle components 'known' in the Hub data core."""
+    return [comp.value for comp in Component]

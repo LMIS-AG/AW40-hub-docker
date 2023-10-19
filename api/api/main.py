@@ -3,6 +3,7 @@ from celery import Celery
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
+
 from .data_management import (
     Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
     ToDo, AttachmentBucket
@@ -10,10 +11,9 @@ from .data_management import (
 from .data_management.timeseries_data import GridFSSignalStore
 from .diagnostics_management import DiagnosticTaskManager
 from .settings import settings
+from .storage.storage_factory import StorageFactory
 from .utils import create_action_data
 from .v1 import api_v1
-from .storage.storage_factory import StorageFactory
-from .demo_ui import ui
 
 app = FastAPI()
 app.add_middleware(
@@ -33,8 +33,6 @@ async def add_strict_transport_security(request: Request, call_next):
 
 
 app.mount("/v1", api_v1)
-
-app.mount("/ui", ui.app)
 
 
 @app.on_event("startup")
