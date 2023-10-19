@@ -12,10 +12,10 @@ from .settings import settings
 app = FastAPI()
 
 app.mount(
-    "/static", StaticFiles(directory="api/demo_ui/static"), name="static"
+    "/static", StaticFiles(directory="demo_ui/static"), name="static"
 )
 
-templates = Jinja2Templates(directory="api/demo_ui/templates")
+templates = Jinja2Templates(directory="demo_ui/templates")
 templates.env.filters["schema_format"] = template_filters.schema_format
 templates.env.filters["timestamp_format"] = template_filters.timestamp_format
 
@@ -472,6 +472,9 @@ def diagnosis_report(
         attachment_id = log_entry["attachment"]
         if attachment_id is not None:
             attachment_url = f"{ressource_url}/attachments/{attachment_id}"
+            attachment_url = attachment_url.replace(
+                settings.hub_api_base_url, settings.hub_api_host_url
+            )
             log_entry["attachment"] = attachment_url
 
     return templates.TemplateResponse(
