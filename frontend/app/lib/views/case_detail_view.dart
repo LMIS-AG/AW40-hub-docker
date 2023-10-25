@@ -1,6 +1,7 @@
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/services/services.dart";
+import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -132,12 +133,160 @@ class DesktopCaseDetailView extends StatelessWidget {
             ),
             // Content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text(
-                    "Case Detail View: ${caseModel.id}",
-                    style: theme.textTheme.displaySmall,
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.id"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.id,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.date"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.timestamp.toGermanDateString(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.occasion"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            tr("cases.details.occasion.${caseModel.occasion.name}"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.milage"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.milage.toString(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.status"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            tr("cases.details.status.${caseModel.status.name}"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.customerId"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.customerId,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.vehicleVin"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.vehicleVin,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tr("general.workshopId"),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            caseModel.workshopId,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
