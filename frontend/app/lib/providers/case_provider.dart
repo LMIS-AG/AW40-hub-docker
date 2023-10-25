@@ -32,6 +32,22 @@ class CaseProvider with ChangeNotifier {
     return _cases;
   }
 
+  Future<CaseModel> getCaseDetails(String workshopId, String caseId) async {
+    final Response response =
+        await _httpService.getCaseDetails(workShopId, caseId);
+
+    if (response.statusCode != 200) {
+      _logger.warning(
+        "Could not get case with."
+        "${response.statusCode}: ${response.reasonPhrase}",
+      );
+    }
+
+    final CaseDto caseDto = CaseDto.fromJson(jsonDecode(response.body));
+    final CaseModel caseModel = caseDto.toModel();
+    return caseModel;
+  }
+
   /// Depending on [_showSharedCases], call [_httpService.getCases()] or
   /// [_httpService.getSharedCases()].
   Future<bool> _loadCurrentCases() async {

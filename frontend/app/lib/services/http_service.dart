@@ -32,6 +32,13 @@ class HttpService {
     );
   }
 
+  Future<http.Response> getCaseDetails(String workshopId, String caseId) {
+    return http.get(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId"),
+      headers: {"Authorization": "Basic $basicAuthKey=="},
+    );
+  }
+
   Future<http.Response> addCase(
     String workshopId,
     Map<String, dynamic> requestBody,

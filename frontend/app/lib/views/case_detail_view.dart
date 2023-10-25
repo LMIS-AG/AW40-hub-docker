@@ -17,79 +17,17 @@ class CaseDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final LoggedInUserModel loggedInUserModel =
-        Provider.of<AuthProvider>(context).loggedInUser;
     return EnvironmentService().isMobilePlatform
-        ? ListTile(
-            tileColor: theme.colorScheme.primaryContainer,
-            title: const Text("Case Detail View"),
-            subtitle: Text("ID: ${caseModel.id}"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () async => _handleDeleteButtonPress(
-                    context,
-                    loggedInUserModel,
-                  ),
-                ),
-              ],
-            ),
+        ? MobileCaseDetailView(
+            caseModel: caseModel,
           )
-        : SizedBox.expand(
-            child: Card(
-              color: theme.colorScheme.primaryContainer,
-              child: Column(
-                children: [
-                  // Headbar
-                  ListTile(
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: onClose,
-                    ),
-                    title: Text(caseModel.id),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async => _handleDeleteButtonPress(
-                            context,
-                            loggedInUserModel,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Content
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Case Detail View: ${caseModel.id}",
-                          style: theme.textTheme.displaySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        : DesktopCaseDetailView(
+            caseModel: caseModel,
+            onClose: onClose,
           );
   }
 
-  Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
+  static Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -116,9 +54,10 @@ class CaseDetailView extends StatelessWidget {
     );
   }
 
-  Future<void> _handleDeleteButtonPress(
+  static Future<void> _handleDeleteButtonPress(
     BuildContext context,
     LoggedInUserModel loggedInUserModel,
+    String caseModelId,
   ) async {
     final caseProvider = Provider.of<CaseProvider>(
       context,
@@ -129,7 +68,7 @@ class CaseDetailView extends StatelessWidget {
       final ScaffoldMessengerState scaffoldMessengerState =
           ScaffoldMessenger.of(context);
       if (dialogResult == null || !dialogResult) return;
-      final bool result = await caseProvider.deleteCase(caseModel.id);
+      final bool result = await caseProvider.deleteCase(caseModelId);
       final String message = result
           ? tr("cases.details.deleteCaseSuccessMessage")
           : tr("cases.details.deleteCaseErrorMessage");
@@ -137,10 +76,113 @@ class CaseDetailView extends StatelessWidget {
     });
   }
 
-  void _showMessage(String text, ScaffoldMessengerState state) {
+  static void _showMessage(String text, ScaffoldMessengerState state) {
     final SnackBar snackBar = SnackBar(
       content: Center(child: Text(text)),
     );
     state.showSnackBar(snackBar);
+  }
+}
+
+class DesktopCaseDetailView extends StatelessWidget {
+  const DesktopCaseDetailView({
+    required this.caseModel,
+    required this.onClose,
+    super.key,
+  });
+
+  final CaseModel caseModel;
+  final void Function() onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final LoggedInUserModel loggedInUserModel =
+        Provider.of<AuthProvider>(context).loggedInUser;
+    return SizedBox.expand(
+      child: Card(
+        color: theme.colorScheme.primaryContainer,
+        child: Column(
+          children: [
+            // Headbar
+            ListTile(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: onClose,
+              ),
+              title: Text(caseModel.id),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async =>
+                        CaseDetailView._handleDeleteButtonPress(
+                      context,
+                      loggedInUserModel,
+                      caseModel.id,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Text(
+                    "Case Detail View: ${caseModel.id}",
+                    style: theme.textTheme.displaySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MobileCaseDetailView extends StatelessWidget {
+  const MobileCaseDetailView({
+    required this.caseModel,
+    super.key,
+  });
+
+  final CaseModel caseModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final LoggedInUserModel loggedInUserModel =
+        Provider.of<AuthProvider>(context).loggedInUser;
+    return ListTile(
+      tileColor: theme.colorScheme.primaryContainer,
+      title: const Text("Case Detail View"),
+      subtitle: Text("ID: ${caseModel.id}"),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () async => CaseDetailView._handleDeleteButtonPress(
+              context,
+              loggedInUserModel,
+              caseModel.id,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
