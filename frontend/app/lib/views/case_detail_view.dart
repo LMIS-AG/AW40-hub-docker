@@ -111,7 +111,8 @@ class DesktopCaseDetailView extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: onClose,
               ),
-              title: Text(tr("cases.details.headline")),
+              title: Text(tr("cases.details.headline"),
+                  style: Theme.of(context).textTheme.headlineMedium),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
