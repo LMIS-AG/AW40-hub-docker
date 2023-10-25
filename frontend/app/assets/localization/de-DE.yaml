@@ -48,6 +48,7 @@ cases:
     vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
     vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
   details:
+    headline: "Detailansicht"
     dialog:
       title: "Fall löschen"
       description: "Möchten Sie den Fall wirklich löschen?"

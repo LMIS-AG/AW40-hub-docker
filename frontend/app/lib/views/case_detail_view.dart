@@ -111,7 +111,7 @@ class DesktopCaseDetailView extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: onClose,
               ),
-              title: Text(caseModel.id),
+              title: Text(tr("cases.details.headline")),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -133,166 +133,81 @@ class DesktopCaseDetailView extends StatelessWidget {
             ),
             // Content
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.id"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.id,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.id"),
+                    value: caseModel.id,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.date"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.timestamp.toGermanDateString(),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.status"),
+                    value: tr("cases.details.status.${caseModel.status.name}"),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.occasion"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            tr("cases.details.occasion.${caseModel.occasion.name}"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.date"),
+                    value: caseModel.timestamp.toGermanDateString(),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.milage"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.milage.toString(),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.occasion"),
+                    value:
+                        tr("cases.details.occasion.${caseModel.occasion.name}"),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.status"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            tr("cases.details.status.${caseModel.status.name}"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.milage"),
+                    value: caseModel.milage.toString(),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.customerId"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.customerId,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.customerId"),
+                    value: caseModel.customerId,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.vehicleVin"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.vehicleVin,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.vehicleVin"),
+                    value: caseModel.vehicleVin,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            tr("general.workshopId"),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            caseModel.workshopId,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
+                  CaseDetailRow(
+                    attribute: tr("general.workshopId"),
+                    value: caseModel.workshopId,
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CaseDetailRow extends StatelessWidget {
+  const CaseDetailRow({
+    required this.attribute,
+    required this.value,
+    super.key,
+  });
+
+  final String attribute;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              attribute,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ],
       ),
     );
   }
