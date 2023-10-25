@@ -51,8 +51,8 @@ cases:
     dialog:
       title: "Delete case"
       description: "Do you really want to delete the case?"
-    deleteCaseSuccessMessage: "The case was successfully deleted.",
-    deleteCaseErrorMessage: "The case could not be deleted.",
+    deleteCaseSuccessMessage: "The case was successfully deleted."
+    deleteCaseErrorMessage: "The case could not be deleted."
     occasion:
       unknown: "Unknown"
       service_routine: "Service"
