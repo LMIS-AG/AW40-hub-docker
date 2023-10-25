@@ -82,8 +82,22 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<void> updateCase() async {
-    _logger.warning("Unimplemented: updateCase()");
+  Future<bool> updateCase(String caseId, CaseUpdateDto updateCaseDto) async {
+    final Map<String, dynamic> updateCaseJson = updateCaseDto.toJson();
+    final Response response =
+        await _httpService.updateCase(workShopId, caseId, updateCaseJson);
+    if (response.statusCode != 200) {
+      _logger.warning(
+        "Could not update case. "
+        "${response.statusCode}: ${response.reasonPhrase}",
+      );
+      return false;
+    }
+    final Map<String, dynamic> body = jsonDecode(response.body);
+    final CaseDto receivedCase = CaseDto.fromJson(body);
+    _cases.add(receivedCase.toModel());
+    notifyListeners();
+    return true;
   }
 
   Future<bool> deleteCase(String caseId) async {
