@@ -24,7 +24,7 @@ general:
   vehicle: "Vehicle"
   vehicleVin: "Vehicle vin"
   workshop: "Workshop"
-    workshopId: "Workshop id"
+  workshopId: "Workshop id"
   yes: "Yes"
   no:
     date: "No Date"
