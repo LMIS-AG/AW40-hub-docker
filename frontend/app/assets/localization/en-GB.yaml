@@ -6,6 +6,7 @@ general:
   date: "Date"
   delete: "Delete"
   filter: "Filter"
+  id: "ID"
   language: "Language"
   logout: "Logout"
   milage: "Milage"
