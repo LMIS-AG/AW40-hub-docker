@@ -17,6 +17,7 @@ general:
   problem: "Problem"
   repair: "Repair"
   save: "Save"
+  saveChanges: "Save changes"
   service: "Service"
   sort: "Sort"
   status: "Status"

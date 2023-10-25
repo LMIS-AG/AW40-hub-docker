@@ -85,7 +85,7 @@ class CaseDetailView extends StatelessWidget {
   }
 }
 
-class DesktopCaseDetailView extends StatelessWidget {
+class DesktopCaseDetailView extends StatefulWidget {
   const DesktopCaseDetailView({
     required this.caseModel,
     required this.onClose,
@@ -96,10 +96,18 @@ class DesktopCaseDetailView extends StatelessWidget {
   final void Function() onClose;
 
   @override
+  State<DesktopCaseDetailView> createState() => _DesktopCaseDetailViewState();
+}
+
+class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
+  bool isInEditState = false;
+
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final LoggedInUserModel loggedInUserModel =
         Provider.of<AuthProvider>(context).loggedInUser;
+
     return SizedBox.expand(
       child: Card(
         color: theme.colorScheme.primaryContainer,
@@ -109,7 +117,7 @@ class DesktopCaseDetailView extends StatelessWidget {
             ListTile(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: onClose,
+                onPressed: widget.onClose,
               ),
               title: Text(
                 tr("cases.details.headline"),
@@ -120,7 +128,11 @@ class DesktopCaseDetailView extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {},
+                    onPressed: () {
+                      if (!isInEditState) {
+                        setState(() => isInEditState = true);
+                      }
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),
@@ -128,7 +140,7 @@ class DesktopCaseDetailView extends StatelessWidget {
                         CaseDetailView._handleDeleteButtonPress(
                       context,
                       loggedInUserModel,
-                      caseModel.id,
+                      widget.caseModel.id,
                     ),
                   ),
                 ],
@@ -141,37 +153,69 @@ class DesktopCaseDetailView extends StatelessWidget {
                 children: [
                   CaseDetailRow(
                     attribute: tr("general.id"),
-                    value: caseModel.id,
+                    value: widget.caseModel.id,
                   ),
                   CaseDetailRow(
                     attribute: tr("general.status"),
-                    value: tr("cases.details.status.${caseModel.status.name}"),
+                    value: tr(
+                      "cases.details.status.${widget.caseModel.status.name}",
+                    ),
                   ),
                   CaseDetailRow(
                     attribute: tr("general.date"),
-                    value: caseModel.timestamp.toGermanDateString(),
+                    value: widget.caseModel.timestamp.toGermanDateString(),
                   ),
                   CaseDetailRow(
                     attribute: tr("general.occasion"),
-                    value:
-                        tr("cases.details.occasion.${caseModel.occasion.name}"),
+                    value: tr(
+                      "cases.details.occasion.${widget.caseModel.occasion.name}",
+                    ),
                   ),
                   CaseDetailRow(
                     attribute: tr("general.milage"),
-                    value: caseModel.milage.toString(),
+                    value: widget.caseModel.milage.toString(),
                   ),
                   CaseDetailRow(
                     attribute: tr("general.customerId"),
-                    value: caseModel.customerId,
+                    value: widget.caseModel.customerId,
                   ),
                   CaseDetailRow(
                     attribute: tr("general.vehicleVin"),
-                    value: caseModel.vehicleVin,
+                    value: widget.caseModel.vehicleVin,
                   ),
                   CaseDetailRow(
                     attribute: tr("general.workshopId"),
-                    value: caseModel.workshopId,
+                    value: widget.caseModel.workshopId,
                   ),
+                  if (isInEditState)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(),
+                          ), // TODO maybe use Aligned widget instead
+                          TextButton(
+                            onPressed: () =>
+                                setState(() => isInEditState = false),
+                            child: Text(tr("general.cancel")),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // TODO implement
+                              setState(() => isInEditState = false);
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.error,
+                            ),
+                            child: Text(
+                              tr("general.saveChanges"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                 ],
               ),
             ),
