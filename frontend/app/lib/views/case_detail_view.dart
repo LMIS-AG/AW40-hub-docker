@@ -21,6 +21,11 @@ class CaseDetailView extends StatelessWidget {
     return EnvironmentService().isMobilePlatform
         ? MobileCaseDetailView(
             caseModel: caseModel,
+            onDelete: () async => _onDeleteButtonPress(
+              context,
+              Provider.of<AuthProvider>(context, listen: false).loggedInUser,
+              caseModel.id,
+            ),
           )
         : DesktopCaseDetailView(
             caseModel: caseModel,
@@ -180,16 +185,17 @@ class DesktopCaseDetailView extends StatelessWidget {
 class MobileCaseDetailView extends StatelessWidget {
   const MobileCaseDetailView({
     required this.caseModel,
+    required this.onDelete,
     super.key,
   });
 
   final CaseModel caseModel;
+  final void Function() onDelete;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final LoggedInUserModel loggedInUserModel =
-        Provider.of<AuthProvider>(context).loggedInUser;
+
     return ListTile(
       tileColor: theme.colorScheme.primaryContainer,
       title: const Text("Case Detail View"),
@@ -203,11 +209,7 @@ class MobileCaseDetailView extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () async => CaseDetailView._onDeleteButtonPress(
-              context,
-              loggedInUserModel,
-              caseModel.id,
-            ),
+            onPressed: onDelete,
           ),
         ],
       ),
