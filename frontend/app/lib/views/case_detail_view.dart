@@ -142,11 +142,11 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       widget.caseModel.workshopId,
     ];
 
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _statusController = TextEditingController();
-    final TextEditingController _timestampController = TextEditingController();
-    final TextEditingController _occasionController = TextEditingController();
-    final TextEditingController _milageController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController statusController = TextEditingController();
+    final TextEditingController occasionController = TextEditingController();
+    final TextEditingController timestampController = TextEditingController();
+    final TextEditingController milageController = TextEditingController();
 
     return SizedBox.expand(
       child: Card(
@@ -260,7 +260,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             else if (i == 3)
                               // TODO datepicker formfield
                               TextFormField(
-                                controller: _timestampController,
+                                controller: timestampController,
                                 validator: (String? value) {
                                   if (value == null || value.isEmpty) {
                                     return tr("general.obligatoryField");
@@ -270,7 +270,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                               )
                             else if (i == 4)
                               TextFormField(
-                                controller: _milageController,
+                                controller: milageController,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
