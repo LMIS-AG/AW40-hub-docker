@@ -65,15 +65,15 @@ class HubDataAccessor(DataAccessor):
             vin=vehicle.get("vin")
         )
 
-    def _wait_for_signal(self, component: str) -> List:
+    def _wait_for_oscillogram(self, component: str) -> List:
         print(
             f"Waiting for Hub Oscillogram signal for '{component}' ..."
         )
-        signals = []
-        while signals == []:
+        oscillograms = []
+        while oscillograms == []:
             sleep(self.data_poll_interval)
-            signals = self.hub_client.get_oscillograms(component)
-        return signals
+            oscillograms = self.hub_client.get_oscillograms(component)
+        return oscillograms
 
     def _get_oscillogram_by_component(
             self, component: str

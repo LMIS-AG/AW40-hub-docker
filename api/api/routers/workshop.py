@@ -13,7 +13,6 @@ from ..data_management import (
     NewCase,
     Case,
     CaseUpdate,
-    Component,
     NewOBDData,
     OBDDataUpdate,
     OBDData,
@@ -28,7 +27,6 @@ from ..data_management import (
     VehicleUpdate,
     Customer,
     Diagnosis,
-    DiagnosisDB,
     AttachmentBucket
 )
 from ..diagnostics_management import DiagnosticTaskManager
@@ -218,28 +216,28 @@ def read_file_or_400(upload: UploadFile, file_format: str) -> list:
 
 
 def channel_description_form(
-        component_A: Component = Form(
+        component_A: str = Form(
             default=None, description="The investigated vehicle component"
         ),
         label_A: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
-        component_B: Component = Form(
+        component_B: str = Form(
             default=None, description="The investigated vehicle component"
         ),
         label_B: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
-        component_C: Component = Form(
+        component_C: str = Form(
             default=None, description="The investigated vehicle component"
         ),
         label_C: TimeseriesDataLabel = Form(
             default=TimeseriesDataLabel.unknown,
             description="Label for the oscillogram"
         ),
-        component_D: Component = Form(
+        component_D: str = Form(
             default=None, description="The investigated vehicle component"
         ),
         label_D: TimeseriesDataLabel = Form(
@@ -336,7 +334,7 @@ async def upload_omniscope_data(
         file_format: Literal["Omniscope V1 RAW"] = Form(
             default="Omniscope V1 RAW"
         ),
-        component: Component = Form(
+        component: str = Form(
             description="The investigated vehicle component"
         ),
         label: TimeseriesDataLabel = Form(
@@ -631,8 +629,7 @@ async def get_diagnosis(case: Case = Depends(case_from_workshop)):
     """Get diagnosis data for this case."""
     if case.diagnosis_id is None:
         return None
-    diag_db = await DiagnosisDB.get(case.diagnosis_id)
-    diag = await diag_db.to_diagnosis()
+    diag = await Diagnosis.get(case.diagnosis_id)
     return diag
 
 
@@ -651,21 +648,20 @@ async def start_diagnosis(
     """Initialize the diagnosis process for this case."""
     if case.diagnosis_id is not None:
         # Diagnosis for this case was already initialized and is returned as is
-        diag_db = await DiagnosisDB.get(case.diagnosis_id)
+        diag = await Diagnosis.get(case.diagnosis_id)
     else:
         # New diagnosis is initialized
-        diag_db = DiagnosisDB(
+        diag = Diagnosis(
             case_id=case.id,
             status="scheduled"
         )
-        await diag_db.create()
-        case.diagnosis_id = diag_db.id
+        await diag.create()
+        case.diagnosis_id = diag.id
         await case.save()
 
         # New diagnosis is handed over to diagnostic backend
         await manage_diagnostic_task(case.diagnosis_id)
 
-    diag = await diag_db.to_diagnosis()
     return diag
 
 
@@ -677,8 +673,8 @@ async def start_diagnosis(
 )
 async def delete_diagnosis(case: Case = Depends(case_from_workshop)):
     """Stop the diagnosis process for this case."""
-    diag_db = await DiagnosisDB.get(case.diagnosis_id)
-    await diag_db.delete()
+    diag = await Diagnosis.get(case.diagnosis_id)
+    await diag.delete()
     case.diagnosis_id = None
     await case.save()
     return None

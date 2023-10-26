@@ -5,14 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
 
 from .data_management import (
-    Case, Vehicle, Customer, Workshop, TimeseriesMetaData, DiagnosisDB, Action,
-    ToDo, AttachmentBucket
+    Case, Vehicle, Customer, Workshop, TimeseriesMetaData, Diagnosis,
+    AttachmentBucket
 )
 from .data_management.timeseries_data import GridFSSignalStore
-from .diagnostics_management import DiagnosticTaskManager
+from .diagnostics_management import DiagnosticTaskManager, KnowledgeGraph
 from .settings import settings
 from .storage.storage_factory import StorageFactory
-from .utils import create_action_data
 from .v1 import api_v1
 
 app = FastAPI()
@@ -42,7 +41,7 @@ async def init_mongo():
     await init_beanie(
         client[settings.mongo_db],
         document_models=[
-            Case, Vehicle, Customer, Workshop, DiagnosisDB, Action, ToDo
+            Case, Vehicle, Customer, Workshop, Diagnosis
         ]
     )
 
@@ -51,11 +50,6 @@ async def init_mongo():
         client[settings.mongo_db], bucket_name="signals"
     )
     TimeseriesMetaData.signal_store = GridFSSignalStore(bucket=bucket)
-
-    # prefill the 'actions' collection on startup
-    for data in create_action_data():
-        action = Action(**data)
-        await action.save()
 
     # initialized attachment store for diagnostics api
     AttachmentBucket.bucket = motor_asyncio.AsyncIOMotorGridFSBucket(
@@ -79,3 +73,8 @@ def init_storages():
         minio_password=settings.minio_password,
         minio_username=settings.minio_username
     )
+
+
+@app.on_event("startup")
+def init_knowledge_graph():
+    KnowledgeGraph.set_kg_url(settings.knowledge_graph_url)
