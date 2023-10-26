@@ -155,7 +155,10 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     final formKey = GlobalKey<FormState>();
     final TextEditingController statusController = TextEditingController();
     final TextEditingController occasionController = TextEditingController();
-    final TextEditingController timestampController = TextEditingController();
+    final TextEditingController timestampController = TextEditingController(
+      text:
+          "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
+    );
     final TextEditingController milageController = TextEditingController();
 
     return SizedBox.expand(
@@ -271,10 +274,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                               TextFormField(
                                 readOnly:
                                     true, // Damit das Feld nicht bearbeitbar ist
-                                controller: TextEditingController(
-                                  text:
-                                      "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
-                                ),
+                                controller: timestampController,
                                 onTap: () async {
                                   DateTime? selectedDateTime =
                                       await pickDateTime();
