@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
@@ -116,6 +118,14 @@ class DesktopCaseDetailView extends StatefulWidget {
 
 class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   bool isInEditState = false;
+  // TODO get value from caseModel
+  DateTime dateTime = DateTime(
+    2023,
+    10,
+    26,
+    14,
+    30,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -258,15 +268,11 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                                 ],
                               )
                             else if (i == 3)
-                              // TODO datepicker formfield
-                              TextFormField(
-                                controller: timestampController,
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return tr("general.obligatoryField");
-                                  }
-                                  return null;
-                                },
+                              ElevatedButton(
+                                onPressed: pickDateTime,
+                                child: Text(
+                                  "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
+                                ),
                               )
                             else if (i == 4)
                               TextFormField(
@@ -313,7 +319,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     children: [
                       Expanded(
                         child: Container(),
-                      ), // TODO maybe use Aligned widget instead
+                      ),
                       TextButton(
                         onPressed: () => setState(() => isInEditState = false),
                         child: Text(tr("general.cancel")),
@@ -339,6 +345,31 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       ),
     );
   }
+
+  Future pickDateTime() async {
+    DateTime? date = await pickDate();
+    if (date == null) return;
+
+    TimeOfDay? time = await pickTime();
+    if (time == null) return;
+
+    final selectedDateTime =
+        DateTime(date.year, date.month, date.day, time.hour, time.minute);
+
+    setState(() => dateTime = selectedDateTime);
+  }
+
+  Future<DateTime?> pickDate() => showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+      );
+
+  Future<TimeOfDay?> pickTime() => showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(dateTime),
+      );
 }
 
 class MobileCaseDetailView extends StatelessWidget {
