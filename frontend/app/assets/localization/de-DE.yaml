@@ -6,6 +6,7 @@ general:
   date: "Datum"
   delete: "Löschen"
   filter: "Filtern"
+  id: "ID"
   language: "Sprache"
   logout: "Logout"
   milage: "Kilometerstand"
@@ -23,6 +24,7 @@ general:
   vehicle: "Fahrzeug"
   vehicleVin: "Fahrzeug VIN"
   workshop: "Werkstatt"
+  workshopId: "Werkstatt ID"
   yes: "Ja"
   no:
     date: "Kein Datum"
@@ -46,11 +48,19 @@ cases:
     vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
     vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
   details:
+    headline: "Detailansicht"
     dialog:
       title: "Fall löschen"
       description: "Möchten Sie den Fall wirklich löschen?"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
+    occasion:
+      unknown: "Unbekannt"
+      service_routine: "Service"
+      problem_defect: "Reparatur"
+    status:
+      open: "Offen"
+      closed: "Geschlossen"
 customers:
   title: "Kunden"
 vehicles:

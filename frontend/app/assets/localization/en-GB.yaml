@@ -6,6 +6,7 @@ general:
   date: "Date"
   delete: "Delete"
   filter: "Filter"
+  id: "ID"
   language: "Language"
   logout: "Logout"
   milage: "Milage"
@@ -23,6 +24,7 @@ general:
   vehicle: "Vehicle"
   vehicleVin: "Vehicle vin"
   workshop: "Workshop"
+  workshopId: "Workshop id"
   yes: "Yes"
   no:
     date: "No Date"
@@ -46,11 +48,19 @@ cases:
     vinCharactersInvalid: "The @:general.vehicleVin must not contain I, O, or Q"
     vinLengthInvalid: "The @:general.vehicleVin must be 17 characters long"
   details:
+    headline: "Details"
     dialog:
       title: "Delete case"
       description: "Do you really want to delete the case?"
-    deleteCaseSuccessMessage: "The case was successfully deleted.",
-    deleteCaseErrorMessage: "The case could not be deleted.",
+    deleteCaseSuccessMessage: "The case was successfully deleted."
+    deleteCaseErrorMessage: "The case could not be deleted."
+    occasion:
+      unknown: "Unknown"
+      service_routine: "Service"
+      problem_defect: "Repair"
+    status:
+      open: "Open"
+      closed: "Closed"
 customers:
   title: "Customers"
 vehicles:

@@ -27,6 +27,7 @@ class DesktopScaffold extends StatelessWidget {
       child: Scaffold(
         body: Row(
           children: [
+            // Side Navigation Menu
             SizedBox(
               width: kDesktopSideMenuWidth,
               child: Card(
@@ -79,6 +80,7 @@ class DesktopScaffold extends StatelessWidget {
                 ),
               ),
             ),
+            // Content
             Expanded(
               child: Column(
                 children: [
