@@ -268,11 +268,22 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                                 ],
                               )
                             else if (i == 3)
-                              ElevatedButton(
-                                onPressed: pickDateTime,
-                                child: Text(
-                                  "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
+                              TextFormField(
+                                readOnly:
+                                    true, // Damit das Feld nicht bearbeitbar ist
+                                controller: TextEditingController(
+                                  text:
+                                      "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
                                 ),
+                                onTap: () async {
+                                  DateTime? selectedDateTime =
+                                      await pickDateTime();
+                                  if (selectedDateTime != null) {
+                                    setState(() {
+                                      dateTime = selectedDateTime;
+                                    });
+                                  }
+                                },
                               )
                             else if (i == 4)
                               TextFormField(
