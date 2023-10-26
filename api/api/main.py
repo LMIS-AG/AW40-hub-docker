@@ -9,7 +9,6 @@ from .data_management import (
     AttachmentBucket
 )
 from .data_management.timeseries_data import GridFSSignalStore
-from .demo_ui import ui
 from .diagnostics_management import DiagnosticTaskManager, KnowledgeGraph
 from .settings import settings
 from .storage.storage_factory import StorageFactory
