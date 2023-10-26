@@ -1,3 +1,4 @@
+import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/services/services.dart";
@@ -7,8 +8,6 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:provider/provider.dart";
-
-import "../exceptions/app_exception.dart";
 
 class CaseDetailView extends StatelessWidget {
   const CaseDetailView({
