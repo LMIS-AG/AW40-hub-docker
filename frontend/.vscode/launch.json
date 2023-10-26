@@ -5,7 +5,7 @@
       "name": "Flutter Web Fixed Port",
       "type": "dart",
       "request": "launch",
-      "program": "frontend/app/lib/main.dart",
+      "program": "app/lib/main.dart",
       "args": ["-d", "chrome", "--web-port", "4300"]
     }
   ]
