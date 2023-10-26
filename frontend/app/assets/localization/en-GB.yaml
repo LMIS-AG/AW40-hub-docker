@@ -57,8 +57,8 @@ cases:
     deleteCaseErrorMessage: "The case could not be deleted."
     occasion:
       unknown: "Unknown"
-      service_routine: "Service"
-      problem_defect: "Repair"
+      service_routine: "@:general.service"
+      problem_defect: "@:general.repair"
     status:
       open: "Open"
       closed: "Closed"

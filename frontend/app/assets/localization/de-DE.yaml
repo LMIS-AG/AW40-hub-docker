@@ -57,8 +57,8 @@ cases:
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
     occasion:
       unknown: "Unbekannt"
-      service_routine: "Service"
-      problem_defect: "Reparatur"
+      service_routine: "@:general.service"
+      problem_defect: "@:general.repair"
     status:
       open: "Offen"
       closed: "Geschlossen"
