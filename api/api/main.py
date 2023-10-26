@@ -34,8 +34,6 @@ async def add_strict_transport_security(request: Request, call_next):
 
 app.mount("/v1", api_v1)
 
-app.mount("/ui", ui.app)
-
 
 @app.on_event("startup")
 async def init_mongo():
