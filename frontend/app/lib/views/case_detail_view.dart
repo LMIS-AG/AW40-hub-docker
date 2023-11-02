@@ -286,38 +286,42 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                                 },
                               )
                             else if (i == 4)
-                              TextFormField(
-                                controller: milageController,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
+                              SizedBox(
+                                height: 25,
+                                child: TextFormField(
+                                  cursorHeight: 15,
+                                  controller: milageController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return tr("general.obligatoryField");
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (customerId) {
+                                    if (customerId == null) {
+                                      throw AppException(
+                                        exceptionType:
+                                            ExceptionType.unexpectedNullValue,
+                                        exceptionMessage:
+                                            "Milage was null, validation failed.",
+                                      );
+                                    }
+                                    if (customerId.isEmpty) {
+                                      throw AppException(
+                                        exceptionType:
+                                            ExceptionType.unexpectedNullValue,
+                                        exceptionMessage:
+                                            "Milage was empty, validation failed.",
+                                      );
+                                    }
+                                  },
                                 ),
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return tr("general.obligatoryField");
-                                  }
-                                  return null;
-                                },
-                                onSaved: (customerId) {
-                                  if (customerId == null) {
-                                    throw AppException(
-                                      exceptionType:
-                                          ExceptionType.unexpectedNullValue,
-                                      exceptionMessage:
-                                          "Milage was null, validation failed.",
-                                    );
-                                  }
-                                  if (customerId.isEmpty) {
-                                    throw AppException(
-                                      exceptionType:
-                                          ExceptionType.unexpectedNullValue,
-                                      exceptionMessage:
-                                          "Milage was empty, validation failed.",
-                                    );
-                                  }
-                                },
                               )
                           ],
                   ),
