@@ -156,16 +156,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       widget.caseModel.workshopId,
     ];
 
-// TODO use later
-    /*final formKey = GlobalKey<FormState>();
-    final TextEditingController statusController = TextEditingController();
-    final TextEditingController occasionController = TextEditingController();
-    final TextEditingController timestampController = TextEditingController(
-      text:
-          "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
-    );
-    final TextEditingController milageController = TextEditingController();*/
-
     return SizedBox.expand(
       child: Card(
         color: theme.colorScheme.primaryContainer,
@@ -214,35 +204,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   ),
                 ),
               ),
-              // TODO use later
-              /*
-              if (isInEditState)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(),
-                      ),
-                      TextButton(
-                        onPressed: () => setState(() => isInEditState = false),
-                        child: Text(tr("general.cancel")),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // TODO implement - save changes
-                          setState(() => isInEditState = false);
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: Theme.of(context).colorScheme.error,
-                        ),
-                        child: Text(
-                          tr("general.saveChanges"),
-                        ),
-                      ),
-                    ],
-                  ),
-                )*/
             ],
           ),
         ),
