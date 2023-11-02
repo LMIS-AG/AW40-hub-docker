@@ -105,12 +105,6 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
         CaseOccasion.values,
         _occasionController.text,
       );
-      if (caseOccasion == null) {
-        throw AppException(
-          exceptionType: ExceptionType.unexpectedNullValue,
-          exceptionMessage: "CaseOccasion was null.",
-        );
-      }
       final DateTime? timestamp = DateTime.tryParse(_timestampController.text);
       if (timestamp == null) {
         throw AppException(
@@ -128,7 +122,7 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
 
       final CaseUpdateDto caseUpdateDto = CaseUpdateDto(
         timestamp,
-        caseOccasion,
+        caseOccasion ?? CaseOccasion.unknown,
         milage,
         caseStatus,
       );

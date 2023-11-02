@@ -211,40 +211,13 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   }
 
   Future<CaseUpdateDto?> _showUpdateCaseDialog(CaseModel caseModel) async {
-    final CaseUpdateDto? updatedCase = await showDialog<CaseUpdateDto>(
+    return showDialog<CaseUpdateDto>(
       context: context,
       builder: (BuildContext context) {
         return UpdateCaseDialog(caseModel: caseModel);
       },
     );
-    return updatedCase;
   }
-
-// TODO remove
-  /* Future pickDateTime() async {
-    final DateTime? date = await pickDate();
-    if (date == null) return;
-
-    final TimeOfDay? time = await pickTime();
-    if (time == null) return;
-
-    final selectedDateTime =
-        DateTime(date.year, date.month, date.day, time.hour, time.minute);
-
-    setState(() => dateTime = selectedDateTime);
-  }
-
-  Future<DateTime?> pickDate() => showDatePicker(
-        context: context,
-        initialDate: dateTime,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100),
-      );
-
-  Future<TimeOfDay?> pickTime() => showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(dateTime),
-      ); */
 }
 
 class MobileCaseDetailView extends StatelessWidget {
