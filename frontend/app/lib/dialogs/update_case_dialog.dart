@@ -161,6 +161,9 @@ class UpdateDialogForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CaseStatus selectedStatus = caseModel.status;
+    CaseOccasion selectedOccasion = caseModel.occasion;
+
     return Form(
       key: formKey,
       child: Column(
@@ -200,12 +203,13 @@ class UpdateDialogForm extends StatelessWidget {
                         label: Text(tr("cases.status.closed")),
                       ),
                     ],
-                    selected: {caseModel.status},
+                    selected: {selectedStatus},
                     onSelectionChanged: (p0) {
                       // TODO adjust (unknown does not exist for CaseStatus...)
                       final CaseStatus newVal =
                           p0.isEmpty ? CaseStatus.open : p0.first!;
-                      // newCaseDto.occasion = newVal;
+                      // newCaseDto.status = newVal;
+                      selectedStatus = newVal;
                       field.didChange(newVal);
                     },
                   );
@@ -248,11 +252,12 @@ class UpdateDialogForm extends StatelessWidget {
                         label: Text(tr("cases.occasions.problem")),
                       ),
                     ],
-                    selected: {caseModel.occasion},
+                    selected: {selectedOccasion},
                     onSelectionChanged: (p0) {
                       final CaseOccasion newVal =
                           p0.isEmpty ? CaseOccasion.unknown : p0.first!;
                       // newCaseDto.occasion = newVal;
+                      selectedOccasion = newVal;
                       field.didChange(newVal);
                     },
                   );
