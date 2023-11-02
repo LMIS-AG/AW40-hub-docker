@@ -152,14 +152,15 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       widget.caseModel.workshopId,
     ];
 
-    final formKey = GlobalKey<FormState>();
+// TODO use later
+    /*final formKey = GlobalKey<FormState>();
     final TextEditingController statusController = TextEditingController();
     final TextEditingController occasionController = TextEditingController();
     final TextEditingController timestampController = TextEditingController(
       text:
           "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",
     );
-    final TextEditingController milageController = TextEditingController();
+    final TextEditingController milageController = TextEditingController();*/
 
     return SizedBox.expand(
       child: Card(
@@ -199,134 +200,16 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 children: List.generate(
                   attributes.length,
                   (i) => TableRow(
-                    children: !isInEditState
-                        ? [
-                            const SizedBox(height: 32),
-                            Text(attributes[i]),
-                            Text(values[i]),
-                          ]
-                        : [
-                            const SizedBox(height: 32),
-                            Text(attributes[i]),
-                            if (i < 1 || i > 4)
-                              Text(values[i])
-                            else if (i == 1)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  FormField(
-                                    initialValue: widget.caseModel.status,
-                                    builder: (FormFieldState<dynamic> field) {
-                                      return SegmentedButton(
-                                        emptySelectionAllowed:
-                                            true, // TODO false?
-                                        segments: <ButtonSegment<CaseStatus>>[
-                                          ButtonSegment<CaseStatus>(
-                                            value: CaseStatus.open,
-                                            label: Text(
-                                              tr("cases.details.status.open"),
-                                            ),
-                                          ),
-                                          ButtonSegment<CaseStatus>(
-                                            value: CaseStatus.closed,
-                                            label: Text(
-                                              tr("cases.details.status.closed"),
-                                            ),
-                                          ),
-                                        ],
-                                        selected: {field.value},
-                                      );
-                                    },
-                                  ),
-                                ],
-                              )
-                            else if (i == 2)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  FormField(
-                                    initialValue: widget.caseModel.occasion,
-                                    builder: (FormFieldState<dynamic> field) {
-                                      return SegmentedButton(
-                                        emptySelectionAllowed:
-                                            true, // TODO false?
-                                        segments: <ButtonSegment<CaseOccasion>>[
-                                          ButtonSegment<CaseOccasion>(
-                                            value: CaseOccasion.service_routine,
-                                            label: Text(
-                                              tr("cases.occasions.service"),
-                                            ),
-                                          ),
-                                          ButtonSegment<CaseOccasion>(
-                                            value: CaseOccasion.problem_defect,
-                                            label: Text(
-                                              tr("cases.occasions.problem"),
-                                            ),
-                                          ),
-                                        ],
-                                        selected: {field.value},
-                                      );
-                                    },
-                                  ),
-                                ],
-                              )
-                            else if (i == 3)
-                              TextFormField(
-                                readOnly:
-                                    true, // Damit das Feld nicht bearbeitbar ist
-                                controller: timestampController,
-                                onTap: () async {
-                                  DateTime? selectedDateTime =
-                                      await pickDateTime();
-                                  if (selectedDateTime != null) {
-                                    setState(() {
-                                      dateTime = selectedDateTime;
-                                    });
-                                  }
-                                },
-                              )
-                            else if (i == 4)
-                              SizedBox(
-                                height: 25,
-                                child: TextFormField(
-                                  cursorHeight: 15,
-                                  controller: milageController,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  validator: (String? value) {
-                                    if (value == null || value.isEmpty) {
-                                      return tr("general.obligatoryField");
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (customerId) {
-                                    if (customerId == null) {
-                                      throw AppException(
-                                        exceptionType:
-                                            ExceptionType.unexpectedNullValue,
-                                        exceptionMessage:
-                                            "Milage was null, validation failed.",
-                                      );
-                                    }
-                                    if (customerId.isEmpty) {
-                                      throw AppException(
-                                        exceptionType:
-                                            ExceptionType.unexpectedNullValue,
-                                        exceptionMessage:
-                                            "Milage was empty, validation failed.",
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                          ],
+                    children: [
+                      const SizedBox(height: 32),
+                      Text(attributes[i]),
+                      Text(values[i]),
+                    ],
                   ),
                 ),
               ),
+              // TODO use later
+              /*
               if (isInEditState)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -353,7 +236,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                       ),
                     ],
                   ),
-                )
+                )*/
             ],
           ),
         ),
