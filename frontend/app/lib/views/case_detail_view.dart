@@ -120,7 +120,6 @@ class DesktopCaseDetailView extends StatefulWidget {
 }
 
 class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
-  bool isInEditState = false; // TODO remove if not needed
   // TODO get value from caseModel
   DateTime dateTime = DateTime(
     2023,
@@ -178,7 +177,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     icon: const Icon(Icons.edit),
                     onPressed: () async {
                       final CaseUpdateDto? caseUpdateDto =
-                          await _showUpdateCaseDialog();
+                          await _showUpdateCaseDialog(widget.caseModel);
                       if (caseUpdateDto == null) return;
                       await caseProvider.updateCase(
                           widget.caseModel.id, caseUpdateDto);
@@ -211,17 +210,18 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     );
   }
 
-  Future<CaseUpdateDto?> _showUpdateCaseDialog() async {
+  Future<CaseUpdateDto?> _showUpdateCaseDialog(CaseModel caseModel) async {
     final CaseUpdateDto? updatedCase = await showDialog<CaseUpdateDto>(
       context: context,
       builder: (BuildContext context) {
-        return const UpdateCaseDialog();
+        return UpdateCaseDialog(caseModel: caseModel);
       },
     );
     return updatedCase;
   }
 
-  Future pickDateTime() async {
+// TODO remove
+  /* Future pickDateTime() async {
     final DateTime? date = await pickDate();
     if (date == null) return;
 
@@ -244,7 +244,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   Future<TimeOfDay?> pickTime() => showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(dateTime),
-      );
+      ); */
 }
 
 class MobileCaseDetailView extends StatelessWidget {

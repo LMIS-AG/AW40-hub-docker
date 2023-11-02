@@ -3,8 +3,8 @@ import "dart:async";
 import "package:aw40_hub_frontend/components/components.dart";
 import "package:aw40_hub_frontend/dtos/dtos.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
+import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/services/services.dart";
-import "package:aw40_hub_frontend/text_input_formatters/text_input_formatters.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:enum_to_string/enum_to_string.dart";
@@ -15,25 +15,77 @@ import "package:routemaster/routemaster.dart";
 
 class UpdateCaseDialog extends StatefulWidget {
   const UpdateCaseDialog({
+    required this.caseModel,
     super.key,
   });
+
+  final CaseModel caseModel;
 
   @override
   State<UpdateCaseDialog> createState() => _UpdateCaseDialogState();
 }
 
 class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
-  // ignore: unused_field
   final Logger _logger = Logger("update_case_dialog");
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _occasionController = TextEditingController();
-  final TextEditingController _timestampController = TextEditingController(
-      // TODO maybe get value (as default value) from caseModel - maybe pass it to dialog...
-      /*text:
-        "${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute}",*/
-      );
+  final TextEditingController _timestampController = TextEditingController();
   final TextEditingController _milageController = TextEditingController();
+  final title = tr("cases.actions.updateCase");
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    _milageController.text = widget.caseModel.milage.toString();
+    _timestampController.text =
+        widget.caseModel.timestamp.toGermanDateTimeString();
+
+    return EnvironmentService().isMobilePlatform
+        ? FullScreenDialog(
+            title: title,
+            trailing: TextButton(
+              onPressed: _submitUpdateCaseForm,
+              child: Text(tr("general.save")),
+            ),
+            onCancel: () async => _onCancel(context),
+            content: UpdateDialogForm(
+              formKey: _formKey,
+              statusController: _statusController,
+              occasionController: _occasionController,
+              timestampController: _timestampController,
+              milageController: _milageController,
+              caseModel: widget.caseModel,
+            ),
+          )
+        : AlertDialog(
+            title: Text(title),
+            content: UpdateDialogForm(
+              formKey: _formKey,
+              statusController: _statusController,
+              occasionController: _occasionController,
+              timestampController: _timestampController,
+              milageController: _milageController,
+              caseModel: widget.caseModel,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async => _onCancel(context),
+                child: Text(
+                  tr("general.cancel"),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _submitUpdateCaseForm,
+                child: Text(tr("general.save")),
+              ),
+            ],
+          );
+  }
 
   void _submitUpdateCaseForm() {
     final FormState? currentFormKeyState = _formKey.currentState;
@@ -87,57 +139,8 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
   }
-
-  final title = tr("cases.actions.updateCase");
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return EnvironmentService().isMobilePlatform
-        ? FullScreenDialog(
-            title: title,
-            trailing: TextButton(
-              onPressed: _submitUpdateCaseForm,
-              child: Text(tr("general.save")),
-            ),
-            onCancel: () async => _onCancel(context),
-            content: UpdateDialogForm(
-              formKey: _formKey,
-              statusController: _statusController,
-              occasionController: _occasionController,
-              timestampController: _timestampController,
-              milageController: _milageController,
-            ),
-          )
-        : AlertDialog(
-            title: Text(title),
-            content: UpdateDialogForm(
-              formKey: _formKey,
-              statusController: _statusController,
-              occasionController: _occasionController,
-              timestampController: _timestampController,
-              milageController: _milageController,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async => _onCancel(context),
-                child: Text(
-                  tr("general.cancel"),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: _submitUpdateCaseForm,
-                child: Text(tr("general.save")),
-              ),
-            ],
-          );
-  }
 }
 
-// TODO adjust regarding update Case
 class UpdateDialogForm extends StatelessWidget {
   const UpdateDialogForm({
     required this.formKey,
@@ -145,6 +148,7 @@ class UpdateDialogForm extends StatelessWidget {
     required this.occasionController,
     required this.timestampController,
     required this.milageController,
+    required this.caseModel,
     super.key,
   });
 
@@ -153,6 +157,7 @@ class UpdateDialogForm extends StatelessWidget {
   final TextEditingController occasionController;
   final TextEditingController timestampController;
   final TextEditingController milageController;
+  final CaseModel caseModel; // TODO remove?
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +177,6 @@ class UpdateDialogForm extends StatelessWidget {
                 ),
               ),
               FormField(
-                initialValue: CaseStatus.open, // TODO get value from caseModel
                 onSaved: (CaseStatus? newValue) {
                   if (newValue == null) {
                     throw AppException(
@@ -221,7 +225,6 @@ class UpdateDialogForm extends StatelessWidget {
                 ),
               ),
               FormField(
-                initialValue: CaseOccasion.unknown,
                 onSaved: (CaseOccasion? newValue) {
                   if (newValue == null) {
                     throw AppException(
@@ -257,35 +260,22 @@ class UpdateDialogForm extends StatelessWidget {
               ),
             ],
           ),
-          // TODO add timestamp
-          /*const SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextFormField(
+            readOnly: true, // Damit das Feld nicht bearbeitbar ist
+            controller: timestampController,
             decoration: InputDecoration(
-              labelText: tr("general.customerId"),
+              labelText: tr("general.date"),
               border: const OutlineInputBorder(),
             ),
-            controller: customerIdController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return tr("general.obligatoryField");
-              }
-              return null;
-            },
-            onSaved: (customerId) {
-              if (customerId == null) {
-                throw AppException(
-                  exceptionType: ExceptionType.unexpectedNullValue,
-                  exceptionMessage: "CustomerId was null, validation failed.",
-                );
-              }
-              if (customerId.isEmpty) {
-                throw AppException(
-                  exceptionType: ExceptionType.unexpectedNullValue,
-                  exceptionMessage: "CustomerId was empty, validation failed.",
-                );
+            onTap: () async {
+              DateTime? selectedDateTime = await pickDateTime(context);
+              if (selectedDateTime != null) {
+                timestampController.text =
+                    selectedDateTime.toGermanDateTimeString();
               }
             },
-          ),*/
+          ),
           const SizedBox(height: 16),
           TextFormField(
             keyboardType: TextInputType.number,
@@ -320,4 +310,28 @@ class UpdateDialogForm extends StatelessWidget {
       ),
     );
   }
+
+  Future<DateTime?> pickDateTime(BuildContext context) async {
+    final DateTime? date = await pickDate(context);
+    if (date == null) return null;
+
+    final TimeOfDay? time = await pickTime(context);
+    if (time == null) return null;
+
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
+  Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
+        context: context,
+        initialDate: caseModel.timestamp,
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+      );
+
+  Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(
+          caseModel.timestamp,
+        ),
+      );
 }
