@@ -222,10 +222,10 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   }
 
   Future pickDateTime() async {
-    DateTime? date = await pickDate();
+    final DateTime? date = await pickDate();
     if (date == null) return;
 
-    TimeOfDay? time = await pickTime();
+    final TimeOfDay? time = await pickTime();
     if (time == null) return;
 
     final selectedDateTime =
