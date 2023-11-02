@@ -157,7 +157,7 @@ class UpdateDialogForm extends StatelessWidget {
   final TextEditingController occasionController;
   final TextEditingController timestampController;
   final TextEditingController milageController;
-  final CaseModel caseModel; // TODO remove?
+  final CaseModel caseModel;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +200,7 @@ class UpdateDialogForm extends StatelessWidget {
                         label: Text(tr("cases.status.closed")),
                       ),
                     ],
-                    selected: {field.value},
+                    selected: {caseModel.status},
                     onSelectionChanged: (p0) {
                       // TODO adjust (unknown does not exist for CaseStatus...)
                       final CaseStatus newVal =
@@ -248,7 +248,7 @@ class UpdateDialogForm extends StatelessWidget {
                         label: Text(tr("cases.occasions.problem")),
                       ),
                     ],
-                    selected: {field.value},
+                    selected: {caseModel.occasion},
                     onSelectionChanged: (p0) {
                       final CaseOccasion newVal =
                           p0.isEmpty ? CaseOccasion.unknown : p0.first!;
@@ -262,7 +262,7 @@ class UpdateDialogForm extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           TextFormField(
-            readOnly: true, // Damit das Feld nicht bearbeitbar ist
+            readOnly: true,
             controller: timestampController,
             decoration: InputDecoration(
               labelText: tr("general.date"),
