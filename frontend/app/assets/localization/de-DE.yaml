@@ -36,12 +36,16 @@ cases:
   title: "Fälle"
   actions:
     addCase: "Neuen Fall anlegen"
+    updateCase: "Fall bearbeiten"
     sortCases: "@:general.sort"
     filterCases: "@:general.filter"
   occasions:
     notSpecified: "@:general.notSpecified"
     service: "@:general.service"
     problem: "@:general.repair"
+  status:
+    open: "Offen"
+    closed: "Geschlossen"
   filterDialog:
     title: "Fälle filtern"
     toggleShared: "Fälle aus allen Werkstätten anzeigen"
@@ -55,11 +59,11 @@ cases:
       description: "Möchten Sie den Fall wirklich löschen?"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
-    occasion:
+    occasion: # remove?
       unknown: "Unbekannt"
       service_routine: "@:general.service"
       problem_defect: "@:general.repair"
-    status:
+    status: # remove?
       open: "Offen"
       closed: "Geschlossen"
 customers:

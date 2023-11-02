@@ -36,12 +36,16 @@ cases:
   title: "Cases"
   actions:
     addCase: "Add case"
+    updateCase: "Update case"
     sortCases: "@:general.sort"
     filterCases: "@:general.filter"
   occasions:
     notSpecified: "@:general.notSpecified"
     service: "@:general.service"
     problem: "@:general.repair"
+  status:
+    open: "Open"
+    closed: "Closed"
   filterDialog:
     title: "Filter cases"
     toggleShared: "Show cases from all workshops"
@@ -55,11 +59,11 @@ cases:
       description: "Do you really want to delete the case?"
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
-    occasion:
+    occasion: # remove?
       unknown: "Unknown"
       service_routine: "@:general.service"
       problem_defect: "@:general.repair"
-    status:
+    status: # remove?
       open: "Open"
       closed: "Closed"
 customers:

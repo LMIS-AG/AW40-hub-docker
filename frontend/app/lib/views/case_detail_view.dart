@@ -1,5 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
@@ -10,6 +11,8 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:provider/provider.dart";
+
+import "../dialogs/update_case_dialog.dart";
 
 class CaseDetailView extends StatelessWidget {
   const CaseDetailView({
@@ -117,7 +120,7 @@ class DesktopCaseDetailView extends StatefulWidget {
 }
 
 class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
-  bool isInEditState = false;
+  bool isInEditState = false; // TODO remove if not needed
   // TODO get value from caseModel
   DateTime dateTime = DateTime(
     2023,
@@ -130,6 +133,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final caseProvider = Provider.of<CaseProvider>(context, listen: false);
 
     final List<String> attributes = [
       tr("general.id"),
@@ -182,10 +186,12 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      if (!isInEditState) {
-                        setState(() => isInEditState = true);
-                      }
+                    onPressed: () async {
+                      final CaseUpdateDto? caseUpdateDto =
+                          await _showUpdateCaseDialog();
+                      if (caseUpdateDto == null) return;
+                      await caseProvider.updateCase(
+                          widget.caseModel.id, caseUpdateDto);
                     },
                   ),
                   IconButton(
@@ -242,6 +248,16 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         ),
       ),
     );
+  }
+
+  Future<CaseUpdateDto?> _showUpdateCaseDialog() async {
+    final CaseUpdateDto? updatedCase = await showDialog<CaseUpdateDto>(
+      context: context,
+      builder: (BuildContext context) {
+        return const UpdateCaseDialog();
+      },
+    );
+    return updatedCase;
   }
 
   Future pickDateTime() async {
