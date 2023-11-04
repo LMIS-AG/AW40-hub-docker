@@ -105,7 +105,7 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
         CaseOccasion.values,
         _occasionController.text,
       );
-      final DateTime? timestamp = DateTime.tryParse(_timestampController.text);
+      final DateTime? timestamp = _timestampController.text.toDateTime();
       if (timestamp == null) {
         throw AppException(
           exceptionType: ExceptionType.unexpectedNullValue,
@@ -181,7 +181,7 @@ class UpdateDialogForm extends StatelessWidget {
                       exceptionMessage: "Status was null.",
                     );
                   }
-                  occasionController.text =
+                  statusController.text =
                       EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseStatus> field) {
@@ -224,14 +224,10 @@ class UpdateDialogForm extends StatelessWidget {
               ),
               FormField(
                 onSaved: (CaseOccasion? newValue) {
-                  if (newValue == null) {
-                    throw AppException(
-                      exceptionType: ExceptionType.unexpectedNullValue,
-                      exceptionMessage: "Occasion was null.",
-                    );
+                  if (newValue != null) {
+                    occasionController.text =
+                        EnumToString.convertToString(newValue);
                   }
-                  occasionController.text =
-                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseOccasion> field) {
                   return SegmentedButton(
