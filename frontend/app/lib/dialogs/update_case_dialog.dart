@@ -175,14 +175,10 @@ class UpdateDialogForm extends StatelessWidget {
               ),
               FormField(
                 onSaved: (CaseStatus? newValue) {
-                  if (newValue == null) {
-                    throw AppException(
-                      exceptionType: ExceptionType.unexpectedNullValue,
-                      exceptionMessage: "Status was null.",
-                    );
+                  if (newValue != null) {
+                    statusController.text =
+                        EnumToString.convertToString(newValue);
                   }
-                  statusController.text =
-                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseStatus> field) {
                   return SegmentedButton(
