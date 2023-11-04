@@ -95,7 +95,12 @@ class CaseProvider with ChangeNotifier {
     }
     final Map<String, dynamic> body = jsonDecode(response.body);
     final CaseDto receivedCase = CaseDto.fromJson(body);
-    _cases.add(receivedCase.toModel());
+
+    final CaseModel caseModelToReplace =
+        _cases.firstWhere((caseModel) => caseModel.id == caseId);
+    final int index = _cases.indexOf(caseModelToReplace);
+    _cases[index] = receivedCase.toModel();
+
     notifyListeners();
     return true;
   }

@@ -26,7 +26,7 @@ class UpdateCaseDialog extends StatefulWidget {
 }
 
 class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
-  final Logger _logger = Logger("update_case_dialog");
+  final Logger _logger = Logger("update_case_dialog"); // TODO remove?
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _occasionController = TextEditingController();
