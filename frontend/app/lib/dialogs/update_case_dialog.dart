@@ -185,26 +185,29 @@ class UpdateDialogForm extends StatelessWidget {
                   }
                 },
                 builder: (FormFieldState<CaseStatus> field) {
-                  return SegmentedButton(
-                    emptySelectionAllowed: true,
-                    segments: <ButtonSegment<CaseStatus>>[
-                      ButtonSegment<CaseStatus>(
-                        value: CaseStatus.open,
-                        label: Text(tr("cases.status.open")),
-                      ),
-                      ButtonSegment<CaseStatus>(
-                        value: CaseStatus.closed,
-                        label: Text(tr("cases.status.closed")),
-                      ),
-                    ],
-                    selected: {selectedStatus},
-                    onSelectionChanged: (p0) {
-                      final CaseStatus newVal = p0.first;
-                      selectedStatus = newVal;
-                      statusController.text =
-                          EnumToString.convertToString(newVal);
-                      field.didChange(newVal);
-                    },
+                  return SizedBox(
+                    width: 275,
+                    child: SegmentedButton(
+                      emptySelectionAllowed: true,
+                      segments: <ButtonSegment<CaseStatus>>[
+                        ButtonSegment<CaseStatus>(
+                          value: CaseStatus.open,
+                          label: Text(tr("cases.status.open")),
+                        ),
+                        ButtonSegment<CaseStatus>(
+                          value: CaseStatus.closed,
+                          label: Text(tr("cases.status.closed")),
+                        ),
+                      ],
+                      selected: {selectedStatus},
+                      onSelectionChanged: (p0) {
+                        final CaseStatus newVal = p0.first;
+                        selectedStatus = newVal;
+                        statusController.text =
+                            EnumToString.convertToString(newVal);
+                        field.didChange(newVal);
+                      },
+                    ),
                   );
                 },
               ),
@@ -229,27 +232,30 @@ class UpdateDialogForm extends StatelessWidget {
                   }
                 },
                 builder: (FormFieldState<CaseOccasion> field) {
-                  return SegmentedButton(
-                    emptySelectionAllowed: true,
-                    segments: <ButtonSegment<CaseOccasion>>[
-                      ButtonSegment<CaseOccasion>(
-                        value: CaseOccasion.service_routine,
-                        label: Text(tr("cases.occasions.service")),
-                      ),
-                      ButtonSegment<CaseOccasion>(
-                        value: CaseOccasion.problem_defect,
-                        label: Text(tr("cases.occasions.problem")),
-                      ),
-                    ],
-                    selected: {selectedOccasion},
-                    onSelectionChanged: (p0) {
-                      final CaseOccasion newVal =
-                          p0.isEmpty ? CaseOccasion.unknown : p0.first!;
-                      selectedOccasion = newVal;
-                      occasionController.text =
-                          EnumToString.convertToString(newVal);
-                      field.didChange(newVal);
-                    },
+                  return SizedBox(
+                    width: 275,
+                    child: SegmentedButton(
+                      emptySelectionAllowed: true,
+                      segments: <ButtonSegment<CaseOccasion>>[
+                        ButtonSegment<CaseOccasion>(
+                          value: CaseOccasion.service_routine,
+                          label: Text(tr("cases.occasions.service")),
+                        ),
+                        ButtonSegment<CaseOccasion>(
+                          value: CaseOccasion.problem_defect,
+                          label: Text(tr("cases.occasions.problem")),
+                        ),
+                      ],
+                      selected: {selectedOccasion},
+                      onSelectionChanged: (p0) {
+                        final CaseOccasion newVal =
+                            p0.isEmpty ? CaseOccasion.unknown : p0.first!;
+                        selectedOccasion = newVal;
+                        occasionController.text =
+                            EnumToString.convertToString(newVal);
+                        field.didChange(newVal);
+                      },
+                    ),
                   );
                 },
               ),
