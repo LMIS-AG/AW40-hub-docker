@@ -41,6 +41,10 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
     _milageController.text = widget.caseModel.milage.toString();
     _timestampController.text =
         widget.caseModel.timestamp.toGermanDateTimeString();
+    _occasionController.text =
+        EnumToString.convertToString(widget.caseModel.occasion);
+    _statusController.text =
+        EnumToString.convertToString(widget.caseModel.status);
 
     return EnvironmentService().isMobilePlatform
         ? FullScreenDialog(
@@ -195,11 +199,10 @@ class UpdateDialogForm extends StatelessWidget {
                     ],
                     selected: {selectedStatus},
                     onSelectionChanged: (p0) {
-                      // TODO adjust (unknown does not exist for CaseStatus...)
-                      final CaseStatus newVal =
-                          p0.isEmpty ? CaseStatus.open : p0.first!;
-                      // newCaseDto.status = newVal;
+                      final CaseStatus newVal = p0.first;
                       selectedStatus = newVal;
+                      statusController.text =
+                          EnumToString.convertToString(newVal);
                       field.didChange(newVal);
                     },
                   );
@@ -242,8 +245,9 @@ class UpdateDialogForm extends StatelessWidget {
                     onSelectionChanged: (p0) {
                       final CaseOccasion newVal =
                           p0.isEmpty ? CaseOccasion.unknown : p0.first!;
-                      // newCaseDto.occasion = newVal;
                       selectedOccasion = newVal;
+                      occasionController.text =
+                          EnumToString.convertToString(newVal);
                       field.didChange(newVal);
                     },
                   );
