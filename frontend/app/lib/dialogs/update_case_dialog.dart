@@ -10,7 +10,6 @@ import "package:easy_localization/easy_localization.dart";
 import "package:enum_to_string/enum_to_string.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:logging/logging.dart";
 import "package:routemaster/routemaster.dart";
 
 class UpdateCaseDialog extends StatefulWidget {
@@ -26,7 +25,6 @@ class UpdateCaseDialog extends StatefulWidget {
 }
 
 class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
-  final Logger _logger = Logger("update_case_dialog"); // TODO remove?
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _occasionController = TextEditingController();
@@ -249,7 +247,7 @@ class UpdateDialogForm extends StatelessWidget {
                       selected: {selectedOccasion},
                       onSelectionChanged: (p0) {
                         final CaseOccasion newVal =
-                            p0.isEmpty ? CaseOccasion.unknown : p0.first!;
+                            p0.isEmpty ? CaseOccasion.unknown : p0.first;
                         selectedOccasion = newVal;
                         occasionController.text =
                             EnumToString.convertToString(newVal);
@@ -270,7 +268,7 @@ class UpdateDialogForm extends StatelessWidget {
               border: const OutlineInputBorder(),
             ),
             onTap: () async {
-              DateTime? selectedDateTime = await pickDateTime(context);
+              final DateTime? selectedDateTime = await pickDateTime(context);
               if (selectedDateTime != null) {
                 timestampController.text =
                     selectedDateTime.toGermanDateTimeString();
