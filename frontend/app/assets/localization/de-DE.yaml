@@ -59,11 +59,11 @@ cases:
       description: "Möchten Sie den Fall wirklich löschen?"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
-    occasion: # remove?
+    occasion:
       unknown: "Unbekannt"
       service_routine: "@:general.service"
       problem_defect: "@:general.repair"
-    status: # remove?
+    status:
       open: "Offen"
       closed: "Geschlossen"
 customers:
