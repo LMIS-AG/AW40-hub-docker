@@ -161,16 +161,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      final CaseUpdateDto? caseUpdateDto =
-                          await _showUpdateCaseDialog(widget.caseModel);
-                      if (caseUpdateDto == null) return;
-                      await caseProvider.updateCase(
-                          widget.caseModel.id, caseUpdateDto,);
-                    },
-                  ),
-                  IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: widget.onDelete,
                   ),
@@ -190,6 +180,49 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final CaseUpdateDto? caseUpdateDto =
+                            await _showUpdateCaseDialog(widget.caseModel);
+                        if (caseUpdateDto == null) return;
+                        await caseProvider.updateCase(
+                          widget.caseModel.id,
+                          caseUpdateDto,
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(tr("general.edit")),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FilledButton(
+                      onPressed: () {},
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tab),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(tr("cases.details.startDiagnosis")),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
             ],
           ),
         ),
