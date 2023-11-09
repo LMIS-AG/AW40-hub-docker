@@ -64,15 +64,11 @@ Future<void> _initLocalization() async {
 }
 
 void _initRootLogger() {
-  final Level? logLevelFromConfigMap = HelperService.getLogLevelFromConfigMap();
-
-  if (logLevelFromConfigMap != null) {
-    Logger.root.level = logLevelFromConfigMap;
-  } else {
-    EnvironmentService().isDebugMode
-        ? Logger.root.level = Level.CONFIG
-        : Logger.root.level = Level.WARNING;
-  }
+  // In debug mode, use INFO level, otherwise get level from config map, if
+  // unavailable, use WARNING.
+  Logger.root.level = EnvironmentService().isDebugMode
+      ? Level.INFO
+      : HelperService.getLogLevelFromConfigMap() ?? Level.WARNING;
 
   Logger.root.onRecord.listen((final record) {
     debugPrint(
