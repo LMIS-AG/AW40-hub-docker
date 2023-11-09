@@ -98,7 +98,10 @@ class _DesktopCasesViewState extends State<DesktopCasesView> {
             flex: 2,
             child: CaseDetailView(
               caseModel: widget.caseModels[currentCaseIndex!],
-              onClose: () => setState(() => currentCaseIndex = null),
+              onClose: () => setState(() {
+                currentCaseIndex = null;
+                widget.caseProvider.lastModifiedCaseIndex = null;
+              }),
             ),
           )
       ],
