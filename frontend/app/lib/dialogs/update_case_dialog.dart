@@ -332,5 +332,11 @@ class UpdateDialogForm extends StatelessWidget {
         initialTime: TimeOfDay.fromDateTime(
           caseModel.timestamp,
         ),
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child ?? Container(),
+          );
+        },
       );
 }
