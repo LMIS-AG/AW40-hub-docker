@@ -161,7 +161,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.delete),
+                    icon: const Icon(Icons.delete_forever),
+                    //color: // TODO color: error
                     onPressed: widget.onDelete,
                   ),
                 ],
@@ -266,7 +267,7 @@ class MobileCaseDetailView extends StatelessWidget {
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete_forever),
             onPressed: onDelete,
           ),
         ],
