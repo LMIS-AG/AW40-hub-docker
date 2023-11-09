@@ -80,7 +80,6 @@ class _DesktopCasesViewState extends State<DesktopCasesView> {
                   label: Text(tr("general.workshop")),
                   numeric: true,
                 ),
-                const DataColumn(label: Text("")) // More.
               ],
             ),
           ),
