@@ -116,15 +116,6 @@ class DesktopCaseDetailView extends StatefulWidget {
 }
 
 class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
-  // TODO get value from caseModel
-  DateTime dateTime = DateTime(
-    2023,
-    10,
-    26,
-    14,
-    30,
-  );
-
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
