@@ -17,6 +17,7 @@ class CaseProvider with ChangeNotifier {
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
   List<CaseModel> _cases = [];
+  int? lastModifiedCaseIndex;
 
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
@@ -99,6 +100,7 @@ class CaseProvider with ChangeNotifier {
     final CaseModel caseModelToReplace =
         _cases.firstWhere((caseModel) => caseModel.id == caseId);
     final int index = _cases.indexOf(caseModelToReplace);
+    lastModifiedCaseIndex = index;
     _cases[index] = receivedCase.toModel();
 
     notifyListeners();
