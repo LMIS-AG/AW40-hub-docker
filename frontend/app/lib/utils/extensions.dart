@@ -38,7 +38,7 @@ extension StringExtension on String {
         }
       }
     } catch (e) {
-      throw FormatException('Invalid format of the German DateTime string');
+      throw FormatException("Invalid format of the German DateTime string");
     }
     return null;
   }
