@@ -24,7 +24,7 @@ extension StringExtension on String {
       if (parts.length == 2) {
         final dateParts = parts[0].split(".");
 
-        String timePart = parts[1].substring(1, parts[1].length - 4);
+        final String timePart = parts[1].substring(1, parts[1].length - 4);
         final timeParts = timePart.split(":");
 
         if (dateParts.length == 3 && timeParts.length == 2) {
@@ -38,7 +38,8 @@ extension StringExtension on String {
         }
       }
     } catch (e) {
-      throw FormatException("Invalid format of the German DateTime string");
+      throw const FormatException(
+          "Invalid format of the German DateTime string");
     }
     return null;
   }
