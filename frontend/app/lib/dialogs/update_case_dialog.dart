@@ -314,13 +314,10 @@ class UpdateDialogForm extends StatelessWidget {
     final DateTime? date = await pickDate(context);
     if (date == null) return null;
 
-    if (context.mounted) {
-      return null;
-    } else {
-      final TimeOfDay? time = await pickTime(context);
-      if (time == null) return null;
-      return DateTime(date.year, date.month, date.day, time.hour, time.minute);
-    }
+    final TimeOfDay? time = await pickTime(context);
+    if (time == null) return null;
+
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
