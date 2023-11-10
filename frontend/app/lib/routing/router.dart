@@ -1,5 +1,6 @@
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/scaffolds/scaffolds.dart";
+import "package:aw40_hub_frontend/screens/diagnosis_screen.dart";
 import "package:aw40_hub_frontend/screens/screens.dart";
 import "package:aw40_hub_frontend/utils/constants.dart";
 import "package:flutter/foundation.dart";
@@ -7,8 +8,6 @@ import "package:flutter/material.dart";
 import "package:logging/logging.dart";
 import "package:routemaster/routemaster.dart";
 import "package:universal_html/html.dart";
-
-import "../screens/diagnosis_screen.dart";
 
 RouteMap getRouteMap(AuthProvider authProvider) {
   final Logger logger = Logger("get_route_map");
