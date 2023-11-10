@@ -152,7 +152,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
               AppBar(
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.keyboard_double_arrow_right),
+                  iconSize: 28,
                   onPressed: widget.onClose,
                 ),
                 title: Text(
@@ -162,7 +163,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
-                    //color: // TODO color: error
+                    iconSize: 28,
+                    color: Theme.of(context).colorScheme.error,
                     onPressed: widget.onDelete,
                   ),
                 ],
