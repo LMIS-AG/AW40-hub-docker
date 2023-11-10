@@ -31,6 +31,8 @@ general:
     customerId: "No customer id"
     vehiclevin: "No vehicle vin"
     workshopid: "No workshop id"
+diagnosis:
+  title: Diagnosis"
 cases:
   title: "Cases"
   actions:

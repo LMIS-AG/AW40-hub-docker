@@ -77,6 +77,11 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
     final List<NavigationMenuItemModel> navigationItemModels = [
       NavigationMenuItemModel(
+        title: tr("diagnosis.title"),
+        icon: const Icon(Icons.analytics),
+        destination: kRouteDiagnosis,
+      ),
+      NavigationMenuItemModel(
         title: tr("cases.title"),
         icon: const Icon(Icons.cases_sharp),
         destination: kRouteCases,

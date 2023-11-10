@@ -8,6 +8,8 @@ import "package:logging/logging.dart";
 import "package:routemaster/routemaster.dart";
 import "package:universal_html/html.dart";
 
+import "../screens/diagnosis_screen.dart";
+
 RouteMap getRouteMap(AuthProvider authProvider) {
   final Logger logger = Logger("get_route_map");
 
@@ -47,7 +49,14 @@ RouteMap getRouteMap(AuthProvider authProvider) {
 
 Map<String, PageBuilder> _basicRoutes = {
   "/": (RouteData info) {
-    return const Redirect(kRouteCases);
+    return const Redirect(kRouteDiagnosis);
+  },
+  kRouteDiagnosis: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        child: DiagnosisScreen(),
+      ),
+    );
   },
   kRouteCases: (RouteData info) {
     return const MaterialPage<Widget>(
