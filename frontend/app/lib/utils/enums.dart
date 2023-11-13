@@ -55,6 +55,15 @@ enum CaseStatus {
   closed,
 }
 
+enum DiagnosisStatus {
+  scheduled,
+  // ignore: constant_identifier_names
+  action_required,
+  processing,
+  finished,
+  failed,
+}
+
 enum NavigationType {
   internal,
   external,
