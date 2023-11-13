@@ -23,7 +23,7 @@ jobs:
 
       - name: Add internal Docker IP to hosts
         run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
-
+      
     # Tag Containers
       - name: Build and tag containers
         run: docker compose --env-file=dev.env build
@@ -60,13 +60,6 @@ jobs:
           http://localhost:9000/minio/health/live \
           || exit 1
 
-    # Test EDC
-      - name: Check if EDC is healthy
-        run: |
-            curl -fs \
-            http://localhost:8181/api/health \
-            || exit 1
-
     # Test API
       - name: Check if API is healthy
         run: |
@@ -82,7 +75,7 @@ jobs:
 
       - name: Install python dependencies
         run: pip install -r requirements.txt
-
+    
       - name: Run pytest
         run: pytest ./api
 

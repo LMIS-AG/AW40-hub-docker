@@ -24,4 +24,3 @@ dependencyResolutionManagement {
 }
 
 include(":edc-extensions:federated-catalog")
-include(":edc-extensions:health-check")

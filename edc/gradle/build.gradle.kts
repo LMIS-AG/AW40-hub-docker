@@ -61,7 +61,6 @@ dependencies {
     implementation("$edcGroupId:self-description-api:$edcVersion")
 
     implementation(project(":edc-extensions:federated-catalog"))
-    implementation(project(":edc-extensions:health-check"))
 }
 
 application {
