@@ -30,3 +30,7 @@ RUN chmod +x entrypoint.sh
 
 # Set the entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=2s --retries=5 \
+  CMD curl --head -fsS http://localhost:8181/api/health || exit 1
