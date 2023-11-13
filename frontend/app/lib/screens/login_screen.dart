@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:aw40_hub_frontend/configs/configs.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
+import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
@@ -105,6 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Provider.of<AuthProvider>(context, listen: false);
     final CaseProvider caseProvider =
         Provider.of<CaseProvider>(context, listen: false);
+    final DiagnosisProvider diagnosisProvider =
+        Provider.of<DiagnosisProvider>(context, listen: false);
 
     await authProvider.tryLoginWithStoredRefreshToken();
 
@@ -123,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     final String workShopId = authProvider.loggedInUser.workShopId;
     caseProvider.workShopId = workShopId;
+    diagnosisProvider.workShopId = workShopId;
   }
 
   Future<void> _webGoToKeyCloakLogin() async {

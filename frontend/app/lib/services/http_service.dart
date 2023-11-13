@@ -52,4 +52,25 @@ class HttpService {
       headers: {"Authorization": "Basic $basicAuthKey=="},
     );
   }
+
+  Future<http.Response> getDiagnosis(String workshopId, String caseId) {
+    return http.get(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/diag"),
+      headers: {"Authorization": "Basic $basicAuthKey=="},
+    );
+  }
+
+  Future<http.Response> startDiagnosis(String workshopId, String caseId) {
+    return http.post(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/diag"),
+      headers: {"Authorization": "Basic $basicAuthKey=="},
+    );
+  }
+
+  Future<http.Response> deleteDiagnosis(String workshopId, String caseId) {
+    return http.delete(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/diag"),
+      headers: {"Authorization": "Basic $basicAuthKey=="},
+    );
+  }
 }
