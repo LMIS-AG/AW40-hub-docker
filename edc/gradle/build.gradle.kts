@@ -20,6 +20,7 @@ dependencies {
     implementation("$edcGroupId:runtime-metamodel:$edcVersion")
 
     implementation("$edcGroupId:control-plane-core:$edcVersion")
+    implementation("$edcGroupId:control-plane-api:$edcVersion")
     implementation("$edcGroupId:control-plane-api-client:$edcVersion")
 
     implementation("$edcGroupId:api-observability:$edcVersion")
