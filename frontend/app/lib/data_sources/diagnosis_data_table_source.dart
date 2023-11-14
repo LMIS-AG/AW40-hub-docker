@@ -11,13 +11,22 @@ class DiagnosisDataTableSource extends DataTableSource {
     required this.onPressedRow,
   });
   List<DiagnosisModel> diagnosisModels;
-  final rng = Random(); // TODO remove?
   final void Function(int) onPressedRow;
 
   Icon getStatusIcon(DiagnosisStatus? diagnosisStatus) {
     if (diagnosisStatus == null) return const Icon(Icons.question_mark);
-    // TODO switch diagnosisStatus
-    return const Icon(Icons.done);
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.scheduled:
+        return const Icon(Icons.schedule);
+      case DiagnosisStatus.action_required:
+        return const Icon(Icons.warning);
+      case DiagnosisStatus.processing:
+        return const Icon(Icons.autorenew);
+      case DiagnosisStatus.finished:
+        return const Icon(Icons.done);
+      case DiagnosisStatus.failed:
+        return const Icon(Icons.error);
+    }
   }
 
   @override
