@@ -5,6 +5,14 @@ import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:flutter/material.dart";
 
+const Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
+  DiagnosisStatus.scheduled: Icons.schedule,
+  DiagnosisStatus.action_required: Icons.warning,
+  DiagnosisStatus.processing: Icons.autorenew,
+  DiagnosisStatus.finished: Icons.done,
+  DiagnosisStatus.failed: Icons.error,
+};
+
 class DiagnosisDataTableSource extends DataTableSource {
   DiagnosisDataTableSource({
     required this.diagnosisModels,
@@ -15,18 +23,8 @@ class DiagnosisDataTableSource extends DataTableSource {
 
   Icon getStatusIcon(DiagnosisStatus? diagnosisStatus) {
     if (diagnosisStatus == null) return const Icon(Icons.question_mark);
-    switch (diagnosisStatus) {
-      case DiagnosisStatus.scheduled:
-        return const Icon(Icons.schedule);
-      case DiagnosisStatus.action_required:
-        return const Icon(Icons.warning);
-      case DiagnosisStatus.processing:
-        return const Icon(Icons.autorenew);
-      case DiagnosisStatus.finished:
-        return const Icon(Icons.done);
-      case DiagnosisStatus.failed:
-        return const Icon(Icons.error);
-    }
+
+    return Icon(diagnosisStatusIcons[diagnosisStatus]);
   }
 
   @override
