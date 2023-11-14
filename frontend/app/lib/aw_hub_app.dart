@@ -1,4 +1,5 @@
 import "package:aw40_hub_frontend/main.dart";
+import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/routing/router.dart";
 import "package:aw40_hub_frontend/services/services.dart";
@@ -27,6 +28,9 @@ class AWHubApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<CaseProvider>(
           create: (_) => CaseProvider(HttpService()),
+        ),
+        ChangeNotifierProvider<DiagnosisProvider>(
+          create: (_) => DiagnosisProvider(HttpService()),
         )
       ],
       child: MaterialApp.router(
