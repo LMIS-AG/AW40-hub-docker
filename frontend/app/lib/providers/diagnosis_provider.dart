@@ -37,7 +37,7 @@ class DiagnosisProvider with ChangeNotifier {
       DiagnosisModel(
         id: "3",
         timestamp: DateTime.now(),
-        status: DiagnosisStatus.processing,
+        status: DiagnosisStatus.action_required,
         caseId: "DEF456",
         stateMachineLog: ["Step 1"],
         todos: ["Task 1"],

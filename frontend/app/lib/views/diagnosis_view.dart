@@ -30,6 +30,7 @@ class DiagnosisView extends StatelessWidget {
               exceptionMessage: "Received no diagnosis data.",
             );
           }
+          diagnosisModels.sort((a, b) => a.status.index - b.status.index);
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
           );
