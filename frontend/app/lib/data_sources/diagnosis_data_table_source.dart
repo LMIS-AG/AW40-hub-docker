@@ -1,7 +1,4 @@
-import "dart:math";
-
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
-import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:flutter/material.dart";
 
