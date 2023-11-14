@@ -19,9 +19,9 @@ class DiagnosisDataTableSource extends DataTableSource {
   final void Function(int) onPressedRow;
 
   Icon getStatusIcon(DiagnosisStatus? diagnosisStatus) {
-    if (diagnosisStatus == null) return const Icon(Icons.question_mark);
-
-    return Icon(diagnosisStatusIcons[diagnosisStatus]);
+    return (diagnosisStatus == null)
+        ? const Icon(Icons.question_mark)
+        : Icon(diagnosisStatusIcons[diagnosisStatus]);
   }
 
   @override
