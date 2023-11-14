@@ -1,5 +1,6 @@
 general:
   cancel: "Abbrechen"
+  case: "Fall"
   close: "Schließen"
   customer: "Kunde"
   customerId: "Kunden ID"
