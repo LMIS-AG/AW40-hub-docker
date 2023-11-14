@@ -34,6 +34,8 @@ general:
     workshopid: "No workshop id"
 diagnosis:
   title: Diagnosis"
+  actions:
+    filterDiagnosis: "Filter by status"
 cases:
   title: "Cases"
   actions:

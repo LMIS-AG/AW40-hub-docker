@@ -41,6 +41,11 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     return newCase;
   }
 
+  Future<void> _showFilterDiagnosesDialog() async {
+    // TODO implement
+    _logger.warning("Unimplemented: _showFilterDiagnosesDialog()");
+  }
+
   Future<void> _showFilterCasesDialog() async {
     await showDialog(
       context: context,
@@ -80,6 +85,13 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
         title: tr("diagnosis.title"),
         icon: const Icon(Icons.analytics),
         destination: kRouteDiagnosis,
+        actions: [
+          IconButton(
+            onPressed: () async => _showFilterDiagnosesDialog(),
+            icon: const Icon(Icons.filter_list),
+            tooltip: tr("diagnosis.actions.filterDiagnosis"),
+          ),
+        ],
       ),
       NavigationMenuItemModel(
         title: tr("cases.title"),
