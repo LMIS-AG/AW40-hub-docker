@@ -26,11 +26,13 @@ class DiagnosisDataTableSource extends DataTableSource {
     return DataRow(
       onSelectChanged: (_) => onPressedRow(index),
       cells: [
-        DataCell(getStatusIcon(diagnosisModel.status)),
-        DataCell(Text(diagnosisModel.caseId)),
+        DataCell(Center(child: getStatusIcon(diagnosisModel.status))),
+        DataCell(Center(child: Text(diagnosisModel.caseId))),
         DataCell(
-          Text(
-            diagnosisModel.timestamp.toGermanDateString(),
+          Center(
+            child: Text(
+              diagnosisModel.timestamp.toGermanDateString(),
+            ),
           ),
         ),
       ],

@@ -68,9 +68,22 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
               showCheckboxColumn: false,
               rowsPerPage: 50,
               columns: [
-                DataColumn(label: Text(tr("general.status"))),
-                DataColumn(label: Text(tr("general.case"))),
-                DataColumn(label: Text(tr("general.date")), numeric: true),
+                DataColumn(
+                  label: Expanded(
+                    child: Center(child: Text(tr("general.status"))),
+                  ),
+                ),
+                DataColumn(
+                  label: Expanded(
+                    child: Center(child: Text(tr("general.case"))),
+                  ),
+                ),
+                DataColumn(
+                  label: Expanded(
+                    child: Center(child: Text(tr("general.date"))),
+                  ),
+                  numeric: true,
+                ),
               ],
             ),
           ),
