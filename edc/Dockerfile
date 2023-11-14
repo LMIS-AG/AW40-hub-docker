@@ -16,6 +16,8 @@ RUN ./gradlew clean build
 # Stage 2: Production stage
 FROM eclipse-temurin:17-alpine
 
+RUN apk --no-cache add curl
+
 # Create a directory for the application
 WORKDIR /app
 
