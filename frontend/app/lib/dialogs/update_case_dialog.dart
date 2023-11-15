@@ -328,6 +328,7 @@ class UpdateDialogForm extends StatelessWidget {
     final DateTime? date = await pickDate(context);
     if (date == null) return null;
 
+    // ignore: use_build_context_synchronously
     final TimeOfDay? time = await pickTime(context);
     if (time == null) return null;
 
