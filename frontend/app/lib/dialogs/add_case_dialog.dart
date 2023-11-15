@@ -224,25 +224,28 @@ class AddDialogForm extends StatelessWidget {
                       EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseOccasion> field) {
-                  return SegmentedButton(
-                    emptySelectionAllowed: true,
-                    segments: <ButtonSegment<CaseOccasion>>[
-                      ButtonSegment<CaseOccasion>(
-                        value: CaseOccasion.service_routine,
-                        label: Text(tr("cases.occasions.service")),
-                      ),
-                      ButtonSegment<CaseOccasion>(
-                        value: CaseOccasion.problem_defect,
-                        label: Text(tr("cases.occasions.problem")),
-                      ),
-                    ],
-                    selected: {field.value},
-                    onSelectionChanged: (p0) {
-                      final CaseOccasion newVal =
-                          p0.isEmpty ? CaseOccasion.unknown : p0.first!;
-                      // newCaseDto.occasion = newVal;
-                      field.didChange(newVal);
-                    },
+                  return SizedBox(
+                    width: 275,
+                    child: SegmentedButton(
+                      emptySelectionAllowed: true,
+                      segments: <ButtonSegment<CaseOccasion>>[
+                        ButtonSegment<CaseOccasion>(
+                          value: CaseOccasion.service_routine,
+                          label: Text(tr("cases.occasions.service")),
+                        ),
+                        ButtonSegment<CaseOccasion>(
+                          value: CaseOccasion.problem_defect,
+                          label: Text(tr("cases.occasions.problem")),
+                        ),
+                      ],
+                      selected: {field.value},
+                      onSelectionChanged: (p0) {
+                        final CaseOccasion newVal =
+                            p0.isEmpty ? CaseOccasion.unknown : p0.first!;
+                        // newCaseDto.occasion = newVal;
+                        field.didChange(newVal);
+                      },
+                    ),
                   );
                 },
               ),
