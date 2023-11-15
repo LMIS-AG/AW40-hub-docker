@@ -167,7 +167,9 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           await _showUpdateCaseDialog(widget.caseModel);
                       if (caseUpdateDto == null) return;
                       await caseProvider.updateCase(
-                          widget.caseModel.id, caseUpdateDto,);
+                        widget.caseModel.id,
+                        caseUpdateDto,
+                      );
                     },
                   ),
                   IconButton(
