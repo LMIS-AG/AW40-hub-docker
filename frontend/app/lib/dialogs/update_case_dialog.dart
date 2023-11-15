@@ -12,6 +12,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:routemaster/routemaster.dart";
 
+// ignore: constant_identifier_names
+const int FIRST_DATE_IN_DIALOG = 1900;
+// ignore: constant_identifier_names
+const int LAST_DATE_IN_DIALOG = 2100;
+
 class UpdateCaseDialog extends StatefulWidget {
   const UpdateCaseDialog({
     required this.caseModel,
@@ -332,8 +337,8 @@ class UpdateDialogForm extends StatelessWidget {
   Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
         context: context,
         initialDate: caseModel.timestamp,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100),
+        firstDate: DateTime(FIRST_DATE_IN_DIALOG),
+        lastDate: DateTime(LAST_DATE_IN_DIALOG),
       );
 
   Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(
