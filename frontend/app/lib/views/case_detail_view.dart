@@ -152,7 +152,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
               AppBar(
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.keyboard_double_arrow_right),
+                  iconSize: 28,
                   onPressed: widget.onClose,
                 ),
                 title: Text(
@@ -161,19 +162,9 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      final CaseUpdateDto? caseUpdateDto =
-                          await _showUpdateCaseDialog(widget.caseModel);
-                      if (caseUpdateDto == null) return;
-                      await caseProvider.updateCase(
-                        widget.caseModel.id,
-                        caseUpdateDto,
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
+                    icon: const Icon(Icons.delete_forever),
+                    iconSize: 28,
+                    color: Theme.of(context).colorScheme.error,
                     onPressed: widget.onDelete,
                   ),
                 ],
@@ -192,6 +183,49 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final CaseUpdateDto? caseUpdateDto =
+                            await _showUpdateCaseDialog(widget.caseModel);
+                        if (caseUpdateDto == null) return;
+                        await caseProvider.updateCase(
+                          widget.caseModel.id,
+                          caseUpdateDto,
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(tr("general.edit")),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FilledButton(
+                      onPressed: () {},
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tab),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(tr("cases.details.startDiagnosis")),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
             ],
           ),
         ),
@@ -235,7 +269,7 @@ class MobileCaseDetailView extends StatelessWidget {
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete_forever),
             onPressed: onDelete,
           ),
         ],

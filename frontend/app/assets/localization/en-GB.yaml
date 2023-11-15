@@ -6,6 +6,7 @@ general:
   customerId: "Customer id"
   date: "Date"
   delete: "Delete"
+  edit: "Edit"
   filter: "Filter"
   id: "ID"
   language: "Language"
@@ -68,6 +69,7 @@ cases:
       unknown: "Unknown"
       service_routine: "@:general.service"
       problem_defect: "@:general.repair"
+    startDiagnosis: "Start diagnosis"
     status:
       open: "Open"
       closed: "Closed"
