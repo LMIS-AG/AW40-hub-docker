@@ -12,6 +12,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:routemaster/routemaster.dart";
 
+// ignore: constant_identifier_names
+const int FIRST_DATE_IN_DIALOG = 1900;
+// ignore: constant_identifier_names
+const int LAST_DATE_IN_DIALOG = 2100;
+
 class UpdateCaseDialog extends StatefulWidget {
   const UpdateCaseDialog({
     required this.caseModel,
@@ -134,6 +139,15 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
 
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
+  }
+
+  @override
+  void dispose() {
+    _statusController.dispose();
+    _milageController.dispose();
+    _occasionController.dispose();
+    _timestampController.dispose();
+    super.dispose();
   }
 }
 
@@ -314,6 +328,7 @@ class UpdateDialogForm extends StatelessWidget {
     final DateTime? date = await pickDate(context);
     if (date == null) return null;
 
+    // ignore: use_build_context_synchronously
     final TimeOfDay? time = await pickTime(context);
     if (time == null) return null;
 
@@ -323,8 +338,8 @@ class UpdateDialogForm extends StatelessWidget {
   Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
         context: context,
         initialDate: caseModel.timestamp,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100),
+        firstDate: DateTime(FIRST_DATE_IN_DIALOG),
+        lastDate: DateTime(LAST_DATE_IN_DIALOG),
       );
 
   Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(

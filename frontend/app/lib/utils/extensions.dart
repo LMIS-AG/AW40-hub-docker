@@ -37,9 +37,10 @@ extension StringExtension on String {
           return DateTime(year, month, day, hour, minute);
         }
       }
-    } catch (e) {
+    } on Exception {
       throw const FormatException(
-          "Invalid format of the German DateTime string");
+        "Invalid format of the German DateTime string",
+      );
     }
     return null;
   }
