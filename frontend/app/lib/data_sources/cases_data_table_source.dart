@@ -34,12 +34,6 @@ class CasesDataTableSource extends DataTableSource {
         DataCell(
           Text(caseModels[index].workshopId),
         ),
-        DataCell(
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {},
-          ),
-        )
       ],
     );
   }
