@@ -46,6 +46,21 @@ class HttpService {
     );
   }
 
+  Future<http.Response> updateCase(
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.put(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId"),
+      headers: {
+        "Authorization": "Basic $basicAuthKey==",
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> deleteCase(String workshopId, String caseId) {
     return http.delete(
       Uri.parse("$backendUrl/$workshopId/cases/$caseId"),

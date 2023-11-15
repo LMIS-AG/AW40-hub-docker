@@ -1,3 +1,7 @@
+// ignore_for_file: lines_longer_than_80_chars
+
+import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
+import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/services/services.dart";
@@ -95,7 +99,7 @@ class CaseDetailView extends StatelessWidget {
   }
 }
 
-class DesktopCaseDetailView extends StatelessWidget {
+class DesktopCaseDetailView extends StatefulWidget {
   const DesktopCaseDetailView({
     required this.caseModel,
     required this.onClose,
@@ -108,28 +112,34 @@ class DesktopCaseDetailView extends StatelessWidget {
   final void Function() onDelete;
 
   @override
+  State<DesktopCaseDetailView> createState() => _DesktopCaseDetailViewState();
+}
+
+class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final caseProvider = Provider.of<CaseProvider>(context, listen: false);
 
     final List<String> attributes = [
       tr("general.id"),
       tr("general.status"),
-      tr("general.date"),
       tr("general.occasion"),
+      tr("general.date"),
       tr("general.milage"),
       tr("general.customerId"),
       tr("general.vehicleVin"),
       tr("general.workshopId"),
     ];
     final List<String> values = [
-      caseModel.id,
-      tr("cases.details.status.${caseModel.status.name}"),
-      caseModel.timestamp.toGermanDateString(),
-      tr("cases.details.occasion.${caseModel.occasion.name}"),
-      caseModel.milage.toString(),
-      caseModel.customerId,
-      caseModel.vehicleVin,
-      caseModel.workshopId,
+      widget.caseModel.id,
+      tr("cases.details.status.${widget.caseModel.status.name}"),
+      tr("cases.details.occasion.${widget.caseModel.occasion.name}"),
+      widget.caseModel.timestamp.toGermanDateString(),
+      widget.caseModel.milage.toString(),
+      widget.caseModel.customerId,
+      widget.caseModel.vehicleVin,
+      widget.caseModel.workshopId,
     ];
 
     return SizedBox.expand(
@@ -143,7 +153,7 @@ class DesktopCaseDetailView extends StatelessWidget {
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_forward),
-                  onPressed: onClose,
+                  onPressed: widget.onClose,
                 ),
                 title: Text(
                   tr("cases.details.headline"),
@@ -152,11 +162,19 @@ class DesktopCaseDetailView extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final CaseUpdateDto? caseUpdateDto =
+                          await _showUpdateCaseDialog(widget.caseModel);
+                      if (caseUpdateDto == null) return;
+                      await caseProvider.updateCase(
+                        widget.caseModel.id,
+                        caseUpdateDto,
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: onDelete,
+                    onPressed: widget.onDelete,
                   ),
                 ],
               ),
@@ -178,6 +196,15 @@ class DesktopCaseDetailView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<CaseUpdateDto?> _showUpdateCaseDialog(CaseModel caseModel) async {
+    return showDialog<CaseUpdateDto>(
+      context: context,
+      builder: (BuildContext context) {
+        return UpdateCaseDialog(caseModel: caseModel);
+      },
     );
   }
 }

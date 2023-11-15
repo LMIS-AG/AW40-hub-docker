@@ -18,6 +18,7 @@ general:
   problem: "Problem"
   repair: "Repair"
   save: "Save"
+  saveChanges: "Save changes"
   service: "Service"
   sort: "Sort"
   status: "Status"
@@ -40,12 +41,16 @@ cases:
   title: "Cases"
   actions:
     addCase: "Add case"
+    updateCase: "Update case"
     sortCases: "@:general.sort"
     filterCases: "@:general.filter"
   occasions:
     notSpecified: "@:general.notSpecified"
     service: "@:general.service"
     problem: "@:general.repair"
+  status:
+    open: "Open"
+    closed: "Closed"
   filterDialog:
     title: "Filter cases"
     toggleShared: "Show cases from all workshops"
@@ -61,8 +66,8 @@ cases:
     deleteCaseErrorMessage: "The case could not be deleted."
     occasion:
       unknown: "Unknown"
-      service_routine: "Service"
-      problem_defect: "Repair"
+      service_routine: "@:general.service"
+      problem_defect: "@:general.repair"
     status:
       open: "Open"
       closed: "Closed"
