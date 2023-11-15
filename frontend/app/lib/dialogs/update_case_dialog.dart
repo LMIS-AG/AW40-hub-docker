@@ -135,6 +135,15 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
   }
+
+  @override
+  void dispose() {
+    _statusController.dispose();
+    _milageController.dispose();
+    _occasionController.dispose();
+    _timestampController.dispose();
+    super.dispose();
+  }
 }
 
 class UpdateDialogForm extends StatelessWidget {
