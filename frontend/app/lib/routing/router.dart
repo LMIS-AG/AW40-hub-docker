@@ -50,6 +50,13 @@ Map<String, PageBuilder> _basicRoutes = {
   "/": (RouteData info) {
     return const Redirect(kRouteDiagnosis);
   },
+  kRouteDiagnosisDetails: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        child: DiagnosisScreen(),
+      ),
+    );
+  },
   kRouteDiagnosis: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(

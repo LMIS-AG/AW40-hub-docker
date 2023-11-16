@@ -7,6 +7,7 @@ import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+import "package:routemaster/routemaster.dart";
 
 class DiagnosisView extends StatelessWidget {
   const DiagnosisView({
@@ -15,6 +16,11 @@ class DiagnosisView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pathParameters = Routemaster.of(context).currentRoute.pathParameters;
+    final String? diagnosisIdString = pathParameters["diagnosisId"];
+    final int? diagnosisId =
+        diagnosisIdString != null ? int.tryParse(diagnosisIdString) : null;
+
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
@@ -35,6 +41,7 @@ class DiagnosisView extends StatelessWidget {
           diagnosisModels.sort((a, b) => a.status.index - b.status.index);
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
+            diagnosisId: diagnosisId,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -45,19 +52,24 @@ class DiagnosisView extends StatelessWidget {
 }
 
 class DesktopDiagnosisView extends StatefulWidget {
-  const DesktopDiagnosisView({required this.diagnosisModels, super.key});
+  const DesktopDiagnosisView(
+      {required this.diagnosisModels, this.diagnosisId, super.key});
 
   final List<DiagnosisModel> diagnosisModels;
+  final int? diagnosisId;
 
   @override
   State<DesktopDiagnosisView> createState() => _DesktopDiagnosisViewState();
 }
 
 class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
-  int? currentDiagnosisIndex = 0;
+  int? currentDiagnosisIndex = -1;
 
   @override
   Widget build(BuildContext context) {
+    if (currentDiagnosisIndex == -1) {
+      currentDiagnosisIndex = widget.diagnosisId ?? 0;
+    }
     return Row(
       children: [
         Expanded(
