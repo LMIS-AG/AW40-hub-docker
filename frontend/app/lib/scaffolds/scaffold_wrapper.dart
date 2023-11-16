@@ -82,18 +82,6 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
     final List<NavigationMenuItemModel> navigationItemModels = [
       NavigationMenuItemModel(
-        title: tr("diagnosis.title"),
-        icon: const Icon(Icons.analytics),
-        destination: kRouteDiagnosis,
-        actions: [
-          IconButton(
-            onPressed: () async => _showFilterDiagnosesDialog(),
-            icon: const Icon(Icons.filter_list),
-            tooltip: tr("diagnosis.actions.filterDiagnosis"),
-          ),
-        ],
-      ),
-      NavigationMenuItemModel(
         title: tr("cases.title"),
         icon: const Icon(Icons.cases_sharp),
         destination: kRouteCases,
@@ -116,6 +104,18 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
             onPressed: () async => _showFilterCasesDialog(),
             icon: const Icon(Icons.filter_list),
             tooltip: tr("cases.actions.filterCases"),
+          ),
+        ],
+      ),
+      NavigationMenuItemModel(
+        title: tr("diagnosis.title"),
+        icon: const Icon(Icons.analytics),
+        destination: kRouteDiagnosis,
+        actions: [
+          IconButton(
+            onPressed: () async => _showFilterDiagnosesDialog(),
+            icon: const Icon(Icons.filter_list),
+            tooltip: tr("diagnosis.actions.filterDiagnosis"),
           ),
         ],
       ),

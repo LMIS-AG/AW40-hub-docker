@@ -48,7 +48,14 @@ RouteMap getRouteMap(AuthProvider authProvider) {
 
 Map<String, PageBuilder> _basicRoutes = {
   "/": (RouteData info) {
-    return const Redirect(kRouteDiagnosis);
+    return const Redirect(kRouteCases);
+  },
+  kRouteCases: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        child: CasesScreen(),
+      ),
+    );
   },
   kRouteDiagnosisDetails: (RouteData info) {
     return const MaterialPage<Widget>(
@@ -61,13 +68,6 @@ Map<String, PageBuilder> _basicRoutes = {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
         child: DiagnosisScreen(),
-      ),
-    );
-  },
-  kRouteCases: (RouteData info) {
-    return const MaterialPage<Widget>(
-      child: ScaffoldWrapper(
-        child: CasesScreen(),
       ),
     );
   },
