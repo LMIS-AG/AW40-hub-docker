@@ -1,5 +1,6 @@
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 const Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
@@ -18,10 +19,16 @@ class DiagnosisDataTableSource extends DataTableSource {
   List<DiagnosisModel> diagnosisModels;
   final void Function(int) onPressedRow;
 
-  Icon getStatusIcon(DiagnosisStatus? diagnosisStatus) {
+  Tooltip getStatusIcon(DiagnosisStatus? diagnosisStatus) {
     return (diagnosisStatus == null)
-        ? const Icon(Icons.question_mark)
-        : Icon(diagnosisStatusIcons[diagnosisStatus]);
+        ? Tooltip(
+            message: tr("general.unnamed"),
+            child: const Icon(Icons.question_mark),
+          )
+        : Tooltip(
+            message: tr("diagnosis.status.${diagnosisStatus.name}"),
+            child: Icon(diagnosisStatusIcons[diagnosisStatus]),
+          );
   }
 
   @override
