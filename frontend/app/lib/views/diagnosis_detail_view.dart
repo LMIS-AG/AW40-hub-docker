@@ -12,18 +12,15 @@ import "package:provider/provider.dart";
 class DiagnosisDetailView extends StatelessWidget {
   const DiagnosisDetailView({
     required this.diagnosisModel,
-    required this.onClose,
     super.key,
   });
 
   final DiagnosisModel diagnosisModel;
-  final void Function() onClose;
 
   @override
   Widget build(BuildContext context) {
     return DesktopDiagnosisDetailView(
       diagnosisModel: diagnosisModel,
-      onClose: onClose,
       onDelete: () async => _onDeleteButtonPress(
         context,
         Provider.of<AuthProvider>(context, listen: false).loggedInUser,
@@ -93,13 +90,11 @@ class DiagnosisDetailView extends StatelessWidget {
 class DesktopDiagnosisDetailView extends StatefulWidget {
   const DesktopDiagnosisDetailView({
     required this.diagnosisModel,
-    required this.onClose,
     required this.onDelete,
     super.key,
   });
 
   final DiagnosisModel diagnosisModel;
-  final void Function() onClose;
   final void Function() onDelete;
 
   @override
@@ -135,11 +130,6 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
             children: [
               AppBar(
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                leading: IconButton(
-                  icon: const Icon(Icons.keyboard_double_arrow_right),
-                  iconSize: 28,
-                  onPressed: widget.onClose,
-                ),
                 title: Text(
                   tr("diagnosis.details.headline"),
                   style: Theme.of(context).textTheme.displaySmall,

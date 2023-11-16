@@ -109,7 +109,6 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
             flex: 2,
             child: DiagnosisDetailView(
               diagnosisModel: widget.diagnosisModels[currentDiagnosisIndex!],
-              onClose: () => setState(() => currentDiagnosisIndex = null),
             ),
           )
       ],
