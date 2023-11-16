@@ -38,6 +38,19 @@ diagnosis:
   title: "Diagnose"
   actions:
     filterDiagnosis: "Nach Status filtern"
+  status:
+    action_required: "Eingriff erforderlich"
+    scheduled: "Geplant"
+    processing: "In Bearbeitung"
+    finished: "Abgeschlossen"
+    failed: "Gescheitert"
+  details:
+    headline: "Detailansicht"
+    deleteDiagnosisSuccessMessage: "Die Diagnose wurde erfolgreich gelöscht."
+    deleteDiagnosisErrorMessage: "Der Diagnose konnte nicht gelöscht werden."
+    dialog:
+      title: "Diagnose löschen"
+      description: "Möchten Sie die Diagnose wirklich löschen?"
 cases:
   title: "Fälle"
   actions:

@@ -38,6 +38,19 @@ diagnosis:
   title: Diagnosis"
   actions:
     filterDiagnosis: "Filter by status"
+  status:
+    action_required: "Action required"
+    scheduled: "Scheduled"
+    processing: "Processing"
+    finished: "Finished"
+    failed: "Failed"
+  details:
+    headline: "Details"
+    deleteDiagnosisSuccessMessage: "The diagnosis was successfully deleted."
+    deleteDiagnosisErrorMessage: "The diagnosis could not be deleted."
+    dialog:
+      title: "Delete diagnosis"
+      description: "Do you really want to delete the diagnosis?"
 cases:
   title: "Cases"
   actions:

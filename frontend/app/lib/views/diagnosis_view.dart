@@ -3,6 +3,7 @@ import "package:aw40_hub_frontend/exceptions/exceptions.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
+import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -18,7 +19,8 @@ class DiagnosisView extends StatelessWidget {
     return FutureBuilder(
       // ignore: discarded_futures
       future: diagnosisProvider.getDiagnoses(
-          ["ABC123", "XYZ789", "DEF456"]), // TODO replace mock data
+        ["ABC123", "XYZ789", "DEF456"],
+      ), // TODO replace mock data
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
@@ -52,7 +54,7 @@ class DesktopDiagnosisView extends StatefulWidget {
 }
 
 class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
-  int? currentCaseIndex; // TODO rename
+  int? currentDiagnosisIndex = 0; // TODO rename
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,8 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
             child: PaginatedDataTable(
               source: DiagnosisDataTableSource(
                 diagnosisModels: widget.diagnosisModels,
-                onPressedRow: (int i) => setState(() => currentCaseIndex = i),
+                onPressedRow: (int i) =>
+                    setState(() => currentDiagnosisIndex = i),
               ),
               showCheckboxColumn: false,
               rowsPerPage: 50,
@@ -89,16 +92,14 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
             ),
           ),
         ),
-        // TODO implement detail view
-        /*
-        if (currentCaseIndex != null)
+        if (currentDiagnosisIndex != null)
           Expanded(
             flex: 2,
             child: DiagnosisDetailView(
-              diagnosisModel: widget.diagnosisModels[currentCaseIndex!],
-              onClose: () => setState(() => currentCaseIndex = null),
+              diagnosisModel: widget.diagnosisModels[currentDiagnosisIndex!],
+              onClose: () => setState(() => currentDiagnosisIndex = null),
             ),
-          )*/
+          )
       ],
     );
   }
