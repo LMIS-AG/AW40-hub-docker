@@ -54,7 +54,7 @@ class DesktopDiagnosisView extends StatefulWidget {
 }
 
 class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
-  int? currentDiagnosisIndex = 0; // TODO rename
+  int? currentDiagnosisIndex = 0;
 
   @override
   Widget build(BuildContext context) {
