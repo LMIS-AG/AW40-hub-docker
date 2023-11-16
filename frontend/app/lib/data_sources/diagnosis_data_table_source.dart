@@ -30,6 +30,7 @@ class DiagnosisDataTableSource extends DataTableSource {
     return DataRow(
       onSelectChanged: (_) => onPressedRow(index),
       cells: [
+        DataCell(Center(child: Text(diagnosisModel.id))),
         DataCell(Center(child: getStatusIcon(diagnosisModel.status))),
         DataCell(Center(child: Text(diagnosisModel.caseId))),
         DataCell(
