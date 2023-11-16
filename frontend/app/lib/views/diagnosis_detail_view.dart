@@ -112,12 +112,12 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    // TODO adjust this section in Story 61883
     final List<String> attributes = [
       tr("general.id"),
       tr("general.status"),
       tr("general.date"),
       tr("general.case"),
-      // TODO add stateMachineLog und todos ?
     ];
     final List<String> values = [
       widget.diagnosisModel.id,
