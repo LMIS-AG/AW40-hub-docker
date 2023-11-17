@@ -14,6 +14,6 @@ class DiagnosisModel {
   DateTime timestamp;
   DiagnosisStatus status;
   String caseId;
-  List<String> stateMachineLog;
+  List<Object> stateMachineLog;
   List<Object> todos;
 }

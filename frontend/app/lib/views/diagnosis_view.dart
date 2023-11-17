@@ -1,7 +1,9 @@
 import "package:aw40_hub_frontend/data_sources/diagnosis_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
+import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
@@ -22,11 +24,12 @@ class DiagnosisView extends StatelessWidget {
         diagnosisIdString != null ? int.tryParse(diagnosisIdString) : null;
 
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
+    final caseProvider = Provider.of<CaseProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
       future: diagnosisProvider.getDiagnoses(
-        ["ABC123", "XYZ789", "DEF456"],
-      ), // TODO replace mock data
+        caseProvider,
+      ),
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&

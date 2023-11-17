@@ -1,4 +1,9 @@
+import "dart:convert";
+
+import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
+import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/material.dart";
@@ -12,42 +17,24 @@ class DiagnosisProvider with ChangeNotifier {
 
   final Logger _logger = Logger("diagnosis_provider");
   late String workShopId;
+  List<DiagnosisModel> _diagnoses = [];
 
-  Future<List<DiagnosisModel>> getDiagnoses(List<String> caseIDs) async {
-    // TODO implement (call getDiagnosis for each caseId)
+  // TODO maybe find another way of using the caseProvider than getting it iva param
+  Future<List<DiagnosisModel>> getDiagnoses(CaseProvider caseProvider) async {
+    final List<CaseModel> cases = await caseProvider.getCurrentCases();
+    final List<String> caseIDs = cases.map((e) => e.id).toList();
 
-    // mock data
-    final List<DiagnosisModel> mockData = [
-      DiagnosisModel(
-        id: "1",
-        timestamp: DateTime.now(),
-        status: DiagnosisStatus.scheduled,
-        caseId: "ABC123",
-        stateMachineLog: ["Step 1", "Step 2"],
-        todos: ["Task 1", "Task 2"],
-      ),
-      DiagnosisModel(
-        id: "2",
-        timestamp: DateTime.now(),
-        status: DiagnosisStatus.finished,
-        caseId: "XYZ789",
-        stateMachineLog: ["Step 1", "Step 2", "Step 3"],
-        todos: ["Task 1", "Task 2", "Task 3"],
-      ),
-      DiagnosisModel(
-        id: "3",
-        timestamp: DateTime.now(),
-        status: DiagnosisStatus.action_required,
-        caseId: "DEF456",
-        stateMachineLog: ["Step 1"],
-        todos: ["Task 1"],
-      ),
-    ];
+    final List<Future<DiagnosisModel?>> individualDiagnosisRequests =
+        caseIDs.map(getDiagnosis).toList();
 
-    return mockData;
+    final List<DiagnosisModel?> diagnoses =
+        await Future.wait(individualDiagnosisRequests);
+    return _diagnoses = diagnoses
+        .where((diagnosis) => diagnosis != null)
+        .map((diagnosis) => diagnosis!)
+        .toList();
   }
 
-// TODO adjust return type
   Future<DiagnosisModel?> getDiagnosis(String caseId) async {
     final Response response =
         await _httpService.getDiagnosis(workShopId, caseId);
@@ -59,21 +46,12 @@ class DiagnosisProvider with ChangeNotifier {
       return null;
     }
 
-    // TODO adjust
-    //final Map<String, dynamic> body = jsonDecode(response.body);
-    //final CaseDto receivedCase = CaseDto.fromJson(body);
-    //_cases.add(receivedCase.toModel());
-    notifyListeners();
-
-    // mock data
-    return DiagnosisModel(
-      id: "2",
-      timestamp: DateTime.now(),
-      status: DiagnosisStatus.finished,
-      caseId: "XYZ789",
-      stateMachineLog: ["Step 1", "Step 2", "Step 3"],
-      todos: ["Task 1", "Task 2", "Task 3"],
-    );
+    final decodedJson = jsonDecode(response.body);
+    if (decodedJson is! Map<String, dynamic>) return null;
+    final Map<String, dynamic> body = decodedJson;
+    final DiagnosisDto receivedDiagnosis = DiagnosisDto.fromJson(body);
+    final DiagnosisModel diagnosisModel = receivedDiagnosis.toModel();
+    return diagnosisModel;
   }
 
   Future<bool> startDiagnosis(String caseId) async {
@@ -87,10 +65,6 @@ class DiagnosisProvider with ChangeNotifier {
       return false;
     }
 
-    // TODO adjust
-    //final Map<String, dynamic> body = jsonDecode(response.body);
-    //final CaseDto receivedCase = CaseDto.fromJson(body);
-    //_cases.add(receivedCase.toModel());
     notifyListeners();
     return true;
   }
