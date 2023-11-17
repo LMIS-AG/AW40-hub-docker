@@ -80,8 +80,6 @@ class DiagnosisProvider with ChangeNotifier {
       return false;
     }
 
-    // TODO adjust
-    //_cases.removeWhere((caseModel) => caseModel.id == caseId);
     notifyListeners();
     return true;
   }
