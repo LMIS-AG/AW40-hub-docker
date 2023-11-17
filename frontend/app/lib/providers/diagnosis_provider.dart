@@ -5,7 +5,6 @@ import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/services/services.dart";
-import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";

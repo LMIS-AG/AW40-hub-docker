@@ -1,7 +1,6 @@
 import "package:aw40_hub_frontend/data_sources/diagnosis_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
-import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
