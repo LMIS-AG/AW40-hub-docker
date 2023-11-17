@@ -16,9 +16,7 @@ class DiagnosisProvider with ChangeNotifier {
 
   final Logger _logger = Logger("diagnosis_provider");
   late String workShopId;
-  List<DiagnosisModel> _diagnoses = [];
 
-  // TODO maybe find another way of using the caseProvider than getting it iva param
   Future<List<DiagnosisModel>> getDiagnoses(CaseProvider caseProvider) async {
     final List<CaseModel> cases = await caseProvider.getCurrentCases();
     final List<String> caseIDs = cases.map((e) => e.id).toList();
@@ -28,7 +26,7 @@ class DiagnosisProvider with ChangeNotifier {
 
     final List<DiagnosisModel?> diagnoses =
         await Future.wait(individualDiagnosisRequests);
-    return _diagnoses = diagnoses
+    return diagnoses
         .where((diagnosis) => diagnosis != null)
         .map((diagnosis) => diagnosis!)
         .toList();

@@ -221,7 +221,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             .startDiagnosis(widget.caseModel.id);
                         // TODO step 2: show a loading indicator
                         // TODO step 3: wait for a succesfull response
-                        // TODO step 4: "autoatically" navigate to detail view of the freshly created diagnosis
+                        // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
                       },
                       child: Row(
                         children: [
