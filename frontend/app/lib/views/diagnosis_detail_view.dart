@@ -24,7 +24,7 @@ class DiagnosisDetailView extends StatelessWidget {
       onDelete: () async => _onDeleteButtonPress(
         context,
         Provider.of<AuthProvider>(context, listen: false).loggedInUser,
-        diagnosisModel.id,
+        diagnosisModel.caseId,
       ),
     );
   }
@@ -32,7 +32,7 @@ class DiagnosisDetailView extends StatelessWidget {
   static Future<void> _onDeleteButtonPress(
     BuildContext context,
     LoggedInUserModel loggedInUserModel,
-    String diagnosisModelId,
+    String diagnosisModelCaseId,
   ) async {
     final diagnosisProvider = Provider.of<DiagnosisProvider>(
       context,
@@ -44,10 +44,10 @@ class DiagnosisDetailView extends StatelessWidget {
           ScaffoldMessenger.of(context);
       if (dialogResult == null || !dialogResult) return;
       final bool result =
-          await diagnosisProvider.deleteDiagnosis(diagnosisModelId);
+          await diagnosisProvider.deleteDiagnosis(diagnosisModelCaseId);
       final String message = result
-          ? tr("diagnosis.details.deleteCaseSuccessMessage")
-          : tr("diagnosis.details.deleteCaseErrorMessage");
+          ? tr("diagnosis.details.deleteDiagnosisSuccessMessage")
+          : tr("diagnosis.details.deleteDiagnosisErrorMessage");
       _showMessage(message, scaffoldMessengerState);
     });
   }
