@@ -113,9 +113,14 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
         destination: kRouteDiagnosis,
         actions: [
           IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.sort),
+            tooltip: tr("diagnosis.actions.sortDiagnoses"),
+          ),
+          IconButton(
             onPressed: () async => _showFilterDiagnosesDialog(),
             icon: const Icon(Icons.filter_list),
-            tooltip: tr("diagnosis.actions.filterDiagnosis"),
+            tooltip: tr("diagnosis.actions.filterDiagnoses"),
           ),
         ],
       ),

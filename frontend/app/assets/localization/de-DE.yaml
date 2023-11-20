@@ -37,7 +37,8 @@ general:
 diagnosis:
   title: "Diagnose"
   actions:
-    filterDiagnosis: "Nach Status filtern"
+    filterDiagnoses: "Nach Status filtern"
+    sortDiagnoses: "@:general.sort"
   status:
     action_required: "Eingriff erforderlich"
     scheduled: "Geplant"
