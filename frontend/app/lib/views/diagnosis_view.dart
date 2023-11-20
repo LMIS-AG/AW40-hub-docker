@@ -54,8 +54,11 @@ class DiagnosisView extends StatelessWidget {
 }
 
 class DesktopDiagnosisView extends StatefulWidget {
-  const DesktopDiagnosisView(
-      {required this.diagnosisModels, this.diagnosisId, super.key});
+  const DesktopDiagnosisView({
+    required this.diagnosisModels,
+    this.diagnosisId,
+    super.key,
+  });
 
   final List<DiagnosisModel> diagnosisModels;
   final int? diagnosisId;
