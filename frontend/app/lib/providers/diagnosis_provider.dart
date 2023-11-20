@@ -51,7 +51,7 @@ class DiagnosisProvider with ChangeNotifier {
     return diagnosisModel;
   }
 
-  Future<bool> startDiagnosis(String caseId) async {
+  Future<DiagnosisModel?> startDiagnosis(String caseId) async {
     final Response response =
         await _httpService.startDiagnosis(workShopId, caseId);
     if (response.statusCode != 201) {
@@ -59,11 +59,15 @@ class DiagnosisProvider with ChangeNotifier {
         "Could not start diagnosis. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
-      return false;
+      return null;
     }
 
-    notifyListeners();
-    return true;
+    final decodedJson = jsonDecode(response.body);
+    if (decodedJson is! Map<String, dynamic>) return null;
+    final Map<String, dynamic> body = decodedJson;
+    final DiagnosisDto receivedDiagnosis = DiagnosisDto.fromJson(body);
+    final DiagnosisModel diagnosisModel = receivedDiagnosis.toModel();
+    return diagnosisModel;
   }
 
   Future<bool> deleteDiagnosis(String caseId) async {

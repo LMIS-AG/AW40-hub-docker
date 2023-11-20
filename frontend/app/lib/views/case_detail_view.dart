@@ -1,7 +1,10 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import "dart:async";
+
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
+import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
@@ -216,12 +219,27 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     padding: const EdgeInsets.all(8),
                     child: FilledButton(
                       onPressed: () async {
-                        // TODO step 1: make a request to start diagnosis endoint
-                        await diagnosisProvider
-                            .startDiagnosis(widget.caseModel.id);
+                        String message;
+                        final ScaffoldMessengerState scaffoldMessengerState =
+                            ScaffoldMessenger.of(context);
+                        final DiagnosisModel? createdDiagnosis =
+                            await diagnosisProvider
+                                .startDiagnosis(widget.caseModel.id);
+
                         // TODO step 2: show a loading indicator
-                        // TODO step 3: wait for a succesfull response
-                        // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
+
+                        if (createdDiagnosis != null) {
+                          message =
+                              tr("cases.details.startDiagnosisSuccessMessage");
+                          await Navigator.pushNamed(
+                            context,
+                            "/diagnosis/${createdDiagnosis.id}",
+                          );
+                        } else {
+                          message =
+                              tr("cases.details.startDiagnosisFailureMessage");
+                        }
+                        _showMessage(message, scaffoldMessengerState);
                       },
                       child: Row(
                         children: [
@@ -250,6 +268,13 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         return UpdateCaseDialog(caseModel: caseModel);
       },
     );
+  }
+
+  static void _showMessage(String text, ScaffoldMessengerState state) {
+    final SnackBar snackBar = SnackBar(
+      content: Center(child: Text(text)),
+    );
+    state.showSnackBar(snackBar);
   }
 }
 

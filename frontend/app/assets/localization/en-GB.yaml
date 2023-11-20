@@ -48,6 +48,8 @@ diagnosis:
     headline: "Details"
     deleteDiagnosisSuccessMessage: "The diagnosis was successfully deleted."
     deleteDiagnosisErrorMessage: "The diagnosis could not be deleted."
+    startDiagnosisSuccessMessage: "The diagnosis was successfully started."
+    startDiagnosisFailureMessage: "The diagnosis could not be started."
     dialog:
       title: "Delete diagnosis"
       description: "Do you really want to delete the diagnosis?"
