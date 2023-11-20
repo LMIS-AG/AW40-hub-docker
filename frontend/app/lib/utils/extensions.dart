@@ -14,6 +14,7 @@ extension DateExtension on DateTime {
 }
 
 extension DateTimeExtension on DateTime {
+  // ignore: lines_longer_than_80_chars
   String toGermanDateTimeString() =>
       "$day.$month.$year, ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} Uhr";
 }
