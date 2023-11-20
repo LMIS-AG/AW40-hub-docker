@@ -2,7 +2,13 @@ import "dart:math";
 
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+
+const Map<CaseStatus, IconData> caseStatusIcons = {
+  CaseStatus.open: Icons.cached,
+  CaseStatus.closed: Icons.done,
+};
 
 class CasesDataTableSource extends DataTableSource {
   CasesDataTableSource({required this.caseModels, required this.onPressedRow});
@@ -10,11 +16,16 @@ class CasesDataTableSource extends DataTableSource {
   final rng = Random();
   final void Function(int) onPressedRow;
 
-  Icon getStatusIcon(CaseStatus? caseStatus) {
-    if (caseStatus == null) return const Icon(Icons.question_mark);
-    return caseStatus == CaseStatus.closed
-        ? const Icon(Icons.done)
-        : const Icon(Icons.cached);
+  Tooltip getStatusIcon(CaseStatus? caseStatus) {
+    return (caseStatus == null)
+        ? Tooltip(
+            message: tr("general.unnamed"),
+            child: const Icon(Icons.question_mark),
+          )
+        : Tooltip(
+            message: tr("cases.status.${caseStatus.name}"),
+            child: Icon(caseStatusIcons[caseStatus]),
+          );
   }
 
   @override
