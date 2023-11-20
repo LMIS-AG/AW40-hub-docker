@@ -1,5 +1,4 @@
 import "package:aw40_hub_frontend/main.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/routing/router.dart";
 import "package:aw40_hub_frontend/services/services.dart";
