@@ -46,8 +46,8 @@ class DiagnosisProvider with ChangeNotifier {
     final decodedJson = jsonDecode(response.body);
     if (decodedJson is! Map<String, dynamic>) return null;
     final Map<String, dynamic> body = decodedJson;
-    final DiagnosisDto receivedDiagnosis = DiagnosisDto.fromJson(body);
-    return receivedDiagnosis.toModel();
+    final DiagnosisDto diagnosisDto = DiagnosisDto.fromJson(body);
+    return diagnosisDto.toModel();
   }
 
   Future<bool> startDiagnosis(String caseId) async {
