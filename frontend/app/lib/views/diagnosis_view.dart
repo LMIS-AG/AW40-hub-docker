@@ -17,10 +17,10 @@ class DiagnosisView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pathParameters = Routemaster.of(context).currentRoute.pathParameters;
+    final pathParameters = Routemaster.of(context).currentRoute.queryParameters;
     final String? diagnosisIdString = pathParameters["diagnosisId"];
-    final int? diagnosisId =
-        diagnosisIdString != null ? int.tryParse(diagnosisIdString) : null;
+
+    int? diagnosisIndex; // TODO find index
 
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
     final caseProvider = Provider.of<CaseProvider>(context);
@@ -41,9 +41,22 @@ class DiagnosisView extends StatelessWidget {
             );
           }
           diagnosisModels.sort((a, b) => a.status.index - b.status.index);
+
+          DiagnosisModel? foundModel;
+          try {
+            foundModel = diagnosisModels.firstWhere(
+              (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
+            );
+          } catch (e) {
+            // TODO handle StateError
+          }
+
+          diagnosisIndex =
+              foundModel != null ? diagnosisModels.indexOf(foundModel) : -1;
+
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
-            diagnosisId: diagnosisId,
+            diagnosisId: diagnosisIndex,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
