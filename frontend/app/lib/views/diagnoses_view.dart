@@ -90,24 +90,23 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
               columns: [
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.id"))),
+                    child: Text(tr("general.id")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.status"))),
+                    child: Text(tr("general.status")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.case"))),
+                    child: Text(tr("general.case")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.date"))),
+                    child: Text(tr("general.date")),
                   ),
-                  numeric: true,
                 ),
               ],
             ),

@@ -36,14 +36,12 @@ class DiagnosisDataTableSource extends DataTableSource {
     return DataRow(
       onSelectChanged: (_) => onPressedRow(index),
       cells: [
-        DataCell(Center(child: Text(diagnosisModel.id))),
-        DataCell(Center(child: _getStatusIcon(diagnosisModel.status))),
-        DataCell(Center(child: Text(diagnosisModel.caseId))),
+        DataCell(Text(diagnosisModel.id)),
+        DataCell(_getStatusIcon(diagnosisModel.status)),
+        DataCell(Text(diagnosisModel.caseId)),
         DataCell(
-          Center(
-            child: Text(
-              diagnosisModel.timestamp.toGermanDateString(),
-            ),
+          Text(
+            diagnosisModel.timestamp.toGermanDateString(),
           ),
         ),
       ],
