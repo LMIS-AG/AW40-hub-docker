@@ -9,8 +9,8 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:routemaster/routemaster.dart";
 
-class DiagnosisView extends StatelessWidget {
-  const DiagnosisView({
+class DiagnosesView extends StatelessWidget {
+  const DiagnosesView({
     super.key,
   });
 
