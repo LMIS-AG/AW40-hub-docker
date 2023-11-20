@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/services/services.dart";
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";
@@ -26,10 +27,7 @@ class DiagnosisProvider with ChangeNotifier {
 
     final List<DiagnosisModel?> diagnoses =
         await Future.wait(individualDiagnosisRequests);
-    return diagnoses
-        .where((diagnosis) => diagnosis != null)
-        .map((diagnosis) => diagnosis!)
-        .toList();
+    return diagnoses.whereNotNull().toList();
   }
 
   Future<DiagnosisModel?> getDiagnosis(String caseId) async {
