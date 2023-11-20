@@ -1,5 +1,3 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
