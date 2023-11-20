@@ -1,5 +1,6 @@
 import "package:aw40_hub_frontend/data_sources/diagnosis_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
+import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
@@ -22,11 +23,11 @@ class DiagnosesView extends StatelessWidget {
         diagnosisIdString != null ? int.tryParse(diagnosisIdString) : null;
 
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
-    final caseProvider = Provider.of<CaseProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
       future: diagnosisProvider.getDiagnoses(
-        caseProvider,
+        _getCaseModels,
+        context,
       ),
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
@@ -50,6 +51,11 @@ class DiagnosesView extends StatelessWidget {
       },
     );
   }
+}
+
+Future<List<CaseModel>> _getCaseModels(BuildContext context) {
+  final caseProvider = Provider.of<CaseProvider>(context);
+  return caseProvider.getCurrentCases();
 }
 
 class DesktopDiagnosisView extends StatefulWidget {

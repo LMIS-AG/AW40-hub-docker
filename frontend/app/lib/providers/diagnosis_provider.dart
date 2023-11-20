@@ -3,7 +3,6 @@ import "dart:convert";
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
-import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
@@ -18,8 +17,11 @@ class DiagnosisProvider with ChangeNotifier {
   final Logger _logger = Logger("diagnosis_provider");
   late String workShopId;
 
-  Future<List<DiagnosisModel>> getDiagnoses(CaseProvider caseProvider) async {
-    final List<CaseModel> cases = await caseProvider.getCurrentCases();
+  Future<List<DiagnosisModel>> getDiagnoses(
+    Future<List<CaseModel>> Function(BuildContext) getCaseModels,
+    BuildContext context,
+  ) async {
+    final List<CaseModel> cases = await getCaseModels(context);
     final List<String> caseIDs = cases.map((e) => e.id).toList();
 
     final List<Future<DiagnosisModel?>> individualDiagnosisRequests =
