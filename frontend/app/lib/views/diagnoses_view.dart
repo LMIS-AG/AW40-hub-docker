@@ -118,7 +118,7 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
             ),
           ),
         ),
-        if (currentDiagnosisIndex != null)
+        if (currentDiagnosisIndex != null && widget.diagnosisModels.isNotEmpty)
           Expanded(
             flex: 2,
             child: DiagnosisDetailView(
