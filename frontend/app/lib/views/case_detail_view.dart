@@ -212,7 +212,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                       ),
                     ),
                   ),
-                  if (widget.caseModel.diagnosisId != null)
+                  if (widget.caseModel.diagnosisId == null)
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: FilledButton(
@@ -226,13 +226,15 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
 
                           if (createdDiagnosis != null) {
                             message = tr(
-                                "diagnoses.details.startDiagnosisSuccessMessage");
+                              "diagnoses.details.startDiagnosisSuccessMessage",
+                            );
 
                             Routemaster.of(context)
                                 .push("/diagnoses/${createdDiagnosis.id}");
                           } else {
                             message = tr(
-                                "diagnoses.details.startDiagnosisFailureMessage");
+                              "diagnoses.details.startDiagnosisFailureMessage",
+                            );
                           }
                           _showMessage(message, scaffoldMessengerState);
                         },
