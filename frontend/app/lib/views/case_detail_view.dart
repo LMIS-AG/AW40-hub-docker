@@ -224,14 +224,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                                 .startDiagnosis(widget.caseModel.id);
 
                         if (createdDiagnosis != null) {
-                          message =
-                              tr("cases.details.startDiagnosisSuccessMessage");
+                          message = tr(
+                              "diagnoses.details.startDiagnosisSuccessMessage");
 
                           Routemaster.of(context)
                               .push("/diagnoses/${createdDiagnosis.id}");
                         } else {
-                          message =
-                              tr("cases.details.startDiagnosisFailureMessage");
+                          message = tr(
+                              "diagnoses.details.startDiagnosisFailureMessage");
                         }
                         _showMessage(message, scaffoldMessengerState);
                       },
