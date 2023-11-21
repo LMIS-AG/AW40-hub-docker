@@ -40,7 +40,7 @@ diagnosis:
     filterDiagnoses: "Nach Status filtern"
     sortDiagnoses: "@:general.sort"
   status:
-    action_required: "Eingriff erforderlich"
+    action_required: "Aktion erforderlich"
     scheduled: "Geplant"
     processing: "In Bearbeitung"
     finished: "Abgeschlossen"
