@@ -7,6 +7,7 @@ import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 import "package:routemaster/routemaster.dart";
 
@@ -45,8 +46,12 @@ class DiagnosesView extends StatelessWidget {
             foundModel = diagnosisModels.firstWhere(
               (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
             );
-          } catch (e) {
-            // TODO handle StateError
+          } on StateError {
+            final Logger logger = Logger("diagnoses_view");
+            logger.info(
+              "Could not resolve diagnosis with ID: $diagnosisIdString",
+            );
+            Routemaster.of(context).push(kRouteDiagnosis);
           }
 
           return DesktopDiagnosisView(

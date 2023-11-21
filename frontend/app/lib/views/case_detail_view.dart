@@ -263,7 +263,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                       child: FilledButton(
                         onPressed: () async {
                           Routemaster.of(context).push(
-                              "/diagnoses/${widget.caseModel.diagnosisId}");
+                            "/diagnoses/${widget.caseModel.diagnosisId}",
+                          );
                         },
                         style: ButtonStyle(
                           fixedSize: MaterialStateProperty.all(

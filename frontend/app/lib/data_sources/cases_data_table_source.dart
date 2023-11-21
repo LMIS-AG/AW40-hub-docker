@@ -6,11 +6,12 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 class CasesDataTableSource extends DataTableSource {
-  CasesDataTableSource(
-      {required this.context,
-      required this.currentIndex,
-      required this.caseModels,
-      required this.onPressedRow});
+  CasesDataTableSource({
+    required this.context,
+    required this.currentIndex,
+    required this.caseModels,
+    required this.onPressedRow,
+  });
   List<CaseModel> caseModels;
   final rng = Random();
   final void Function(int) onPressedRow;
