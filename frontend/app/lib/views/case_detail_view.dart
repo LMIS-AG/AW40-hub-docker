@@ -1,5 +1,3 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import "dart:async";
 
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
@@ -11,6 +9,7 @@ import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+import "package:routemaster/routemaster.dart";
 
 class CaseDetailView extends StatelessWidget {
   const CaseDetailView({
@@ -224,15 +223,12 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             await diagnosisProvider
                                 .startDiagnosis(widget.caseModel.id);
 
-                        // TODO step 2: show a loading indicator
-
                         if (createdDiagnosis != null) {
                           message =
                               tr("cases.details.startDiagnosisSuccessMessage");
-                          await Navigator.pushNamed(
-                            context,
-                            "/diagnosis/${createdDiagnosis.id}",
-                          );
+
+                          Routemaster.of(context)
+                              .push("/diagnoses/${createdDiagnosis.id}");
                         } else {
                           message =
                               tr("cases.details.startDiagnosisFailureMessage");
