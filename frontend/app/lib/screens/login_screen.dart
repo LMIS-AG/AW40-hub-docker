@@ -105,6 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Provider.of<AuthProvider>(context, listen: false);
     final CaseProvider caseProvider =
         Provider.of<CaseProvider>(context, listen: false);
+    final DiagnosisProvider diagnosisProvider =
+        Provider.of<DiagnosisProvider>(context, listen: false);
 
     await authProvider.tryLoginWithStoredRefreshToken();
 
@@ -123,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     final String workShopId = authProvider.loggedInUser.workShopId;
     caseProvider.workShopId = workShopId;
+    diagnosisProvider.workShopId = workShopId;
   }
 
   Future<void> _webGoToKeyCloakLogin() async {

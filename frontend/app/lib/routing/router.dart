@@ -56,6 +56,20 @@ Map<String, PageBuilder> _basicRoutes = {
       ),
     );
   },
+  kRouteDiagnosisDetails: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        child: DiagnosisScreen(),
+      ),
+    );
+  },
+  kRouteDiagnosis: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        child: DiagnosisScreen(),
+      ),
+    );
+  },
   kRouteCustomers: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(

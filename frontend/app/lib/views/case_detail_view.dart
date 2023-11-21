@@ -120,6 +120,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
+    final diagnosisProvider =
+        Provider.of<DiagnosisProvider>(context, listen: false);
 
     final List<String> attributes = [
       tr("general.id"),
@@ -212,7 +214,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        // TODO step 1: make a request to start diagnosis endoint
+                        await diagnosisProvider
+                            .startDiagnosis(widget.caseModel.id);
+                        // TODO step 2: show a loading indicator
+                        // TODO step 3: wait for a succesfull response
+                        // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
+                      },
                       child: Row(
                         children: [
                           const Icon(Icons.tab),

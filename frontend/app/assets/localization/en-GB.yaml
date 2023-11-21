@@ -1,5 +1,6 @@
 general:
   cancel: "Cancel"
+  case: "Case"
   close: "Close"
   customer: "Customer"
   customerId: "Customer id"
@@ -33,6 +34,24 @@ general:
     customerId: "No customer id"
     vehiclevin: "No vehicle vin"
     workshopid: "No workshop id"
+diagnoses:
+  title: Diagnosis"
+  actions:
+    filterDiagnoses: "Filter by status"
+    sortDiagnoses: "@:general.sort"
+  status:
+    action_required: "Action required"
+    scheduled: "Scheduled"
+    processing: "Processing"
+    finished: "Finished"
+    failed: "Failed"
+  details:
+    headline: "Details"
+    deleteDiagnosisSuccessMessage: "The diagnosis was successfully deleted."
+    deleteDiagnosisErrorMessage: "The diagnosis could not be deleted."
+    dialog:
+      title: "Delete diagnosis"
+      description: "Do you really want to delete the diagnosis?"
 cases:
   title: "Cases"
   actions:

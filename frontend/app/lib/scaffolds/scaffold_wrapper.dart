@@ -41,6 +41,11 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     return newCase;
   }
 
+  Future<void> _showFilterDiagnosesDialog() async {
+    // TODO implement in a later story
+    _logger.warning("Unimplemented: _showFilterDiagnosesDialog()");
+  }
+
   Future<void> _showFilterCasesDialog() async {
     await showDialog(
       context: context,
@@ -99,6 +104,23 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
             onPressed: () async => _showFilterCasesDialog(),
             icon: const Icon(Icons.filter_list),
             tooltip: tr("cases.actions.filterCases"),
+          ),
+        ],
+      ),
+      NavigationMenuItemModel(
+        title: tr("diagnoses.title"),
+        icon: const Icon(Icons.analytics),
+        destination: kRouteDiagnosis,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.sort),
+            tooltip: tr("diagnoses.actions.sortDiagnoses"),
+          ),
+          IconButton(
+            onPressed: () async => _showFilterDiagnosesDialog(),
+            icon: const Icon(Icons.filter_list),
+            tooltip: tr("diagnoses.actions.filterDiagnoses"),
           ),
         ],
       ),

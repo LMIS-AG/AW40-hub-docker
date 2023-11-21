@@ -1,5 +1,6 @@
 general:
   cancel: "Abbrechen"
+  case: "Fall"
   close: "Schließen"
   customer: "Kunde"
   customerId: "Kunden ID"
@@ -33,6 +34,24 @@ general:
     customerId: "Keine Kunden ID"
     vehicleVin: "Keine @:general.vehicleVin"
     workshopId: "Keine @:general.workshop ID"
+diagnoses:
+  title: "Diagnosen"
+  actions:
+    filterDiagnoses: "Nach Status filtern"
+    sortDiagnoses: "@:general.sort"
+  status:
+    action_required: "Aktion erforderlich"
+    scheduled: "Geplant"
+    processing: "In Bearbeitung"
+    finished: "Abgeschlossen"
+    failed: "Gescheitert"
+  details:
+    headline: "Detailansicht"
+    deleteDiagnosisSuccessMessage: "Die Diagnose wurde erfolgreich gelöscht."
+    deleteDiagnosisErrorMessage: "Der Diagnose konnte nicht gelöscht werden."
+    dialog:
+      title: "Diagnose löschen"
+      description: "Möchten Sie die Diagnose wirklich löschen?"
 cases:
   title: "Fälle"
   actions:

@@ -55,6 +55,16 @@ enum CaseStatus {
   closed,
 }
 
+// Order determines sort order ascending from action required onwards
+enum DiagnosisStatus {
+  // ignore: constant_identifier_names
+  action_required,
+  scheduled,
+  processing,
+  finished,
+  failed,
+}
+
 enum NavigationType {
   internal,
   external,

@@ -27,6 +27,9 @@ class AWHubApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<CaseProvider>(
           create: (_) => CaseProvider(HttpService()),
+        ),
+        ChangeNotifierProvider<DiagnosisProvider>(
+          create: (_) => DiagnosisProvider(HttpService()),
         )
       ],
       child: MaterialApp.router(

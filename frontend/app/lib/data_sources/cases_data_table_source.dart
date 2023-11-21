@@ -2,6 +2,7 @@ import "dart:math";
 
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 class CasesDataTableSource extends DataTableSource {
@@ -9,12 +10,21 @@ class CasesDataTableSource extends DataTableSource {
   List<CaseModel> caseModels;
   final rng = Random();
   final void Function(int) onPressedRow;
+  final Map<CaseStatus, IconData> caseStatusIcons = {
+    CaseStatus.open: Icons.cached,
+    CaseStatus.closed: Icons.done,
+  };
 
-  Icon getStatusIcon(CaseStatus? caseStatus) {
-    if (caseStatus == null) return const Icon(Icons.question_mark);
-    return caseStatus == CaseStatus.closed
-        ? const Icon(Icons.done)
-        : const Icon(Icons.cached);
+  Tooltip _getStatusIcon(CaseStatus? caseStatus) {
+    return (caseStatus == null)
+        ? Tooltip(
+            message: tr("general.unnamed"),
+            child: const Icon(Icons.question_mark),
+          )
+        : Tooltip(
+            message: tr("cases.status.${caseStatus.name}"),
+            child: Icon(caseStatusIcons[caseStatus]),
+          );
   }
 
   @override
@@ -28,7 +38,7 @@ class CasesDataTableSource extends DataTableSource {
             caseModel.timestamp.toGermanDateString(),
           ),
         ),
-        DataCell(getStatusIcon(caseModel.status)),
+        DataCell(_getStatusIcon(caseModel.status)),
         DataCell(Text(caseModel.customerId)),
         DataCell(Text(caseModel.vehicleVin)),
         DataCell(
