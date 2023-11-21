@@ -76,7 +76,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/logo_klein.png
+    - assets/
     - assets/localization/
 
   # An image asset can refer to one or more resolution-specific "variants", see
