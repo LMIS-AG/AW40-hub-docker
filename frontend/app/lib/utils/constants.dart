@@ -19,4 +19,5 @@ const Color kPrimaryColor = Color.fromARGB(255, 50, 83, 119);
 const Color kSecondaryColor = Color.fromARGB(255, 66, 227, 122);
 
 // Assets
-const String kAssetAwLogoKlein = "assets/logo_klein.png";
+const String kAssetAwLogoKleinDarkTheme = "assets/logo_klein_dark_theme.png";
+const String kAssetAwLogoKleinLightTheme = "assets/logo_klein_light_theme.png";
