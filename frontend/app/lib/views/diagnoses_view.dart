@@ -20,8 +20,6 @@ class DiagnosesView extends StatelessWidget {
     final pathParameters = Routemaster.of(context).currentRoute.queryParameters;
     final String? diagnosisIdString = pathParameters["diagnosisId"];
 
-    int? diagnosisIndex; // TODO find index
-
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
@@ -51,12 +49,10 @@ class DiagnosesView extends StatelessWidget {
             // TODO handle StateError
           }
 
-          diagnosisIndex =
-              foundModel != null ? diagnosisModels.indexOf(foundModel) : -1;
-
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
-            diagnosisId: diagnosisIndex,
+            diagnosisIndex:
+                foundModel != null ? diagnosisModels.indexOf(foundModel) : null,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -74,12 +70,12 @@ Future<List<CaseModel>> _getCaseModels(BuildContext context) {
 class DesktopDiagnosisView extends StatefulWidget {
   const DesktopDiagnosisView({
     required this.diagnosisModels,
-    this.diagnosisId,
+    this.diagnosisIndex,
     super.key,
   });
 
   final List<DiagnosisModel> diagnosisModels;
-  final int? diagnosisId;
+  final int? diagnosisIndex;
 
   @override
   State<DesktopDiagnosisView> createState() => _DesktopDiagnosisViewState();
@@ -91,7 +87,8 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
   @override
   Widget build(BuildContext context) {
     if (currentDiagnosisIndex == -1) {
-      currentDiagnosisIndex = widget.diagnosisId ?? 0;
+      currentDiagnosisIndex = widget.diagnosisIndex ??
+          0; // show details of first element as default
     }
     return Row(
       children: [
