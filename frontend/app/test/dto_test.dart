@@ -13,6 +13,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -28,6 +29,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
@@ -162,6 +164,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -177,6 +180,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
@@ -237,6 +241,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -252,6 +257,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
