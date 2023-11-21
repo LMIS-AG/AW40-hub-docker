@@ -34,7 +34,7 @@ general:
     customerId: "No customer id"
     vehiclevin: "No vehicle vin"
     workshopid: "No workshop id"
-diagnosis:
+diagnoses:
   title: Diagnosis"
   actions:
     filterDiagnoses: "Filter by status"

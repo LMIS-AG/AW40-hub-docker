@@ -30,8 +30,8 @@ class DiagnosisDetailView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(tr("diagnosis.details.dialog.title")),
-          content: Text(tr("diagnosis.details.dialog.description")),
+          title: Text(tr("diagnoses.details.dialog.title")),
+          content: Text(tr("diagnoses.details.dialog.description")),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -69,8 +69,8 @@ class DiagnosisDetailView extends StatelessWidget {
       final bool result =
           await diagnosisProvider.deleteDiagnosis(diagnosisModelCaseId);
       final String message = result
-          ? tr("diagnosis.details.deleteDiagnosisSuccessMessage")
-          : tr("diagnosis.details.deleteDiagnosisErrorMessage");
+          ? tr("diagnoses.details.deleteDiagnosisSuccessMessage")
+          : tr("diagnoses.details.deleteDiagnosisErrorMessage");
       _showMessage(message, scaffoldMessengerState);
     });
   }
@@ -112,7 +112,7 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
     ];
     final List<String> values = [
       widget.diagnosisModel.id,
-      tr("diagnosis.status.${widget.diagnosisModel.status.name}"),
+      tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
       widget.diagnosisModel.timestamp.toGermanDateString(),
       widget.diagnosisModel.caseId,
     ];
@@ -127,7 +127,7 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
               AppBar(
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 title: Text(
-                  tr("diagnosis.details.headline"),
+                  tr("diagnoses.details.headline"),
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 actions: [
