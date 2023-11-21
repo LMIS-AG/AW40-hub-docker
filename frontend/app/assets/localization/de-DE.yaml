@@ -35,7 +35,7 @@ general:
     vehicleVin: "Keine @:general.vehicleVin"
     workshopId: "Keine @:general.workshop ID"
 diagnosis:
-  title: "Diagnose"
+  title: "Diagnosen"
   actions:
     filterDiagnoses: "Nach Status filtern"
     sortDiagnoses: "@:general.sort"
