@@ -236,6 +236,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           }
                           _showMessage(message, scaffoldMessengerState);
                         },
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            const Size(
+                              210,
+                              36,
+                            ),
+                          ),
+                        ),
                         child: Row(
                           children: [
                             const Icon(Icons.tab),
@@ -255,6 +263,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           Routemaster.of(context).push(
                               "/diagnoses/${widget.caseModel.diagnosisId}");
                         },
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            const Size(
+                              210,
+                              36,
+                            ),
+                          ),
+                        ),
                         child: Row(
                           children: [
                             const Icon(Icons.tab),
