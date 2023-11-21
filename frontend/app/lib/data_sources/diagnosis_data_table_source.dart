@@ -25,7 +25,7 @@ class DiagnosisDataTableSource extends DataTableSource {
             child: const Icon(Icons.question_mark),
           )
         : Tooltip(
-            message: tr("diagnosis.status.${diagnosisStatus.name}"),
+            message: tr("diagnoses.status.${diagnosisStatus.name}"),
             child: Icon(diagnosisStatusIcons[diagnosisStatus]),
           );
   }

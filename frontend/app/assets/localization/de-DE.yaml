@@ -34,7 +34,7 @@ general:
     customerId: "Keine Kunden ID"
     vehicleVin: "Keine @:general.vehicleVin"
     workshopId: "Keine @:general.workshop ID"
-diagnosis:
+diagnoses:
   title: "Diagnosen"
   actions:
     filterDiagnoses: "Nach Status filtern"

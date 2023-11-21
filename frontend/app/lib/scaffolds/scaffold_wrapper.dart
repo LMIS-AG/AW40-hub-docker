@@ -108,19 +108,19 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
         ],
       ),
       NavigationMenuItemModel(
-        title: tr("diagnosis.title"),
+        title: tr("diagnoses.title"),
         icon: const Icon(Icons.analytics),
         destination: kRouteDiagnosis,
         actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.sort),
-            tooltip: tr("diagnosis.actions.sortDiagnoses"),
+            tooltip: tr("diagnoses.actions.sortDiagnoses"),
           ),
           IconButton(
             onPressed: () async => _showFilterDiagnosesDialog(),
             icon: const Icon(Icons.filter_list),
-            tooltip: tr("diagnosis.actions.filterDiagnoses"),
+            tooltip: tr("diagnoses.actions.filterDiagnoses"),
           ),
         ],
       ),
