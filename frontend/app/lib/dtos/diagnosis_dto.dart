@@ -38,7 +38,7 @@ class DiagnosisDto {
   @JsonKey(name: "case_id")
   String caseId;
   @JsonKey(name: "state_machine_log")
-  List<Object> stateMachineLog;
+  List<dynamic> stateMachineLog;
   @JsonKey(name: "todos")
-  List<Object> todos;
+  List<dynamic> todos;
 }

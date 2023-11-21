@@ -1,8 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars
-
-import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
@@ -27,29 +23,6 @@ class DiagnosisDetailView extends StatelessWidget {
         diagnosisModel.caseId,
       ),
     );
-  }
-
-  static Future<void> _onDeleteButtonPress(
-    BuildContext context,
-    LoggedInUserModel loggedInUserModel,
-    String diagnosisModelCaseId,
-  ) async {
-    final diagnosisProvider = Provider.of<DiagnosisProvider>(
-      context,
-      listen: false,
-    );
-
-    await _showConfirmDeleteDialog(context).then((bool? dialogResult) async {
-      final ScaffoldMessengerState scaffoldMessengerState =
-          ScaffoldMessenger.of(context);
-      if (dialogResult == null || !dialogResult) return;
-      final bool result =
-          await diagnosisProvider.deleteDiagnosis(diagnosisModelCaseId);
-      final String message = result
-          ? tr("diagnosis.details.deleteDiagnosisSuccessMessage")
-          : tr("diagnosis.details.deleteDiagnosisErrorMessage");
-      _showMessage(message, scaffoldMessengerState);
-    });
   }
 
   static Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
@@ -77,6 +50,29 @@ class DiagnosisDetailView extends StatelessWidget {
         );
       },
     );
+  }
+
+  static Future<void> _onDeleteButtonPress(
+    BuildContext context,
+    LoggedInUserModel loggedInUserModel,
+    String diagnosisModelCaseId,
+  ) async {
+    final diagnosisProvider = Provider.of<DiagnosisProvider>(
+      context,
+      listen: false,
+    );
+
+    await _showConfirmDeleteDialog(context).then((bool? dialogResult) async {
+      final ScaffoldMessengerState scaffoldMessengerState =
+          ScaffoldMessenger.of(context);
+      if (dialogResult == null || !dialogResult) return;
+      final bool result =
+          await diagnosisProvider.deleteDiagnosis(diagnosisModelCaseId);
+      final String message = result
+          ? tr("diagnosis.details.deleteDiagnosisSuccessMessage")
+          : tr("diagnosis.details.deleteDiagnosisErrorMessage");
+      _showMessage(message, scaffoldMessengerState);
+    });
   }
 
   static void _showMessage(String text, ScaffoldMessengerState state) {

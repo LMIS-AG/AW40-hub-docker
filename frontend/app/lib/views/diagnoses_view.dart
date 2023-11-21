@@ -1,7 +1,7 @@
 import "package:aw40_hub_frontend/data_sources/diagnosis_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/exceptions.dart";
+import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
@@ -10,8 +10,8 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:routemaster/routemaster.dart";
 
-class DiagnosisView extends StatelessWidget {
-  const DiagnosisView({
+class DiagnosesView extends StatelessWidget {
+  const DiagnosesView({
     super.key,
   });
 
@@ -23,11 +23,11 @@ class DiagnosisView extends StatelessWidget {
     int? diagnosisIndex; // TODO find index
 
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
-    final caseProvider = Provider.of<CaseProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
       future: diagnosisProvider.getDiagnoses(
-        caseProvider,
+        _getCaseModels,
+        context,
       ),
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
@@ -64,6 +64,11 @@ class DiagnosisView extends StatelessWidget {
       },
     );
   }
+}
+
+Future<List<CaseModel>> _getCaseModels(BuildContext context) {
+  final caseProvider = Provider.of<CaseProvider>(context);
+  return caseProvider.getCurrentCases();
 }
 
 class DesktopDiagnosisView extends StatefulWidget {
@@ -104,30 +109,29 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
               columns: [
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.id"))),
+                    child: Text(tr("general.id")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.status"))),
+                    child: Text(tr("general.status")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.case"))),
+                    child: Text(tr("general.case")),
                   ),
                 ),
                 DataColumn(
                   label: Expanded(
-                    child: Center(child: Text(tr("general.date"))),
+                    child: Text(tr("general.date")),
                   ),
-                  numeric: true,
                 ),
               ],
             ),
           ),
         ),
-        if (currentDiagnosisIndex != null)
+        if (currentDiagnosisIndex != null && widget.diagnosisModels.isNotEmpty)
           Expanded(
             flex: 2,
             child: DiagnosisDetailView(

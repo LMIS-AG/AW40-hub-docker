@@ -58,6 +58,41 @@ void main() {
       expect(caseModel.symptoms, symptoms);
     });
   });
+  group("DiagnosisModel", () {
+    const id = "test_id";
+    final timestamp = DateTime.now();
+    const status = DiagnosisStatus.processing;
+    const caseId = "some_case_id";
+    final List<dynamic> stateMachineLog = <dynamic>[1, 2, 3];
+    final List<dynamic> todos = <dynamic>["a", 5, false];
+
+    final diagnosisModel = DiagnosisModel(
+      id: id,
+      timestamp: timestamp,
+      status: status,
+      caseId: caseId,
+      stateMachineLog: stateMachineLog,
+      todos: todos,
+    );
+    test("correctly assigns id", () {
+      expect(diagnosisModel.id, id);
+    });
+    test("correctly assigns timestamp", () {
+      expect(diagnosisModel.timestamp, timestamp);
+    });
+    test("correctly assigns status", () {
+      expect(diagnosisModel.status, status);
+    });
+    test("correctly assigns caseId", () {
+      expect(diagnosisModel.caseId, caseId);
+    });
+    test("correctly assigns stateMachineLog", () {
+      expect(diagnosisModel.stateMachineLog, stateMachineLog);
+    });
+    test("correctly assigns todos", () {
+      expect(diagnosisModel.todos, todos);
+    });
+  });
   group("JwtModel primary constructor", () {
     const jwt = "some_jwt_string";
     final exp = DateTime.now();

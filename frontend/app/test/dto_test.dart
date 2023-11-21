@@ -1,5 +1,5 @@
 import "package:aw40_hub_frontend/dtos/dtos.dart";
-import "package:aw40_hub_frontend/models/case_model.dart";
+import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:flutter_test/flutter_test.dart";
 
@@ -366,6 +366,145 @@ void main() {
     });
     test("correctly assigns status", () {
       expect(json["status"], status.name);
+    });
+  });
+  group("DiagnosisDto primary constructor", () {
+    const id = "test_id";
+    final timeStamp = DateTime.now();
+    const status = DiagnosisStatus.failed;
+    const caseId = "some_case_id";
+    const stateMachineLog = <dynamic>[1, 2, 3];
+    const todos = <dynamic>["a", 5, false];
+    final DiagnosisDto diagnosisDto = DiagnosisDto(
+      id,
+      timeStamp,
+      status,
+      caseId,
+      stateMachineLog,
+      todos,
+    );
+    test("correctly assigns id", () {
+      expect(diagnosisDto.id, id);
+    });
+    test("correctly assigns timestamp", () {
+      expect(diagnosisDto.timestamp, timeStamp);
+    });
+    test("correctly assigns status", () {
+      expect(diagnosisDto.status, status);
+    });
+    test("correctly assigns caseId", () {
+      expect(diagnosisDto.caseId, caseId);
+    });
+    test("correctly assigns stateMachineLog", () {
+      expect(diagnosisDto.stateMachineLog, stateMachineLog);
+    });
+    test("correctly assigns todos", () {
+      expect(diagnosisDto.todos, todos);
+    });
+  });
+  group("DiagnosisDto fromJson constructor", () {
+    const id = "test_id";
+    final timeStamp = DateTime.now();
+    const status = DiagnosisStatus.failed;
+    const caseId = "some_case_id";
+    const stateMachineLog = <dynamic>[1, 2, 3];
+    const todos = <dynamic>["a", 5, false];
+    final Map<String, dynamic> json = <String, dynamic>{
+      "_id": id,
+      "timestamp": timeStamp.toIso8601String(),
+      "status": status.name,
+      "case_id": caseId,
+      "state_machine_log": stateMachineLog,
+      "todos": todos,
+    };
+    final DiagnosisDto diagnosisDto = DiagnosisDto.fromJson(json);
+    test("correctly assigns id", () {
+      expect(diagnosisDto.id, id);
+    });
+    test("correctly assigns timestamp", () {
+      expect(diagnosisDto.timestamp, timeStamp);
+    });
+    test("correctly assigns status", () {
+      expect(diagnosisDto.status, status);
+    });
+    test("correctly assigns caseId", () {
+      expect(diagnosisDto.caseId, caseId);
+    });
+    test("correctly assigns stateMachineLog", () {
+      expect(diagnosisDto.stateMachineLog, stateMachineLog);
+    });
+    test("correctly assigns todos", () {
+      expect(diagnosisDto.todos, todos);
+    });
+  });
+  group("DiagnosisDto toJson method", () {
+    const id = "test_id";
+    final timeStamp = DateTime.now();
+    const status = DiagnosisStatus.failed;
+    const caseId = "some_case_id";
+    const stateMachineLog = <dynamic>[1, 2, 3];
+    const todos = <dynamic>["a", 5, false];
+    final DiagnosisDto diagnosisDto = DiagnosisDto(
+      id,
+      timeStamp,
+      status,
+      caseId,
+      stateMachineLog,
+      todos,
+    );
+    final Map<String, dynamic> json = diagnosisDto.toJson();
+    test("correctly assigns id", () {
+      expect(json["_id"], id);
+    });
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timeStamp.toIso8601String());
+    });
+    test("correctly assigns status", () {
+      expect(json["status"], status.name);
+    });
+    test("correctly assigns caseId", () {
+      expect(json["case_id"], caseId);
+    });
+    test("correctly assigns stateMachineLog", () {
+      expect(json["state_machine_log"], stateMachineLog);
+    });
+    test("correctly assigns todos", () {
+      expect(json["todos"], todos);
+    });
+  });
+  group("DiagnosisDto toModel method", () {
+    const id = "test_id";
+    final timeStamp = DateTime.now();
+    const status = DiagnosisStatus.failed;
+    const caseId = "some_case_id";
+    const stateMachineLog = <dynamic>[1, 2, 3];
+    const todos = <dynamic>["a", 5, false];
+    final DiagnosisDto diagnosisDto = DiagnosisDto(
+      id,
+      timeStamp,
+      status,
+      caseId,
+      stateMachineLog,
+      todos,
+    );
+    final DiagnosisModel diagnosisModel = diagnosisDto.toModel();
+    test("correctly assigns id", () {
+      expect(diagnosisModel.id, id);
+    });
+    test("correctly assigns timestamp", () {
+      expect(diagnosisModel.timestamp, timeStamp);
+    });
+    test("correctly assigns status", () {
+      expect(diagnosisModel.status, status);
+    });
+    test("correctly assigns caseId", () {
+      expect(diagnosisModel.caseId, caseId);
+    });
+    test("correctly assigns stateMachineLog", () {
+      expect(diagnosisModel.stateMachineLog, stateMachineLog);
+    });
+    test("correctly assigns todos", () {
+      expect(diagnosisModel.todos, todos);
     });
   });
   group("NewCaseDto primary constructor", () {
