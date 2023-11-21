@@ -212,40 +212,60 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FilledButton(
-                      onPressed: () async {
-                        String message;
-                        final ScaffoldMessengerState scaffoldMessengerState =
-                            ScaffoldMessenger.of(context);
-                        final DiagnosisModel? createdDiagnosis =
-                            await diagnosisProvider
-                                .startDiagnosis(widget.caseModel.id);
+                  if (widget.caseModel.diagnosisId != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FilledButton(
+                        onPressed: () async {
+                          String message;
+                          final ScaffoldMessengerState scaffoldMessengerState =
+                              ScaffoldMessenger.of(context);
+                          final DiagnosisModel? createdDiagnosis =
+                              await diagnosisProvider
+                                  .startDiagnosis(widget.caseModel.id);
 
-                        if (createdDiagnosis != null) {
-                          message = tr(
-                              "diagnoses.details.startDiagnosisSuccessMessage");
+                          if (createdDiagnosis != null) {
+                            message = tr(
+                                "diagnoses.details.startDiagnosisSuccessMessage");
 
-                          Routemaster.of(context)
-                              .push("/diagnoses/${createdDiagnosis.id}");
-                        } else {
-                          message = tr(
-                              "diagnoses.details.startDiagnosisFailureMessage");
-                        }
-                        _showMessage(message, scaffoldMessengerState);
-                      },
-                      child: Row(
-                        children: [
-                          const Icon(Icons.tab),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(tr("cases.details.startDiagnosis")),
-                          )
-                        ],
+                            Routemaster.of(context)
+                                .push("/diagnoses/${createdDiagnosis.id}");
+                          } else {
+                            message = tr(
+                                "diagnoses.details.startDiagnosisFailureMessage");
+                          }
+                          _showMessage(message, scaffoldMessengerState);
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(Icons.tab),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(tr("cases.details.startDiagnosis")),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FilledButton(
+                        onPressed: () async {
+                          Routemaster.of(context).push(
+                              "/diagnoses/${widget.caseModel.diagnosisId}");
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(Icons.tab),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(tr("cases.details.showDiagnosis")),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
                 ],
               )
             ],

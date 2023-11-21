@@ -79,6 +79,7 @@ cases:
     dialog:
       title: "Fall löschen"
       description: "Möchten Sie den Fall wirklich löschen?"
+    showDiagnosis: "Diagnose anzeigen"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
     occasion:

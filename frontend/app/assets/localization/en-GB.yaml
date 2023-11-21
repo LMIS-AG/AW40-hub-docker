@@ -79,6 +79,7 @@ cases:
     dialog:
       title: "Delete case"
       description: "Do you really want to delete the case?"
+    showDiagnosis: "Show diagnosis"
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
     occasion:

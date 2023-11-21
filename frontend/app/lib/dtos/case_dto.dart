@@ -15,6 +15,7 @@ class CaseDto {
     this.customerId,
     this.vehicleVin,
     this.workshopId,
+    this.diagnosisId,
     this.timeseriesData,
     this.obdData,
     this.symptoms,
@@ -38,6 +39,7 @@ class CaseDto {
       customerId: customerId,
       vehicleVin: vehicleVin,
       workshopId: workshopId,
+      diagnosisId: diagnosisId,
       timeseriesData: timeseriesData,
       obdData: obdData,
       symptoms: symptoms,
@@ -56,6 +58,8 @@ class CaseDto {
   String vehicleVin;
   @JsonKey(name: "workshop_id")
   String workshopId;
+  @JsonKey(name: "diagnosis_id")
+  String? diagnosisId;
   @JsonKey(name: "timeseries_data")
   List<dynamic> timeseriesData;
   @JsonKey(name: "obd_data")
