@@ -15,7 +15,6 @@ import "package:logging/logging.dart";
 import "package:routemaster/routemaster.dart";
 import "package:universal_html/html.dart" hide Navigator;
 
-// ignore: prefer_mixin
 class AuthProvider with ChangeNotifier {
   AuthProvider(
     this._client,

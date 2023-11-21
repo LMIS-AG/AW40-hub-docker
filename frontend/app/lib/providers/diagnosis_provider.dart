@@ -9,7 +9,6 @@ import "package:flutter/material.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";
 
-// ignore: prefer_mixin
 class DiagnosisProvider with ChangeNotifier {
   DiagnosisProvider(this._httpService);
   final HttpService _httpService;
