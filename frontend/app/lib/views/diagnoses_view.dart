@@ -97,6 +97,8 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
           child: SingleChildScrollView(
             child: PaginatedDataTable(
               source: DiagnosisDataTableSource(
+                context: context,
+                currentIndex: currentDiagnosisIndex,
                 diagnosisModels: widget.diagnosisModels,
                 onPressedRow: (int i) =>
                     setState(() => currentDiagnosisIndex = i),
