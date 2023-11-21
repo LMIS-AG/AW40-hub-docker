@@ -17,7 +17,7 @@ class DiagnosesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pathParameters = Routemaster.of(context).currentRoute.queryParameters;
+    final pathParameters = Routemaster.of(context).currentRoute.pathParameters;
     final String? diagnosisIdString = pathParameters["diagnosisId"];
 
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
