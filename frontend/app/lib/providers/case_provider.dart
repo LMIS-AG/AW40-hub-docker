@@ -7,7 +7,6 @@ import "package:flutter/material.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";
 
-// ignore: prefer_mixin
 class CaseProvider with ChangeNotifier {
   CaseProvider(this._httpService);
   final HttpService _httpService;
