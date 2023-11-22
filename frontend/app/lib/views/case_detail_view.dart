@@ -229,6 +229,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                               "diagnoses.details.startDiagnosisSuccessMessage",
                             );
 
+                            // ignore: use_build_context_synchronously
                             Routemaster.of(context)
                                 .push("/diagnoses/${createdDiagnosis.id}");
                           } else {
