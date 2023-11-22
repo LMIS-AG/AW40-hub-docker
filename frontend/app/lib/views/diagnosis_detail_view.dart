@@ -138,7 +138,9 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
                     iconSize: 28,
-                    color: Theme.of(context).colorScheme.error,
+                    style: IconButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
                     onPressed: widget.onDelete,
                   ),
                 ],

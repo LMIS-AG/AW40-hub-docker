@@ -171,7 +171,9 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
                     iconSize: 28,
-                    color: Theme.of(context).colorScheme.error,
+                    style: IconButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
                     onPressed: widget.onDelete,
                   ),
                 ],
@@ -204,7 +206,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton.icon(
+                  FilledButton.icon(
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
                     onPressed: () async {
@@ -229,7 +231,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                       // TODO step 3: wait for a succesfull response
                       // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
                     },
-                  )
+                  ),
                 ],
               )
             ],
