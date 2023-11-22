@@ -15,6 +15,7 @@ class UserSettingsPopupButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<PopupMenuItem>(
+      constraints: const BoxConstraints.tightFor(width: 250),
       itemBuilder: (context) => [
         const PopupMenuItem(child: ThemeChooser()),
         const PopupMenuItem(child: LanguageChooser()),
