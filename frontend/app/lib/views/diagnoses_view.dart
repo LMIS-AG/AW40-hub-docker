@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
+import "package:collection/collection.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
@@ -41,12 +42,10 @@ class DiagnosesView extends StatelessWidget {
           }
           diagnosisModels.sort((a, b) => a.status.index - b.status.index);
 
-          DiagnosisModel? foundModel;
-          try {
-            foundModel = diagnosisModels.firstWhere(
-              (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
-            );
-          } on StateError {
+          final DiagnosisModel? foundModel = diagnosisModels.firstWhereOrNull(
+            (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
+          );
+          if (foundModel == null) {
             final Logger logger = Logger("diagnoses_view");
             logger.info(
               "Could not resolve diagnosis with ID: $diagnosisIdString",
