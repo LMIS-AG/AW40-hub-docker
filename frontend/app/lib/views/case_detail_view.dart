@@ -210,6 +210,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   FilledButton.icon(
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        const Size(
+                          150,
+                          36,
+                        ),
+                      ),
+                    ),
                     onPressed: () async {
                       final CaseUpdateDto? caseUpdateDto =
                           await _showUpdateCaseDialog(widget.caseModel);
@@ -221,18 +229,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     },
                   ),
                   const SizedBox(width: 16),
-                  FilledButton.icon(
-                    icon: const Icon(Icons.tab),
-                    label: Text(tr("cases.details.startDiagnosis")),
-                    onPressed: () async {
-                      // TODO step 1: make a request to start diagnosis endoint
-                      await diagnosisProvider
-                          .startDiagnosis(widget.caseModel.id);
-                      // TODO step 2: show a loading indicator
-                      // TODO step 3: wait for a succesfull response
-                      // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
-                    },
-                  ),
                   if (widget.caseModel.diagnosisId == null)
                     Padding(
                       padding: const EdgeInsets.all(8),
@@ -263,7 +259,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         style: ButtonStyle(
                           fixedSize: MaterialStateProperty.all(
                             const Size(
-                              210,
+                              200,
                               36,
                             ),
                           ),
@@ -291,7 +287,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         style: ButtonStyle(
                           fixedSize: MaterialStateProperty.all(
                             const Size(
-                              210,
+                              200,
                               36,
                             ),
                           ),
