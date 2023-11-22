@@ -33,7 +33,9 @@ class DesktopScaffold extends StatelessWidget {
             SizedBox(
               width: kDesktopSideMenuWidth,
               child: Card(
-                margin: EdgeInsets.zero,
+                // 4 pixels is the default, but if we ever change this then we need a
+                // more sophisticated approach here.
+                margin: const EdgeInsets.fromLTRB(0, 0, 4, 0),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.horizontal(
                     right: Radius.circular(8),
