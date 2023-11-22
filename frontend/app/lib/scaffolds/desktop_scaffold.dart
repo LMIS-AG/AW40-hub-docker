@@ -1,7 +1,9 @@
 import "package:aw40_hub_frontend/components/components.dart";
 import "package:aw40_hub_frontend/models/models.dart";
+import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/constants.dart";
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 class DesktopScaffold extends StatelessWidget {
   const DesktopScaffold({
@@ -31,7 +33,9 @@ class DesktopScaffold extends StatelessWidget {
             SizedBox(
               width: kDesktopSideMenuWidth,
               child: Card(
-                margin: EdgeInsets.zero,
+                // 4 pixels is the default, but if we ever change this then we
+                // need a more sophisticated approach here.
+                margin: const EdgeInsets.fromLTRB(0, 0, 4, 0),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.horizontal(
                     right: Radius.circular(8),
@@ -42,7 +46,12 @@ class DesktopScaffold extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Image.asset(kAssetAwLogoKlein),
+                      child: Image.asset(
+                        Provider.of<ThemeProvider>(context).themeMode ==
+                                ThemeMode.light
+                            ? kAssetAwLogoKleinLightTheme
+                            : kAssetAwLogoKleinDarkTheme,
+                      ),
                     ),
                     const Divider(),
                     Expanded(

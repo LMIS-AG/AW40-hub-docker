@@ -1,8 +1,6 @@
 import "package:aw40_hub_frontend/aw_hub_app.dart";
-import "package:aw40_hub_frontend/configs/configs.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:easy_localization/easy_localization.dart";
-import "package:easy_localization_loader/easy_localization_loader.dart";
 import "package:easy_logger/easy_logger.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -19,16 +17,7 @@ Future<void> main() async {
   _logger.info(
     "Initialised, running $d on ${EnvironmentService().hostPlatform.name}.",
   );
-  runApp(
-    EasyLocalization(
-      path: kLocalesPath,
-      supportedLocales: kSupportedLocales.values.toList(),
-      startLocale: kStartLocale,
-      fallbackLocale: kStartLocale,
-      assetLoader: YamlAssetLoader(),
-      child: const AWHubApp(),
-    ),
-  );
+  runApp(const AWHubApp());
 }
 
 Future<void> _initialize() async {
