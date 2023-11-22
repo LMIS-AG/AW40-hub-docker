@@ -41,7 +41,7 @@ class MobileScaffold extends StatelessWidget {
                 right: 16,
                 bottom: 8,
               ),
-              child: Image.asset(kAssetAwLogoKlein, height: 40),
+              child: Image.asset(kAssetAwLogoKleinDarkTheme, height: 40),
             ),
             const Divider(),
             Expanded(

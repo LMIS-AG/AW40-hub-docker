@@ -15,7 +15,9 @@ class UserSettingsPopupButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<PopupMenuItem>(
+      constraints: const BoxConstraints.tightFor(width: 250),
       itemBuilder: (context) => [
+        const PopupMenuItem(child: ThemeChooser()),
         const PopupMenuItem(child: LanguageChooser()),
         PopupMenuItem(
           child: const Text("Logout"),
@@ -23,6 +25,36 @@ class UserSettingsPopupButton extends StatelessWidget {
             context,
             listen: false,
           ).logout(),
+        ),
+      ],
+    );
+  }
+}
+
+class ThemeChooser extends StatelessWidget {
+  const ThemeChooser({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final currentThemeMode = Provider.of<ThemeProvider>(context).themeMode;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text("Theme"),
+        SegmentedButton(
+          segments: const <ButtonSegment<ThemeMode>>[
+            ButtonSegment(value: ThemeMode.light, label: Text("Light")),
+            ButtonSegment(value: ThemeMode.dark, label: Text("Dark")),
+          ],
+          selected: {
+            currentThemeMode,
+          },
+          onSelectionChanged: (p0) {
+            Provider.of<ThemeProvider>(context, listen: false)
+                .setThemeMode(p0.first);
+          },
         ),
       ],
     );

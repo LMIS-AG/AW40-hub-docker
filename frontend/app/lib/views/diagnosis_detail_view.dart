@@ -102,6 +102,7 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     // TODO adjust this section in Story 61883
     final List<String> attributes = [
@@ -128,13 +129,18 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 title: Text(
                   tr("diagnoses.details.headline"),
-                  style: Theme.of(context).textTheme.displaySmall,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(color: colorScheme.onPrimaryContainer),
                 ),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
                     iconSize: 28,
-                    color: Theme.of(context).colorScheme.error,
+                    style: IconButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
                     onPressed: widget.onDelete,
                   ),
                 ],
@@ -147,8 +153,18 @@ class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
                   (i) => TableRow(
                     children: [
                       const SizedBox(height: 32),
-                      Text(attributes[i]),
-                      Text(values[i]),
+                      Text(
+                        attributes[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                      Text(
+                        values[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ],
                   ),
                 ),

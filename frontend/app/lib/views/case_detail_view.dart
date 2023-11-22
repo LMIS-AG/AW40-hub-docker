@@ -119,6 +119,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
     final diagnosisProvider =
         Provider.of<DiagnosisProvider>(context, listen: false);
@@ -146,7 +147,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
 
     return SizedBox.expand(
       child: Card(
-        color: theme.colorScheme.primaryContainer,
+        color: colorScheme.primaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -157,16 +158,22 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   icon: const Icon(Icons.keyboard_double_arrow_right),
                   iconSize: 28,
                   onPressed: widget.onClose,
+                  color: colorScheme.onPrimaryContainer,
                 ),
                 title: Text(
                   tr("cases.details.headline"),
-                  style: Theme.of(context).textTheme.displaySmall,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(color: colorScheme.onPrimaryContainer),
                 ),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
                     iconSize: 28,
-                    color: Theme.of(context).colorScheme.error,
+                    style: IconButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
                     onPressed: widget.onDelete,
                   ),
                 ],
@@ -179,60 +186,52 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   (i) => TableRow(
                     children: [
                       const SizedBox(height: 32),
-                      Text(attributes[i]),
-                      Text(values[i]),
+                      Text(
+                        attributes[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                      Text(
+                        values[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final CaseUpdateDto? caseUpdateDto =
-                            await _showUpdateCaseDialog(widget.caseModel);
-                        if (caseUpdateDto == null) return;
-                        await caseProvider.updateCase(
-                          widget.caseModel.id,
-                          caseUpdateDto,
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          const Icon(Icons.edit),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(tr("general.edit")),
-                          )
-                        ],
-                      ),
-                    ),
+                  FilledButton.icon(
+                    icon: const Icon(Icons.edit),
+                    label: Text(tr("general.edit")),
+                    onPressed: () async {
+                      final CaseUpdateDto? caseUpdateDto =
+                          await _showUpdateCaseDialog(widget.caseModel);
+                      if (caseUpdateDto == null) return;
+                      await caseProvider.updateCase(
+                        widget.caseModel.id,
+                        caseUpdateDto,
+                      );
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FilledButton(
-                      onPressed: () async {
-                        // TODO step 1: make a request to start diagnosis endoint
-                        await diagnosisProvider
-                            .startDiagnosis(widget.caseModel.id);
-                        // TODO step 2: show a loading indicator
-                        // TODO step 3: wait for a succesfull response
-                        // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
-                      },
-                      child: Row(
-                        children: [
-                          const Icon(Icons.tab),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(tr("cases.details.startDiagnosis")),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                  const SizedBox(width: 16),
+                  FilledButton.icon(
+                    icon: const Icon(Icons.tab),
+                    label: Text(tr("cases.details.startDiagnosis")),
+                    onPressed: () async {
+                      // TODO step 1: make a request to start diagnosis endoint
+                      await diagnosisProvider
+                          .startDiagnosis(widget.caseModel.id);
+                      // TODO step 2: show a loading indicator
+                      // TODO step 3: wait for a succesfull response
+                      // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
+                    },
+                  ),
                 ],
               )
             ],
