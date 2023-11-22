@@ -41,9 +41,9 @@ class AWHubApp extends StatelessWidget {
           ChangeNotifierProvider<ThemeProvider>(
             create: (_) => ThemeProvider(),
           ),
-        ChangeNotifierProvider<DiagnosisProvider>(
-          create: (_) => DiagnosisProvider(HttpService()),
-        ),
+          ChangeNotifierProvider<DiagnosisProvider>(
+            create: (_) => DiagnosisProvider(HttpService()),
+          ),
         ],
         child: const AWMaterialApp(),
       ),
