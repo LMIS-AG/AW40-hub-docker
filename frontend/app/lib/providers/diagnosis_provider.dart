@@ -42,11 +42,7 @@ class DiagnosisProvider with ChangeNotifier {
       return null;
     }
 
-    final decodedJson = jsonDecode(response.body);
-    if (decodedJson is! Map<String, dynamic>) return null;
-    final Map<String, dynamic> body = decodedJson;
-    final DiagnosisDto diagnosisDto = DiagnosisDto.fromJson(body);
-    return diagnosisDto.toModel();
+    return _decodeDiagnosisModelFromResponseBody(response);
   }
 
   Future<DiagnosisModel?> startDiagnosis(String caseId) async {
@@ -60,12 +56,7 @@ class DiagnosisProvider with ChangeNotifier {
       return null;
     }
 
-    final decodedJson = jsonDecode(response.body);
-    if (decodedJson is! Map<String, dynamic>) return null;
-    final Map<String, dynamic> body = decodedJson;
-    final DiagnosisDto receivedDiagnosis = DiagnosisDto.fromJson(body);
-    final DiagnosisModel diagnosisModel = receivedDiagnosis.toModel();
-    return diagnosisModel;
+    return _decodeDiagnosisModelFromResponseBody(response);
   }
 
   Future<bool> deleteDiagnosis(String caseId) async {
@@ -81,5 +72,13 @@ class DiagnosisProvider with ChangeNotifier {
 
     notifyListeners();
     return true;
+  }
+
+  DiagnosisModel? _decodeDiagnosisModelFromResponseBody(Response response) {
+    final decodedJson = jsonDecode(response.body);
+    if (decodedJson is! Map<String, dynamic>) return null;
+    final Map<String, dynamic> body = decodedJson;
+    final DiagnosisDto diagnosisDto = DiagnosisDto.fromJson(body);
+    return diagnosisDto.toModel();
   }
 }
