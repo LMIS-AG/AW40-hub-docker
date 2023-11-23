@@ -290,6 +290,9 @@ void main() {
     test("correctly assigns workshopId", () {
       expect(caseModel.workshopId, workshopId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(caseModel.diagnosisId, diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(caseModel.timeseriesData, timeseriesData);
     });

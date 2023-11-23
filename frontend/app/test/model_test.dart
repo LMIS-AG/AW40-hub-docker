@@ -50,6 +50,9 @@ void main() {
     test("correctly assigns customerId", () {
       expect(caseModel.customerId, customerId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(caseModel.diagnosisId, diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(caseModel.timeseriesData, timeseriesData);
     });
