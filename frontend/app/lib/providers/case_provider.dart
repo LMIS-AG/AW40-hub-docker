@@ -18,6 +18,10 @@ class CaseProvider with ChangeNotifier {
   List<CaseModel> _cases = [];
   int? lastModifiedCaseIndex;
 
+  void resetCases() {
+    _cases = [];
+  }
+
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
     await _loadCurrentCases();
