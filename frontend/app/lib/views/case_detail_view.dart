@@ -124,6 +124,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
     final diagnosisProvider =
         Provider.of<DiagnosisProvider>(context, listen: false);
+    final Routemaster routemaster = Routemaster.of(context);
 
     final List<String> attributes = [
       tr("general.id"),
@@ -237,9 +238,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             "diagnoses.details.startDiagnosisSuccessMessage",
                           );
 
-                          // ignore: use_build_context_synchronously
-                          Routemaster.of(context)
-                              .push("/diagnoses/${createdDiagnosis.id}");
+                          routemaster.push("/diagnoses/${createdDiagnosis.id}");
                         } else {
                           message = tr(
                             "diagnoses.details.startDiagnosisFailureMessage",
@@ -247,7 +246,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         }
                         _showMessage(message, scaffoldMessengerState);
                       } else {
-                        Routemaster.of(context).push(
+                        routemaster.push(
                           "/diagnoses/${widget.caseModel.diagnosisId}",
                         );
                       }
