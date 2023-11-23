@@ -210,14 +210,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   FilledButton.icon(
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        const Size(
-                          150,
-                          36,
-                        ),
-                      ),
-                    ),
                     onPressed: () async {
                       final CaseUpdateDto? caseUpdateDto =
                           await _showUpdateCaseDialog(widget.caseModel);
@@ -260,22 +252,11 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         );
                       }
                     },
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        const Size(
-                          200,
-                          36,
-                        ),
-                      ),
-                    ),
-                    label: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        tr(
-                          widget.caseModel.diagnosisId == null
-                              ? "cases.details.startDiagnosis"
-                              : "cases.details.showDiagnosis",
-                        ),
+                    label: Text(
+                      tr(
+                        widget.caseModel.diagnosisId == null
+                            ? "cases.details.startDiagnosis"
+                            : "cases.details.showDiagnosis",
                       ),
                     ),
                   ),
