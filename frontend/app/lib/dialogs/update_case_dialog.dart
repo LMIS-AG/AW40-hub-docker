@@ -325,33 +325,32 @@ class UpdateDialogForm extends StatelessWidget {
   }
 
   Future<DateTime?> pickDateTime(BuildContext context) async {
-    final DateTime? date = await pickDate(context);
+    final Future<DateTime?> $date = showDatePicker(
+      context: context,
+      initialDate: caseModel.timestamp,
+      firstDate: DateTime(FIRST_DATE_IN_DIALOG),
+      lastDate: DateTime(LAST_DATE_IN_DIALOG),
+    );
+
+    final Future<TimeOfDay?> $time = showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(
+        caseModel.timestamp,
+      ),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    );
+
+    final DateTime? date = await $date;
     if (date == null) return null;
 
-    // ignore: use_build_context_synchronously
-    final TimeOfDay? time = await pickTime(context);
+    final TimeOfDay? time = await $time;
     if (time == null) return null;
 
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
-
-  Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
-        context: context,
-        initialDate: caseModel.timestamp,
-        firstDate: DateTime(FIRST_DATE_IN_DIALOG),
-        lastDate: DateTime(LAST_DATE_IN_DIALOG),
-      );
-
-  Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(
-          caseModel.timestamp,
-        ),
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child ?? Container(),
-          );
-        },
-      );
 }
