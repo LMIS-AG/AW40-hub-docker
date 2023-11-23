@@ -229,59 +229,56 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     },
                   ),
                   const SizedBox(width: 16),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FilledButton.icon(
-                      icon: const Icon(Icons.tab),
-                      onPressed: () async {
-                        if (widget.caseModel.diagnosisId == null) {
-                          String message;
-                          final ScaffoldMessengerState scaffoldMessengerState =
-                              ScaffoldMessenger.of(context);
-                          final DiagnosisModel? createdDiagnosis =
-                              await diagnosisProvider
-                                  .startDiagnosis(widget.caseModel.id);
+                  FilledButton.icon(
+                    icon: const Icon(Icons.tab),
+                    onPressed: () async {
+                      if (widget.caseModel.diagnosisId == null) {
+                        String message;
+                        final ScaffoldMessengerState scaffoldMessengerState =
+                            ScaffoldMessenger.of(context);
+                        final DiagnosisModel? createdDiagnosis =
+                            await diagnosisProvider
+                                .startDiagnosis(widget.caseModel.id);
 
-                          if (createdDiagnosis != null) {
-                            message = tr(
-                              "diagnoses.details.startDiagnosisSuccessMessage",
-                            );
+                        if (createdDiagnosis != null) {
+                          message = tr(
+                            "diagnoses.details.startDiagnosisSuccessMessage",
+                          );
 
-                            // ignore: use_build_context_synchronously
-                            Routemaster.of(context)
-                                .push("/diagnoses/${createdDiagnosis.id}");
-                          } else {
-                            message = tr(
-                              "diagnoses.details.startDiagnosisFailureMessage",
-                            );
-                          }
-                          _showMessage(message, scaffoldMessengerState);
+                          // ignore: use_build_context_synchronously
+                          Routemaster.of(context)
+                              .push("/diagnoses/${createdDiagnosis.id}");
                         } else {
-                          Routemaster.of(context).push(
-                            "/diagnoses/${widget.caseModel.diagnosisId}",
+                          message = tr(
+                            "diagnoses.details.startDiagnosisFailureMessage",
                           );
                         }
-                      },
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(
-                          const Size(
-                            200,
-                            36,
-                          ),
-                        ),
-                      ),
-                      label: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          tr(
-                            widget.caseModel.diagnosisId == null
-                                ? "cases.details.startDiagnosis"
-                                : "cases.details.showDiagnosis",
-                          ),
+                        _showMessage(message, scaffoldMessengerState);
+                      } else {
+                        Routemaster.of(context).push(
+                          "/diagnoses/${widget.caseModel.diagnosisId}",
+                        );
+                      }
+                    },
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        const Size(
+                          200,
+                          36,
                         ),
                       ),
                     ),
-                  )
+                    label: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        tr(
+                          widget.caseModel.diagnosisId == null
+                              ? "cases.details.startDiagnosis"
+                              : "cases.details.showDiagnosis",
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               )
             ],
