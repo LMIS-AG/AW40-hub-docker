@@ -229,11 +229,11 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     },
                   ),
                   const SizedBox(width: 16),
-                  if (widget.caseModel.diagnosisId == null)
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: FilledButton(
-                        onPressed: () async {
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FilledButton(
+                      onPressed: () async {
+                        if (widget.caseModel.diagnosisId == null) {
                           String message;
                           final ScaffoldMessengerState scaffoldMessengerState =
                               ScaffoldMessenger.of(context);
@@ -255,54 +255,37 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             );
                           }
                           _showMessage(message, scaffoldMessengerState);
-                        },
-                        style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all(
-                            const Size(
-                              200,
-                              36,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.tab),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(tr("cases.details.startDiagnosis")),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: FilledButton(
-                        onPressed: () async {
+                        } else {
                           Routemaster.of(context).push(
                             "/diagnoses/${widget.caseModel.diagnosisId}",
                           );
-                        },
-                        style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all(
-                            const Size(
-                              200,
-                              36,
-                            ),
+                        }
+                      },
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          const Size(
+                            200,
+                            36,
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.tab),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(tr("cases.details.showDiagnosis")),
-                            )
-                          ],
-                        ),
                       ),
-                    )
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tab),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              tr(
+                                widget.caseModel.diagnosisId == null
+                                    ? "cases.details.startDiagnosis"
+                                    : "cases.details.showDiagnosis",
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               )
             ],
