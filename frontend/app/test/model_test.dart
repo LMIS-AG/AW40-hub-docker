@@ -50,6 +50,12 @@ void main() {
     test("correctly assigns customerId", () {
       expect(caseModel.customerId, customerId);
     });
+    test("correctly assigns vehicleVin", () {
+      expect(caseModel.vehicleVin, vehicleVin);
+    });
+    test("correctly assigns workshopId", () {
+      expect(caseModel.workshopId, workshopId);
+    });
     test("correctly assigns diagnosisId", () {
       expect(caseModel.diagnosisId, diagnosisId);
     });

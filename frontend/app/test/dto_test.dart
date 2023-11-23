@@ -213,6 +213,9 @@ void main() {
     test("correctly assigns workshopId", () {
       expect(json["workshop_id"], workshopId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(json["diagnosis_id"], diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(json["timeseries_data"], timeseriesData);
     });
