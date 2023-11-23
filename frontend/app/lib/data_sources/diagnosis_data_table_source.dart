@@ -5,14 +5,14 @@ import "package:flutter/material.dart";
 
 class DiagnosisDataTableSource extends DataTableSource {
   DiagnosisDataTableSource({
-    required this.context,
+    required this.themeData,
     required this.currentIndex,
     required this.diagnosisModels,
     required this.onPressedRow,
   });
   List<DiagnosisModel> diagnosisModels;
   final void Function(int) onPressedRow;
-  final BuildContext context;
+  final ThemeData themeData;
   int? currentIndex;
   final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
     DiagnosisStatus.scheduled: Icons.schedule,
@@ -43,7 +43,7 @@ class DiagnosisDataTableSource extends DataTableSource {
       color: MaterialStateProperty.resolveWith<Color?>(
           (Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
-          return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+          return themeData.colorScheme.primary.withOpacity(0.08);
         }
         return null; // Use the default value.
       }),

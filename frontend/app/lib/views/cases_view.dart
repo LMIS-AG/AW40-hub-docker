@@ -74,7 +74,7 @@ class _DesktopCasesViewState extends State<DesktopCasesView> {
           child: SingleChildScrollView(
             child: PaginatedDataTable(
               source: CasesDataTableSource(
-                context: context,
+                themeData: Theme.of(context),
                 currentIndex: currentCaseIndex,
                 caseModels: widget.caseModels,
                 onPressedRow: (int i) => setState(() => currentCaseIndex = i),

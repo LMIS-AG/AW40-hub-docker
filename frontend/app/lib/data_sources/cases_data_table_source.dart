@@ -7,7 +7,7 @@ import "package:flutter/material.dart";
 
 class CasesDataTableSource extends DataTableSource {
   CasesDataTableSource({
-    required this.context,
+    required this.themeData,
     required this.currentIndex,
     required this.caseModels,
     required this.onPressedRow,
@@ -15,7 +15,7 @@ class CasesDataTableSource extends DataTableSource {
   List<CaseModel> caseModels;
   final rng = Random();
   final void Function(int) onPressedRow;
-  final BuildContext context;
+  final ThemeData themeData;
   int? currentIndex;
   final Map<CaseStatus, IconData> caseStatusIcons = {
     CaseStatus.open: Icons.cached,
@@ -43,7 +43,7 @@ class CasesDataTableSource extends DataTableSource {
       color: MaterialStateProperty.resolveWith<Color?>(
           (Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
-          return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+          return themeData.colorScheme.primary.withOpacity(0.08);
         }
         return null; // Use the default value.
       }),
