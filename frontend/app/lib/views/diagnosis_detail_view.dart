@@ -1,5 +1,6 @@
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -18,6 +19,14 @@ class DiagnosisDetailView extends StatefulWidget {
 }
 
 class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
+  final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
+    DiagnosisStatus.scheduled: Icons.schedule,
+    DiagnosisStatus.action_required: Icons.warning,
+    DiagnosisStatus.processing: Icons.autorenew,
+    DiagnosisStatus.finished: Icons.done,
+    DiagnosisStatus.failed: Icons.error,
+  };
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -26,13 +35,11 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
     // TODO adjust this section in Story 61883
     final List<String> attributes = [
       tr("general.id"),
-      tr("general.status"),
       tr("general.date"),
       tr("general.case"),
     ];
     final List<String> values = [
       widget.diagnosisModel.id,
-      tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
       widget.diagnosisModel.timestamp.toGermanDateString(),
       widget.diagnosisModel.caseId,
     ];
@@ -72,32 +79,77 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
               const SizedBox(height: 16),
               Table(
                 columnWidths: const {0: IntrinsicColumnWidth()},
-                children: List.generate(
-                  attributes.length,
-                  (i) => TableRow(
-                    children: [
-                      const SizedBox(height: 32),
-                      Text(
-                        attributes[i],
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                      Text(
-                        values[i],
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
+                children: _createTableRows(
+                  attributes,
+                  theme,
+                  colorScheme,
+                  values,
                 ),
               ),
+              const SizedBox(height: 16),
+              // TODO show stateMachineLogs
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<TableRow> _createTableRows(
+    List<String> attributes,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    List<String> values,
+  ) {
+    final List<TableRow> tableRows = List.generate(
+      attributes.length,
+      (i) => TableRow(
+        children: [
+          const SizedBox(height: 32),
+          Text(
+            attributes[i],
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+            ),
+          ),
+          Text(
+            values[i],
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    tableRows.add(
+      TableRow(
+        children: [
+          const SizedBox(height: 32),
+          Text(
+            tr("general.status"),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+            ),
+          ),
+          Row(
+            children: [
+              Icon(
+                diagnosisStatusIcons[widget.diagnosisModel.status],
+              ),
+              const SizedBox(width: 10),
+              Text(
+                tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+    return tableRows;
   }
 
   static Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
