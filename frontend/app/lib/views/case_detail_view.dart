@@ -231,7 +231,8 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   const SizedBox(width: 16),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: FilledButton(
+                    child: FilledButton.icon(
+                      icon: const Icon(Icons.tab),
                       onPressed: () async {
                         if (widget.caseModel.diagnosisId == null) {
                           String message;
@@ -269,20 +270,15 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           ),
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.tab),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              tr(
-                                widget.caseModel.diagnosisId == null
-                                    ? "cases.details.startDiagnosis"
-                                    : "cases.details.showDiagnosis",
-                              ),
-                            ),
-                          )
-                        ],
+                      label: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          tr(
+                            widget.caseModel.diagnosisId == null
+                                ? "cases.details.startDiagnosis"
+                                : "cases.details.showDiagnosis",
+                          ),
+                        ),
                       ),
                     ),
                   )
