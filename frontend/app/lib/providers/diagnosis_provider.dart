@@ -28,6 +28,7 @@ class DiagnosisProvider with ChangeNotifier {
 
     final List<DiagnosisModel?> diagnoses =
         await Future.wait(individualDiagnosisRequests);
+
     return diagnoses.whereNotNull().toList();
   }
 
@@ -56,6 +57,7 @@ class DiagnosisProvider with ChangeNotifier {
       return null;
     }
 
+    notifyListeners();
     return _decodeDiagnosisModelFromResponseBody(response);
   }
 
