@@ -5,7 +5,7 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
-class DiagnosisDetailView extends StatelessWidget {
+class DiagnosisDetailView extends StatefulWidget {
   const DiagnosisDetailView({
     required this.diagnosisModel,
     super.key,
@@ -14,13 +14,88 @@ class DiagnosisDetailView extends StatelessWidget {
   final DiagnosisModel diagnosisModel;
 
   @override
+  State<DiagnosisDetailView> createState() => _DesktopDiagnosisDetailView();
+}
+
+class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
+  @override
   Widget build(BuildContext context) {
-    return DesktopDiagnosisDetailView(
-      diagnosisModel: diagnosisModel,
-      onDelete: () async => _onDeleteButtonPress(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).loggedInUser,
-        diagnosisModel.caseId,
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+
+    // TODO adjust this section in Story 61883
+    final List<String> attributes = [
+      tr("general.id"),
+      tr("general.status"),
+      tr("general.date"),
+      tr("general.case"),
+    ];
+    final List<String> values = [
+      widget.diagnosisModel.id,
+      tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
+      widget.diagnosisModel.timestamp.toGermanDateString(),
+      widget.diagnosisModel.caseId,
+    ];
+
+    return SizedBox.expand(
+      child: Card(
+        color: theme.colorScheme.primaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              AppBar(
+                backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+                title: Text(
+                  tr("diagnoses.details.headline"),
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(color: colorScheme.onPrimaryContainer),
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.delete_forever),
+                    iconSize: 28,
+                    style: IconButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
+                    onPressed: () async => _onDeleteButtonPress(
+                      context,
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .loggedInUser,
+                      widget.diagnosisModel.caseId,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Table(
+                columnWidths: const {0: IntrinsicColumnWidth()},
+                children: List.generate(
+                  attributes.length,
+                  (i) => TableRow(
+                    children: [
+                      const SizedBox(height: 32),
+                      Text(
+                        attributes[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                      Text(
+                        values[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -80,99 +155,5 @@ class DiagnosisDetailView extends StatelessWidget {
       content: Center(child: Text(text)),
     );
     state.showSnackBar(snackBar);
-  }
-}
-
-class DesktopDiagnosisDetailView extends StatefulWidget {
-  const DesktopDiagnosisDetailView({
-    required this.diagnosisModel,
-    required this.onDelete,
-    super.key,
-  });
-
-  final DiagnosisModel diagnosisModel;
-  final void Function() onDelete;
-
-  @override
-  State<DesktopDiagnosisDetailView> createState() =>
-      _DesktopDiagnosisDetailView();
-}
-
-class _DesktopDiagnosisDetailView extends State<DesktopDiagnosisDetailView> {
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-
-    // TODO adjust this section in Story 61883
-    final List<String> attributes = [
-      tr("general.id"),
-      tr("general.status"),
-      tr("general.date"),
-      tr("general.case"),
-    ];
-    final List<String> values = [
-      widget.diagnosisModel.id,
-      tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
-      widget.diagnosisModel.timestamp.toGermanDateString(),
-      widget.diagnosisModel.caseId,
-    ];
-
-    return SizedBox.expand(
-      child: Card(
-        color: theme.colorScheme.primaryContainer,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              AppBar(
-                backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                title: Text(
-                  tr("diagnoses.details.headline"),
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall
-                      ?.copyWith(color: colorScheme.onPrimaryContainer),
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.delete_forever),
-                    iconSize: 28,
-                    style: IconButton.styleFrom(
-                      foregroundColor: colorScheme.error,
-                    ),
-                    onPressed: widget.onDelete,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Table(
-                columnWidths: const {0: IntrinsicColumnWidth()},
-                children: List.generate(
-                  attributes.length,
-                  (i) => TableRow(
-                    children: [
-                      const SizedBox(height: 32),
-                      Text(
-                        attributes[i],
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                      Text(
-                        values[i],
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
