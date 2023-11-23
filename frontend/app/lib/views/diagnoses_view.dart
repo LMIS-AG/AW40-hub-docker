@@ -50,7 +50,6 @@ class DiagnosesView extends StatelessWidget {
             logger.info(
               "Could not resolve diagnosis with ID: $diagnosisIdString",
             );
-            Routemaster.of(context).push(kRouteDiagnosis);
           }
 
           return DesktopDiagnosisView(
