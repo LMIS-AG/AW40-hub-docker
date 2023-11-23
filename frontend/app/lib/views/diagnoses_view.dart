@@ -64,11 +64,11 @@ class DiagnosesView extends StatelessWidget {
       },
     );
   }
-}
 
-Future<List<CaseModel>> _getCaseModels(BuildContext context) {
-  final caseProvider = Provider.of<CaseProvider>(context);
-  return caseProvider.getCurrentCases();
+  Future<List<CaseModel>> _getCaseModels(BuildContext context) {
+    final caseProvider = Provider.of<CaseProvider>(context);
+    return caseProvider.getCurrentCases();
+  }
 }
 
 class DesktopDiagnosisView extends StatefulWidget {
