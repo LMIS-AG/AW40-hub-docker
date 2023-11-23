@@ -61,10 +61,6 @@ class DiagnosisDetailView extends StatelessWidget {
       context,
       listen: false,
     );
-    final caseProvider = Provider.of<CaseProvider>(
-      context,
-      listen: false,
-    );
 
     await _showConfirmDeleteDialog(context).then((bool? dialogResult) async {
       final ScaffoldMessengerState scaffoldMessengerState =
@@ -72,9 +68,6 @@ class DiagnosisDetailView extends StatelessWidget {
       if (dialogResult == null || !dialogResult) return;
       final bool result =
           await diagnosisProvider.deleteDiagnosis(diagnosisModelCaseId);
-      if (result) {
-        caseProvider.resetCases();
-      }
       final String message = result
           ? tr("diagnoses.details.deleteDiagnosisSuccessMessage")
           : tr("diagnoses.details.deleteDiagnosisErrorMessage");

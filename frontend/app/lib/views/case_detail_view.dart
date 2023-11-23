@@ -238,8 +238,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                             "diagnoses.details.startDiagnosisSuccessMessage",
                           );
 
-                          caseProvider.resetCases();
-
                           routemaster.push("/diagnoses/${createdDiagnosis.id}");
                         } else {
                           message = tr(

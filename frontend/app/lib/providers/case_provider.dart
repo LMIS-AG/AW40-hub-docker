@@ -15,30 +15,17 @@ class CaseProvider with ChangeNotifier {
   late String workShopId;
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
-  List<CaseModel> _cases = [];
   int? lastModifiedCaseIndex;
-
-  void resetCases() {
-    _cases = [];
-  }
 
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
-    await _loadCurrentCases();
+    await getCurrentCases();
     notifyListeners();
-  }
-
-  /// Returns [_cases]. If empty, will attempt to fetch data before returning.
-  Future<List<CaseModel>> getCurrentCases() async {
-    // * In the rare case that there are no cases, this will result in a
-    // * redundant call to _loadCurrentCases()..
-    if (_cases.isEmpty) await _loadCurrentCases();
-    return _cases;
   }
 
   /// Depending on [_showSharedCases], call [_httpService.getCases()] or
   /// [_httpService.getSharedCases()].
-  Future<bool> _loadCurrentCases() async {
+  Future<List<CaseModel>> getCurrentCases() async {
     // * Return value currently not used.
     final Response response;
     if (_showSharedCases) {
@@ -51,10 +38,9 @@ class CaseProvider with ChangeNotifier {
         "Could not get ${_showSharedCases ? 'shared ' : ''}cases. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
-      return false;
+      return [];
     }
-    _cases = _jsonBodyToCaseModelList(response.body);
-    return true;
+    return _jsonBodyToCaseModelList(response.body);
   }
 
   List<CaseModel> _jsonBodyToCaseModelList(String jsonBody) {
@@ -68,7 +54,7 @@ class CaseProvider with ChangeNotifier {
     return caseModels;
   }
 
-  Future<bool> addCase(NewCaseDto newCaseDto) async {
+  Future<CaseModel?> addCase(NewCaseDto newCaseDto) async {
     final Map<String, dynamic> newCaseJson = newCaseDto.toJson();
     final Response response =
         await _httpService.addCase(workShopId, newCaseJson);
@@ -77,16 +63,23 @@ class CaseProvider with ChangeNotifier {
         "Could not add case. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
-      return false;
+      return null;
     }
-    final Map<String, dynamic> body = jsonDecode(response.body);
-    final CaseDto receivedCase = CaseDto.fromJson(body);
-    _cases.add(receivedCase.toModel());
+
     notifyListeners();
-    return true;
+    return _decodeCaseModelFromResponseBody(response);
   }
 
-  Future<bool> updateCase(String caseId, CaseUpdateDto updateCaseDto) async {
+  CaseModel _decodeCaseModelFromResponseBody(Response response) {
+    final Map<String, dynamic> body = jsonDecode(response.body);
+    final CaseDto receivedCase = CaseDto.fromJson(body);
+    return receivedCase.toModel();
+  }
+
+  Future<CaseModel?> updateCase(
+    String caseId,
+    CaseUpdateDto updateCaseDto,
+  ) async {
     final Map<String, dynamic> updateCaseJson = updateCaseDto.toJson();
     final Response response =
         await _httpService.updateCase(workShopId, caseId, updateCaseJson);
@@ -95,19 +88,11 @@ class CaseProvider with ChangeNotifier {
         "Could not update case. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
-      return false;
+      return null;
     }
-    final Map<String, dynamic> body = jsonDecode(response.body);
-    final CaseDto receivedCase = CaseDto.fromJson(body);
-
-    final CaseModel caseModelToReplace =
-        _cases.firstWhere((caseModel) => caseModel.id == caseId);
-    final int index = _cases.indexOf(caseModelToReplace);
-    lastModifiedCaseIndex = index;
-    _cases[index] = receivedCase.toModel();
 
     notifyListeners();
-    return true;
+    return _decodeCaseModelFromResponseBody(response);
   }
 
   Future<bool> deleteCase(String caseId) async {
@@ -119,7 +104,7 @@ class CaseProvider with ChangeNotifier {
       );
       return false;
     }
-    _cases.removeWhere((caseModel) => caseModel.id == caseId);
+
     notifyListeners();
     return true;
   }
