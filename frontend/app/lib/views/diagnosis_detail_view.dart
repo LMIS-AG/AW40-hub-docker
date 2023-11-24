@@ -89,26 +89,33 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
               ),
               const SizedBox(height: 16),
               // Current State
-              ListTile(
-                leading: Icon(
-                  diagnosisStatusIcons[widget.diagnosisModel.status],
+              Card(
+                color: _getColorForDiagnosisStatus(
+                  colorScheme,
+                  widget.diagnosisModel.status,
                 ),
-                title: Text(
-                  tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: _getColorComplementForDiagnosisStatus(
-                      colorScheme,
-                      widget.diagnosisModel.status,
+                child: ListTile(
+                  leading: Icon(
+                    diagnosisStatusIcons[widget.diagnosisModel.status],
+                  ),
+                  title: Text(
+                    tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: _getColorComplementForDiagnosisStatus(
+                        colorScheme,
+                        widget.diagnosisModel.status,
+                      ),
                     ),
                   ),
-                ),
-                tileColor: _getColorForDiagnosisStatus(
-                  colorScheme,
-                  widget.diagnosisModel.status,
-                ),
-                iconColor: _getColorComplementForDiagnosisStatus(
-                  colorScheme,
-                  widget.diagnosisModel.status,
+                  iconColor: _getColorComplementForDiagnosisStatus(
+                    colorScheme,
+                    widget.diagnosisModel.status,
+                  ),
+                  // TODO get widget.diagnosisModel.todos[0].instruction
+                  /* subtitle: widget.diagnosisModel.status ==
+                          DiagnosisStatus.action_required
+                      ? Text(widget.diagnosisModel. ...)
+                      : null,*/
                 ),
               ),
 
