@@ -20,11 +20,11 @@ class DiagnosisDetailView extends StatefulWidget {
 
 class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
   final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-    DiagnosisStatus.scheduled: Icons.schedule,
-    DiagnosisStatus.action_required: Icons.warning,
-    DiagnosisStatus.processing: Icons.autorenew,
-    DiagnosisStatus.finished: Icons.done,
-    DiagnosisStatus.failed: Icons.error,
+    DiagnosisStatus.action_required: Icons.circle_notifications,
+    DiagnosisStatus.finished: Icons.check_circle,
+    DiagnosisStatus.failed: Icons.cancel,
+    DiagnosisStatus.processing: Icons.circle,
+    DiagnosisStatus.scheduled: Icons.circle,
   };
 
   @override
@@ -32,6 +32,7 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
+    // TODO remove
     // TODO adjust this section in Story 61883
     final List<String> attributes = [
       tr("general.id"),
@@ -77,17 +78,46 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
                 ],
               ),
               const SizedBox(height: 16),
-              Table(
-                columnWidths: const {0: IntrinsicColumnWidth()},
-                children: _createTableRows(
-                  attributes,
-                  theme,
-                  colorScheme,
-                  values,
+              // Case ID
+              Table(columnWidths: const {
+                0: IntrinsicColumnWidth()
+              }, children: [
+                TableRow(
+                  children: [
+                    const SizedBox(height: 32),
+                    Text(
+                      tr("general.case"),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    Text(
+                      widget.diagnosisModel.caseId,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              ]),
               const SizedBox(height: 16),
-              // TODO show stateMachineLogs
+              // Current State
+              ListTile(
+                leading: Icon(
+                  diagnosisStatusIcons[widget.diagnosisModel.status],
+                ),
+                title: Text(
+                  tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                // TODO
+                //tileColor: ,
+              ),
+
+              const SizedBox(height: 16),
+              const Placeholder(),
             ],
           ),
         ),
@@ -95,6 +125,7 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
     );
   }
 
+// TODO remove
   List<TableRow> _createTableRows(
     List<String> attributes,
     ThemeData theme,

@@ -14,12 +14,13 @@ class DiagnosisDataTableSource extends DataTableSource {
   final void Function(int) onPressedRow;
   final ThemeData themeData;
   int? currentIndex;
+  // TODO define at one place and share it
   final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-    DiagnosisStatus.scheduled: Icons.schedule,
-    DiagnosisStatus.action_required: Icons.warning,
-    DiagnosisStatus.processing: Icons.autorenew,
-    DiagnosisStatus.finished: Icons.done,
-    DiagnosisStatus.failed: Icons.error,
+    DiagnosisStatus.action_required: Icons.circle_notifications,
+    DiagnosisStatus.finished: Icons.check_circle,
+    DiagnosisStatus.failed: Icons.cancel,
+    DiagnosisStatus.processing: Icons.circle,
+    DiagnosisStatus.scheduled: Icons.circle,
   };
 
   Tooltip _getStatusIcon(DiagnosisStatus? diagnosisStatus) {
