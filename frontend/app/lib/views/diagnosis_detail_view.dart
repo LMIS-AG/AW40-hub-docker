@@ -1,7 +1,6 @@
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
-import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -31,19 +30,6 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
-
-    // TODO remove
-    // TODO adjust this section in Story 61883
-    final List<String> attributes = [
-      tr("general.id"),
-      tr("general.date"),
-      tr("general.case"),
-    ];
-    final List<String> values = [
-      widget.diagnosisModel.id,
-      widget.diagnosisModel.timestamp.toGermanDateString(),
-      widget.diagnosisModel.caseId,
-    ];
 
     return SizedBox.expand(
       child: Card(
@@ -109,11 +95,20 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
                 title: Text(
                   tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
+                    color: _getColorComplementForDiagnosisStatus(
+                      colorScheme,
+                      widget.diagnosisModel.status,
+                    ),
                   ),
                 ),
-                // TODO
-                //tileColor: ,
+                tileColor: _getColorForDiagnosisStatus(
+                  colorScheme,
+                  widget.diagnosisModel.status,
+                ),
+                iconColor: _getColorComplementForDiagnosisStatus(
+                  colorScheme,
+                  widget.diagnosisModel.status,
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -125,62 +120,34 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
     );
   }
 
-// TODO remove
-  List<TableRow> _createTableRows(
-    List<String> attributes,
-    ThemeData theme,
+  Color? _getColorForDiagnosisStatus(
     ColorScheme colorScheme,
-    List<String> values,
+    DiagnosisStatus diagnosisStatus,
   ) {
-    final List<TableRow> tableRows = List.generate(
-      attributes.length,
-      (i) => TableRow(
-        children: [
-          const SizedBox(height: 32),
-          Text(
-            attributes[i],
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onPrimaryContainer,
-            ),
-          ),
-          Text(
-            values[i],
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onPrimaryContainer,
-            ),
-          ),
-        ],
-      ),
-    );
+    final Map<DiagnosisStatus, Color> diagnosisStatusColor = {
+      DiagnosisStatus.action_required: colorScheme.tertiary,
+      DiagnosisStatus.finished: colorScheme.secondary,
+      DiagnosisStatus.failed: colorScheme.error,
+      DiagnosisStatus.processing: colorScheme.primary,
+      DiagnosisStatus.scheduled: colorScheme.primary,
+    };
 
-    tableRows.add(
-      TableRow(
-        children: [
-          const SizedBox(height: 32),
-          Text(
-            tr("general.status"),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onPrimaryContainer,
-            ),
-          ),
-          Row(
-            children: [
-              Icon(
-                diagnosisStatusIcons[widget.diagnosisModel.status],
-              ),
-              const SizedBox(width: 10),
-              Text(
-                tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onPrimaryContainer,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-    return tableRows;
+    return diagnosisStatusColor[diagnosisStatus];
+  }
+
+  Color? _getColorComplementForDiagnosisStatus(
+    ColorScheme colorScheme,
+    DiagnosisStatus diagnosisStatus,
+  ) {
+    final Map<DiagnosisStatus, Color> diagnosisStatusColor = {
+      DiagnosisStatus.action_required: colorScheme.onTertiary,
+      DiagnosisStatus.finished: colorScheme.onSecondary,
+      DiagnosisStatus.failed: colorScheme.onError,
+      DiagnosisStatus.processing: colorScheme.onPrimary,
+      DiagnosisStatus.scheduled: colorScheme.onPrimary,
+    };
+
+    return diagnosisStatusColor[diagnosisStatus];
   }
 
   static Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
