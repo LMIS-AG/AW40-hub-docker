@@ -65,27 +65,28 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
               ),
               const SizedBox(height: 16),
               // Case ID
-              Table(columnWidths: const {
-                0: IntrinsicColumnWidth()
-              }, children: [
-                TableRow(
-                  children: [
-                    const SizedBox(height: 32),
-                    Text(
-                      tr("general.case"),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
+              Table(
+                columnWidths: const {0: IntrinsicColumnWidth()},
+                children: [
+                  TableRow(
+                    children: [
+                      const SizedBox(height: 32),
+                      Text(
+                        tr("general.case"),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
                       ),
-                    ),
-                    Text(
-                      widget.diagnosisModel.caseId,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
+                      Text(
+                        widget.diagnosisModel.caseId,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimaryContainer,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ]),
+                    ],
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               // Current State
               ListTile(
@@ -111,7 +112,7 @@ class _DesktopDiagnosisDetailView extends State<DiagnosisDetailView> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               const Placeholder(),
             ],
           ),
