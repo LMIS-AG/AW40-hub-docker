@@ -13,9 +13,11 @@ import "package:provider/provider.dart";
 import "package:routemaster/routemaster.dart";
 
 class DiagnosesView extends StatelessWidget {
-  const DiagnosesView({
+  DiagnosesView({
     super.key,
   });
+
+  final Logger _logger = Logger("diagnoses_view");
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,7 @@ class DiagnosesView extends StatelessWidget {
     final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: diagnosisProvider.getDiagnoses(
-        _getCaseModels,
-        context,
-      ),
+      future: _getDiagnoses(context, diagnosisProvider),
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
@@ -46,8 +45,7 @@ class DiagnosesView extends StatelessWidget {
             (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
           );
           if (foundModel == null) {
-            final Logger logger = Logger("diagnoses_view");
-            logger.info(
+            _logger.info(
               "Could not resolve diagnosis with ID: $diagnosisIdString",
             );
           }
@@ -55,7 +53,7 @@ class DiagnosesView extends StatelessWidget {
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
             diagnosisIndex:
-                foundModel != null ? diagnosisModels.indexOf(foundModel) : null,
+                foundModel == null ? null : diagnosisModels.indexOf(foundModel),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -67,6 +65,20 @@ class DiagnosesView extends StatelessWidget {
   Future<List<CaseModel>> _getCaseModels(BuildContext context) {
     final caseProvider = Provider.of<CaseProvider>(context);
     return caseProvider.getCurrentCases();
+  }
+
+  Future<List<DiagnosisModel>> _getDiagnoses(
+    BuildContext context,
+    DiagnosisProvider diagnosisProvider,
+  ) async {
+    final Future<List<CaseModel>> caseModels = _getCaseModels(context);
+    final Future<List<DiagnosisModel>> diagnoses =
+        diagnosisProvider.getDiagnoses(
+      await caseModels,
+      context,
+    );
+
+    return diagnoses;
   }
 }
 

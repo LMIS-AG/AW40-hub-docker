@@ -12,11 +12,6 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:routemaster/routemaster.dart";
 
-// ignore: constant_identifier_names
-const int FIRST_DATE_IN_DIALOG = 1900;
-// ignore: constant_identifier_names
-const int LAST_DATE_IN_DIALOG = 2100;
-
 class UpdateCaseDialog extends StatefulWidget {
   const UpdateCaseDialog({
     required this.caseModel,
@@ -36,6 +31,15 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
   final TextEditingController _timestampController = TextEditingController();
   final TextEditingController _milageController = TextEditingController();
   final title = tr("cases.actions.updateCase");
+
+  // TODO define at one place and share it
+  final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
+    DiagnosisStatus.action_required: Icons.circle_notifications,
+    DiagnosisStatus.finished: Icons.check_circle,
+    DiagnosisStatus.failed: Icons.cancel,
+    DiagnosisStatus.processing: Icons.circle,
+    DiagnosisStatus.scheduled: Icons.circle,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -180,21 +184,18 @@ class UpdateDialogForm extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  tr("general.status"),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+              Text(
+                tr("general.status"),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+              const SizedBox(width: 16),
               FormField(
                 onSaved: (CaseStatus? newValue) {
-                  if (newValue != null) {
-                    statusController.text =
-                        EnumToString.convertToString(newValue);
-                  }
+                  if (newValue == null) return;
+                  statusController.text =
+                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseStatus> field) {
                   return SizedBox(
@@ -227,21 +228,18 @@ class UpdateDialogForm extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  tr("general.occasion"),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+              Text(
+                tr("general.occasion"),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+              const SizedBox(width: 16),
               FormField(
                 onSaved: (CaseOccasion? newValue) {
-                  if (newValue != null) {
-                    occasionController.text =
-                        EnumToString.convertToString(newValue);
-                  }
+                  if (newValue == null) return;
+                  occasionController.text =
+                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseOccasion> field) {
                   return SizedBox(
@@ -325,14 +323,14 @@ class UpdateDialogForm extends StatelessWidget {
   }
 
   Future<DateTime?> pickDateTime(BuildContext context) async {
-    final Future<DateTime?> $date = showDatePicker(
+    final Future<DateTime?> datePicker = showDatePicker(
       context: context,
       initialDate: caseModel.timestamp,
-      firstDate: DateTime(FIRST_DATE_IN_DIALOG),
-      lastDate: DateTime(LAST_DATE_IN_DIALOG),
+      firstDate: DateTime(firstDateInDialog),
+      lastDate: DateTime(lastDateInDialog),
     );
 
-    final Future<TimeOfDay?> $time = showTimePicker(
+    final Future<TimeOfDay?> timePicker = showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(
         caseModel.timestamp,
@@ -345,10 +343,10 @@ class UpdateDialogForm extends StatelessWidget {
       },
     );
 
-    final DateTime? date = await $date;
+    final DateTime? date = await datePicker;
     if (date == null) return null;
 
-    final TimeOfDay? time = await $time;
+    final TimeOfDay? time = await timePicker;
     if (time == null) return null;
 
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
