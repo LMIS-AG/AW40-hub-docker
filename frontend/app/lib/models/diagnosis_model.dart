@@ -1,4 +1,3 @@
-import "package:aw40_hub_frontend/dtos/dtos.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 
 class DiagnosisModel {
@@ -16,5 +15,21 @@ class DiagnosisModel {
   DiagnosisStatus status;
   String caseId;
   List<dynamic> stateMachineLog;
-  List<Action> todos;
+  List<ActionModel> todos;
+}
+
+class ActionModel {
+  ActionModel(
+    this.id,
+    this.instruction,
+    this.actionType,
+    this.dataType,
+    this.component,
+  );
+
+  String? id;
+  String instruction;
+  dynamic actionType;
+  dynamic dataType;
+  dynamic component;
 }

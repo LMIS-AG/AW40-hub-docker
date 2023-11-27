@@ -75,7 +75,7 @@ void main() {
     const status = DiagnosisStatus.processing;
     const caseId = "some_case_id";
     final List<dynamic> stateMachineLog = <dynamic>[1, 2, 3];
-    final List<dynamic> todos = <dynamic>["a", 5, false];
+    final List<ActionModel> todos = [ActionModel("1", "some action", 1, 2, 3)];
 
     final diagnosisModel = DiagnosisModel(
       id: id,

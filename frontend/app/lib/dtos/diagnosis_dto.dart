@@ -26,7 +26,7 @@ class DiagnosisDto {
       timestamp: timestamp,
       status: status,
       stateMachineLog: stateMachineLog,
-      todos: todos,
+      todos: todos.map((e) => e.toModel()).toList(),
       caseId: caseId,
     );
   }
@@ -40,12 +40,12 @@ class DiagnosisDto {
   @JsonKey(name: "state_machine_log")
   List<dynamic> stateMachineLog;
   @JsonKey(name: "todos")
-  List<Action> todos;
+  List<ActionDto> todos;
 }
 
 @JsonSerializable()
-class Action {
-  Action(
+class ActionDto {
+  ActionDto(
     this.id,
     this.instruction,
     this.actionType,
@@ -53,8 +53,18 @@ class Action {
     this.component,
   );
 
-  factory Action.fromJson(Map<String, dynamic> json) {
-    return _$ActionFromJson(json);
+  factory ActionDto.fromJson(Map<String, dynamic> json) {
+    return _$ActionDtoFromJson(json);
+  }
+
+  ActionModel toModel() {
+    return ActionModel(
+      id,
+      instruction,
+      actionType,
+      dataType,
+      component,
+    );
   }
 
   String? id;
