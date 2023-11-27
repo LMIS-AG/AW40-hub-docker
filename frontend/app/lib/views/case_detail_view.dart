@@ -211,46 +211,54 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   FilledButton.icon(
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
-                    onPressed: () async {
-                      final CaseUpdateDto? caseUpdateDto =
-                          await _showUpdateCaseDialog(widget.caseModel);
-                      if (caseUpdateDto == null) return;
-                      await caseProvider.updateCase(
-                        widget.caseModel.id,
-                        caseUpdateDto,
-                      );
-                    },
+                    onPressed: caseProvider.workShopId ==
+                            widget.caseModel.workshopId
+                        ? () async {
+                            final CaseUpdateDto? caseUpdateDto =
+                                await _showUpdateCaseDialog(widget.caseModel);
+                            if (caseUpdateDto == null) return;
+                            await caseProvider.updateCase(
+                              widget.caseModel.id,
+                              caseUpdateDto,
+                            );
+                          }
+                        : null,
                   ),
                   const SizedBox(width: 16),
                   FilledButton.icon(
                     icon: const Icon(Icons.tab),
-                    onPressed: () async {
-                      if (widget.caseModel.diagnosisId == null) {
-                        String message;
-                        final ScaffoldMessengerState scaffoldMessengerState =
-                            ScaffoldMessenger.of(context);
-                        final DiagnosisModel? createdDiagnosis =
-                            await diagnosisProvider
-                                .startDiagnosis(widget.caseModel.id);
+                    onPressed: caseProvider.workShopId ==
+                            widget.caseModel.workshopId
+                        ? () async {
+                            if (widget.caseModel.diagnosisId == null) {
+                              String message;
+                              final ScaffoldMessengerState
+                                  scaffoldMessengerState =
+                                  ScaffoldMessenger.of(context);
+                              final DiagnosisModel? createdDiagnosis =
+                                  await diagnosisProvider
+                                      .startDiagnosis(widget.caseModel.id);
 
-                        if (createdDiagnosis != null) {
-                          message = tr(
-                            "diagnoses.details.startDiagnosisSuccessMessage",
-                          );
+                              if (createdDiagnosis != null) {
+                                message = tr(
+                                  "diagnoses.details.startDiagnosisSuccessMessage",
+                                );
 
-                          routemaster.push("/diagnoses/${createdDiagnosis.id}");
-                        } else {
-                          message = tr(
-                            "diagnoses.details.startDiagnosisFailureMessage",
-                          );
-                        }
-                        _showMessage(message, scaffoldMessengerState);
-                      } else {
-                        routemaster.push(
-                          "/diagnoses/${widget.caseModel.diagnosisId}",
-                        );
-                      }
-                    },
+                                routemaster
+                                    .push("/diagnoses/${createdDiagnosis.id}");
+                              } else {
+                                message = tr(
+                                  "diagnoses.details.startDiagnosisFailureMessage",
+                                );
+                              }
+                              _showMessage(message, scaffoldMessengerState);
+                            } else {
+                              routemaster.push(
+                                "/diagnoses/${widget.caseModel.diagnosisId}",
+                              );
+                            }
+                          }
+                        : null,
                     label: Text(
                       tr(
                         widget.caseModel.diagnosisId == null
