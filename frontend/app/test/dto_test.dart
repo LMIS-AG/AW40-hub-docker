@@ -428,7 +428,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    const todos = <dynamic>["a", 5, false];
+    final todos = [ActionDto("1", "some action", 1, 2, 3)];
     final Map<String, dynamic> json = <String, dynamic>{
       "_id": id,
       "timestamp": timeStamp.toIso8601String(),
