@@ -96,7 +96,8 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                 child: ListTile(
                   leading: Icon(
                     HelperService.getDiagnosisStatusIcon(
-                        widget.diagnosisModel.status),
+                      widget.diagnosisModel.status,
+                    ),
                   ),
                   title: Text(
                     tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
