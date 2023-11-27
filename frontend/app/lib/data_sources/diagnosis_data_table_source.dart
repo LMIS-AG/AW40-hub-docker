@@ -1,4 +1,5 @@
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
+import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -14,14 +15,6 @@ class DiagnosisDataTableSource extends DataTableSource {
   final void Function(int) onPressedRow;
   final ThemeData themeData;
   int? currentIndex;
-  // TODO define at one place and share it
-  final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-    DiagnosisStatus.action_required: Icons.circle_notifications,
-    DiagnosisStatus.finished: Icons.check_circle,
-    DiagnosisStatus.failed: Icons.cancel,
-    DiagnosisStatus.processing: Icons.circle,
-    DiagnosisStatus.scheduled: Icons.circle,
-  };
 
   Tooltip _getStatusIcon(DiagnosisStatus? diagnosisStatus) {
     return (diagnosisStatus == null)
@@ -31,7 +24,7 @@ class DiagnosisDataTableSource extends DataTableSource {
           )
         : Tooltip(
             message: tr("diagnoses.status.${diagnosisStatus.name}"),
-            child: Icon(diagnosisStatusIcons[diagnosisStatus]),
+            child: Icon(HelperService.getDiagnosisStatusIcon(diagnosisStatus)),
           );
   }
 

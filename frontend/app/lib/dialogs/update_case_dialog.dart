@@ -32,15 +32,6 @@ class _UpdateCaseDialogState extends State<UpdateCaseDialog> {
   final TextEditingController _milageController = TextEditingController();
   final title = tr("cases.actions.updateCase");
 
-  // TODO define at one place and share it
-  final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-    DiagnosisStatus.action_required: Icons.circle_notifications,
-    DiagnosisStatus.finished: Icons.check_circle,
-    DiagnosisStatus.failed: Icons.cancel,
-    DiagnosisStatus.processing: Icons.circle,
-    DiagnosisStatus.scheduled: Icons.circle,
-  };
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

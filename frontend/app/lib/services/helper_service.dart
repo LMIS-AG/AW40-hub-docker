@@ -2,7 +2,7 @@ import "package:aw40_hub_frontend/exceptions/exceptions.dart";
 import "package:aw40_hub_frontend/main.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
-import "package:flutter/widgets.dart";
+import "package:flutter/material.dart";
 import "package:logging/logging.dart";
 
 class HelperService {
@@ -61,5 +61,25 @@ class HelperService {
       intList[5],
       intList[6],
     );
+  }
+
+  static IconData getDiagnosisStatusIcon(DiagnosisStatus status) {
+    final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
+      DiagnosisStatus.action_required: Icons.circle_notifications,
+      DiagnosisStatus.finished: Icons.check_circle,
+      DiagnosisStatus.failed: Icons.cancel,
+      DiagnosisStatus.processing: Icons.circle,
+      DiagnosisStatus.scheduled: Icons.circle,
+    };
+
+    final IconData? result = diagnosisStatusIcons[status];
+    if (result == null) {
+      throw AppException(
+        exceptionType: ExceptionType.notFound,
+        exceptionMessage: "No icon found for diagnois status: ${status.name}",
+      );
+    } else {
+      return result;
+    }
   }
 }

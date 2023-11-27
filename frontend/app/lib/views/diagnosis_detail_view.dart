@@ -1,5 +1,6 @@
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
+import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -18,18 +19,12 @@ class DiagnosisDetailView extends StatefulWidget {
 }
 
 class _DiagnosisDetailView extends State<DiagnosisDetailView> {
-  final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-    DiagnosisStatus.action_required: Icons.circle_notifications,
-    DiagnosisStatus.finished: Icons.check_circle,
-    DiagnosisStatus.failed: Icons.cancel,
-    DiagnosisStatus.processing: Icons.circle,
-    DiagnosisStatus.scheduled: Icons.circle,
-  };
-
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
+
+    // TODO get color 1 & 2
 
     return SizedBox.expand(
       child: Card(
@@ -96,7 +91,8 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                 ),
                 child: ListTile(
                   leading: Icon(
-                    diagnosisStatusIcons[widget.diagnosisModel.status],
+                    HelperService.getDiagnosisStatusIcon(
+                        widget.diagnosisModel.status),
                   ),
                   title: Text(
                     tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
