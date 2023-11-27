@@ -5,11 +5,15 @@ import "package:flutter/material.dart";
 
 class DiagnosisDataTableSource extends DataTableSource {
   DiagnosisDataTableSource({
+    required this.themeData,
+    required this.currentIndex,
     required this.diagnosisModels,
     required this.onPressedRow,
   });
   List<DiagnosisModel> diagnosisModels;
   final void Function(int) onPressedRow;
+  final ThemeData themeData;
+  int? currentIndex;
   final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
     DiagnosisStatus.scheduled: Icons.schedule,
     DiagnosisStatus.action_required: Icons.warning,
@@ -35,6 +39,14 @@ class DiagnosisDataTableSource extends DataTableSource {
     final diagnosisModel = diagnosisModels[index];
     return DataRow(
       onSelectChanged: (_) => onPressedRow(index),
+      selected: currentIndex == index,
+      color: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+        if (states.contains(MaterialState.selected)) {
+          return themeData.colorScheme.primary.withOpacity(0.08);
+        }
+        return null; // Use the default value.
+      }),
       cells: [
         DataCell(Text(diagnosisModel.id)),
         DataCell(_getStatusIcon(diagnosisModel.status)),

@@ -61,6 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _webProcessKeycloakCodeInBrowserUrl() async {
+    final AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
     _logger.finest("_webProcessKeycloakCodeInBrowserUrl()");
     if (!kIsWeb) {
       throw AppException(
@@ -88,10 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
         exceptionType: ExceptionType.unexpectedNullValue,
       );
     }
-
-    final AuthProvider authProvider =
-        // ignore: use_build_context_synchronously
-        Provider.of<AuthProvider>(context, listen: false);
 
     await authProvider.setAuthTokensFromKeycloakCode(
       keycloakCode: code,

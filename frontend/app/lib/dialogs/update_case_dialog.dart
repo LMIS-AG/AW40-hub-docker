@@ -12,11 +12,6 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:routemaster/routemaster.dart";
 
-// ignore: constant_identifier_names
-const int FIRST_DATE_IN_DIALOG = 1900;
-// ignore: constant_identifier_names
-const int LAST_DATE_IN_DIALOG = 2100;
-
 class UpdateCaseDialog extends StatefulWidget {
   const UpdateCaseDialog({
     required this.caseModel,
@@ -180,21 +175,18 @@ class UpdateDialogForm extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  tr("general.status"),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+              Text(
+                tr("general.status"),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+              const SizedBox(width: 16),
               FormField(
                 onSaved: (CaseStatus? newValue) {
-                  if (newValue != null) {
-                    statusController.text =
-                        EnumToString.convertToString(newValue);
-                  }
+                  if (newValue == null) return;
+                  statusController.text =
+                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseStatus> field) {
                   return SizedBox(
@@ -227,21 +219,18 @@ class UpdateDialogForm extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  tr("general.occasion"),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+              Text(
+                tr("general.occasion"),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+              const SizedBox(width: 16),
               FormField(
                 onSaved: (CaseOccasion? newValue) {
-                  if (newValue != null) {
-                    occasionController.text =
-                        EnumToString.convertToString(newValue);
-                  }
+                  if (newValue == null) return;
+                  occasionController.text =
+                      EnumToString.convertToString(newValue);
                 },
                 builder: (FormFieldState<CaseOccasion> field) {
                   return SizedBox(
@@ -325,33 +314,32 @@ class UpdateDialogForm extends StatelessWidget {
   }
 
   Future<DateTime?> pickDateTime(BuildContext context) async {
-    final DateTime? date = await pickDate(context);
+    final Future<DateTime?> datePicker = showDatePicker(
+      context: context,
+      initialDate: caseModel.timestamp,
+      firstDate: DateTime(firstDateInDialog),
+      lastDate: DateTime(lastDateInDialog),
+    );
+
+    final Future<TimeOfDay?> timePicker = showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(
+        caseModel.timestamp,
+      ),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    );
+
+    final DateTime? date = await datePicker;
     if (date == null) return null;
 
-    // ignore: use_build_context_synchronously
-    final TimeOfDay? time = await pickTime(context);
+    final TimeOfDay? time = await timePicker;
     if (time == null) return null;
 
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
-
-  Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
-        context: context,
-        initialDate: caseModel.timestamp,
-        firstDate: DateTime(FIRST_DATE_IN_DIALOG),
-        lastDate: DateTime(LAST_DATE_IN_DIALOG),
-      );
-
-  Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(
-          caseModel.timestamp,
-        ),
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child ?? Container(),
-          );
-        },
-      );
 }

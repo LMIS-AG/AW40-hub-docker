@@ -1,4 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars
+import "dart:async";
 
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
@@ -9,6 +9,7 @@ import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+import "package:routemaster/routemaster.dart";
 
 class CaseDetailView extends StatelessWidget {
   const CaseDetailView({
@@ -123,6 +124,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
     final diagnosisProvider =
         Provider.of<DiagnosisProvider>(context, listen: false);
+    final Routemaster routemaster = Routemaster.of(context);
 
     final List<String> attributes = [
       tr("general.id"),
@@ -222,15 +224,40 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   const SizedBox(width: 16),
                   FilledButton.icon(
                     icon: const Icon(Icons.tab),
-                    label: Text(tr("cases.details.startDiagnosis")),
                     onPressed: () async {
-                      // TODO step 1: make a request to start diagnosis endoint
-                      await diagnosisProvider
-                          .startDiagnosis(widget.caseModel.id);
-                      // TODO step 2: show a loading indicator
-                      // TODO step 3: wait for a succesfull response
-                      // TODO step 4: "automatically" navigate to detail view of the freshly created diagnosis
+                      if (widget.caseModel.diagnosisId == null) {
+                        String message;
+                        final ScaffoldMessengerState scaffoldMessengerState =
+                            ScaffoldMessenger.of(context);
+                        final DiagnosisModel? createdDiagnosis =
+                            await diagnosisProvider
+                                .startDiagnosis(widget.caseModel.id);
+
+                        if (createdDiagnosis != null) {
+                          message = tr(
+                            "diagnoses.details.startDiagnosisSuccessMessage",
+                          );
+
+                          routemaster.push("/diagnoses/${createdDiagnosis.id}");
+                        } else {
+                          message = tr(
+                            "diagnoses.details.startDiagnosisFailureMessage",
+                          );
+                        }
+                        _showMessage(message, scaffoldMessengerState);
+                      } else {
+                        routemaster.push(
+                          "/diagnoses/${widget.caseModel.diagnosisId}",
+                        );
+                      }
                     },
+                    label: Text(
+                      tr(
+                        widget.caseModel.diagnosisId == null
+                            ? "cases.details.startDiagnosis"
+                            : "cases.details.showDiagnosis",
+                      ),
+                    ),
                   ),
                 ],
               )
@@ -248,6 +275,13 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         return UpdateCaseDialog(caseModel: caseModel);
       },
     );
+  }
+
+  static void _showMessage(String text, ScaffoldMessengerState state) {
+    final SnackBar snackBar = SnackBar(
+      content: Center(child: Text(text)),
+    );
+    state.showSnackBar(snackBar);
   }
 }
 

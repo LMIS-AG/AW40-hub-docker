@@ -49,6 +49,8 @@ diagnoses:
     headline: "Detailansicht"
     deleteDiagnosisSuccessMessage: "Die Diagnose wurde erfolgreich gelöscht."
     deleteDiagnosisErrorMessage: "Der Diagnose konnte nicht gelöscht werden."
+    startDiagnosisSuccessMessage: "Die Diagnose wurde erfolgreich gestartet."
+    startDiagnosisFailureMessage: "Die Diagnose konnte nicht erfolgreich gestartet werden."
     dialog:
       title: "Diagnose löschen"
       description: "Möchten Sie die Diagnose wirklich löschen?"
@@ -77,6 +79,7 @@ cases:
     dialog:
       title: "Fall löschen"
       description: "Möchten Sie den Fall wirklich löschen?"
+    showDiagnosis: "Diagnose anzeigen"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
     occasion:

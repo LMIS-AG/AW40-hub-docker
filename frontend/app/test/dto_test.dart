@@ -13,6 +13,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -28,6 +29,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
@@ -59,6 +61,9 @@ void main() {
     test("correctly assigns workshopId", () {
       expect(caseDto.workshopId, workshopId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(caseDto.diagnosisId, diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(caseDto.timeseriesData, timeseriesData);
     });
@@ -87,6 +92,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -102,6 +108,7 @@ void main() {
       "customer_id": customerId,
       "vehicle_vin": vehicleVin,
       "workshop_id": workshopId,
+      "diagnosis_id": diagnosisId,
       "timeseries_data": timeseriesData,
       "obd_data": obdData,
       "symptoms": symptoms,
@@ -134,6 +141,9 @@ void main() {
     test("correctly assigns workshopId", () {
       expect(caseDto.workshopId, workshopId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(caseDto.diagnosisId, diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(caseDto.timeseriesData, timeseriesData);
     });
@@ -162,6 +172,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -177,6 +188,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
@@ -209,6 +221,9 @@ void main() {
     test("correctly assigns workshopId", () {
       expect(json["workshop_id"], workshopId);
     });
+    test("correctly assigns diagnosisId", () {
+      expect(json["diagnosis_id"], diagnosisId);
+    });
     test("correctly assigns timeseriesData", () {
       expect(json["timeseries_data"], timeseriesData);
     });
@@ -237,6 +252,7 @@ void main() {
     const customerId = "some_customer_id";
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
+    const diagnosisId = "some_diagnosis_id";
     const timeseriesData = <dynamic>[1, 2, 3];
     const obdData = <dynamic>["a", 5, false];
     const symptoms = <dynamic>[true, false];
@@ -252,6 +268,7 @@ void main() {
       customerId,
       vehicleVin,
       workshopId,
+      diagnosisId,
       timeseriesData,
       obdData,
       symptoms,
@@ -283,6 +300,9 @@ void main() {
     });
     test("correctly assigns workshopId", () {
       expect(caseModel.workshopId, workshopId);
+    });
+    test("correctly assigns diagnosisId", () {
+      expect(caseModel.diagnosisId, diagnosisId);
     });
     test("correctly assigns timeseriesData", () {
       expect(caseModel.timeseriesData, timeseriesData);

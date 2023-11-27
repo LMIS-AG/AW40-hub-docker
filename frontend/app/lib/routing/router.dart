@@ -52,20 +52,23 @@ Map<String, PageBuilder> _basicRoutes = {
   kRouteCases: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
+        currentIndex: 0,
         child: CasesScreen(),
-      ),
-    );
-  },
-  kRouteDiagnosisDetails: (RouteData info) {
-    return const MaterialPage<Widget>(
-      child: ScaffoldWrapper(
-        child: DiagnosisScreen(),
       ),
     );
   },
   kRouteDiagnosis: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
+        currentIndex: 1,
+        child: DiagnosisScreen(),
+      ),
+    );
+  },
+  kRouteDiagnosisDetails: (RouteData info) {
+    return const MaterialPage<Widget>(
+      child: ScaffoldWrapper(
+        currentIndex: 1,
         child: DiagnosisScreen(),
       ),
     );
@@ -73,6 +76,7 @@ Map<String, PageBuilder> _basicRoutes = {
   kRouteCustomers: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
+        currentIndex: 2,
         child: CustomersScreen(),
       ),
     );
@@ -80,6 +84,7 @@ Map<String, PageBuilder> _basicRoutes = {
   kRouteVecicles: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
+        currentIndex: 3,
         child: VehiclesScreen(),
       ),
     );

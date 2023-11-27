@@ -10,6 +10,7 @@ class CaseModel {
     required this.customerId,
     required this.vehicleVin,
     required this.workshopId,
+    required this.diagnosisId,
     required this.timeseriesData,
     required this.obdData,
     required this.symptoms,
@@ -23,6 +24,7 @@ class CaseModel {
   String customerId;
   String vehicleVin;
   String workshopId;
+  String? diagnosisId;
   List<dynamic> timeseriesData;
   List<dynamic> obdData;
   List<dynamic> symptoms;
