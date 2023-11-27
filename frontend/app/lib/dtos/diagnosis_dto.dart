@@ -40,5 +40,28 @@ class DiagnosisDto {
   @JsonKey(name: "state_machine_log")
   List<dynamic> stateMachineLog;
   @JsonKey(name: "todos")
-  List<dynamic> todos;
+  List<Action> todos;
+}
+
+@JsonSerializable()
+class Action {
+  Action(
+    this.id,
+    this.instruction,
+    this.actionType,
+    this.dataType,
+    this.component,
+  );
+
+  factory Action.fromJson(Map<String, dynamic> json) {
+    return _$ActionFromJson(json);
+  }
+
+  String? id;
+  String instruction;
+  @JsonKey(name: "action_type")
+  dynamic actionType;
+  @JsonKey(name: "data_type")
+  dynamic dataType;
+  dynamic component;
 }

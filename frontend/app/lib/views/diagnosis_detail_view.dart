@@ -111,11 +111,18 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                     colorScheme,
                     widget.diagnosisModel.status,
                   ),
-                  // TODO get widget.diagnosisModel.todos[0].instruction
-                  /* subtitle: widget.diagnosisModel.status ==
+                  subtitle: widget.diagnosisModel.status ==
                           DiagnosisStatus.action_required
-                      ? Text(widget.diagnosisModel. ...)
-                      : null,*/
+                      ? Text(
+                          widget.diagnosisModel.todos[0].instruction,
+                          style: TextStyle(
+                            color: _getColorComplementForDiagnosisStatus(
+                              colorScheme,
+                              widget.diagnosisModel.status,
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
               ),
 
