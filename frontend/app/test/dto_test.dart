@@ -394,7 +394,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    const todos = <dynamic>["a", 5, false];
+    final todos = [Action("1", "some action", 1, 2, 3)];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
@@ -463,7 +463,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    const todos = <dynamic>["a", 5, false];
+    final todos = [Action("1", "some action", 1, 2, 3)];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
@@ -498,7 +498,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    const todos = <dynamic>["a", 5, false];
+    final todos = [Action("1", "some action", 1, 2, 3)];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
