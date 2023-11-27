@@ -24,7 +24,14 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    // TODO get color 1 & 2
+    final color = _getColorForDiagnosisStatus(
+      colorScheme,
+      widget.diagnosisModel.status,
+    );
+    final complementColor = _getColorComplementForDiagnosisStatus(
+      colorScheme,
+      widget.diagnosisModel.status,
+    );
 
     return SizedBox.expand(
       child: Card(
@@ -85,10 +92,7 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
               const SizedBox(height: 16),
               // Current State
               Card(
-                color: _getColorForDiagnosisStatus(
-                  colorScheme,
-                  widget.diagnosisModel.status,
-                ),
+                color: color,
                 child: ListTile(
                   leading: Icon(
                     HelperService.getDiagnosisStatusIcon(
@@ -97,25 +101,16 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                   title: Text(
                     tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: _getColorComplementForDiagnosisStatus(
-                        colorScheme,
-                        widget.diagnosisModel.status,
-                      ),
+                      color: complementColor,
                     ),
                   ),
-                  iconColor: _getColorComplementForDiagnosisStatus(
-                    colorScheme,
-                    widget.diagnosisModel.status,
-                  ),
+                  iconColor: complementColor,
                   subtitle: widget.diagnosisModel.status ==
                           DiagnosisStatus.action_required
                       ? Text(
                           widget.diagnosisModel.todos[0].instruction,
                           style: TextStyle(
-                            color: _getColorComplementForDiagnosisStatus(
-                              colorScheme,
-                              widget.diagnosisModel.status,
-                            ),
+                            color: complementColor,
                           ),
                         )
                       : null,
