@@ -20,11 +20,11 @@ class ActionDto {
 
   ActionModel toModel() {
     return ActionModel(
-      id,
-      instruction,
-      actionType,
-      dataType,
-      component,
+      id: id,
+      instruction: instruction,
+      actionType: actionType,
+      dataType: dataType,
+      component: component,
     );
   }
 
