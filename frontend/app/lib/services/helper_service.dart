@@ -63,8 +63,8 @@ class HelperService {
     );
   }
 
-  static IconData getDiagnosisStatusIcon(DiagnosisStatus status) {
-    switch (status) {
+  static IconData getDiagnosisStatusIcon(DiagnosisStatus diagnosisStatus) {
+    switch (diagnosisStatus) {
       case DiagnosisStatus.action_required:
         return Icons.circle_notifications;
       case DiagnosisStatus.finished:
@@ -75,6 +75,41 @@ class HelperService {
         return Icons.circle;
       case DiagnosisStatus.scheduled:
         return Icons.circle;
+    }
+  }
+
+  static Color getColorForDiagnosisStatus(
+    ColorScheme colorScheme,
+    DiagnosisStatus diagnosisStatus,
+  ) {
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.action_required:
+        return colorScheme.tertiary;
+      case DiagnosisStatus.scheduled:
+        return colorScheme.primary;
+      case DiagnosisStatus.processing:
+        return colorScheme.primary;
+      case DiagnosisStatus.finished:
+        return colorScheme.secondary;
+      case DiagnosisStatus.failed:
+        return colorScheme.error;
+    }
+  }
+
+  static Color getColorComplementForDiagnosisStatus(
+    ColorScheme colorScheme,
+    DiagnosisStatus diagnosisStatus,
+  ) {
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.action_required:
+        return colorScheme.onTertiary;
+      case DiagnosisStatus.finished:
+        return colorScheme.onSecondary;
+      case DiagnosisStatus.failed:
+        return colorScheme.onError;
+      case DiagnosisStatus.processing:
+      case DiagnosisStatus.scheduled:
+        return colorScheme.onPrimary;
     }
   }
 }
