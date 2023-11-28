@@ -16,6 +16,7 @@ class ActionDto {
   factory ActionDto.fromJson(Map<String, dynamic> json) {
     return _$ActionDtoFromJson(json);
   }
+  Map<String, dynamic> toJson() => _$ActionDtoToJson(this);
 
   ActionModel toModel() {
     return ActionModel(
