@@ -78,7 +78,7 @@ class HelperService {
     }
   }
 
-  static Color getColorForDiagnosisStatus(
+  static Color getDiagnosisStatusBackgroundColor(
     ColorScheme colorScheme,
     DiagnosisStatus diagnosisStatus,
   ) {
@@ -96,7 +96,7 @@ class HelperService {
     }
   }
 
-  static Color getColorComplementForDiagnosisStatus(
+  static Color getDiagnosisStatusForegroundColor(
     ColorScheme colorScheme,
     DiagnosisStatus diagnosisStatus,
   ) {
