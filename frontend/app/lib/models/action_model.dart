@@ -7,7 +7,7 @@ class ActionModel {
     this.component,
   );
 
-  String? id;
+  String id;
   String instruction;
   dynamic actionType;
   dynamic dataType;

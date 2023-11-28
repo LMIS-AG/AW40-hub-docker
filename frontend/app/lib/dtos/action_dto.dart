@@ -1,4 +1,4 @@
-import "package:aw40_hub_frontend/models/diagnosis_model.dart";
+import "package:aw40_hub_frontend/models/action_model.dart";
 import "package:json_annotation/json_annotation.dart";
 
 part "action_dto.g.dart";
@@ -27,7 +27,7 @@ class ActionDto {
     );
   }
 
-  String? id;
+  String id;
   String instruction;
   @JsonKey(name: "action_type")
   dynamic actionType;
