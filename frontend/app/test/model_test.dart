@@ -1,3 +1,4 @@
+import "package:aw40_hub_frontend/models/action_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/material.dart";
@@ -74,8 +75,8 @@ void main() {
     final timestamp = DateTime.now();
     const status = DiagnosisStatus.processing;
     const caseId = "some_case_id";
-    final List<dynamic> stateMachineLog = <dynamic>[1, 2, 3];
-    final List<ActionModel> todos = [ActionModel("1", "some action", 1, 2, 3)];
+    final stateMachineLog = <dynamic>[1, 2, 3];
+    final todos = <ActionModel>[ActionModel("1", "some action", 1, 2, 3)];
 
     final diagnosisModel = DiagnosisModel(
       id: id,
