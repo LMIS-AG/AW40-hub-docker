@@ -95,7 +95,7 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                 color: color,
                 child: ListTile(
                   leading: Icon(
-                    HelperService.getDiagnosisStatusIcon(
+                    HelperService.getDiagnosisStatusIconData(
                       widget.diagnosisModel.status,
                     ),
                   ),

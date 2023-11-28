@@ -63,7 +63,7 @@ class HelperService {
     );
   }
 
-  static IconData getDiagnosisStatusIcon(DiagnosisStatus diagnosisStatus) {
+  static IconData getDiagnosisStatusIconData(DiagnosisStatus diagnosisStatus) {
     switch (diagnosisStatus) {
       case DiagnosisStatus.action_required:
         return Icons.circle_notifications;
