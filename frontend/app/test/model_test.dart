@@ -80,9 +80,9 @@ void main() {
       ActionModel(
         id: "1",
         instruction: "some action",
-        actionType: 1,
-        dataType: 2,
-        component: 3,
+        actionType: "1",
+        dataType: "2",
+        component: "3",
       )
     ];
 

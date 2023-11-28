@@ -395,7 +395,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    final todos = <ActionDto>[ActionDto("1", "some action", 1, 2, 3)];
+    final todos = <ActionDto>[ActionDto("1", "some action", "1", "2", "3")];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
@@ -429,7 +429,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    final todos = <ActionDto>[ActionDto("1", "some action", 1, 2, 3)];
+    final todos = <ActionDto>[ActionDto("1", "some action", "1", "2", "3")];
     final Map<String, dynamic> json = <String, dynamic>{
       "_id": id,
       "timestamp": timeStamp.toIso8601String(),
@@ -464,7 +464,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    final todos = <ActionDto>[ActionDto("1", "some action", 1, 2, 3)];
+    final todos = <ActionDto>[ActionDto("1", "some action", "1", "2", "3")];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
@@ -499,7 +499,7 @@ void main() {
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
-    final todos = <ActionDto>[ActionDto("1", "some action", 1, 2, 3)];
+    final todos = <ActionDto>[ActionDto("1", "some action", "1", "2", "3")];
     final DiagnosisDto diagnosisDto = DiagnosisDto(
       id,
       timeStamp,
