@@ -1,3 +1,4 @@
+import "package:aw40_hub_frontend/models/action_model.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 
 class DiagnosisModel {
