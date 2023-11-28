@@ -64,22 +64,17 @@ class HelperService {
   }
 
   static IconData getDiagnosisStatusIcon(DiagnosisStatus status) {
-    final Map<DiagnosisStatus, IconData> diagnosisStatusIcons = {
-      DiagnosisStatus.action_required: Icons.circle_notifications,
-      DiagnosisStatus.finished: Icons.check_circle,
-      DiagnosisStatus.failed: Icons.cancel,
-      DiagnosisStatus.processing: Icons.circle,
-      DiagnosisStatus.scheduled: Icons.circle,
-    };
-
-    final IconData? result = diagnosisStatusIcons[status];
-    if (result == null) {
-      throw AppException(
-        exceptionType: ExceptionType.notFound,
-        exceptionMessage: "No icon found for diagnois status: ${status.name}",
-      );
-    } else {
-      return result;
+    switch (status) {
+      case DiagnosisStatus.action_required:
+        return Icons.circle_notifications;
+      case DiagnosisStatus.finished:
+        return Icons.check_circle;
+      case DiagnosisStatus.failed:
+        return Icons.cancel;
+      case DiagnosisStatus.processing:
+        return Icons.circle;
+      case DiagnosisStatus.scheduled:
+        return Icons.circle;
     }
   }
 }
