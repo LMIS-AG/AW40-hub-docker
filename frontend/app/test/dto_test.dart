@@ -685,7 +685,7 @@ void main() {
     test("correctly assigns actionType", () {
       expect(json["actionType"], actionType);
     });
-    test("correctly assigns occasion", () {
+    test("correctly assigns dataType", () {
       expect(json["dataType"], dataType);
     });
     test("correctly assigns component", () {
