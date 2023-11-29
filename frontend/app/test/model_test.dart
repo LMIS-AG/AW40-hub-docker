@@ -282,4 +282,35 @@ void main() {
       expect(navigationItemModel.isExternal, true);
     });
   });
+  group("ActionModel", () {
+    const String id = "some_id";
+    const String instruction = "some_customer_id";
+    const String actionType = "some_action_type";
+    const String dataType = "some_data_type";
+    const String component = "some_component";
+
+    final actionModel = ActionModel(
+      id: id,
+      instruction: instruction,
+      actionType: actionType,
+      dataType: dataType,
+      component: component,
+    );
+
+    test("correctly assigns id", () {
+      expect(actionModel.id, id);
+    });
+    test("correctly assigns instruction", () {
+      expect(actionModel.instruction, instruction);
+    });
+    test("correctly assigns actionType", () {
+      expect(actionModel.actionType, actionType);
+    });
+    test("correctly assigns dataType", () {
+      expect(actionModel.dataType, dataType);
+    });
+    test("correctly assigns component", () {
+      expect(actionModel.component, component);
+    });
+  });
 }
