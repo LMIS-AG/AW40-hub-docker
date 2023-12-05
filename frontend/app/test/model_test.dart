@@ -1,3 +1,4 @@
+import "package:aw40_hub_frontend/models/action_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/material.dart";
@@ -74,8 +75,16 @@ void main() {
     final timestamp = DateTime.now();
     const status = DiagnosisStatus.processing;
     const caseId = "some_case_id";
-    final List<dynamic> stateMachineLog = <dynamic>[1, 2, 3];
-    final List<dynamic> todos = <dynamic>["a", 5, false];
+    final stateMachineLog = <dynamic>[1, 2, 3];
+    final todos = <ActionModel>[
+      ActionModel(
+        id: "1",
+        instruction: "some action",
+        actionType: "1",
+        dataType: "2",
+        component: "3",
+      )
+    ];
 
     final diagnosisModel = DiagnosisModel(
       id: id,
@@ -271,6 +280,37 @@ void main() {
     });
     test("correctly assigns isExternal", () {
       expect(navigationItemModel.isExternal, true);
+    });
+  });
+  group("ActionModel", () {
+    const String id = "some_id";
+    const String instruction = "some_customer_id";
+    const String actionType = "some_action_type";
+    const String dataType = "some_data_type";
+    const String component = "some_component";
+
+    final actionModel = ActionModel(
+      id: id,
+      instruction: instruction,
+      actionType: actionType,
+      dataType: dataType,
+      component: component,
+    );
+
+    test("correctly assigns id", () {
+      expect(actionModel.id, id);
+    });
+    test("correctly assigns instruction", () {
+      expect(actionModel.instruction, instruction);
+    });
+    test("correctly assigns actionType", () {
+      expect(actionModel.actionType, actionType);
+    });
+    test("correctly assigns dataType", () {
+      expect(actionModel.dataType, dataType);
+    });
+    test("correctly assigns component", () {
+      expect(actionModel.component, component);
     });
   });
 }

@@ -2,7 +2,7 @@ import "package:aw40_hub_frontend/exceptions/exceptions.dart";
 import "package:aw40_hub_frontend/main.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
-import "package:flutter/widgets.dart";
+import "package:flutter/material.dart";
 import "package:logging/logging.dart";
 
 class HelperService {
@@ -61,5 +61,55 @@ class HelperService {
       intList[5],
       intList[6],
     );
+  }
+
+  static IconData getDiagnosisStatusIconData(DiagnosisStatus diagnosisStatus) {
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.action_required:
+        return Icons.circle_notifications;
+      case DiagnosisStatus.finished:
+        return Icons.check_circle;
+      case DiagnosisStatus.failed:
+        return Icons.cancel;
+      case DiagnosisStatus.processing:
+        return Icons.circle;
+      case DiagnosisStatus.scheduled:
+        return Icons.circle;
+    }
+  }
+
+  static Color getDiagnosisStatusBackgroundColor(
+    ColorScheme colorScheme,
+    DiagnosisStatus diagnosisStatus,
+  ) {
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.action_required:
+        return colorScheme.tertiary;
+      case DiagnosisStatus.scheduled:
+        return colorScheme.primary;
+      case DiagnosisStatus.processing:
+        return colorScheme.primary;
+      case DiagnosisStatus.finished:
+        return colorScheme.secondary;
+      case DiagnosisStatus.failed:
+        return colorScheme.error;
+    }
+  }
+
+  static Color getDiagnosisStatusForegroundColor(
+    ColorScheme colorScheme,
+    DiagnosisStatus diagnosisStatus,
+  ) {
+    switch (diagnosisStatus) {
+      case DiagnosisStatus.action_required:
+        return colorScheme.onTertiary;
+      case DiagnosisStatus.finished:
+        return colorScheme.onSecondary;
+      case DiagnosisStatus.failed:
+        return colorScheme.onError;
+      case DiagnosisStatus.processing:
+      case DiagnosisStatus.scheduled:
+        return colorScheme.onPrimary;
+    }
   }
 }

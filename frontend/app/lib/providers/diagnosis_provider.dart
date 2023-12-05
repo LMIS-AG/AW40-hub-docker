@@ -20,7 +20,10 @@ class DiagnosisProvider with ChangeNotifier {
     List<CaseModel> cases,
     BuildContext context,
   ) async {
-    final List<String> caseIDs = cases.map((e) => e.id).toList();
+    final List<String> caseIDs = cases
+        .where((c) => c.workshopId == workShopId)
+        .map((e) => e.id)
+        .toList();
 
     final List<Future<DiagnosisModel?>> individualDiagnosisRequests =
         caseIDs.map(getDiagnosis).toList();
@@ -34,7 +37,8 @@ class DiagnosisProvider with ChangeNotifier {
   Future<DiagnosisModel?> getDiagnosis(String caseId) async {
     final Response response =
         await _httpService.getDiagnosis(workShopId, caseId);
-    if (response.statusCode != 200 && response.statusCode != 404) {
+    if (response.statusCode == 404) return null;
+    if (response.statusCode != 200) {
       _logger.warning(
         "Could not get diagnosis. "
         "${response.statusCode}: ${response.reasonPhrase}",

@@ -1,6 +1,7 @@
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
-import "package:aw40_hub_frontend/utils/extensions.dart";
+import "package:aw40_hub_frontend/services/services.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -23,19 +24,14 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    // TODO adjust this section in Story 61883
-    final List<String> attributes = [
-      tr("general.id"),
-      tr("general.status"),
-      tr("general.date"),
-      tr("general.case"),
-    ];
-    final List<String> values = [
-      widget.diagnosisModel.id,
-      tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
-      widget.diagnosisModel.timestamp.toGermanDateString(),
-      widget.diagnosisModel.caseId,
-    ];
+    final color = HelperService.getDiagnosisStatusBackgroundColor(
+      colorScheme,
+      widget.diagnosisModel.status,
+    );
+    final complementColor = HelperService.getDiagnosisStatusForegroundColor(
+      colorScheme,
+      widget.diagnosisModel.status,
+    );
 
     return SizedBox.expand(
       child: Card(
@@ -70,29 +66,60 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                 ],
               ),
               const SizedBox(height: 16),
+              // Case ID
               Table(
                 columnWidths: const {0: IntrinsicColumnWidth()},
-                children: List.generate(
-                  attributes.length,
-                  (i) => TableRow(
+                children: [
+                  TableRow(
                     children: [
                       const SizedBox(height: 32),
                       Text(
-                        attributes[i],
+                        tr("general.case"),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onPrimaryContainer,
                         ),
                       ),
                       Text(
-                        values[i],
+                        widget.diagnosisModel.caseId,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onPrimaryContainer,
                         ),
                       ),
                     ],
                   ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Current State
+              Card(
+                color: color,
+                child: ListTile(
+                  leading: Icon(
+                    HelperService.getDiagnosisStatusIconData(
+                      widget.diagnosisModel.status,
+                    ),
+                  ),
+                  title: Text(
+                    tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: complementColor,
+                    ),
+                  ),
+                  iconColor: complementColor,
+                  subtitle: widget.diagnosisModel.status ==
+                          DiagnosisStatus.action_required
+                      ? Text(
+                          widget.diagnosisModel.todos[0].instruction,
+                          style: TextStyle(
+                            color: complementColor,
+                          ),
+                        )
+                      : null,
                 ),
               ),
+
+              const SizedBox(height: 32),
+              const Placeholder(),
             ],
           ),
         ),
