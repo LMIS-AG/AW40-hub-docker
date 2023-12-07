@@ -40,5 +40,5 @@ class TestDiagnosis:
                 "Expected 1 diagnosis with status finished for workshop 1."
 
             workshop_2_result = await Diagnosis.find_in_hub(workshop_id="2")
-            assert len(workshop_2_result) == 0, \
+            assert workshop_2_result == [], \
                 "Expected 0 diagnoses for workshop 2."
