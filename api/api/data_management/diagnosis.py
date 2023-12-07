@@ -56,3 +56,55 @@ class Diagnosis(Document):
     state_machine_log: List[DiagnosisLogEntry] = []
     case_id: Indexed(PydanticObjectId, unique=True)
     todos: List[Action] = []
+
+    @classmethod
+    async def find_in_hub(
+            cls,
+            workshop_id: str = None,
+            status: Optional[DiagnosisStatus] = None
+    ):
+        """
+        Get list of all diagnoses of a workshop, optionally filtered by status.
+        """
+        pipeline = [
+            # Lookup case in cases collection restricted to workshop
+            {
+                "$lookup": {
+                    "from": "cases",
+                    "localField": "case_id",
+                    "foreignField": "_id",
+                    "as": "case",
+                    "pipeline": [
+                        {"$match": {"workshop_id": workshop_id}},
+                        {"$project": {"_id": 1}}
+                    ]
+                }
+            },
+            # Indicate if a diagnosis has a matching case
+            {
+                "$addFields": {
+                    "case_found": {
+                        "$size": "$case"
+                    }
+                }
+            },
+            # Only keep diagnoses with matching case
+            {
+                "$match": {
+                    "case_found": 1
+                }
+            },
+            # Remove leftovers from lookup to recover plain diagnosis schema
+            {
+                "$project": {
+                    "case": 0,
+                    "case_found": 0
+                }
+            }
+        ]
+
+        if status is not None:
+            # Only keep results with specified status
+            pipeline.append({"$match": {"status": status}})
+
+        return await cls.aggregate(pipeline).to_list()
