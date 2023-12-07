@@ -1,4 +1,4 @@
-from typing import List, Union, Literal
+from typing import List, Union, Literal, Optional
 
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -27,6 +27,7 @@ from ..data_management import (
     VehicleUpdate,
     Customer,
     Diagnosis,
+    DiagnosisStatus,
     AttachmentBucket
 )
 from ..diagnostics_management import DiagnosticTaskManager
@@ -699,3 +700,19 @@ async def get_diagnosis_attachment(
     )
     content = await attachment.read()
     return Response(content=content, media_type="image/png")
+
+
+@router.get(
+    "/{workshop_id}/diagnoses",
+    status_code=200,
+    response_model=List[Diagnosis],
+    tags=["Workshop - Diagnostics"]
+)
+async def list_diagnoses(
+        workshop_id: str, status: Optional[DiagnosisStatus] = None
+):
+    """List all diagnoses of a workshop, optionally filtered by status."""
+    diagnoses = await Diagnosis.find_in_hub(
+        workshop_id=workshop_id, status=status
+    )
+    return diagnoses

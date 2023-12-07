@@ -1485,3 +1485,46 @@ async def test_delete_diagnosis(
         diag = await Diagnosis.get(diag.id)
         assert case_db.diagnosis_id is None
         assert diag is None
+
+
+@pytest.mark.asyncio
+async def test_list_diagnoses(
+        case_data,
+        test_app,
+        initialized_beanie_context
+):
+    async with initialized_beanie_context:
+        # Seed db with 2 cases for workshop "1"
+        case_11 = await Case(workshop_id="1", vehicle_vin="v11").insert()
+        case_12 = await Case(workshop_id="1", vehicle_vin="v12").insert()
+        # Seed db with 1 case for workshop "2"
+        case_21 = await Case(workshop_id="2", vehicle_vin="v21").insert()  # noqa F841
+
+        # Both cases of workshop "1" have a diagnosis
+        diag_11 = await Diagnosis(  # noqa F841
+            case_id=case_11.id, status="scheduled"
+        ).insert()
+        diag_12 = await Diagnosis(
+            case_id=case_12.id, status="finished"
+        ).insert()
+
+        # execute test requests
+        client = AsyncClient(app=test_app, base_url="http://")
+
+        # All diagnoses for workshop 1
+        response = await client.get("1/diagnoses")
+        assert response.status_code == 200
+        assert len(response.json()) == 2, \
+            "Expected 2 diagnoses for workshop 1."
+
+        # All diagnoses for workshop 1 with status "finished"
+        response = await client.get("1/diagnoses?status=finished")
+        assert response.status_code == 200
+        assert len(response.json()) == 1, \
+            "Expected 1 diagnoses for workshop 1."
+        assert response.json()[0]["_id"] == str(diag_12.id)
+
+        # All diagnoses for workshop 2
+        response = await client.get("2/diagnoses")
+        assert response.status_code == 200
+        assert response.json() == []
