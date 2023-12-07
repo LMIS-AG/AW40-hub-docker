@@ -62,7 +62,7 @@ class Diagnosis(Document):
             cls,
             workshop_id: str = None,
             status: Optional[DiagnosisStatus] = None
-    ):
+    ) -> List["Diagnosis"]:
         """
         Get list of all diagnoses of a workshop, optionally filtered by status.
         """
@@ -107,4 +107,6 @@ class Diagnosis(Document):
             # Only keep results with specified status
             pipeline.append({"$match": {"status": status}})
 
-        return await cls.aggregate(pipeline).to_list()
+        return await cls.aggregate(
+            pipeline, projection_model=Diagnosis
+        ).to_list()
