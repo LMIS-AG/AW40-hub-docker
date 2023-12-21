@@ -1599,9 +1599,24 @@ async def test_list_diagnoses(
 
 @pytest.mark.parametrize("route", router.routes)
 def test_missing_bearer_token(route, workshop_id, unauthenticated_client):
+    """Endpoints should not be accessible without a bearer token."""
     assert len(route.methods) == 1, "Test assumes one method per route."
     path = route.path.replace("{workshop_id}", workshop_id)
     method = next(iter(route.methods))
     response = unauthenticated_client.request(method=method, url=path)
     assert response.status_code == 403
     assert response.json() == {"detail": "Not authenticated"}
+
+
+@pytest.mark.parametrize("route", router.routes)
+def test_unauthorized_workshop(route, authenticated_client):
+    """
+    Endpoints should not be accessible, if the workshop_id in the path
+    does not match the workshop_id encoded in the bearer token.
+    """
+    assert len(route.methods) == 1, "Test assumes one method per route."
+    path = route.path.replace("{workshop_id}", "another workshop id")
+    method = next(iter(route.methods))
+    response = authenticated_client.request(method=method, url=path)
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Could not validate token."}
