@@ -1602,7 +1602,7 @@ async def test_list_diagnoses(
         assert response.json()[0]["_id"] == str(diag_2.id)
 
 
-@pytest.mark.parametrize("route", router.routes)
+@pytest.mark.parametrize("route", router.routes, ids=lambda r: r.name)
 def test_missing_bearer_token(route, workshop_id, unauthenticated_client):
     """Endpoints should not be accessible without a bearer token."""
     assert len(route.methods) == 1, "Test assumes one method per route."
@@ -1613,7 +1613,7 @@ def test_missing_bearer_token(route, workshop_id, unauthenticated_client):
     assert response.json() == {"detail": "Not authenticated"}
 
 
-@pytest.mark.parametrize("route", router.routes)
+@pytest.mark.parametrize("route", router.routes, ids=lambda r: r.name)
 def test_unauthorized_workshop(route, authenticated_client):
     """
     Endpoints should not be accessible, if the workshop_id in the path
@@ -1627,7 +1627,7 @@ def test_unauthorized_workshop(route, authenticated_client):
     assert response.json() == {"detail": "Could not validate token."}
 
 
-@pytest.mark.parametrize("route", router.routes)
+@pytest.mark.parametrize("route", router.routes, ids=lambda r: r.name)
 def test_invalid_jwt_signature(
         route, workshop_id, authenticated_client, another_rsa_public_key_pem
 ):
@@ -1665,7 +1665,7 @@ def expired_jwt(expired_jwt_payload, rsa_private_key_pem: bytes):
     )
 
 
-@pytest.mark.parametrize("route", router.routes)
+@pytest.mark.parametrize("route", router.routes, ids=lambda r: r.name)
 def test_expired_jwt(route, workshop_id, authenticated_client, expired_jwt):
     """
     Endpoints should not be accessible, if the bearer token is expired.
