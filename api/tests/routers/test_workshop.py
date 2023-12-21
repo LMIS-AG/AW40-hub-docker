@@ -1620,3 +1620,24 @@ def test_unauthorized_workshop(route, authenticated_client):
     response = authenticated_client.request(method=method, url=path)
     assert response.status_code == 401
     assert response.json() == {"detail": "Could not validate token."}
+
+
+@pytest.mark.parametrize("route", router.routes)
+def test_invalid_jwt_signature(
+        route, workshop_id, authenticated_client, another_rsa_public_key_pem
+):
+    """
+    Endpoints should not be accessible, if the public key retrieved from
+    keycloak does not match the private key used to sign a JWT.
+    """
+    assert len(route.methods) == 1, "Test assumes one method per route."
+    path = route.path.replace("{workshop_id}", workshop_id)
+    method = next(iter(route.methods))
+    # The token signature of the authenticated client will not match the public
+    #  key anymore
+    authenticated_client.app.dependency_overrides[
+        Keycloak.get_public_key_for_workshop_realm
+    ] = lambda: another_rsa_public_key_pem.decode()
+    response = authenticated_client.request(method=method, url=path)
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Could not validate token."}

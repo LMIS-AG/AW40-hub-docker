@@ -216,9 +216,7 @@ def knowledge_graph_file(files_dir):
     f.close()
 
 
-@pytest.fixture
-def rsa_key_pair() -> tuple[bytes, bytes]:
-    """Create RSA private and public key in PEM format."""
+def _create_rsa_key_pair() -> tuple[bytes, bytes]:
     private_key = rsa.generate_private_key(
         public_exponent=65537, key_size=2048
     )
@@ -235,6 +233,12 @@ def rsa_key_pair() -> tuple[bytes, bytes]:
 
 
 @pytest.fixture
+def rsa_key_pair() -> tuple[bytes, bytes]:
+    """Create RSA private and public key in PEM format."""
+    return _create_rsa_key_pair()
+
+
+@pytest.fixture
 def rsa_private_key_pem(rsa_key_pair) -> bytes:
     return rsa_key_pair[0]
 
@@ -242,3 +246,10 @@ def rsa_private_key_pem(rsa_key_pair) -> bytes:
 @pytest.fixture
 def rsa_public_key_pem(rsa_key_pair) -> bytes:
     return rsa_key_pair[1]
+
+
+@pytest.fixture
+def another_rsa_public_key_pem() -> bytes:
+    """Get a public key that does not match keys from any other fixture."""
+    _, public_key_pem = _create_rsa_key_pair()
+    return public_key_pem
