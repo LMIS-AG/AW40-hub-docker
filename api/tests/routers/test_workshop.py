@@ -1595,3 +1595,13 @@ async def test_list_diagnoses(
         assert response.status_code == 200
         assert len(response.json()) == 1, "Expected 1 diagnosis."
         assert response.json()[0]["_id"] == str(diag_2.id)
+
+
+@pytest.mark.parametrize("route", router.routes)
+def test_missing_bearer_token(route, workshop_id, unauthenticated_client):
+    assert len(route.methods) == 1, "Test assumes one method per route."
+    path = route.path.replace("{workshop_id}", workshop_id)
+    method = next(iter(route.methods))
+    response = unauthenticated_client.request(method=method, url=path)
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Not authenticated"}
