@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import datetime, timedelta
 from tempfile import TemporaryFile
 from unittest import mock
 
@@ -101,7 +102,11 @@ def test_app(motor_db):
 
 @pytest.fixture
 def jwt_payload(workshop_id):
-    return {"preferred_username": workshop_id}
+    return {
+        "iat": datetime.utcnow().timestamp(),
+        "exp": (datetime.utcnow() + timedelta(60)).timestamp(),
+        "preferred_username": workshop_id
+    }
 
 
 @pytest.fixture
@@ -1638,6 +1643,40 @@ def test_invalid_jwt_signature(
     authenticated_client.app.dependency_overrides[
         Keycloak.get_public_key_for_workshop_realm
     ] = lambda: another_rsa_public_key_pem.decode()
+    response = authenticated_client.request(method=method, url=path)
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Could not validate token."}
+
+
+@pytest.fixture
+def expired_jwt_payload(workshop_id):
+    return {
+        "iat": (datetime.utcnow() - timedelta(60)).timestamp(),
+        "exp": datetime.utcnow().timestamp(),
+        "preferred_username": workshop_id
+    }
+
+
+@pytest.fixture
+def expired_jwt(expired_jwt_payload, rsa_private_key_pem: bytes):
+    """Create an expired JWT signed with private RSA key."""
+    return jws.sign(
+        expired_jwt_payload, rsa_private_key_pem, algorithm="RS256"
+    )
+
+
+@pytest.mark.parametrize("route", router.routes)
+def test_expired_jwt(route, workshop_id, authenticated_client, expired_jwt):
+    """
+    Endpoints should not be accessible, if the bearer token is expired.
+    """
+    assert len(route.methods) == 1, "Test assumes one method per route."
+    path = route.path.replace("{workshop_id}", workshop_id)
+    method = next(iter(route.methods))
+    # The token offered by the authenticated client is expired
+    authenticated_client.headers.update(
+        {"Authorization": f"Bearer {expired_jwt}"}
+    )
     response = authenticated_client.request(method=method, url=path)
     assert response.status_code == 401
     assert response.json() == {"detail": "Could not validate token."}
