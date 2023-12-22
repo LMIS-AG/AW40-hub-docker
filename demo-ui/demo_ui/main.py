@@ -5,11 +5,16 @@ from fastapi import FastAPI, Request, Form, UploadFile, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 from . import template_filters
 
 from .settings import settings
+from . import keycloak
 
 app = FastAPI()
+app.add_middleware(
+    SessionMiddleware, secret_key=settings.session_secret, max_age=None
+)
 
 app.mount(
     "/static", StaticFiles(directory="demo_ui/static"), name="static"
@@ -22,14 +27,18 @@ templates.env.filters["timestamp_format"] = template_filters.timestamp_format
 
 @app.exception_handler(httpx.HTTPStatusError)
 async def http_status_error_handler(request, exc):
-    return templates.TemplateResponse(
-        "http_exception.html",
-        {
-            "request": request,
-            "status_code": exc.response.status_code,
-            "details": exc.response.json().get("detail")
-        }
-    )
+    if str(exc.request.url).startswith(settings.hub_api_base_url):
+        if exc.response.status_code in [401, 403]:
+            return RedirectResponse("/ui?pleaselogin", status_code=303)
+    else:
+        return templates.TemplateResponse(
+            "http_exception.html",
+            {
+                "request": request,
+                "status_code": exc.response.status_code,
+                "details": exc.response.json().get("detail")
+            }
+        )
 
 
 def get_cases_url(workshop_id: str) -> str:
@@ -73,21 +82,32 @@ def get_diagnosis_url(workshop_id: str, case_id: str) -> str:
     return _get_data_url(workshop_id, case_id, "diag", None)
 
 
-def get_from_api(url: str) -> dict:
-    response = httpx.get(url)
+def _auth_header(access_token: str):
+    if access_token is None:
+        return None
+    else:
+        return {"Authorization": f"Bearer {access_token}"}
+
+
+def get_from_api(url: str, access_token: str = None) -> dict:
+    headers = _auth_header(access_token)
+    response = httpx.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
 
-async def post_to_api(url: str, **kwargs) -> dict:
+async def post_to_api(url: str, access_token: str = None, **kwargs) -> dict:
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, **kwargs)
+        headers = _auth_header(access_token)
+        response = await client.post(url, headers=headers, **kwargs)
         response.raise_for_status()
         return response.json()
 
 
-def delete_via_api(url: str) -> dict:
-    response = httpx.delete(url)
+def delete_via_api(url: str, access_token: str = None) -> dict:
+    headers = _auth_header(access_token)
+    response = httpx.delete(url, headers=headers)
+    response.raise_for_status()
     return response.json()
 
 
@@ -130,20 +150,40 @@ def login_get(request: Request, workshops: List[str] = Depends(get_workshops)):
 
 
 @app.post("/ui", response_class=RedirectResponse, status_code=303)
-def login_post(request: Request, workshop_id: str = Form()):
+def login_post(
+        request: Request, workshop_id: str = Form(), password: str = Form()
+):
+    access_token, refresh_token = keycloak.get_tokens(
+        keycloak_url=settings.keycloak_url,
+        realm=settings.keycloak_workshop_realm,
+        client_id=settings.keycloak_client_id,
+        client_secret=settings.keycloak_client_secret,
+        username=workshop_id,
+        password=password
+    )
+    if not access_token:
+        return RedirectResponse(
+            "/ui?invalidusercredentials", status_code=303
+        )
+    request.session["access_token"] = access_token
+    request.session["refresh_token"] = refresh_token
     redirect_url = app.url_path_for("cases", workshop_id=workshop_id)
     return redirect_url
 
 
 @app.get("/ui/{workshop_id}/cases", response_class=HTMLResponse)
 def cases(request: Request, ressource_url: str = Depends(get_cases_url)):
-    cases = get_from_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    cases = get_from_api(ressource_url, access_token)
     for case in cases:
         if case["diagnosis_id"] is not None:
             case["diagnosis"] = get_from_api(
                 get_diagnosis_url(
                     case["workshop_id"], case["_id"]
-                )
+                ),
+                access_token
             )
         else:
             case["diagnosis"] = {"status": "-"}
@@ -158,6 +198,9 @@ def cases(request: Request, ressource_url: str = Depends(get_cases_url)):
 
 @app.get("/ui/{workshop_id}/cases/new", response_class=HTMLResponse)
 def new_case_get(request: Request):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     return templates.TemplateResponse(
         "new_case.html",
         {
@@ -173,10 +216,13 @@ def new_case_get(request: Request):
 async def new_case_post(
         request: Request, ressource_url: str = Depends(get_cases_url)
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     form = await request.form()
     # remove empty fields
     form = {k: v for k, v in form.items() if v}
-    case = await post_to_api(ressource_url, json=dict(form))
+    case = await post_to_api(ressource_url, access_token, json=dict(form))
     redirect_url = app.url_path_for(
         "case", workshop_id=case["workshop_id"], case_id=case["_id"]
     )
@@ -185,13 +231,17 @@ async def new_case_post(
 
 @app.get("/ui/{workshop_id}/cases/{case_id}", response_class=HTMLResponse)
 def case(request: Request, ressource_url: str = Depends(get_case_url)):
-    case = get_from_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    case = get_from_api(ressource_url, access_token)
     if case["diagnosis_id"] is not None:
         # get diagnosis and embed in case
         diagnosis = get_from_api(
             get_diagnosis_url(
                 case["workshop_id"], case["_id"]
-            )
+            ),
+            access_token
         )
         case["diagnosis"] = diagnosis
 
@@ -212,7 +262,10 @@ def case(request: Request, ressource_url: str = Depends(get_case_url)):
 def case_delete_get(
         request: Request, ressource_url: str = Depends(get_case_url)
 ):
-    delete_via_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "cases", workshop_id=request.path_params["workshop_id"]
     )
@@ -224,6 +277,9 @@ def case_delete_get(
     response_class=HTMLResponse
 )
 def new_obd_data_get(request: Request):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     return templates.TemplateResponse(
         "new_obd_data.html", {"request": request}
     )
@@ -240,14 +296,18 @@ async def new_obd_data_post(
         dtcs_text: str = Form(default=None),
         vcds_file: UploadFile = None
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     if dtcs_text:
         dtcs = dtcs_text.split("\r\n")
         obd_data = {"dtcs": dtcs}
-        case = await post_to_api(ressource_url, json=obd_data)
+        case = await post_to_api(ressource_url, access_token, json=obd_data)
     if vcds_file:
         ressource_url = f"{ressource_url}/upload/vcds"
         case = await post_to_api(
             ressource_url,
+            access_token,
             files={"upload": (vcds_file.filename, vcds_file.file)}
         )
 
@@ -270,7 +330,10 @@ def obd_data(
         ressource_url: str = Depends(get_obd_data_url),
         dtc: str = None
 ):
-    obd_data = get_from_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    obd_data = get_from_api(ressource_url, access_token)
     return templates.TemplateResponse(
         "obd_data.html",
         {
@@ -288,7 +351,10 @@ def obd_data(
 def obd_data_delete_get(
         request: Request, ressource_url: str = Depends(get_obd_data_url)
 ):
-    delete_via_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
         workshop_id=request.path_params["workshop_id"],
@@ -307,6 +373,9 @@ def new_timeseries_data_get(
         suggested_component: str = ""
 
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     return templates.TemplateResponse(
         "new_timeseries_data.html",
         {
@@ -326,6 +395,9 @@ async def new_timeseries_data_post(
         request: Request,
         ressource_url: str = Depends(get_timeseries_data_url)
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     form = await request.form()
     form = dict(form)
     form["file_format"] = "Picoscope CSV"
@@ -333,6 +405,7 @@ async def new_timeseries_data_post(
     ressource_url = f"{ressource_url}/upload/picoscope"
     case = await post_to_api(
         ressource_url,
+        access_token,
         files={"upload": (picoscope_file.filename, picoscope_file.file)},
         data=form
     )
@@ -355,9 +428,12 @@ def timeseries_data(
         request: Request,
         ressource_url: str = Depends(get_timeseries_data_url),
 ):
-    timeseries_data = get_from_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    timeseries_data = get_from_api(ressource_url, access_token)
     signal_url = f"{ressource_url}/signal"
-    signal = get_from_api(signal_url)
+    signal = get_from_api(signal_url, access_token)
     # convert signal to 2d array with columns 'Zeit' and 'Signal'
     sr = timeseries_data["sampling_rate"]
     signal = [[i/sr, v] for i, v in enumerate(signal)]
@@ -380,7 +456,10 @@ def timeseries_data(
 def timeseries_data_delete_get(
         request: Request, ressource_url: str = Depends(get_timeseries_data_url)
 ):
-    delete_via_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
         workshop_id=request.path_params["workshop_id"],
@@ -398,6 +477,9 @@ def new_symptom_get(
         components: List[str] = Depends(get_components),
         suggested_component: str = ""
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     return templates.TemplateResponse(
         "new_symptom.html",
         {
@@ -417,8 +499,11 @@ async def new_symptom_post(
         request: Request,
         ressource_url: str = Depends(get_symptoms_url)
 ):
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
     form = await request.form()
-    case = await post_to_api(ressource_url, json=dict(form))
+    case = await post_to_api(ressource_url, access_token, json=dict(form))
     redirect_url = app.url_path_for(
         "case", workshop_id=case["workshop_id"], case_id=case["_id"]
     )
@@ -433,7 +518,10 @@ async def new_symptom_post(
 def symptom_delete_get(
         request: Request, ressource_url: str = Depends(get_symptoms_url)
 ):
-    delete_via_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
         workshop_id=request.path_params["workshop_id"],
@@ -451,7 +539,10 @@ async def start_diagnosis(
         request: Request,
         ressource_url: str = Depends(get_diagnosis_url)
 ):
-    await post_to_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    await post_to_api(ressource_url, access_token=access_token)
     redirect_url = app.url_path_for(
         "case",
         workshop_id=request.path_params["workshop_id"],
@@ -464,7 +555,10 @@ async def start_diagnosis(
 def diagnosis_report(
         request: Request, ressource_url: str = Depends(get_diagnosis_url)
 ):
-    diag = get_from_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    diag = get_from_api(ressource_url, access_token)
 
     # for each log entry with attachment, replace the attachment id with
     # full attachment url
@@ -497,7 +591,10 @@ def diagnosis_report(
 def diagnosis_delete_get(
         request: Request, ressource_url: str = Depends(get_diagnosis_url)
 ):
-    delete_via_api(ressource_url)
+    access_token = request.session.get("access_token", None)
+    if access_token is None:
+        return RedirectResponse("/ui?pleaselogin", status_code=303)
+    delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
         workshop_id=request.path_params["workshop_id"],
