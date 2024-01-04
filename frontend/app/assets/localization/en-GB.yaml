@@ -54,6 +54,12 @@ diagnoses:
     dialog:
       title: "Delete diagnosis"
       description: "Do you really want to delete the diagnosis?"
+    obdUpload: "Uplaod OBD data"
+    uploadFile: "Upload a file"
+    uploadFileTooltip: "Upload file"
+    dragAndDrop: "Drag and drop the file here"
+    uploadDataSuccessMessage: "The data has been uploaded successfully."
+    uploadDataErrorMessage: "The data could not be uploaded."
 cases:
   title: "Cases"
   actions:

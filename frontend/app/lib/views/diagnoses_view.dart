@@ -5,29 +5,19 @@ import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:aw40_hub_frontend/views/diagnosis_detail_view.dart";
-import "package:collection/collection.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
-import "package:logging/logging.dart";
 import "package:provider/provider.dart";
-import "package:routemaster/routemaster.dart";
 
 class DiagnosesView extends StatelessWidget {
-  DiagnosesView({
-    super.key,
-  });
-
-  final Logger _logger = Logger("diagnoses_view");
+  const DiagnosesView({super.key, this.diagnosisId});
+  final String? diagnosisId;
 
   @override
   Widget build(BuildContext context) {
-    final pathParameters = Routemaster.of(context).currentRoute.pathParameters;
-    final String? diagnosisIdString = pathParameters["diagnosisId"];
-
-    final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: _getDiagnoses(context, diagnosisProvider),
+      future: _getDiagnoses(context),
       builder:
           (BuildContext context, AsyncSnapshot<List<DiagnosisModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
@@ -40,20 +30,13 @@ class DiagnosesView extends StatelessWidget {
             );
           }
           diagnosisModels.sort((a, b) => a.status.index - b.status.index);
-
-          final DiagnosisModel? foundModel = diagnosisModels.firstWhereOrNull(
-            (diagnosisModel) => diagnosisModel.id == diagnosisIdString,
-          );
-          if (foundModel == null) {
-            _logger.info(
-              "Could not resolve diagnosis with ID: $diagnosisIdString",
-            );
-          }
+          final int initialDiagnosisIndex = diagnosisId == null
+              ? 0
+              : _getDiagnosisIndexFromId(diagnosisModels, diagnosisId!);
 
           return DesktopDiagnosisView(
             diagnosisModels: diagnosisModels,
-            diagnosisIndex:
-                foundModel == null ? null : diagnosisModels.indexOf(foundModel),
+            initialDiagnosisIndex: initialDiagnosisIndex,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -62,21 +45,24 @@ class DiagnosesView extends StatelessWidget {
     );
   }
 
-  Future<List<CaseModel>> _getCaseModels(BuildContext context) {
-    final caseProvider = Provider.of<CaseProvider>(context);
-    return caseProvider.getCurrentCases();
+  /// Returns the index of the diagnosis with the given `id`.
+  /// If no diagnosis with the given `id` is found, `0` is returned.
+  static int _getDiagnosisIndexFromId(
+    List<DiagnosisModel> models,
+    String id,
+  ) {
+    final diagnosisIndex = models.indexWhere((d) => d.id == id);
+    return diagnosisIndex == -1 ? 0 : diagnosisIndex;
   }
 
-  Future<List<DiagnosisModel>> _getDiagnoses(
+  static Future<List<DiagnosisModel>> _getDiagnoses(
     BuildContext context,
-    DiagnosisProvider diagnosisProvider,
   ) async {
-    final Future<List<CaseModel>> caseModels = _getCaseModels(context);
+    final caseProvider = Provider.of<CaseProvider>(context);
+    final diagnosisProvider = Provider.of<DiagnosisProvider>(context);
+    final List<CaseModel> caseModels = await caseProvider.getCurrentCases();
     final Future<List<DiagnosisModel>> diagnoses =
-        diagnosisProvider.getDiagnoses(
-      await caseModels,
-      context,
-    );
+        diagnosisProvider.getDiagnoses(caseModels);
 
     return diagnoses;
   }
@@ -85,26 +71,23 @@ class DiagnosesView extends StatelessWidget {
 class DesktopDiagnosisView extends StatefulWidget {
   const DesktopDiagnosisView({
     required this.diagnosisModels,
-    this.diagnosisIndex,
+    required this.initialDiagnosisIndex,
     super.key,
   });
 
   final List<DiagnosisModel> diagnosisModels;
-  final int? diagnosisIndex;
+  final int initialDiagnosisIndex;
 
   @override
   State<DesktopDiagnosisView> createState() => _DesktopDiagnosisViewState();
 }
 
 class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
-  int? currentDiagnosisIndex = -1;
+  int? currentDiagnosisIndex;
 
   @override
   Widget build(BuildContext context) {
-    if (currentDiagnosisIndex == -1) {
-      currentDiagnosisIndex = widget.diagnosisIndex ??
-          0; // show details of first element as default
-    }
+    currentDiagnosisIndex ??= widget.initialDiagnosisIndex;
     return Row(
       children: [
         Expanded(
@@ -145,7 +128,7 @@ class _DesktopDiagnosisViewState extends State<DesktopDiagnosisView> {
             ),
           ),
         ),
-        if (currentDiagnosisIndex != null && widget.diagnosisModels.isNotEmpty)
+        if (widget.diagnosisModels.isNotEmpty)
           Expanded(
             flex: 2,
             child: DiagnosisDetailView(

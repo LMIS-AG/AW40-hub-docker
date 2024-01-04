@@ -1,6 +1,5 @@
 import "package:aw40_hub_frontend/dtos/action_dto.dart";
 import "package:aw40_hub_frontend/dtos/dtos.dart";
-import "package:aw40_hub_frontend/models/action_model.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -614,6 +613,124 @@ void main() {
     });
     test("correctly assigns milage", () {
       expect(json["milage"], milage);
+    });
+  });
+  group("NewSymptomDto primary constructor", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.ok;
+    final NewSymptomDto newSymptomDto = NewSymptomDto(
+      timestamp,
+      component,
+      label,
+    );
+    test("correctly assigns timestamp", () {
+      expect(newSymptomDto.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(newSymptomDto.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(newSymptomDto.label, label);
+    });
+  });
+  group("NewSymptomDto fromJson constructor", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.ok;
+    final Map<String, dynamic> json = <String, dynamic>{
+      "timestamp": timestamp,
+      "component": component,
+      "label": label.name,
+    };
+    final NewSymptomDto newSymptomDto = NewSymptomDto.fromJson(json);
+    test("correctly assigns timestamp", () {
+      expect(newSymptomDto.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(newSymptomDto.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(newSymptomDto.label, label);
+    });
+  });
+  group("NewSymptomDto toJson method", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.ok;
+    final NewSymptomDto newSymptomDto = NewSymptomDto(
+      timestamp,
+      component,
+      label,
+    );
+    final Map<String, dynamic> json = newSymptomDto.toJson();
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(json["component"], component);
+    });
+    test("correctly assigns label", () {
+      expect(json["label"], label.name);
+    });
+  });
+  group("NewOBDDataDto primary constructor", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    final NewOBDDataDto newOBDDataDto = NewOBDDataDto(
+      timestamp,
+      obdSpecs,
+      dtcs,
+    );
+    test("correctly assigns timestamp", () {
+      expect(newOBDDataDto.timestamp, timestamp);
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(newOBDDataDto.obdSpecs, obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(newOBDDataDto.dtcs, dtcs);
+    });
+  });
+  group("NewOBDDataDto fromJson constructor", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    final Map<String, dynamic> json = <String, dynamic>{
+      "timestamp": timestamp,
+      "obd_specs": obdSpecs,
+      "dtcs": dtcs,
+    };
+    final NewOBDDataDto newOBDDataDto = NewOBDDataDto.fromJson(json);
+    test("correctly assigns timestamp", () {
+      expect(newOBDDataDto.timestamp, timestamp);
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(newOBDDataDto.obdSpecs, obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(newOBDDataDto.dtcs, dtcs);
+    });
+  });
+  group("NewOBDDataDto toJson method", () {
+    final timestamp = DateTime.utc(2021).toIso8601String();
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    final NewOBDDataDto newOBDDataDto = NewOBDDataDto(
+      timestamp,
+      obdSpecs,
+      dtcs,
+    );
+    final Map<String, dynamic> json = newOBDDataDto.toJson();
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timestamp);
+    });
+    test("correctly assigns dtcs", () {
+      expect(json["obd_specs"], obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(json["dtcs"], dtcs);
     });
   });
   group("ActionDto primary constructor", () {

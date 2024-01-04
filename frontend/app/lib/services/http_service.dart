@@ -88,4 +88,61 @@ class HttpService {
       headers: {"Authorization": "Basic $basicAuthKey=="},
     );
   }
+
+  Future<http.Response> uploadObdData(
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return http.post(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/obd_data"),
+      headers: {
+        "Authorization": "Basic $basicAuthKey==",
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode(requestBody),
+    );
+  }
+
+  Future<http.Response> uploadPicoscopeData(
+    String workshopId,
+    String caseId,
+    List<int> picoscopeData,
+    String filename,
+  ) async {
+    final request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/upload/picoscope",
+      ),
+    );
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        "upload",
+        picoscopeData,
+        filename: filename,
+      ),
+    );
+
+    request.fields["file_format"] = "Picoscope CSV";
+    request.headers["Authorization"] = "Basic $basicAuthKey==";
+
+    return http.Response.fromStream(await request.send());
+  }
+
+  Future<http.Response> uploadSymtomData(
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return http.post(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/symptoms"),
+      headers: {
+        "Authorization": "Basic $basicAuthKey==",
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode(requestBody),
+    );
+  }
 }

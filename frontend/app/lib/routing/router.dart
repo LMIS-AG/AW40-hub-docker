@@ -15,10 +15,10 @@ RouteMap getRouteMap(AuthProvider authProvider) {
   RouteSettings Function(String path) onUnknownRoute;
 
   final bool isLoggedIn = authProvider.isLoggedIn();
-  logger.info("isLoggedIn: $isLoggedIn");
+  logger.config("isLoggedIn: $isLoggedIn");
   if (!isLoggedIn) {
     onUnknownRoute = (String route) {
-      logger.info(
+      logger.config(
         "Requested route $route, user not logged in, returning LoginScreen.",
       );
       final String? currentBrowserUrl = kIsWeb ? window.location.href : null;
@@ -57,15 +57,16 @@ Map<String, PageBuilder> _basicRoutes = {
       ),
     );
   },
-  kRouteDiagnosis: (RouteData info) {
-    return const MaterialPage<Widget>(
+  kRouteDiagnosisDetails: (RouteData info) {
+    final String? diagnosisId = info.pathParameters["diagnosisId"];
+    return MaterialPage<Widget>(
       child: ScaffoldWrapper(
         currentIndex: 1,
-        child: DiagnosisScreen(),
+        child: DiagnosisScreen(diagnosisId: diagnosisId),
       ),
     );
   },
-  kRouteDiagnosisDetails: (RouteData info) {
+  kRouteDiagnosis: (RouteData info) {
     return const MaterialPage<Widget>(
       child: ScaffoldWrapper(
         currentIndex: 1,

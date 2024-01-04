@@ -1,9 +1,18 @@
+import "dart:async";
+import "dart:convert";
+
+import "package:aw40_hub_frontend/components/components.dart";
+import "package:aw40_hub_frontend/dtos/dtos.dart";
+import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/providers/providers.dart";
 import "package:aw40_hub_frontend/services/services.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
+import "package:cross_file/cross_file.dart";
+import "package:desktop_drop/desktop_drop.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 
 class DiagnosisDetailView extends StatefulWidget {
@@ -19,37 +28,45 @@ class DiagnosisDetailView extends StatefulWidget {
 }
 
 class _DiagnosisDetailView extends State<DiagnosisDetailView> {
+  XFile? _file;
+  final Logger _logger = Logger("diagnosis detail view");
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
+    final TextTheme textTheme = theme.textTheme;
+    final DiagnosisStatus status = widget.diagnosisModel.status;
 
-    final color = HelperService.getDiagnosisStatusBackgroundColor(
+    final diagnosisStatusContainerColor =
+        HelperService.getDiagnosisStatusContainerColor(
       colorScheme,
-      widget.diagnosisModel.status,
+      status,
     );
-    final complementColor = HelperService.getDiagnosisStatusForegroundColor(
+    final diagnosisStatusOnContainerColor =
+        HelperService.getDiagnosisStatusOnContainerColor(
       colorScheme,
-      widget.diagnosisModel.status,
+      status,
+    );
+    final diagnosisStatusIconData = HelperService.getDiagnosisStatusIconData(
+      status,
     );
 
     return SizedBox.expand(
       child: Card(
-        color: theme.colorScheme.primaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppBar(
-                backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                title: Text(
-                  tr("diagnoses.details.headline"),
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall
-                      ?.copyWith(color: colorScheme.onPrimaryContainer),
-                ),
-                actions: [
+              // Title bar
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    tr("diagnoses.details.headline"),
+                    style: textTheme.displaySmall,
+                  ),
                   IconButton(
                     icon: const Icon(Icons.delete_forever),
                     iconSize: 28,
@@ -58,8 +75,6 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
                     ),
                     onPressed: () async => _onDeleteButtonPress(
                       context,
-                      Provider.of<AuthProvider>(context, listen: false)
-                          .loggedInUser,
                       widget.diagnosisModel.caseId,
                     ),
                   ),
@@ -67,64 +82,136 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
               ),
               const SizedBox(height: 16),
               // Case ID
-              Table(
-                columnWidths: const {0: IntrinsicColumnWidth()},
-                children: [
-                  TableRow(
-                    children: [
-                      const SizedBox(height: 32),
-                      Text(
-                        tr("general.case"),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                      Text(
-                        widget.diagnosisModel.caseId,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Text(
+                "${tr('general.case')}: ${widget.diagnosisModel.caseId}",
+                style: textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
-              // Current State
+              // Coloured card for current State
               Card(
-                color: color,
-                child: ListTile(
-                  leading: Icon(
-                    HelperService.getDiagnosisStatusIconData(
-                      widget.diagnosisModel.status,
+                color: diagnosisStatusContainerColor,
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(diagnosisStatusIconData),
+                      title: Text(
+                        tr("diagnoses.status.${status.name}"),
+                      ),
+                      subtitle: _getSubtitle,
+                      textColor: diagnosisStatusOnContainerColor,
+                      iconColor: diagnosisStatusOnContainerColor,
                     ),
-                  ),
-                  title: Text(
-                    tr("diagnoses.status.${widget.diagnosisModel.status.name}"),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: complementColor,
-                    ),
-                  ),
-                  iconColor: complementColor,
-                  subtitle: widget.diagnosisModel.status ==
-                          DiagnosisStatus.action_required
-                      ? Text(
-                          widget.diagnosisModel.todos[0].instruction,
-                          style: TextStyle(
-                            color: complementColor,
-                          ),
-                        )
-                      : null,
+                    if (status == DiagnosisStatus.action_required)
+                      DiagnosisDragAndDropArea(
+                        fileName: _file?.name,
+                        onUploadFile: _uploadFile,
+                        onDragDone: _onDragDone,
+                      ),
+                  ],
                 ),
               ),
-
               const SizedBox(height: 32),
-              const Placeholder(),
+              // TBD: State Machine Log
+              const Expanded(child: Placeholder()),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _onDragDone(DropDoneDetails dropDoneDetails) {
+    setState(() {
+      final files = dropDoneDetails.files;
+      if (files.isEmpty) {
+        throw AppException(
+          exceptionType: ExceptionType.unexpectedNullValue,
+          exceptionMessage: "`dropDoneDetails.files` is empty.",
+        );
+      }
+      _file = files.first;
+    });
+  }
+
+  Text? get _getSubtitle {
+    final DiagnosisStatus status = widget.diagnosisModel.status;
+    if (status != DiagnosisStatus.action_required) return null;
+
+    return Text(
+      HelperService.convertIso88591ToUtf8(
+        widget.diagnosisModel.todos[0].instruction,
+      ),
+      softWrap: true,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Future<void> _uploadFile() async {
+    final ScaffoldMessengerState scaffoldMessengerState =
+        ScaffoldMessenger.of(context);
+    final diagnosisProvider = Provider.of<DiagnosisProvider>(
+      context,
+      listen: false,
+    );
+
+    try {
+      final XFile file = _file!;
+      final String fileContent = await file.readAsString();
+      bool result = false;
+
+      switch (widget.diagnosisModel.todos.first.dataType) {
+        case "obd":
+          final Map<String, dynamic> jsonMap = jsonDecode(fileContent);
+          final NewOBDDataDto newOBDDataDto = NewOBDDataDto.fromJson(jsonMap);
+
+          result = await diagnosisProvider.uploadObdData(
+            widget.diagnosisModel.caseId,
+            newOBDDataDto,
+          );
+          break;
+        case "oscillogram":
+          final List<int> byteData = utf8.encode(fileContent);
+          result = await diagnosisProvider.uploadPicoscopeData(
+            widget.diagnosisModel.caseId,
+            byteData,
+            file.name,
+          );
+          break;
+        case "symptom":
+          final Map<String, dynamic> jsonMap = jsonDecode(fileContent);
+          final NewSymptomDto newSymptomDto = NewSymptomDto.fromJson(jsonMap);
+
+          result = await diagnosisProvider.uploadSymtomData(
+            widget.diagnosisModel.caseId,
+            newSymptomDto,
+          );
+          break;
+        default:
+          throw AppException(
+            exceptionType: ExceptionType.unexpectedNullValue,
+            exceptionMessage: "Unknown data type: "
+                "${widget.diagnosisModel.todos.first.dataType}",
+          );
+      }
+
+      _showMessage(
+        result
+            ? tr(
+                "diagnoses.details.uploadDataSuccessMessage",
+              )
+            : tr(
+                "diagnoses.details.uploadDataErrorMessage",
+              ),
+        scaffoldMessengerState,
+      );
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      _logger.info("Exception during file upload: $e");
+      _showMessage(
+        tr("diagnoses.details.uploadObdDataErrorMessage"),
+        scaffoldMessengerState,
+      );
+    }
   }
 
   static Future<bool?> _showConfirmDeleteDialog(BuildContext context) {
@@ -156,7 +243,6 @@ class _DiagnosisDetailView extends State<DiagnosisDetailView> {
 
   static Future<void> _onDeleteButtonPress(
     BuildContext context,
-    LoggedInUserModel loggedInUserModel,
     String diagnosisModelCaseId,
   ) async {
     final diagnosisProvider = Provider.of<DiagnosisProvider>(
