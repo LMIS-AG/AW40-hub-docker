@@ -624,3 +624,10 @@ def diagnosis_delete_get(
         case_id=request.path_params["case_id"]
     )
     return redirect_url
+
+
+@app.get("/ui/logout", response_class=RedirectResponse)
+def diagnosis_report(request: Request):
+    request.session.pop("access_token", None)
+    flash_message(request, "Sie wurden erfolgreich ausgeloggt.")
+    return RedirectResponse("/ui", status_code=303)
