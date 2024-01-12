@@ -7,7 +7,7 @@ class Settings(BaseSettings):
 
     keycloak_url: str = "http://keycloak:8080"
     keycloak_workshop_realm: str = "workshops"
-    keycloak_client_id: str = "demo-ui"
+    keycloak_client_id: str = "werkstatt-hub"
     keycloak_client_secret: str = None
 
     session_secret: str = "demo-ui-session-secret"

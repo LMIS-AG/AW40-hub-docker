@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     knowledge_graph_url: Optional[str] = "http://knowledge-graph:3030"
 
     keycloak_url: str = "http://keycloak:8080"
-    keycloak_workshop_realm: str = "workshops"
+    keycloak_workshop_realm: str = "werkstatt-hub"
 
     @property
     def mongo_uri(self):
