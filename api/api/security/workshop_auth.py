@@ -1,7 +1,8 @@
 from fastapi import Depends, HTTPException, status, Path
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt, JWTError
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
+
 
 from .keycloak import Keycloak
 
@@ -15,6 +16,13 @@ failed_auth_exception = HTTPException(
 class WorkshopTokenData(BaseModel):
     """Parses data from a decoded JWT payload."""
     workshop_id: str = Field(alias="preferred_username")
+    roles: list[str]
+
+    @root_validator(pre=True)
+    @classmethod
+    def parse_roles_from_keycloak_token(cls, values):
+        values["roles"] = values.get("realm_access", {}).get("roles", [])
+        return values
 
 
 async def require_token(
@@ -40,10 +48,17 @@ async def verify_workshop_token(
 
 async def authorized_workshop_id(
         workshop_id: str = Path(...),
-        token_data: WorkshopTokenData = Depends(verify_workshop_token)
+        token_data: WorkshopTokenData = Depends(verify_workshop_token),
+        required_role: str = "workshop"
 ) -> str:
-    """Authorize access to a workshop_id if it matches the Id in a token."""
+    """
+    Authorize access to a workshop_id if it matches the Id in a token and
+    is assigned a role that indicates that the user account is indeed a
+    workshop account.
+    """
     if workshop_id != token_data.workshop_id:
+        raise failed_auth_exception
+    if required_role not in token_data.roles:
         raise failed_auth_exception
     else:
         return workshop_id
