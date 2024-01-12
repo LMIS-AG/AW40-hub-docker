@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block sidebar %}
-    <a href="/ui">Anmeldung Werkstatt</a>
+    <a href="/ui/logout">Werkstatt {{ request.path_params["workshop_id"] }} (Abmelden)</a>
     <a href="#"><b>Fälle</b></a>
 {% endblock %}
 
