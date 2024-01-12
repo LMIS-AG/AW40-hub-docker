@@ -6,10 +6,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
-from . import template_filters
 
-from .settings import settings
 from . import keycloak
+from . import template_filters
+from .messages import get_flashed_messages, flash_message
+from .settings import settings
 
 app = FastAPI()
 app.add_middleware(
@@ -23,13 +24,15 @@ app.mount(
 templates = Jinja2Templates(directory="demo_ui/templates")
 templates.env.filters["schema_format"] = template_filters.schema_format
 templates.env.filters["timestamp_format"] = template_filters.timestamp_format
+templates.env.globals["get_flashed_messages"] = get_flashed_messages
 
 
 @app.exception_handler(httpx.HTTPStatusError)
 async def http_status_error_handler(request, exc):
     if str(exc.request.url).startswith(settings.hub_api_base_url):
         if exc.response.status_code in [401, 403]:
-            return RedirectResponse("/ui?pleaselogin", status_code=303)
+            flash_message(request, "Bitte anmelden!")
+            return RedirectResponse("/ui", status_code=303)
     else:
         return templates.TemplateResponse(
             "http_exception.html",
@@ -162,8 +165,9 @@ def login_post(
         password=password
     )
     if not access_token:
+        flash_message(request, "Anmeldedaten nicht korrekt!")
         return RedirectResponse(
-            "/ui?invalidusercredentials", status_code=303
+            "/ui", status_code=303
         )
     request.session["access_token"] = access_token
     request.session["refresh_token"] = refresh_token
@@ -175,7 +179,8 @@ def login_post(
 def cases(request: Request, ressource_url: str = Depends(get_cases_url)):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     cases = get_from_api(ressource_url, access_token)
     for case in cases:
         if case["diagnosis_id"] is not None:
@@ -200,7 +205,8 @@ def cases(request: Request, ressource_url: str = Depends(get_cases_url)):
 def new_case_get(request: Request):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     return templates.TemplateResponse(
         "new_case.html",
         {
@@ -218,7 +224,8 @@ async def new_case_post(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     form = await request.form()
     # remove empty fields
     form = {k: v for k, v in form.items() if v}
@@ -233,7 +240,8 @@ async def new_case_post(
 def case(request: Request, ressource_url: str = Depends(get_case_url)):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     case = get_from_api(ressource_url, access_token)
     if case["diagnosis_id"] is not None:
         # get diagnosis and embed in case
@@ -264,7 +272,8 @@ def case_delete_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "cases", workshop_id=request.path_params["workshop_id"]
@@ -279,7 +288,8 @@ def case_delete_get(
 def new_obd_data_get(request: Request):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     return templates.TemplateResponse(
         "new_obd_data.html", {"request": request}
     )
@@ -298,7 +308,8 @@ async def new_obd_data_post(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     if dtcs_text:
         dtcs = dtcs_text.split("\r\n")
         obd_data = {"dtcs": dtcs}
@@ -332,7 +343,8 @@ def obd_data(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     obd_data = get_from_api(ressource_url, access_token)
     return templates.TemplateResponse(
         "obd_data.html",
@@ -353,7 +365,8 @@ def obd_data_delete_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
@@ -375,7 +388,8 @@ def new_timeseries_data_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     return templates.TemplateResponse(
         "new_timeseries_data.html",
         {
@@ -397,7 +411,8 @@ async def new_timeseries_data_post(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     form = await request.form()
     form = dict(form)
     form["file_format"] = "Picoscope CSV"
@@ -430,7 +445,8 @@ def timeseries_data(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     timeseries_data = get_from_api(ressource_url, access_token)
     signal_url = f"{ressource_url}/signal"
     signal = get_from_api(signal_url, access_token)
@@ -458,7 +474,8 @@ def timeseries_data_delete_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
@@ -479,7 +496,8 @@ def new_symptom_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     return templates.TemplateResponse(
         "new_symptom.html",
         {
@@ -501,7 +519,8 @@ async def new_symptom_post(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     form = await request.form()
     case = await post_to_api(ressource_url, access_token, json=dict(form))
     redirect_url = app.url_path_for(
@@ -520,7 +539,8 @@ def symptom_delete_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
@@ -541,7 +561,8 @@ async def start_diagnosis(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     await post_to_api(ressource_url, access_token=access_token)
     redirect_url = app.url_path_for(
         "case",
@@ -557,7 +578,8 @@ def diagnosis_report(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     diag = get_from_api(ressource_url, access_token)
 
     # for each log entry with attachment, replace the attachment id with
@@ -593,7 +615,8 @@ def diagnosis_delete_get(
 ):
     access_token = request.session.get("access_token", None)
     if access_token is None:
-        return RedirectResponse("/ui?pleaselogin", status_code=303)
+        flash_message(request, "Bitte anmelden!")
+        return RedirectResponse("/ui", status_code=303)
     delete_via_api(ressource_url, access_token)
     redirect_url = app.url_path_for(
         "case",
