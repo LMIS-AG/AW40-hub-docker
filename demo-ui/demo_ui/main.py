@@ -2,7 +2,7 @@ from typing import List
 
 import httpx
 from fastapi import FastAPI, Request, Form, UploadFile, Depends, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
@@ -96,6 +96,13 @@ def get_diagnosis_url(workshop_id: str, case_id: str) -> str:
     return _get_data_url(workshop_id, case_id, "diag", None)
 
 
+def get_diagnosis_attachment_url(
+        workshop_id: str, case_id: str, attachment_id: str
+) -> str:
+    diagnosis_url = get_diagnosis_url(workshop_id=workshop_id, case_id=case_id)
+    return f"{diagnosis_url}/attachments/{attachment_id}"
+
+
 def _auth_header(access_token: str):
     if access_token is None:
         return None
@@ -107,6 +114,8 @@ def get_from_api(url: str, access_token: str = None) -> dict:
     headers = _auth_header(access_token)
     response = httpx.get(url, headers=headers)
     response.raise_for_status()
+    if response.headers.get("content-type") == "image/png":
+        return response.content
     return response.json()
 
 
@@ -558,10 +567,7 @@ def diagnosis_report(
     for log_entry in diag["state_machine_log"]:
         attachment_id = log_entry["attachment"]
         if attachment_id is not None:
-            attachment_url = f"{ressource_url}/attachments/{attachment_id}"
-            attachment_url = attachment_url.replace(
-                settings.hub_api_base_url, settings.hub_api_host_url
-            )
+            attachment_url = f"{request.url}/attachments/{attachment_id}"
             log_entry["attachment"] = attachment_url
 
     return templates.TemplateResponse(
@@ -574,6 +580,19 @@ def diagnosis_report(
             "todos": diag["todos"]
         }
     )
+
+
+@app.get(
+    "/ui/{workshop_id}/cases/{case_id}/diag/attachments/{attachment_id}",
+    response_class=Response
+)
+def diagnosis_attachment(
+        request: Request,
+        access_token: str = Depends(get_session_token),
+        ressource_url: str = Depends(get_diagnosis_attachment_url)
+):
+    attachment = get_from_api(ressource_url, access_token)
+    return Response(content=attachment, media_type="image/png")
 
 
 @app.get(
