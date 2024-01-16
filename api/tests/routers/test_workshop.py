@@ -105,7 +105,8 @@ def jwt_payload(workshop_id):
     return {
         "iat": datetime.utcnow().timestamp(),
         "exp": (datetime.utcnow() + timedelta(60)).timestamp(),
-        "preferred_username": workshop_id
+        "preferred_username": workshop_id,
+        "realm_access": {"roles": ["workshop"]}
     }
 
 
