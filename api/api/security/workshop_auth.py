@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field, root_validator
 
 from .keycloak import Keycloak
 
+REQUIRED_WORKSHOP_ROLE = "workshop"
+
+
 failed_auth_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Could not validate token.",
@@ -48,8 +51,7 @@ async def verify_workshop_token(
 
 async def authorized_workshop_id(
         workshop_id: str = Path(...),
-        token_data: WorkshopTokenData = Depends(verify_workshop_token),
-        required_role: str = "workshop"
+        token_data: WorkshopTokenData = Depends(verify_workshop_token)
 ) -> str:
     """
     Authorize access to a workshop_id if it matches the Id in a token and
@@ -58,7 +60,7 @@ async def authorized_workshop_id(
     """
     if workshop_id != token_data.workshop_id:
         raise failed_auth_exception
-    if required_role not in token_data.roles:
+    if REQUIRED_WORKSHOP_ROLE not in token_data.roles:
         raise failed_auth_exception
     else:
         return workshop_id
