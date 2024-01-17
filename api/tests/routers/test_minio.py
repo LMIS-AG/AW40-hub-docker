@@ -1,7 +1,9 @@
 import uuid
 from httpx import Client
 
-client = Client()
+# Test run again the api container. Use the api key configured for the api's
+# minio router in dev.env
+client = Client(headers={"x-api-key": "minio-key-dev"})
 
 base_addr = "http://localhost:8000/v1/minio"
 bucket = "werkstatthub"

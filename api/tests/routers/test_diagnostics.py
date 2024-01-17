@@ -48,6 +48,11 @@ test_app.include_router(diagnostics.router)
 
 client = AsyncClient(app=test_app, base_url="http://")
 
+# The test client needs to use a header for API key authentication
+test_api_key = "valid key"
+diagnostics.api_key_auth.valid_key = test_api_key
+client.headers["x-api-key"] = test_api_key
+
 
 @pytest.mark.asyncio
 async def test_get_diagnosis(
@@ -152,7 +157,6 @@ async def test_get_oscillograms(
         )
 
         # request oscillogram data
-        client = AsyncClient(app=test_app, base_url="http://")
         response = await client.get(
             f"/{diag_id}/oscillograms?component={component}"
         )
