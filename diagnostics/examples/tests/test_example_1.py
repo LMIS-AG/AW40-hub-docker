@@ -3,6 +3,10 @@ from time import time
 import httpx
 from example_1 import example
 
+# API key defined in dev.env is required while polling the hub api for the
+# finished diagnosis
+api_key_diagnostics = "diagnostics-key-dev"
+
 
 def test_example():
     # Execute the example
@@ -15,7 +19,7 @@ def test_example():
     timeout = 10
     start = time()
     while time() - start <= timeout and status != "finished":
-        diag = httpx.get(diag_url)
+        diag = httpx.get(diag_url, headers={"x-api-key": api_key_diagnostics})
         status = diag.json()["status"]
 
     assert status == "finished"
