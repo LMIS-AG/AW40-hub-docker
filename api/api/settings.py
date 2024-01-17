@@ -19,6 +19,9 @@ class Settings(BaseSettings):
 
     knowledge_graph_url: Optional[str] = "http://knowledge-graph:3030"
 
+    api_key_diagnostics: str
+    api_key_minio: str
+
     @property
     def mongo_uri(self):
         username = self.mongo_username
