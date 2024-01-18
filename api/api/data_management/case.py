@@ -7,7 +7,7 @@ from beanie import (
 )
 from pydantic import BaseModel, Field, NonNegativeInt
 
-from .customer import Customer
+from .customer import Customer, AnonymousCustomerId
 from .diagnosis import Diagnosis
 from .obd_data import NewOBDData, OBDData, OBDDataUpdate
 from .symptom import NewSymptom, Symptom, SymptomUpdate
@@ -42,7 +42,7 @@ class NewCase(BaseModel):
         }
 
     vehicle_vin: str
-    customer_id: Indexed(str, unique=False) = Customer.unknown_id
+    customer_id: AnonymousCustomerId = Customer.unknown_id
     occasion: Occasion = Occasion.unknown
     milage: int = None
 
