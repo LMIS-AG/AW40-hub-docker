@@ -67,7 +67,7 @@ def create_case(workshop_id):
         url=cases_url,
         json={
             "vehicle_vin": "1234567890ABCDEFGHJKLMNPRSTUVWXYZ",
-            "customer_id": "firstname.lastname",
+            "customer_id": "anonymous",
             "occasion": "service_routine",
             "milage": 42
         }
