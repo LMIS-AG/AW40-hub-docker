@@ -152,7 +152,7 @@ def test_add_case(client):
     workshop_id = "test workshop"
     new_case = {
         "vehicle_vin": "test-vin",
-        "customer_id": "test.customer",
+        "customer_id": "unknown",
         "occasion": "unknown",
         "milage": 42
     }
