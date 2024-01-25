@@ -26,6 +26,11 @@ $kcadm create roles \
     -r werkstatt-hub \
     -s name=${WERKSTATT_MECHANIC_ROLE}
 
+# Create a user role 'workshop'
+$kcadm create roles \
+  -r werkstatt-hub \
+  -s name=workshop
+
 # Create MinIO administrator
 $kcadm create users \
     -r werkstatt-hub \

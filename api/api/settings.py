@@ -19,6 +19,9 @@ class Settings(BaseSettings):
 
     knowledge_graph_url: Optional[str] = "http://knowledge-graph:3030"
 
+    keycloak_url: str = "http://keycloak:8080"
+    keycloak_workshop_realm: str = "werkstatt-hub"
+
     api_key_diagnostics: str
     api_key_minio: str
 
