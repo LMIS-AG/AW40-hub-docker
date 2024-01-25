@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     keycloak_url: str = "http://keycloak:8080"
     keycloak_workshop_realm: str = "werkstatt-hub"
 
+    exclude_minio_router: bool = False
+    exclude_diagnostics_router: bool = False
+
     @property
     def mongo_uri(self):
         username = self.mongo_username
