@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     api_key_diagnostics: str
     api_key_minio: str
 
+    exclude_minio_router: bool = False
+    exclude_diagnostics_router: bool = False
+
+
     @property
     def mongo_uri(self):
         username = self.mongo_username
