@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     keycloak_url: str = "http://keycloak:8080"
     keycloak_workshop_realm: str = "werkstatt-hub"
 
+    api_key_diagnostics: str
+    api_key_minio: str
+
     exclude_minio_router: bool = False
     exclude_diagnostics_router: bool = False
 

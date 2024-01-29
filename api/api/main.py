@@ -14,6 +14,8 @@ from .settings import settings
 from .storage.storage_factory import StorageFactory
 from .security.keycloak import Keycloak
 from .v1 import api_v1
+from .routers import diagnostics
+from .routers import minio
 
 app = FastAPI()
 app.add_middleware(
@@ -87,3 +89,9 @@ def init_keycloak():
         url=settings.keycloak_url,
         workshop_realm=settings.keycloak_workshop_realm
     )
+
+
+@app.on_event("startup")
+def set_api_keys():
+    diagnostics.api_key_auth.valid_key = settings.api_key_diagnostics
+    minio.api_key_auth.valid_key = settings.api_key_minio
