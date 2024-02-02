@@ -12,6 +12,18 @@ jobs:
   docker:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+    env:
+      # Overwrite dev.env to use http
+      PROXY_DEFAULT_ENTRYPOINTS: web
+      PROXY_DEFAULT_SCHEME: http
+      # Overwrite Addresses in dev.env
+      FRONTEND_ADDRESS: werkstatthub.docker.localhost
+      DOCS_ADDRESS: docs.werkstatthub.docker.localhost
+      MINIO_ADDRESS: minio.werkstatthub.docker.localhost
+      MINIO_API_ADDRESS: minioapi.werkstatthub.docker.localhost
+      KEYCLOAK_ADDRESS: keycloak.werkstatthub.docker.localhost
+      API_ADDRESS: api.werkstatthub.docker.localhost
+      EDC_ADDRESS: edc.werkstatthub.docker.localhost
 
     steps:
     # Setup environment
@@ -20,9 +32,6 @@ jobs:
 
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v2
-
-      - name: Add internal Docker IP to hosts
-        run: echo "172.17.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
     # Tag Containers
       - name: Build and tag containers
@@ -36,7 +45,7 @@ jobs:
       - name: Check if documentation is reachable
         run: |
           curl -fs -o /dev/null -w 'http_code:%{http_code}' \
-          http://localhost:8001 \
+          $PROXY_DEFAULT_SCHEME://$DOCS_ADDRESS \
           || exit 1
 
     # Test MongoDB
@@ -50,33 +59,33 @@ jobs:
       - name: Check if Keycloak is healthy
         run: |
           curl -fs \
-          http://localhost:8080/health/live \
+          $PROXY_DEFAULT_SCHEME://$KEYCLOAK_ADDRESS/health/live \
           || exit 1
 
     # Test MinIO
       - name: Check if MinIO is healthy
         run: |
           curl -fs \
-          http://localhost:9000/minio/health/live \
+          $PROXY_DEFAULT_SCHEME://$MINIO_ADDRESS/minio/health/live \
           || exit 1
 
     # Test EDC
       - name: Check if EDC is healthy
         run: |
             curl -fs \
-            http://localhost:8181/api/health \
+            $PROXY_DEFAULT_SCHEME://$EDC_ADDRESS/api/health \
             || exit 1
 
     # Test API
       - name: Check if API is healthy
         run: |
           curl -fs \
-          http://localhost:8000/v1/health/ping \
+          $PROXY_DEFAULT_SCHEME://$API_ADDRESS/v1/health/ping \
           || exit 1
 
       - name: Check for strict-transport-security header
         run: |
-          curl -sIX GET http://localhost:8000/v1/health/ping \
+          curl -sIX GET $PROXY_DEFAULT_SCHEME://$API_ADDRESS/v1/health/ping \
             | grep -iq "strict-transport-security" \
             || exit 1
 
@@ -88,11 +97,12 @@ jobs:
 
       - name: Run flake8
         run: flake8 ./api
+
     # Test Frontend
       - name: Check if Frontend is reachable
         run: |
           curl -fs \
-          http://localhost:4200 \
+          $PROXY_DEFAULT_SCHEME://$FRONTEND_ADDRESS \
           || exit 1
 
     # Clean up
