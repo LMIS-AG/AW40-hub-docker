@@ -17,7 +17,7 @@ Darauf aufbauend wird im Abschnitt [Lösungsansatz](#losungsansatz) eine Übersi
 des AW4.0 Hub präsentiert.
 
 ## Szenarien
-Ein Szenario ist eine Situation, die mögliche Ereignisse, Bedingungen und Folgen beschreibt. Sicherheitsanalysen werden von einem Szenario gemacht, um potenzielle Risiken, Schwachstellen und Gegenmaßnahmen zu identifizieren. In dieser Analyse betrachten wir die folgenden drei Szenarien.
+Ein Szenario ist eine Situation, die mögliche Ereignisse, Bedingungen und Folgen beschreibt.
 
 ### Szenario 1: Kauf von Assets
 Die Werkstatt hat bisher nur ältere Modelle zur Diagnose von Fahrzeugen, die nicht mehr alle Funktionen abdecken können. Sie möchte daher ein neues Modell erwerben, das auf dem neuesten Stand der Technik ist und alle relevanten Daten auswerten kann. Um ein solches Modell zu finden, nutzt sie die Datenraum Oberfläche des Werkstatt Hubs, der einen Markt für den Austausch von Daten und Dienstleistungen zwischen Werkstätten und anderen Akteuren bietet. Dort kann sie nach verschiedenen Kriterien nach passenden Modellen suchen, wie z.B. Preis, Leistung, Bewertung oder Verfügbarkeit.
