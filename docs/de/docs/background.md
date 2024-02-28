@@ -10,32 +10,33 @@ Im Rahmen der 2022 durchgeführten Arbeiten und Gespräche wurden verschiedene
 Anforderungen in diesen Bereichen identifiziert, also Aufgaben / Probleme, 
 die durch das **System Autowerkstatt 4.0** gelöst werden sollen.
 
-Um die Anforderungen Kontext darstellen zu können haben wird im Abschnitt [Szenarien](#Szenarien)  
+Um die Anforderungen Ableiten zu können habeb wir in Abschnitt [Szenarien](#Szenarien)  
 vier Szenarien formuliert. Die daraus resultierenden Aufgaben/Probleme werden 
 im Abschnitt [Anforderungsanalyse](#anforderungsanalyse) genauer beschrieben.
 Darauf aufbauend wird im Abschnitt [Lösungsansatz](#losungsansatz) eine Übersicht 
 des AW4.0 Hub präsentiert.
 
 ## Szenarien
-Ein Szenario ist eine Situation, die mögliche Ereignisse, Bedingungen und Folgen beschreibt. Sicher-heitsanalysen werden von einem Szenario gemacht, um potenzielle Risiken, Schwachstellen und Ge-genmaßnahmen zu identifizieren. In dieser Analyse betrachten wir die folgenden drei Szenarien.
+Ein Szenario ist eine Situation, die mögliche Ereignisse, Bedingungen und Folgen beschreibt. Sicherheitsanalysen werden von einem Szenario gemacht, um potenzielle Risiken, Schwachstellen und Gegenmaßnahmen zu identifizieren. In dieser Analyse betrachten wir die folgenden drei Szenarien.
 
 ### Szenario 1: Kauf von Assets
-Die Werkstatt hat bisher nur ältere Modelle zur Diagnose von Fahrzeugen, die nicht mehr alle Funkti-onen abdecken können. Sie möchte daher ein neues Modell erwerben, das auf dem neuesten Stand der Technik ist und alle relevanten Daten auslesen kann. Um ein solches Modell zu finden, nutzt sie den Datenraum Oberfläche des Werkstatt Hubs, der einen Markt für den Austausch von Daten und Dienstleistungen zwischen Werkstätten und anderen Akteuren bietet. Dort kann sie nach verschiede-nen Kriterien nach passenden Modellen suchen, wie z.B. Preis, Leistung, Bewertung oder Verfügbar-keit.
+Die Werkstatt hat bisher nur ältere Modelle zur Diagnose von Fahrzeugen, die nicht mehr alle Funktionen abdecken können. Sie möchte daher ein neues Modell erwerben, das auf dem neuesten Stand der Technik ist und alle relevanten Daten auswerten kann. Um ein solches Modell zu finden, nutzt sie die Datenraum Oberfläche des Werkstatt Hubs, der einen Markt für den Austausch von Daten und Dienstleistungen zwischen Werkstätten und anderen Akteuren bietet. Dort kann sie nach verschiedenen Kriterien nach passenden Modellen suchen, wie z.B. Preis, Leistung, Bewertung oder Verfügbarkeit.
 
 Nach einer kurzen Suche findet sie ein Modell, das ihren Anforderungen entspricht. Sie entscheidet sich, das Modell zu kaufen und schließt einen Vertrag mit dem Anbieter ab. Der Vertrag regelt die Bedingungen für die Nutzung des Modells, wie z.B. die Laufzeit, den Umfang, die Kosten oder die Haftung. Nachdem der Vertrag abgeschlossen ist, wird das Modell entweder auf den Werkstatt Hub geladen oder der Zugriff auf das Modell wird über den Datenraum gewährt. Die Werkstatt kann nun das Modell zur Diagnose von Fahrzeugen verwenden.
 
 ## Szenario 2: Verkauf von Assets
-Um ihre Wettbewerbsfähigkeit zu erhöhen, plant die Werkstatt, ihre gesammelten Fahrzeugdaten als wertvolles Asset zu vermarkten. Die Werkstatt hat bereits mehrere Fahrzeuge über den Werkstatt-Hub diagnostiziert und dabei nützliche Daten erzeugt. Die Werkstatt möchte diese Daten nutzen, um in Zukunft bessere Diagnosemodelle anwenden zu können. Mit Hilfe der Datentraum Oberfläche kann die Werkstatt, die von ihr gewünschten Daten auswählen und zu einem Asset bündeln. Die Werkstatt legt die Vertragsbedingungen fest und erstellt eine Asset-Beschreibung. Die Werkstatt-Daten werden anonymisiert und als Asset-Angebot auf den Markt gebracht.
+Um ihre Wettbewerbsfähigkeit zu erhöhen, plant die Werkstatt, ihre gesammelten Fahrzeugdaten als Asset zu vermarkten. Die Werkstatt hat bereits mehrere Fahrzeuge über den Werkstatt-Hub diagnostiziert und dabei Daten erzeugt. Die Werkstatt möchte diese Daten nutzen, um in Zukunft bessere Diagnosemodelle anwenden zu können. Mit Hilfe der Datentraum Oberfläche kann die Werkstatt, die von ihr gewünschten Daten auswählen und zu einem Asset bündeln. Die Werkstatt legt die Vertragsbedingungen fest und erstellt eine Asset-Beschreibung. Die Werkstatt-Daten werden anonymisiert und als Asset-Angebot auf den Markt gebracht.
 
 ## Szenario 3: Diagnose
-Die Werkstatt führt eine Diagnose am Fahrzeug mittels des AW 4.0 Werkstatt-Hubs durch, in diesem Szenario beschreiben wir die Diagnose anhand von Oszilloskop Daten, die beim ersten Versuch zum Erfolg führt.
+Die Werkstatt führt eine Diagnose am Fahrzeug mittels des AW 4.0 Werkstatt-Hubs durch, in diesem Szenario beschreiben wir die Diagnose anhand von Oszilloskop Daten.
 
-Eine Werkstatt erhält ein Fahrzeug zur Diagnose, das einen Fehler aufweist. Um die Ursache des Fehlers zu ermitteln, nutzt die Werkstatt den AW 4.0 Werkstatt-Hub und legt einen Fall für die Diag-nose an. Der Werkstatt-Hub liest die OBD-Daten des Fahrzeugs aus und vergleicht sie mit dem Wis-sensgraphen, um das wahrscheinlichste defekte Bauteil zu bestimmen. Anschließend ruft der Werk-statt-Hub die entsprechende Diagnose für das Bauteil auf und gibt der Werkstatt die Anforderungen und Anweisungen für eine Oszilloskop-Messung. Die Werkstatt führt die Messung gemäß den Vorga-ben durch und leitet die Messdaten an den Werkstatt-Hub weiter. Der Werkstatt-Hub interpretiert die Messdaten und identifiziert das defekte Bauteil. Nachdem die Werkstatt das Bauteil ausgetauscht hat, markiert sie den Fall im Werkstatt-Hub als abgeschlossen.
+Eine Werkstatt erhält ein Fahrzeug zur Diagnose, das einen Fehler aufweist. Um die Ursache des Fehlers zu ermitteln, nutzt die Werkstatt den AW 4.0 Werkstatt-Hub und legt einen Fall für die Diag-nose an. Der Werkstatt-Hub liest die OBD-Daten des Fahrzeugs aus und vergleicht sie mit dem Wissensgraphen, um das wahrscheinlichste defekte Bauteil zu bestimmen. Anschließend ruft der WerkstattHub die entsprechende Diagnose für das Bauteil auf und gibt der Werkstatt die Anforderungen und Anweisungen für eine OszilloskopMessung. Die Werkstatt führt die Messung gemäß den Vorgaben durch und leitet die Messdaten an den Werkstatt-Hub weiter. Der Werkstatt-Hub interpretiert die Messdaten und identifiziert das defekte Bauteil. Nachdem die Werkstatt das Bauteil ausgetauscht hat, markiert sie den Fall im Werkstatt-Hub als abgeschlossen.
 
 ## Szenario 4: Onboarding
 Um die Sicherheit und Integrität der Daten im Datenraum zu gewährleisten, müssen neue Teilnehmer einen standardisierten Onboarding-Prozess durchlaufen. Dieser Prozess besteht aus folgenden Schritten:
+
 1. Der neue Teilnehmer bekundet sein Interesse an dem Datenraum und erklärt seine Bereitschaft, die Regeln und Anforderungen des Datenraums einzuhalten.
-2. Der neue Teilnehmer füllt ein Formular aus, in dem er seine Identität, seine Ziele und seine Daten-bedarfe angibt. Dieses Formular wird an den Föderator des Datenraums gesendet, der die Rolle eines Vermittlers und Vertrauenswürdigen Dritten hat.
+2. Der neue Teilnehmer füllt ein Formular aus, in dem er seine Identität, seine Ziele und seine Datenbedarfe angibt. Dieses Formular wird an den Föderator des Datenraums gesendet, der die Rolle eines Vermittlers und Vertrauenswürdigen Dritten hat.
 3. Der Föderator prüft die Angaben des neuen Teilnehmers und vergleicht sie mit den Kriterien und Erwartungen des Datenraums. Der Föderator kann auch zusätzliche Informationen oder Nachweise vom neuen Teilnehmer anfordern, um seine Eignung zu bestätigen.
 4. Wenn der Föderator den neuen Teilnehmer für geeignet hält, stellt er ihm ein digitales Zertifikat aus, das seine Identität und seine Berechtigung zur Teilnahme am Datenraum bestätigt. Das Zertifikat enthält auch die Zugangsdaten und die technischen Spezifikationen für den Datenraum.
 5. Der neue Teilnehmer wird in den Datenraum aufgenommen und kann auf die verfügbaren Daten zugreifen oder eigene Daten bereitstellen. Die anderen Mitglieder des Datenraums werden über den neuen Teilnehmer informiert und können mit ihm kommunizieren oder kooperieren.
