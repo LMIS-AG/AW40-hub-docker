@@ -26,14 +26,14 @@ enum TokenType {
 }
 
 enum ConfigKey {
+  apiAddress,
+  frontendAddress,
+  keyCloakAddress,
+  keyCloakClient,
+  keyCloakRealm,
   logLevel,
-  backendUrl,
-  basicAuthKey,
-  kcClient,
-  kcBaseUrl,
-  kcRealm,
-  rootDomain,
   redirectUriMobile,
+  proxyDefaultScheme,
 }
 
 enum LocalStorageKey {
