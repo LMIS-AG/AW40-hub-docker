@@ -92,13 +92,13 @@ class DiagnosisProvider with ChangeNotifier {
     final Response response =
         await _httpService.getDiagnosis(authToken, workShopId, caseId);
     if (response.statusCode == 404) return null;
-    if (response.statusCode != 200) {
-      _logger.warning(
-        "Could not get diagnosis. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return null;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not get diagnosis. ",
+      response,
+      _logger,
+    );
 
     return _decodeDiagnosisModelFromResponseBody(response);
   }
@@ -107,13 +107,13 @@ class DiagnosisProvider with ChangeNotifier {
     final String authToken = _getAuthToken();
     final Response response =
         await _httpService.startDiagnosis(authToken, workShopId, caseId);
-    if (response.statusCode != 201) {
-      _logger.warning(
-        "Could not start diagnosis. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return null;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not start diagnosis. ",
+      response,
+      _logger,
+    );
 
     notifyListeners();
     return _decodeDiagnosisModelFromResponseBody(response);
@@ -123,13 +123,13 @@ class DiagnosisProvider with ChangeNotifier {
     final String authToken = _getAuthToken();
     final Response response =
         await _httpService.deleteDiagnosis(authToken, workShopId, caseId);
-    if (response.statusCode != 200) {
-      _logger.warning(
-        "Could not delete diagnosis. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return false;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete diagnosis. ",
+      response,
+      _logger,
+    );
 
     notifyListeners();
     return true;
@@ -144,13 +144,13 @@ class DiagnosisProvider with ChangeNotifier {
       caseId,
       obdDataJson,
     );
-    if (response.statusCode != 201) {
-      _logger.warning(
-        "Could not upload obd data. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return false;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload obd data. ",
+      response,
+      _logger,
+    );
 
     notifyListeners();
     return true;
@@ -169,13 +169,13 @@ class DiagnosisProvider with ChangeNotifier {
       picoscopeData,
       filename,
     );
-    if (response.statusCode != 201) {
-      _logger.warning(
-        "Could not upload picoscope data. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return false;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload picoscope data. ",
+      response,
+      _logger,
+    );
 
     notifyListeners();
     return true;
@@ -190,13 +190,13 @@ class DiagnosisProvider with ChangeNotifier {
       caseId,
       symptomDataJson,
     );
-    if (response.statusCode != 201) {
-      _logger.warning(
-        "Could not upload symptom data. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return false;
-    }
+    HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload symptom data. ",
+      response,
+      _logger,
+    );
 
     notifyListeners();
     return true;
