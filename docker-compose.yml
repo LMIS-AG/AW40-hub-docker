@@ -65,8 +65,6 @@ services:
   keycloak:
     build:
       context: ./keycloak
-      args:
-        - KC_VER=20.0
     <<: *default_restart_policy
     command: start-dev --import-realm
     profiles:
@@ -90,18 +88,17 @@ services:
       - keycloaknet
       - hubintranet
       - hubnet
-    volumes:
-      - ./keycloak/werkstatthub-realm.json:/opt/keycloak/data/import/wh.json:ro
 
   keycloak-config:
-      image: quay.io/keycloak/keycloak:20.0
+      build:
+        context: ./keycloak
       depends_on:
         keycloak:
           condition: service_healthy
       entrypoint: [
         "sh",
         "-c",
-        "chmod +x /keycloak-config.sh && ./keycloak-config.sh && chmod +x /keycloak-config-dev.sh && ./keycloak-config-dev.sh"
+        "chmod +x /keycloak-config.sh && /keycloak-config.sh"
       ]
       profiles:
         - full
@@ -113,7 +110,6 @@ services:
       user: root
       volumes:
         - ./keycloak/keycloak-config.sh:/keycloak-config.sh
-        - ./keycloak/keycloak-config-dev.sh:/keycloak-config-dev.sh
 
   keycloak-db:
     build:

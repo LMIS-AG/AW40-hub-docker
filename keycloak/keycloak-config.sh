@@ -2,97 +2,205 @@
 
 # Function to convert enviroment variable to kc array
 function var_to_kc_array() {
-  local ENV_VAR="$(echo -e "$1" | tr -d '[:space:]')"
-  IFS=',' read -ra redir_arr <<< "$ENV_VAR"
-  local KC_ARR=$(printf "\"%s\"," "${redir_arr[@]}")
-  KC_ARR=${KC_ARR%,}
-  echo "[$KC_ARR]"
+    local ENV_VAR="$(echo -e "$1" | tr -d '[:space:]')"
+    IFS=',' read -ra redir_arr <<< "$ENV_VAR"
+    local KC_ARR=$(printf "\"%s\"," "${redir_arr[@]}")
+    KC_ARR=${KC_ARR%,}
+    echo "[$KC_ARR]"
 }
 
 kcadm=/opt/keycloak/bin/kcadm.sh
 
-# Authenticate in order to use the Keycloak Admin CLI
+# Setup client
 $kcadm config credentials \
     --server http://keycloak:8080 \
     --realm master \
     --user ${KEYCLOAK_ADMIN} \
     --password ${KEYCLOAK_ADMIN_PASSWORD}
 
+# Check if realm already exists
+$kcadm get realms --fields realm | grep -q werkstatt-hub
+if [ $? -eq 0 ]
+then
+    echo "Realm already exists. Skipping initialization."
+    exit 0
+fi
+
+# Add realms
+$kcadm create realms \
+    -s realm=werkstatt-hub \
+    -s enabled=true
+
+# Add roles
 $kcadm create roles \
+	-r werkstatt-hub \
+	-s name=workshop \
+	-s description="Role for basic API access"
+
+$kcadm create roles \
+	-r werkstatt-hub \
+	-s name=shared \
+	-s description="Role for API shared endpoint"
+
+# Add groups and set roles
+$kcadm create groups \
     -r werkstatt-hub \
-    -s name=${WERKSTATT_ANALYST_ROLE}
+    -s name="Mechanics"
 
-$kcadm create roles \
+$kcadm add-roles \
     -r werkstatt-hub \
-    -s name=${WERKSTATT_MECHANIC_ROLE}
+    --gname Mechanics \
+    --rolename workshop \
+    --rolename shared
 
-# Create a user role 'workshop'
-# This role is intended for access to the Hub API's workshop router
-$kcadm create roles \
-  -r werkstatt-hub \
-  -s name=workshop
+$kcadm create groups \
+    -r werkstatt-hub \
+    -s 'attributes."miniopolicy"=["readwrite"]' \
+    -s name="Analysts"
 
-# Create a user role 'shared'
-# This role is intended for access to the Hub API's shared router
-$kcadm create roles \
-  -r werkstatt-hub \
-  -s name=shared
+$kcadm add-roles \
+    -r werkstatt-hub \
+    --gname Analysts \
+    --rolename workshop \
+    --rolename shared
 
-# Create MinIO administrator
+$kcadm create groups \
+    -r werkstatt-hub \
+    -s 'attributes."miniopolicy"=["consoleAdmin"]' \
+    -s name="Admins"
+
+$kcadm add-roles \
+    -r werkstatt-hub \
+    --gname Admins \
+    --rolename workshop \
+    --rolename shared
+
+# Add users
 $kcadm create users \
     -r werkstatt-hub \
     -s username=${MINIO_ADMIN_WERKSTATTHUB} \
     -s enabled=true \
-    -s attributes.policy=consoleAdmin \
+    -s groups='["Admins"]' \
     -s credentials='[{"type":"password","value":"'${MINIO_ADMIN_WERKSTATTHUB_PASSWORD}'"}]'
 
-# Create MinIO user with r/w access
 $kcadm create users \
     -r werkstatt-hub \
     -s username=${WERKSTATT_ANALYST} \
     -s enabled=true \
-    -s attributes.policy=readwrite \
+    -s groups='["Analysts"]' \
     -s credentials='[{"type":"password","value":"'${WERKSTATT_ANALYST_PASSWORD}'"}]'
 
-# Assign Analyst role
-$kcadm add-roles \
-    -r werkstatt-hub \
-    --uusername ${WERKSTATT_ANALYST} \
-    --rolename ${WERKSTATT_ANALYST_ROLE}
-
-# Create MinIO user with r/w access
 $kcadm create users \
     -r werkstatt-hub \
     -s username=${WERKSTATT_MECHANIC} \
     -s enabled=true \
-    -s attributes.policy=readwrite \
+    -s groups='["Mechanics"]' \
     -s credentials='[{"type":"password","value":"'${WERKSTATT_MECHANIC_PASSWORD}'"}]'
 
-# Assign Mechanic role
-$kcadm add-roles \
+# Add clients
+FRONTEND_ID=$(
+    $kcadm create clients \
+        -i \
+        -r werkstatt-hub \
+        -s clientId=aw40hub-frontend \
+        -s enabled=true \
+        -s description="Client for Frontend" \
+        -s publicClient=true \
+        -s clientAuthenticatorType=client-secret \
+        -s webOrigins='["*"]' \
+        -s redirectUris=$(var_to_kc_array "$FRONTEND_REDIRECT_URIS") \
+        -s directAccessGrantsEnabled=true \
+        -s 'attributes."post.logout.redirect.uris"="+"'
+)
+
+MINIO_ID=$(
+    $kcadm create clients \
+        -i \
+        -r werkstatt-hub \
+        -s clientId=minio \
+        -s enabled=true \
+        -s description="Client for MinIO" \
+        -s directAccessGrantsEnabled=true \
+        -s clientAuthenticatorType=client-secret \
+        -s webOrigins='["*"]' \
+        -s redirectUris='["*"]' \
+        -s directAccessGrantsEnabled=true \
+        -s secret=${MINIO_CLIENT_SECRET}
+)
+
+# Add client scopes
+MINIO_SCOPE_ID=$(
+    $kcadm create client-scopes \
+        -i \
+        -r werkstatt-hub \
+        -s name=minio-policy-scope \
+        -s protocol=openid-connect \
+        -s 'attributes."include.in.token.scope"=true'
+)
+
+FRONTEND_SCOPE_ID=$(
+    $kcadm create client-scopes \
+        -i \
+        -r werkstatt-hub \
+        -s name=frontend-scope \
+        -s protocol=openid-connect \
+        -s 'attributes."include.in.token.scope"=true'
+)
+
+# Add mappings
+$kcadm create client-scopes/${MINIO_SCOPE_ID}/protocol-mappers/models \
     -r werkstatt-hub \
-    --uusername ${WERKSTATT_MECHANIC} \
-    --rolename ${WERKSTATT_MECHANIC_ROLE}
+    -s name=minio-policy-mapper \
+    -s protocol=openid-connect \
+    -s protocolMapper=oidc-usermodel-attribute-mapper \
+    -s 'config."aggregate.attrs"=true' \
+    -s 'config."multivalued"=true' \
+    -s 'config."userinfo.token.claim"=true' \
+    -s 'config."user.attribute"="miniopolicy"' \
+    -s 'config."id.token.claim"=true' \
+    -s 'config."access.token.claim"=true' \
+    -s 'config."claim.name"="miniopolicy"'
 
-# Get the ID of the 'minio' client in the 'werkstatt-hub' realm
-CLIENT_ID=$($kcadm get clients -r werkstatt-hub -q clientId=minio -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
-
-echo "The client ID of 'minio' in the 'werkstatt-hub' realm is: $CLIENT_ID"
-
-# Update the client secret for the 'minio' client in the 'werkstatt-hub' realm
-$kcadm update clients/$CLIENT_ID \
+$kcadm create client-scopes/${FRONTEND_SCOPE_ID}/protocol-mappers/models \
     -r werkstatt-hub \
-    -s secret=${MINIO_CLIENT_SECRET}
+    -s name=frontend-group-mapper \
+    -s protocol=openid-connect \
+    -s protocolMapper=oidc-group-membership-mapper \
+    -s 'config."aggregate.attrs"=true' \
+    -s 'config."multivalued"=true' \
+    -s 'config."id.token.claim"=true' \
+    -s 'config."access.token.claim"=true' \
+    -s 'config."claim.name"="groups"'
 
+# Add scopes to clients
+$kcadm update clients/${MINIO_ID}/default-client-scopes/${MINIO_SCOPE_ID} \
+    -r werkstatt-hub
 
-# Get the ID of the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
-CLIENT_ID=$($kcadm get clients -r werkstatt-hub -q clientId=aw40hub-frontend -F id | grep -oP '\w{8}-(\w{4}-){3}\w{12}' | cut -f1)
+$kcadm update clients/${FRONTEND_ID}/default-client-scopes/${FRONTEND_SCOPE_ID} \
+    -r werkstatt-hub
 
-echo "The client ID of 'aw40hub-frontend' in the 'werkstatt-hub' realm is: $CLIENT_ID"
+# Create development client and user
+if [ "$CREATE_DEV_USER" = true ]
+then
+    $kcadm create users \
+        -r werkstatt-hub \
+        -s username="aw40hub-dev-workshop" \
+        -s credentials='[{"type": "password", "value": "dev"}]' \
+        -s enabled=true
 
-# Update redirect uris for the 'aw40hub-frontend' client in the 'werkstatt-hub' realm
-$kcadm update clients/$CLIENT_ID \
-    -r werkstatt-hub \
-    -s redirectUris=$(var_to_kc_array "$FRONTEND_REDIRECT_URIS")
+    $kcadm add-roles \
+        -r werkstatt-hub \
+        --uusername aw40hub-dev-workshop \
+        --rolename workshop \
+        --rolename shared
 
+    $kcadm create clients \
+        -r werkstatt-hub \
+        -s clientId=aw40hub-dev-client \
+        -s enabled=true \
+        -s description="Client für Developer" \
+        -s secret=N5iImyRP1bzbzXoEYJ6zZMJx0XWiqhCw \
+        -s publicClient=false \
+        -s directAccessGrantsEnabled=true
+fi
 exit 0
