@@ -1,13 +1,12 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import "package:aw40_hub_frontend/services/services.dart";
-import "package:aw40_hub_frontend/utils/utils.dart";
 
 class JwtModel {
   JwtModel({
     required this.jwt,
     required this.exp,
-    required this.roles,
+    required this.groups,
     this.iat,
     this.authTime,
     this.jti,
@@ -28,19 +27,16 @@ class JwtModel {
 
   factory JwtModel.fromJwtString(String jwt) {
     DateTime exp;
-    List<String> roles;
+    List<String> groups;
     dynamic jsonData;
     jsonData = TokenService().decodeBodyFromJWT(jwt);
     exp = DateTime.fromMillisecondsSinceEpoch(jsonData["exp"] * 1000 as int);
-    final String kcClient =
-        ConfigService().getConfigValue(ConfigKey.keyCloakClient);
-    roles = jsonData["resource_access"]?[kcClient]?["roles"].cast<String>()
-            as List<String>? ??
-        [];
+    groups = jsonData?["groups"].cast<String>() as List<String>? ?? [];
+
     return JwtModel(
       jwt: jwt,
       exp: exp,
-      roles: roles,
+      groups: groups,
       iat: jsonData != null
           ? DateTime.fromMillisecondsSinceEpoch(jsonData["iat"] * 1000 as int)
           : null,
@@ -67,7 +63,7 @@ class JwtModel {
   }
   String jwt;
   DateTime exp;
-  List<String> roles;
+  List<String> groups;
   DateTime? iat;
   DateTime? authTime;
   String? jti;

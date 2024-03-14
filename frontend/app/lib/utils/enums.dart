@@ -1,6 +1,8 @@
-enum AuthorizedRole {
-  analyst,
-  mechanic,
+enum AuthorizedGroup {
+  // ignore: constant_identifier_names
+  Analysts,
+  // ignore: constant_identifier_names
+  Mechanics,
 }
 
 enum ExceptionType {
