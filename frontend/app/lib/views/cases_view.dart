@@ -18,7 +18,14 @@ class CasesView extends StatefulWidget {
 }
 
 class _CasesViewState extends State<CasesView> {
-  int? currentCaseIndex;
+  ValueNotifier<int?> currentCaseIndexNotifier = ValueNotifier<int?>(null);
+
+  @override
+  void dispose() {
+    currentCaseIndexNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final caseProvider = Provider.of<CaseProvider>(context);
@@ -26,62 +33,86 @@ class _CasesViewState extends State<CasesView> {
       // ignore: discarded_futures
       future: caseProvider.getCurrentCases(),
       builder: (BuildContext context, AsyncSnapshot<List<CaseModel>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          final List<CaseModel>? caseModels = snapshot.data;
-          if (caseModels == null) {
-            throw AppException(
-              exceptionType: ExceptionType.notFound,
-              exceptionMessage: "Received no case data.",
-            );
-          }
-          return Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: SingleChildScrollView(
-                  child: PaginatedDataTable(
-                    source: CasesDataTableSource(
-                      themeData: Theme.of(context),
-                      currentIndex: currentCaseIndex,
-                      caseModels: caseModels,
-                      onPressedRow: (int i) {
-                        setState(() => currentCaseIndex = i);
-                      },
-                    ),
-                    showCheckboxColumn: false,
-                    rowsPerPage: 50,
-                    columns: [
-                      DataColumn(
-                        label: Text(tr("general.date")),
-                        numeric: true,
-                      ),
-                      DataColumn(label: Text(tr("general.status"))),
-                      DataColumn(label: Text(tr("general.customer"))),
-                      DataColumn(label: Text("${tr('general.vehicle')} VIN")),
-                      DataColumn(
-                        label: Text(tr("general.workshop")),
-                        numeric: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Show detail view if a case is selected.
-              if (currentCaseIndex != null)
-                Expanded(
-                  flex: 2,
-                  child: CaseDetailView(
-                    caseModel: caseModels[currentCaseIndex!],
-                    onClose: () => currentCaseIndex = null,
-                  ),
-                ),
-            ],
-          );
-        } else {
+        if (snapshot.connectionState != ConnectionState.done ||
+            !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
+        final List<CaseModel>? caseModels = snapshot.data;
+        if (caseModels == null) {
+          throw AppException(
+            exceptionType: ExceptionType.notFound,
+            exceptionMessage: "Received no case data.",
+          );
+        }
+        return Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: CasesTable(
+                caseIndexNotifier: currentCaseIndexNotifier,
+                caseModel: caseModels,
+              ),
+            ),
+
+            // Show detail view if a case is selected.
+            ValueListenableBuilder(
+              valueListenable: currentCaseIndexNotifier,
+              builder: (context, value, child) {
+                if (value == null) return const SizedBox.shrink();
+                return Expanded(
+                  flex: 2,
+                  child: CaseDetailView(
+                    caseModel: caseModels[value],
+                    onClose: () => currentCaseIndexNotifier.value = null,
+                  ),
+                );
+              },
+            )
+          ],
+        );
       },
+    );
+  }
+}
+
+class CasesTable extends StatelessWidget {
+  const CasesTable({
+    required this.caseModel,
+    required this.caseIndexNotifier,
+    super.key,
+  });
+
+  final List<CaseModel> caseModel;
+  final ValueNotifier<int?> caseIndexNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: PaginatedDataTable(
+        source: CasesDataTableSource(
+          themeData: Theme.of(context),
+          currentIndexNotifier: caseIndexNotifier,
+          caseModels: caseModel,
+          onPressedRow: (int i) {
+            caseIndexNotifier.value = i;
+          },
+        ),
+        showCheckboxColumn: false,
+        rowsPerPage: 50,
+        columns: [
+          DataColumn(
+            label: Text(tr("general.date")),
+            numeric: true,
+          ),
+          DataColumn(label: Text(tr("general.status"))),
+          DataColumn(label: Text(tr("general.customer"))),
+          DataColumn(label: Text("${tr('general.vehicle')} VIN")),
+          DataColumn(
+            label: Text(tr("general.workshop")),
+            numeric: true,
+          ),
+        ],
+      ),
     );
   }
 }
