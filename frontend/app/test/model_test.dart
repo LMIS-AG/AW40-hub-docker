@@ -14,9 +14,38 @@ void main() {
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
     const diagnosisId = "some_diagnosis_id";
-    final List<dynamic> timeseriesData = <dynamic>[1, 2, 3];
-    final List<dynamic> obdData = <dynamic>["a", 5, false];
-    final List<dynamic> symptoms = <dynamic>[true, false];
+    final timeseriesData = <TimeseriesDataModel>[
+      TimeseriesDataModel(
+        timestamp: DateTime.utc(2021),
+        component: "some_component",
+        label: TimeseriesDataLabel.norm,
+        samplingRate: 1,
+        duration: 3,
+        type: TimeseriesType.oscillogram,
+        deviceSpecs: 0,
+        dataId: 2,
+        signalId: <String>["some_String", "3"],
+      )
+    ];
+    final obdData = <ObdDataModel>[
+      ObdDataModel(
+        timestamp: DateTime.utc(2021),
+        obdSpecs: <dynamic>[1, 2, 3],
+        dtcs: <String>["some_component"],
+        dataId: 0,
+      )
+    ];
+    final symptoms = <SymptomModel>[
+      SymptomModel(
+        timestamp: DateTime.utc(2021),
+        component: "some_component",
+        label: SymptomLabel.unknown,
+        dataId: 2,
+      )
+    ];
+    const timeseriesDataAdded = 3;
+    const obdDataAdded = 5;
+    const symptomsAdded = 4;
 
     final caseModel = CaseModel(
       id: id,
@@ -31,6 +60,9 @@ void main() {
       timeseriesData: timeseriesData,
       obdData: obdData,
       symptoms: symptoms,
+      timeseriesDataAdded: timeseriesDataAdded,
+      obdDataAdded: obdDataAdded,
+      symptomsAdded: symptomsAdded,
     );
     test("correctly assigns id", () {
       expect(caseModel.id, id);
@@ -67,6 +99,15 @@ void main() {
     });
     test("correctly assigns symptoms", () {
       expect(caseModel.symptoms, symptoms);
+    });
+    test("correctly assigns timeseriesDataAdded", () {
+      expect(caseModel.timeseriesDataAdded, timeseriesDataAdded);
+    });
+    test("correctly assigns obdDataAdded", () {
+      expect(caseModel.obdDataAdded, obdDataAdded);
+    });
+    test("correctly assigns symptomsAdded", () {
+      expect(caseModel.symptomsAdded, symptomsAdded);
     });
   });
   group("DiagnosisModel", () {
@@ -155,7 +196,6 @@ void main() {
         email: email,
         locale: locale,
       );
-
       test("correctly assigns jwt", () {
         expect(jwtModel.jwt, jwt);
       });
@@ -366,6 +406,100 @@ void main() {
     });
     test("correctly assigns component", () {
       expect(actionModel.component, component);
+    });
+  });
+  group("ObdDataModel", () {
+    final timestamp = DateTime.now();
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    const int dataId = 0;
+    final obdDataModel = ObdDataModel(
+      timestamp: timestamp,
+      obdSpecs: obdSpecs,
+      dtcs: dtcs,
+      dataId: dataId,
+    );
+    test("correctly assigns timestamp", () {
+      expect(obdDataModel.timestamp, timestamp);
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(obdDataModel.obdSpecs, obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(obdDataModel.dtcs, dtcs);
+    });
+    test("correctly assigns dataId", () {
+      expect(obdDataModel.dataId, dataId);
+    });
+  });
+  group("TimeseriesDataModel", () {
+    final timestamp = DateTime.now();
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const int dataId = 5;
+    const signalId = <String>["some_String", "3"];
+    final TimeseriesDataModel timeseriesDataModel = TimeseriesDataModel(
+      timestamp: timestamp,
+      component: component,
+      label: label,
+      samplingRate: samplingRate,
+      duration: duration,
+      type: type,
+      deviceSpecs: deviceSpecs,
+      dataId: dataId,
+      signalId: signalId,
+    );
+    test("correctly assigns timestamp", () {
+      expect(timeseriesDataModel.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(timeseriesDataModel.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(timeseriesDataModel.label, label);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(timeseriesDataModel.samplingRate, samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(timeseriesDataModel.duration, duration);
+    });
+    test("correctly assigns type", () {
+      expect(timeseriesDataModel.type, type);
+    });
+    test("correctly assigns dataId", () {
+      expect(timeseriesDataModel.dataId, dataId);
+    });
+    test("correctly assigns signalId", () {
+      expect(timeseriesDataModel.signalId, signalId);
+    });
+  });
+  group("SymptomModel", () {
+    final timestamp = DateTime.now();
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.unknown;
+    const int dataId = 2;
+    final SymptomModel symptomModel = SymptomModel(
+      timestamp: timestamp,
+      component: component,
+      label: label,
+      dataId: dataId,
+    );
+    test("correctly assigns timestamp", () {
+      expect(symptomModel.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(symptomModel.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(symptomModel.label, label);
+    });
+    test("correctly assigns dataId", () {
+      expect(symptomModel.dataId, dataId);
     });
   });
 }

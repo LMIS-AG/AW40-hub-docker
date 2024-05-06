@@ -1,4 +1,3 @@
-import "package:aw40_hub_frontend/dtos/action_dto.dart";
 import "package:aw40_hub_frontend/dtos/dtos.dart";
 import "package:aw40_hub_frontend/models/models.dart";
 import "package:aw40_hub_frontend/utils/utils.dart";
@@ -7,7 +6,7 @@ import "package:flutter_test/flutter_test.dart";
 void main() {
   group("CaseDto primary constructor", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const occasion = CaseOccasion.unknown;
     const milage = 100;
     const status = CaseStatus.closed;
@@ -15,9 +14,35 @@ void main() {
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
     const diagnosisId = "some_diagnosis_id";
-    const timeseriesData = <dynamic>[1, 2, 3];
-    const obdData = <dynamic>["a", 5, false];
-    const symptoms = <dynamic>[true, false];
+    final timeseriesData = <TimeseriesDataDto>[
+      TimeseriesDataDto(
+        DateTime.utc(2021),
+        "some_component",
+        TimeseriesDataLabel.norm,
+        1,
+        3,
+        TimeseriesType.oscillogram,
+        0,
+        2,
+        <String>["some_String", "3"],
+      )
+    ];
+    final obdData = <ObdDataDto>[
+      ObdDataDto(
+        DateTime.utc(2021),
+        <dynamic>[1, 2, 3],
+        <String>["some_component"],
+        0,
+      )
+    ];
+    final symptoms = <SymptomDto>[
+      SymptomDto(
+        DateTime.utc(2021),
+        "some_component",
+        SymptomLabel.unknown,
+        2,
+      )
+    ];
     const timeseriesDataAdded = 8;
     const obdDataAdded = 5;
     const symptomsAdded = 9;
@@ -86,7 +111,7 @@ void main() {
   });
   group("CaseDto fromJson constructor", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const occasion = CaseOccasion.unknown;
     const milage = 100;
     const status = CaseStatus.closed;
@@ -94,9 +119,35 @@ void main() {
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
     const diagnosisId = "some_diagnosis_id";
-    const timeseriesData = <dynamic>[1, 2, 3];
-    const obdData = <dynamic>["a", 5, false];
-    const symptoms = <dynamic>[true, false];
+    final timeseriesData = <TimeseriesDataDto>[
+      TimeseriesDataDto(
+        DateTime.utc(2021),
+        "some_component",
+        TimeseriesDataLabel.norm,
+        1,
+        3,
+        TimeseriesType.oscillogram,
+        0,
+        2,
+        <String>["some_String", "3"],
+      )
+    ];
+    final obdData = <ObdDataDto>[
+      ObdDataDto(
+        DateTime.utc(2021),
+        <dynamic>[1, 2, 3],
+        <String>["some_component"],
+        0,
+      )
+    ];
+    final symptoms = <SymptomDto>[
+      SymptomDto(
+        DateTime.utc(2021),
+        "some_component",
+        SymptomLabel.unknown,
+        2,
+      )
+    ];
     const timeseriesDataAdded = 8;
     const obdDataAdded = 5;
     const symptomsAdded = 9;
@@ -110,9 +161,9 @@ void main() {
       "vehicle_vin": vehicleVin,
       "workshop_id": workshopId,
       "diagnosis_id": diagnosisId,
-      "timeseries_data": timeseriesData,
-      "obd_data": obdData,
-      "symptoms": symptoms,
+      "timeseries_data": timeseriesData.map((e) => e.toJson()).toList(),
+      "obd_data": obdData.map((e) => e.toJson()).toList(),
+      "symptoms": symptoms.map((e) => e.toJson()).toList(),
       "timeseries_data_added": timeseriesDataAdded,
       "obd_data_added": obdDataAdded,
       "symptoms_added": symptomsAdded,
@@ -146,13 +197,13 @@ void main() {
       expect(caseDto.diagnosisId, diagnosisId);
     });
     test("correctly assigns timeseriesData", () {
-      expect(caseDto.timeseriesData, timeseriesData);
+      expect(caseDto.timeseriesData, isA<List<TimeseriesDataDto>>());
     });
     test("correctly assigns obdData", () {
-      expect(caseDto.obdData, obdData);
+      expect(caseDto.obdData, isA<List<ObdDataDto>>());
     });
     test("correctly assigns symptoms", () {
-      expect(caseDto.symptoms, symptoms);
+      expect(caseDto.symptoms, isA<List<SymptomDto>>());
     });
     test("correctly assigns timeseriesDataAdded", () {
       expect(caseDto.timeseriesDataAdded, timeseriesDataAdded);
@@ -166,7 +217,7 @@ void main() {
   });
   group("CaseDto toJson method", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const occasion = CaseOccasion.unknown;
     const milage = 100;
     const status = CaseStatus.closed;
@@ -174,9 +225,35 @@ void main() {
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
     const diagnosisId = "some_diagnosis_id";
-    const timeseriesData = <dynamic>[1, 2, 3];
-    const obdData = <dynamic>["a", 5, false];
-    const symptoms = <dynamic>[true, false];
+    final timeseriesData = <TimeseriesDataDto>[
+      TimeseriesDataDto(
+        DateTime.utc(2021),
+        "some_component",
+        TimeseriesDataLabel.norm,
+        1,
+        3,
+        TimeseriesType.oscillogram,
+        0,
+        2,
+        <String>["some_String", "3"],
+      )
+    ];
+    final obdData = <ObdDataDto>[
+      ObdDataDto(
+        DateTime.utc(2021),
+        <dynamic>[1, 2, 3],
+        <String>["some_component"],
+        0,
+      )
+    ];
+    final symptoms = <SymptomDto>[
+      SymptomDto(
+        DateTime.utc(2021),
+        "some_component",
+        SymptomLabel.unknown,
+        2,
+      )
+    ];
     const timeseriesDataAdded = 8;
     const obdDataAdded = 5;
     const symptomsAdded = 9;
@@ -246,7 +323,7 @@ void main() {
   });
   group("CaseDto toModel method", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const occasion = CaseOccasion.unknown;
     const milage = 100;
     const status = CaseStatus.closed;
@@ -254,9 +331,35 @@ void main() {
     const vehicleVin = "12345678901234567";
     const workshopId = "some_workshop_id";
     const diagnosisId = "some_diagnosis_id";
-    const timeseriesData = <dynamic>[1, 2, 3];
-    const obdData = <dynamic>["a", 5, false];
-    const symptoms = <dynamic>[true, false];
+    final timeseriesData = <TimeseriesDataDto>[
+      TimeseriesDataDto(
+        DateTime.utc(2021),
+        "some_component",
+        TimeseriesDataLabel.norm,
+        1,
+        3,
+        TimeseriesType.oscillogram,
+        0,
+        2,
+        <String>["some_String", "3"],
+      )
+    ];
+    final obdData = <ObdDataDto>[
+      ObdDataDto(
+        DateTime.utc(2021),
+        <dynamic>[1, 2, 3],
+        <String>["some_component"],
+        0,
+      )
+    ];
+    final symptoms = <SymptomDto>[
+      SymptomDto(
+        DateTime.utc(2021),
+        "some_component",
+        SymptomLabel.unknown,
+        2,
+      )
+    ];
     const timeseriesDataAdded = 8;
     const obdDataAdded = 5;
     const symptomsAdded = 9;
@@ -306,17 +409,17 @@ void main() {
       expect(caseModel.diagnosisId, diagnosisId);
     });
     test("correctly assigns timeseriesData", () {
-      expect(caseModel.timeseriesData, timeseriesData);
+      expect(caseModel.timeseriesData, isA<List<TimeseriesDataModel>>());
     });
     test("correctly assigns obdData", () {
-      expect(caseModel.obdData, obdData);
+      expect(caseModel.obdData, isA<List<ObdDataModel>>());
     });
     test("correctly assigns symptoms", () {
-      expect(caseModel.symptoms, symptoms);
+      expect(caseModel.symptoms, isA<List<SymptomModel>>());
     });
   });
   group("CaseUpdateDto primary constructor", () {
-    final DateTime timeStamp = DateTime.now();
+    final DateTime timeStamp = DateTime.utc(2021);
     const CaseOccasion occasion = CaseOccasion.unknown;
     const int milage = 100;
     const CaseStatus status = CaseStatus.closed;
@@ -340,7 +443,7 @@ void main() {
     });
   });
   group("CaseUpdateDto fromJson constructor", () {
-    final DateTime timeStamp = DateTime.now();
+    final DateTime timeStamp = DateTime.utc(2021);
     const CaseOccasion occasion = CaseOccasion.unknown;
     const int milage = 200;
     const CaseStatus status = CaseStatus.closed;
@@ -365,7 +468,7 @@ void main() {
     });
   });
   group("CaseUpdateDto toJson method", () {
-    final DateTime timeStamp = DateTime.now();
+    final DateTime timeStamp = DateTime.utc(2021);
     const CaseOccasion occasion = CaseOccasion.unknown;
     const int milage = 300;
     const CaseStatus status = CaseStatus.open;
@@ -391,7 +494,7 @@ void main() {
   });
   group("DiagnosisDto primary constructor", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
@@ -425,7 +528,7 @@ void main() {
   });
   group("DiagnosisDto fromJson constructor", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
@@ -460,7 +563,7 @@ void main() {
   });
   group("DiagnosisDto toJson method", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
@@ -495,7 +598,7 @@ void main() {
   });
   group("DiagnosisDto toModel method", () {
     const id = "test_id";
-    final timeStamp = DateTime.now();
+    final timeStamp = DateTime.utc(2021);
     const status = DiagnosisStatus.failed;
     const caseId = "some_case_id";
     const stateMachineLog = <dynamic>[1, 2, 3];
@@ -675,6 +778,87 @@ void main() {
       expect(newOBDDataDto.dtcs, dtcs);
     });
   });
+  group("NewTimeseriesDataDto fromJson constructor", () {
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const signal = <String>["some_String", "3"];
+    final Map<String, dynamic> json = <String, dynamic>{
+      "component": component,
+      "label": label.name,
+      "sampling_rate": samplingRate,
+      "duration": duration,
+      "type": type.name,
+      "device_specs": deviceSpecs,
+      "signal": signal,
+    };
+    final NewTimeseriesDataDto newTimeseriesDataDto =
+        NewTimeseriesDataDto.fromJson(json);
+    test("correctly assigns component", () {
+      expect(newTimeseriesDataDto.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(newTimeseriesDataDto.label, label);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(newTimeseriesDataDto.samplingRate, samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(newTimeseriesDataDto.duration, duration);
+    });
+    test("correctly assigns type", () {
+      expect(newTimeseriesDataDto.type, type);
+    });
+    test("correctly assigns deviceSpecs", () {
+      expect(newTimeseriesDataDto.deviceSpecs, deviceSpecs);
+    });
+    test("correctly assigns signal", () {
+      expect(newTimeseriesDataDto.signal, signal);
+    });
+  });
+  group("NewTimeseriesDataDto toJson method", () {
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const signal = <String>["some_String", "3"];
+    final NewTimeseriesDataDto newTimeseriesDataDto = NewTimeseriesDataDto(
+      component,
+      label,
+      samplingRate,
+      duration,
+      type,
+      deviceSpecs,
+      signal,
+    );
+    final Map<String, dynamic> json = newTimeseriesDataDto.toJson();
+    test("correctly assigns component", () {
+      expect(json["component"], component);
+    });
+    test("correctly assigns label", () {
+      expect(json["label"], label.name);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(json["sampling_rate"], samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(json["duration"], duration);
+    });
+    test("correctly assigns type", () {
+      expect(json["type"], type.name);
+    });
+    test("correctly assigns deviceSpecs", () {
+      expect(json["device_specs"], deviceSpecs);
+    });
+    test("correctly assigns signal", () {
+      expect(json["signal"], signal);
+    });
+  });
   group("NewOBDDataDto fromJson constructor", () {
     final timestamp = DateTime.utc(2021).toIso8601String();
     final obdSpecs = <dynamic>[1, 2, 3];
@@ -824,6 +1008,307 @@ void main() {
     });
     test("correctly assigns component", () {
       expect(actionModel.component, component);
+    });
+  });
+  group("ObdDataDto fromJson constructor", () {
+    final timestamp = DateTime.utc(2021);
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    const int dataId = 0;
+    final Map<String, dynamic> json = <String, dynamic>{
+      "timestamp": timestamp.toIso8601String(),
+      "obd_specs": obdSpecs,
+      "dtcs": dtcs,
+      "data_id": dataId,
+    };
+    final ObdDataDto obdDataDto = ObdDataDto.fromJson(json);
+    test("correctly assigns timestamp", () {
+      expect(obdDataDto.timestamp, timestamp);
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(obdDataDto.obdSpecs, obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(obdDataDto.dtcs, dtcs);
+    });
+    test("correctly assigns dataId", () {
+      expect(obdDataDto.dataId, dataId);
+    });
+  });
+  group("ObdDataDto toJson method", () {
+    final timestamp = DateTime.utc(2021);
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    const int dataId = 0;
+    final ObdDataDto obdDataDto = ObdDataDto(
+      timestamp,
+      obdSpecs,
+      dtcs,
+      dataId,
+    );
+    final Map<String, dynamic> json = obdDataDto.toJson();
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timestamp.toIso8601String());
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(json["obd_specs"], obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(json["dtcs"], dtcs);
+    });
+    test("correctly assigns dataId", () {
+      expect(json["data_id"], dataId);
+    });
+  });
+  group("ObdDataDto toModel method", () {
+    final timestamp = DateTime.utc(2021);
+    final obdSpecs = <dynamic>[1, 2, 3];
+    final dtcs = <String>["some_component"];
+    const int dataId = 0;
+    final ObdDataDto obdDataDto = ObdDataDto(
+      timestamp,
+      obdSpecs,
+      dtcs,
+      dataId,
+    );
+    final ObdDataModel obdDataModel = obdDataDto.toModel();
+    test("correctly assigns timestamp", () {
+      expect(obdDataModel.timestamp, timestamp);
+    });
+    test("correctly assigns obdSpecs", () {
+      expect(obdDataModel.obdSpecs, obdSpecs);
+    });
+    test("correctly assigns dtcs", () {
+      expect(obdDataModel.dtcs, dtcs);
+    });
+    test("correctly assigns dataId", () {
+      expect(obdDataModel.dataId, dataId);
+    });
+  });
+  group("TimeseriesDataDto fromJson constructor", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const int dataId = 5;
+    const signalId = <String>["some_String", "3"];
+    final Map<String, dynamic> json = <String, dynamic>{
+      "timestamp": timestamp.toIso8601String(),
+      "component": component,
+      "label": label.name,
+      "sampling_rate": samplingRate,
+      "duration": duration,
+      "type": type.name,
+      "device_specs": deviceSpecs,
+      "data_id": dataId,
+      "signal_id": signalId,
+    };
+    final TimeseriesDataDto timeseriesDataDto =
+        TimeseriesDataDto.fromJson(json);
+    test("correctly assigns timestamp", () {
+      expect(timeseriesDataDto.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(timeseriesDataDto.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(timeseriesDataDto.label, label);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(timeseriesDataDto.samplingRate, samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(timeseriesDataDto.duration, duration);
+    });
+    test("correctly assigns type", () {
+      expect(timeseriesDataDto.type, type);
+    });
+    test("correctly assigns deviceSpecs", () {
+      expect(timeseriesDataDto.deviceSpecs, deviceSpecs);
+    });
+    test("correctly assigns dataId", () {
+      expect(timeseriesDataDto.dataId, dataId);
+    });
+    test("correctly assigns signalId", () {
+      expect(timeseriesDataDto.signalId, signalId);
+    });
+  });
+  group("TimeseriesDataDto toJson method", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const int dataId = 5;
+    const signalId = <String>["some_String", "3"];
+    final TimeseriesDataDto timeseriesDataDto = TimeseriesDataDto(
+      timestamp,
+      component,
+      label,
+      samplingRate,
+      duration,
+      type,
+      deviceSpecs,
+      dataId,
+      signalId,
+    );
+    final Map<String, dynamic> json = timeseriesDataDto.toJson();
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timestamp.toIso8601String());
+    });
+    test("correctly assigns component", () {
+      expect(json["component"], component);
+    });
+    test("correctly assigns label", () {
+      expect(json["label"], label.name);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(json["sampling_rate"], samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(json["duration"], duration);
+    });
+    test("correctly assigns type", () {
+      expect(json["type"], type.name);
+    });
+    test("correctly assigns deviceSpecs", () {
+      expect(json["device_specs"], deviceSpecs);
+    });
+    test("correctly assigns dataId", () {
+      expect(json["data_id"], dataId);
+    });
+    test("correctly assigns signalId", () {
+      expect(json["signal_id"], signalId);
+    });
+  });
+  group("TimeseriesDataDto toModel method", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const TimeseriesDataLabel label = TimeseriesDataLabel.norm;
+    const int samplingRate = 1;
+    const int duration = 3;
+    const TimeseriesType type = TimeseriesType.oscillogram;
+    const dynamic deviceSpecs = 0;
+    const int dataId = 5;
+    const signalId = <String>["some_String", "3"];
+    final TimeseriesDataDto timeseriesDataDto = TimeseriesDataDto(
+      timestamp,
+      component,
+      label,
+      samplingRate,
+      duration,
+      type,
+      deviceSpecs,
+      dataId,
+      signalId,
+    );
+    final TimeseriesDataModel timeseriesDataModel = timeseriesDataDto.toModel();
+    test("correctly assigns timestamp", () {
+      expect(timeseriesDataModel.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(timeseriesDataModel.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(timeseriesDataModel.label, label);
+    });
+    test("correctly assigns samplingRate", () {
+      expect(timeseriesDataModel.samplingRate, samplingRate);
+    });
+    test("correctly assigns duration", () {
+      expect(timeseriesDataModel.duration, duration);
+    });
+    test("correctly assigns type", () {
+      expect(timeseriesDataModel.type, type);
+    });
+    test("correctly assigns deviceSpecs", () {
+      expect(timeseriesDataModel.deviceSpecs, deviceSpecs);
+    });
+    test("correctly assigns dataId", () {
+      expect(timeseriesDataModel.dataId, dataId);
+    });
+    test("correctly assigns signalId", () {
+      expect(timeseriesDataModel.signalId, signalId);
+    });
+  });
+  group("SymptomDto fromJson constructor", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.unknown;
+    const int dataId = 2;
+    final Map<String, dynamic> json = <String, dynamic>{
+      "timestamp": timestamp.toIso8601String(),
+      "component": component,
+      "label": label.name,
+      "data_id": dataId,
+    };
+    final SymptomDto symptomDto = SymptomDto.fromJson(json);
+    test("correctly assigns timestamp", () {
+      expect(symptomDto.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(symptomDto.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(symptomDto.label, label);
+    });
+    test("correctly assigns dataId", () {
+      expect(symptomDto.dataId, dataId);
+    });
+  });
+  group("SymptomDto toJson method", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.unknown;
+    const int dataId = 2;
+    final SymptomDto symptomDto = SymptomDto(
+      timestamp,
+      component,
+      label,
+      dataId,
+    );
+    final Map<String, dynamic> json = symptomDto.toJson();
+    test("correctly assigns timestamp", () {
+      expect(json["timestamp"], timestamp.toIso8601String());
+    });
+    test("correctly assigns component", () {
+      expect(json["component"], component);
+    });
+    test("correctly assigns label", () {
+      expect(json["label"], label.name);
+    });
+    test("correctly assigns dataId", () {
+      expect(json["data_id"], dataId);
+    });
+  });
+  group("SymptomDto toModel method", () {
+    final timestamp = DateTime.utc(2021);
+    const String component = "some_component";
+    const SymptomLabel label = SymptomLabel.unknown;
+    const int dataId = 2;
+    final SymptomDto symptomDto = SymptomDto(
+      timestamp,
+      component,
+      label,
+      dataId,
+    );
+    final SymptomModel symptomModel = symptomDto.toModel();
+    test("correctly assigns timestamp", () {
+      expect(symptomModel.timestamp, timestamp);
+    });
+    test("correctly assigns component", () {
+      expect(symptomModel.component, component);
+    });
+    test("correctly assigns label", () {
+      expect(symptomModel.label, label);
+    });
+    test("correctly assigns dataId", () {
+      expect(symptomModel.dataId, dataId);
     });
   });
 }
