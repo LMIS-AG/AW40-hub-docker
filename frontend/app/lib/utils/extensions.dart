@@ -9,11 +9,8 @@ extension SetStateIfMountedExtension on State {
   }
 }
 
-extension DateExtension on DateTime {
-  String toGermanDateString() => "$day.$month.$year";
-}
-
 extension DateTimeExtension on DateTime {
+  String toGermanDateString() => "$day.$month.$year";
   String toGermanDateTimeString() =>
       // ignore: lines_longer_than_80_chars
       "$day.$month.$year, ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} Uhr";
@@ -54,5 +51,11 @@ extension StringExtension on String {
     int end = endDelimiter == null ? length : lastIndexOf(endDelimiter);
     if (end == -1) end = length;
     return substring(start, end);
+  }
+
+  /// Capitalizes the first character of the string, ignoring the rest.
+  String capitalize() {
+    if (isEmpty) return this;
+    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
