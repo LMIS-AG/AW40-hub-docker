@@ -53,3 +53,13 @@ enum TimeseriesDataLabel { unknown, norm, anomaly }
 enum PicoscopeLabel { unknown, norm, anomaly }
 
 enum TimeseriesType { oscillogram }
+
+enum StateMachineEvent {
+  stateTransition,
+  retrievedDataSet,
+  heatmaps,
+  causalGraphVisualizations,
+  faultPaths,
+  diagnosisFailed,
+  unknown,
+}
