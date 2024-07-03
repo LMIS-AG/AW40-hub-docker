@@ -30,7 +30,7 @@ void main() {
           (_) async => http.Response("[]", 200),
         );
         final diagnosisProvider = DiagnosisProvider(mockHttpService);
-        diagnosisProvider.workShopId = "some_workshop_id";
+        diagnosisProvider.workshopId = "some_workshop_id";
         await diagnosisProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
         await diagnosisProvider.getDiagnoses();
@@ -58,7 +58,7 @@ void main() {
           (_) async => http.Response(jsonEncode(json), 200),
         );
         final diagnosisProvider = DiagnosisProvider(mockHttpService);
-        diagnosisProvider.workShopId = "some_workshop_id";
+        diagnosisProvider.workshopId = "some_workshop_id";
         await diagnosisProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
         final List<DiagnosisModel> diagnoses =
@@ -104,7 +104,7 @@ void main() {
           (_) async => http.Response("{}", 200),
         );
         final diagnosisProvider = DiagnosisProvider(mockHttpService);
-        diagnosisProvider.workShopId = "some_workshop_id";
+        diagnosisProvider.workshopId = "some_workshop_id";
         await diagnosisProvider.fetchAndSetAuthToken(mockAuthProvider);
 
         // Act.
