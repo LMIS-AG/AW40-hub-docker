@@ -168,7 +168,7 @@ class HttpService {
     final request = http.MultipartRequest(
       "POST",
       Uri.parse(
-        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/upload/picoscope",
+        "$backendUrl/$workshopId/cases/$caseId/timeseries_data",
       ),
     );
 
@@ -270,7 +270,7 @@ class HttpService {
     final request = http.MultipartRequest(
       "POST",
       Uri.parse(
-        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/",
+        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/upload/omniview",
       ),
     );
 
