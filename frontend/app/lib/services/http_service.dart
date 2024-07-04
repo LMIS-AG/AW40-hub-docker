@@ -155,6 +155,32 @@ class HttpService {
     throw UnimplementedError();
   }
 
+  Future<http.Response> uploadTimeseriesData(
+    String workshopId,
+    String caseId,
+    String component,
+    TimeseriesDataLabel label,
+    int samplingRate,
+    int duration,
+    List<int> signal,
+  ) async {
+    final request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/upload/picoscope",
+      ),
+    );
+
+    request.fields["label"] = EnumToString.convertToString(label);
+    request.fields["component"] = component;
+    request.fields["sampling_rate"] = samplingRate.toString();
+    request.fields["duration"] = duration.toString();
+    request.fields["signal"] = signal.toString();
+
+    final response = await _client.send(request);
+    return http.Response.fromStream(response);
+  }
+
   Future<http.Response> uploadPicoscopeData(
     String token,
     String workshopId,
@@ -239,7 +265,7 @@ class HttpService {
     final request = http.MultipartRequest(
       "POST",
       Uri.parse(
-        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/upload/omniview",
+        "$backendUrl/$workshopId/cases/$caseId/timeseries_data/",
       ),
     );
 
