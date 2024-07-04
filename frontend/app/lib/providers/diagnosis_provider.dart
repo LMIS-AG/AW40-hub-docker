@@ -130,7 +130,7 @@ class DiagnosisProvider with ChangeNotifier {
     );
   }
 
-  Future<bool> uploadTimeseriesData(
+  Future<bool> addTimeseriesData(
     String workshopId,
     String caseId,
     String component,
@@ -140,7 +140,7 @@ class DiagnosisProvider with ChangeNotifier {
     List<int> signal,
   ) async {
     final String authToken = _getAuthToken();
-    final Response response = await _httpService.uploadTimeseriesData(
+    final Response response = await _httpService.addTimeseriesData(
       authToken,
       workshopId,
       caseId,

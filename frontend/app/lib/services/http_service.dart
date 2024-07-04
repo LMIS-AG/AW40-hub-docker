@@ -155,7 +155,7 @@ class HttpService {
     throw UnimplementedError();
   }
 
-  Future<http.Response> uploadTimeseriesData(
+  Future<http.Response> addTimeseriesData(
     String token,
     String workshopId,
     String caseId,
