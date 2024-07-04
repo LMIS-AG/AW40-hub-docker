@@ -1237,4 +1237,18 @@ class MockHttpService implements HttpService {
       () => Response(jsonEncode(caseDto.toJson()), 201),
     );
   }
+
+  @override
+  Future<Response> addTimeseriesData(
+      String token,
+      String workshopId,
+      String caseId,
+      String component,
+      TimeseriesDataLabel label,
+      int samplingRate,
+      int duration,
+      List<int> signal) {
+    // TODO: implement addTimeseriesData
+    throw UnimplementedError();
+  }
 }
