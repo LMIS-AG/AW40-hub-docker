@@ -156,6 +156,7 @@ class HttpService {
   }
 
   Future<http.Response> uploadTimeseriesData(
+    String token,
     String workshopId,
     String caseId,
     String component,
@@ -176,6 +177,10 @@ class HttpService {
     request.fields["sampling_rate"] = samplingRate.toString();
     request.fields["duration"] = duration.toString();
     request.fields["signal"] = signal.toString();
+
+    final Map<String, String> authHeader = getAuthHeaderWith(token);
+    assert(authHeader.length == 1);
+    request.headers[authHeader.keys.first] = authHeader.values.first;
 
     final response = await _client.send(request);
     return http.Response.fromStream(response);
