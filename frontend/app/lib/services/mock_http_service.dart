@@ -1250,7 +1250,8 @@ class MockHttpService implements HttpService {
     List<int> signal,
   ) {
     _logger.warning(
-      "TimeseriesData not implemented, not checking for potential validation errors.",
+      "TimeseriesData not implemented,",
+      "not checking for potential validation errors.",
     );
     final CaseDto caseDto = CaseDto(
       caseId,
