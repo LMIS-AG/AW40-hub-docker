@@ -89,7 +89,8 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Signal",
-                hintText: "Enter signals separated by commas, e.g., 1,2,3",
+                hintText: "Enter signals separated by commas",
+                suffixText: "e.g., 1,2,3",
                 border: OutlineInputBorder(),
               ),
             ),
