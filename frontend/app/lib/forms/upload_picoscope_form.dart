@@ -20,6 +20,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
   String? _filename;
   final TextEditingController _componentAController = TextEditingController();
   final TextEditingController _labelAController = TextEditingController();
+  PicoscopeLabel? selectedLabelA;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -36,11 +37,52 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: TextFormField(
+                    //validator: _validation,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _componentAController,
+                    decoration: const InputDecoration(
+                      labelText: "Component A",
+                      hintText: "Enter a Component",
+                      border: OutlineInputBorder(),
+                      suffixText: "optional",
+                      //suffixStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownMenu<PicoscopeLabel>(
+                    controller: _labelAController,
+                    label: const Text("Label"),
+                    hintText: "optional",
+                    onSelected: (PicoscopeLabel? picoscopeLabel) {
+                      setState(() {
+                        selectedLabelA = picoscopeLabel;
+                      });
+                    },
+                    dropdownMenuEntries: PicoscopeLabel.values
+                        .map<DropdownMenuEntry<PicoscopeLabel>>(
+                      (PicoscopeLabel timeseriesDataLabel) {
+                        return DropdownMenuEntry<PicoscopeLabel>(
+                          value: timeseriesDataLabel,
+                          label: timeseriesDataLabel.name,
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ],
+            ),
+            /*TextFormField(
               //validator: _validation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentAController,
-              minLines: 1,
               decoration: const InputDecoration(
                 labelText: "Component A",
                 hintText: "Enter a Component",
@@ -49,18 +91,24 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
               ),
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              // validator: _validation,   -> this with dropDownmenü
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+            DropdownMenu<PicoscopeLabel>(
               controller: _labelAController,
-              minLines: 1,
-              decoration: const InputDecoration(
-                labelText: "Label A",
-                hintText: "Enter a Label",
-                border: OutlineInputBorder(),
-                suffixText: "optional",
-              ),
-            ),
+              label: const Text("Label"),
+              onSelected: (PicoscopeLabel? picoscopeLabel) {
+                setState(() {
+                  selectedLabelA = picoscopeLabel;
+                });
+              },
+              dropdownMenuEntries:
+                  PicoscopeLabel.values.map<DropdownMenuEntry<PicoscopeLabel>>(
+                (PicoscopeLabel timeseriesDataLabel) {
+                  return DropdownMenuEntry<PicoscopeLabel>(
+                    value: timeseriesDataLabel,
+                    label: timeseriesDataLabel.name,
+                  );
+                },
+              ).toList(),
+            ),*/
           ],
         ),
         onSubmit: _onSubmit,
