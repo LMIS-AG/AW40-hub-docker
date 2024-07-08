@@ -1,7 +1,9 @@
 import "package:aw40_hub_frontend/components/file_upload_form_component.dart";
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
+import "package:enum_to_string/enum_to_string.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -16,6 +18,8 @@ class UploadPicoscopeForm extends StatefulWidget {
 class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
   Uint8List? _file;
   String? _filename;
+  final TextEditingController _componentAController = TextEditingController();
+  final TextEditingController _labelAController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -30,6 +34,32 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                 _file = file;
                 _filename = name;
               },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              //validator: _validation,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _componentAController,
+              minLines: 1,
+              decoration: const InputDecoration(
+                labelText: "Component A",
+                hintText: "Enter a Component",
+                border: OutlineInputBorder(),
+                suffixText: "optional",
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              // validator: _validation,   -> this with dropDownmenü
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _labelAController,
+              minLines: 1,
+              decoration: const InputDecoration(
+                labelText: "Label A",
+                hintText: "Enter a Label",
+                border: OutlineInputBorder(),
+                suffixText: "optional",
+              ),
             ),
           ],
         ),
@@ -56,10 +86,17 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     final String? filename = _filename;
     if (filename == null) return;
 
+    final String componentA = _componentAController.text;
+    //if (_labelAController.text.isEmpty) return;
+    final PicoscopeLabel? labelA =
+        EnumToString.fromString(PicoscopeLabel.values, _labelAController.text);
+
     final bool result = await provider.uploadPicoscopeData(
       provider.diagnosisCaseId,
       file,
       filename,
+      componentA,
+      labelA,
     );
 
     final String snackBarText = result
