@@ -22,18 +22,31 @@ class _UploadObdFormState extends State<UploadObdForm> {
   Widget build(BuildContext context) {
     return BaseUploadForm(
       content: TextFormField(
+        validator: _signalValidation,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: _controller,
-        minLines: 5,
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
         decoration: const InputDecoration(
-          labelText: "Diagnostic Trouble codes",
-          hintText: "Enter one code per line.",
+          labelText: "Diagnostic Trouble Codes",
+          hintText: "Enter Codes separated by commas",
+          suffixText: " e.g., P0001,U0001,U0002",
           border: OutlineInputBorder(),
         ),
       ),
       onSubmit: _onSubmit,
     );
+  }
+
+  String? _signalValidation(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter a signal";
+    }
+    final List<String> parts = value.split(",");
+    for (final String part in parts) {
+      if (part.trim().isEmpty) {
+        return "Each value must be a valid integer separated by commas";
+      }
+    }
+    return null;
   }
 
   Future<void> _onSubmit() async {
