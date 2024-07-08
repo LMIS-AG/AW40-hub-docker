@@ -34,7 +34,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               controller: _componentController,
               decoration: const InputDecoration(
                 labelText: "Components",
-                hintText: "Enter a Component.",
+                hintText: "Enter a Component",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -65,7 +65,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Duration",
-                hintText: "Enter a Duration.",
+                hintText: "Enter a Duration",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -77,7 +77,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Sampling Rate",
-                hintText: "Enter a Sampling Rate.",
+                hintText: "Enter a Sampling Rate",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -108,7 +108,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
   }
 
   String? _numberValidation(String? value) {
-    if (value == null || value.isEmpty) return "Please enter some signal";
+    if (value == null || value.isEmpty) return "Please enter a number";
     final int? numberValue = int.tryParse(value);
     if (numberValue == null) {
       return "Please enter a valid number";
