@@ -19,8 +19,14 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
   Uint8List? _file;
   String? _filename;
   final TextEditingController _componentAController = TextEditingController();
+  final TextEditingController _componentBController = TextEditingController();
+  final TextEditingController _componentCController = TextEditingController();
   final TextEditingController _labelAController = TextEditingController();
+  final TextEditingController _labelBController = TextEditingController();
+  final TextEditingController _labelCController = TextEditingController();
   PicoscopeLabel? selectedLabelA;
+  PicoscopeLabel? selectedLabelB;
+  PicoscopeLabel? selectedLabelC;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -38,12 +44,10 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
             ),
             const SizedBox(height: 16),
             Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: TextFormField(
-                    //validator: _validation,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _componentAController,
                     decoration: const InputDecoration(
@@ -51,7 +55,6 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                       hintText: "Enter a Component",
                       border: OutlineInputBorder(),
                       suffixText: "optional",
-                      //suffixStyle: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ),
                 ),
@@ -79,36 +82,86 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                 ),
               ],
             ),
-            /*TextFormField(
-              //validator: _validation,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: _componentAController,
-              decoration: const InputDecoration(
-                labelText: "Component A",
-                hintText: "Enter a Component",
-                border: OutlineInputBorder(),
-                suffixText: "optional",
-              ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _componentBController,
+                    decoration: const InputDecoration(
+                      labelText: "Component B",
+                      hintText: "Enter a Component",
+                      border: OutlineInputBorder(),
+                      suffixText: "optional",
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownMenu<PicoscopeLabel>(
+                    controller: _labelBController,
+                    label: const Text("Label"),
+                    hintText: "optional",
+                    onSelected: (PicoscopeLabel? picoscopeLabel) {
+                      setState(() {
+                        selectedLabelB = picoscopeLabel;
+                      });
+                    },
+                    dropdownMenuEntries: PicoscopeLabel.values
+                        .map<DropdownMenuEntry<PicoscopeLabel>>(
+                      (PicoscopeLabel timeseriesDataLabel) {
+                        return DropdownMenuEntry<PicoscopeLabel>(
+                          value: timeseriesDataLabel,
+                          label: timeseriesDataLabel.name,
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            DropdownMenu<PicoscopeLabel>(
-              controller: _labelAController,
-              label: const Text("Label"),
-              onSelected: (PicoscopeLabel? picoscopeLabel) {
-                setState(() {
-                  selectedLabelA = picoscopeLabel;
-                });
-              },
-              dropdownMenuEntries:
-                  PicoscopeLabel.values.map<DropdownMenuEntry<PicoscopeLabel>>(
-                (PicoscopeLabel timeseriesDataLabel) {
-                  return DropdownMenuEntry<PicoscopeLabel>(
-                    value: timeseriesDataLabel,
-                    label: timeseriesDataLabel.name,
-                  );
-                },
-              ).toList(),
-            ),*/
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _componentCController,
+                    decoration: const InputDecoration(
+                      labelText: "Component C",
+                      hintText: "Enter a Component",
+                      border: OutlineInputBorder(),
+                      suffixText: "optional",
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownMenu<PicoscopeLabel>(
+                    controller: _labelCController,
+                    label: const Text("Label"),
+                    hintText: "optional",
+                    onSelected: (PicoscopeLabel? picoscopeLabel) {
+                      setState(() {
+                        selectedLabelC = picoscopeLabel;
+                      });
+                    },
+                    dropdownMenuEntries: PicoscopeLabel.values
+                        .map<DropdownMenuEntry<PicoscopeLabel>>(
+                      (PicoscopeLabel timeseriesDataLabel) {
+                        return DropdownMenuEntry<PicoscopeLabel>(
+                          value: timeseriesDataLabel,
+                          label: timeseriesDataLabel.name,
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         onSubmit: _onSubmit,
@@ -135,16 +188,26 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     if (filename == null) return;
 
     final String componentA = _componentAController.text;
+    final String componentB = _componentBController.text;
+    final String componentC = _componentCController.text;
     //if (_labelAController.text.isEmpty) return;
     final PicoscopeLabel? labelA =
         EnumToString.fromString(PicoscopeLabel.values, _labelAController.text);
+    final PicoscopeLabel? labelB =
+        EnumToString.fromString(PicoscopeLabel.values, _labelBController.text);
+    final PicoscopeLabel? labelC =
+        EnumToString.fromString(PicoscopeLabel.values, _labelCController.text);
 
     final bool result = await provider.uploadPicoscopeData(
       provider.diagnosisCaseId,
       file,
       filename,
       componentA,
+      componentB,
+      componentC,
       labelA,
+      labelB,
+      labelC,
     );
 
     final String snackBarText = result
