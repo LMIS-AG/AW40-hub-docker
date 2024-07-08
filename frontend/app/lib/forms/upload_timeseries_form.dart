@@ -32,8 +32,6 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               validator: _textValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentController,
-              minLines: 1,
-              maxLines: null,
               decoration: const InputDecoration(
                 labelText: "Components",
                 hintText: "Enter a Component.",
@@ -41,33 +39,29 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               ),
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: DropdownMenu<TimeseriesDataLabel>(
-                controller: _labelController,
-                label: const Text("Label"),
-                onSelected: (TimeseriesDataLabel? timeseriesDataLabel) {
-                  setState(() {
-                    selectedLabel = timeseriesDataLabel;
-                  });
+            DropdownMenu<TimeseriesDataLabel>(
+              controller: _labelController,
+              label: const Text("Label"),
+              onSelected: (TimeseriesDataLabel? timeseriesDataLabel) {
+                setState(() {
+                  selectedLabel = timeseriesDataLabel;
+                });
+              },
+              dropdownMenuEntries: TimeseriesDataLabel.values
+                  .map<DropdownMenuEntry<TimeseriesDataLabel>>(
+                (TimeseriesDataLabel timeseriesDataLabel) {
+                  return DropdownMenuEntry<TimeseriesDataLabel>(
+                    value: timeseriesDataLabel,
+                    label: timeseriesDataLabel.name,
+                  );
                 },
-                dropdownMenuEntries: TimeseriesDataLabel.values
-                    .map<DropdownMenuEntry<TimeseriesDataLabel>>(
-                  (TimeseriesDataLabel timeseriesDataLabel) {
-                    return DropdownMenuEntry<TimeseriesDataLabel>(
-                      value: timeseriesDataLabel,
-                      label: timeseriesDataLabel.name,
-                    );
-                  },
-                ).toList(),
-              ),
+              ).toList(),
             ),
             const SizedBox(height: 16),
             TextFormField(
               validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _durationController,
-              minLines: 1,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Duration",
@@ -80,7 +74,6 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _samplingRateController,
-              minLines: 1,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Sampling Rate",
@@ -93,8 +86,6 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               validator: _signalValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _signalController,
-              //minLines: 4,
-              //maxLines: null,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Signal",
