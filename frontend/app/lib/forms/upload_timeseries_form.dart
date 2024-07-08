@@ -29,7 +29,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
         content: Column(
           children: [
             TextFormField(
-              validator: _validation,
+              validator: _textValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentController,
               minLines: 1,
@@ -64,10 +64,11 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _durationController,
               minLines: 1,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Duration",
                 hintText: "Enter a Duration.",
@@ -76,10 +77,11 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _samplingRateController,
               minLines: 1,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Sampling Rate",
                 hintText: "Enter a Sampling Rate.",
@@ -88,15 +90,15 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _signalValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _signalController,
-              minLines: 4,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
+              //minLines: 4,
+              //maxLines: null,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Signal",
-                hintText: "Enter a Signal. One code per line.",
+                hintText: "Enter signals separated by commas, e.g., 1,2,3",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -107,9 +109,31 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
     );
   }
 
-  String? _validation(String? value) {
+  String? _textValidation(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter some text";
+    }
+    return null;
+  }
+
+  String? _numberValidation(String? value) {
+    if (value == null || value.isEmpty) return "Please enter some signal";
+    final int? numberValue = int.tryParse(value);
+    if (numberValue == null) {
+      return "Please enter a valid number";
+    }
+    return null;
+  }
+
+  String? _signalValidation(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter a signal";
+    }
+    final List<String> parts = value.split(",");
+    for (final String part in parts) {
+      if (part.trim().isEmpty || int.tryParse(part.trim()) == null) {
+        return "Each value must be a valid integer separated by commas";
+      }
     }
     return null;
   }
@@ -129,8 +153,10 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
     if (label == null) return;
     final int? samplingRate = int.tryParse(_samplingRateController.text);
     final int? duration = int.tryParse(_durationController.text);
-    final List<int> signal =
-        _signalController.text.split("\n").map(int.parse).toList();
+    final List<int> signal = _signalController.text
+        .split(",")
+        .map((part) => int.parse(part.trim()))
+        .toList();
 
     if (samplingRate == null || duration == null || signal.contains(null)) {
       messengerState.showSnackBar(
