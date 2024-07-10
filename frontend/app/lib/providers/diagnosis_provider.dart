@@ -221,7 +221,7 @@ class DiagnosisProvider with ChangeNotifier {
 
   Future<bool> uploadSymptomData(
     String caseId,
-    NewSymptomDto symptomDto,
+    //NewSymptomDto symptomDto,
     String component,
     SymptomLabel label,
   ) async {
