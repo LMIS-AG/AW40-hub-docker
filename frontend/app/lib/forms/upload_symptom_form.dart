@@ -34,31 +34,29 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
               maxLines: null,
               decoration: const InputDecoration(
                 labelText: "Components",
-                hintText: "Enter a Component.",
+                hintText: "Enter a Component",
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: DropdownMenu<SymptomLabel>(
-                controller: _labelController,
-                label: const Text("Label"),
-                hintText: "optional",
-                onSelected: (SymptomLabel? symptomLabel) {
-                  setState(() {
-                    selectedLabel = symptomLabel;
-                  });
+            const SizedBox(height: 16),
+            DropdownMenu<SymptomLabel>(
+              controller: _labelController,
+              label: const Text("Label"),
+              hintText: "optional",
+              onSelected: (SymptomLabel? symptomLabel) {
+                setState(() {
+                  selectedLabel = symptomLabel;
+                });
+              },
+              dropdownMenuEntries:
+                  SymptomLabel.values.map<DropdownMenuEntry<SymptomLabel>>(
+                (SymptomLabel symptomLabel) {
+                  return DropdownMenuEntry<SymptomLabel>(
+                    value: symptomLabel,
+                    label: symptomLabel.name,
+                  );
                 },
-                dropdownMenuEntries:
-                    SymptomLabel.values.map<DropdownMenuEntry<SymptomLabel>>(
-                  (SymptomLabel symptomLabel) {
-                    return DropdownMenuEntry<SymptomLabel>(
-                      value: symptomLabel,
-                      label: symptomLabel.name,
-                    );
-                  },
-                ).toList(),
-              ),
+              ).toList(),
             ),
           ],
         ),
