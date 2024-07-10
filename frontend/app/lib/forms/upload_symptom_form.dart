@@ -16,6 +16,7 @@ class UploadSymptomForm extends StatefulWidget {
 class _UploadSymptomFormState extends State<UploadSymptomForm> {
   final TextEditingController _componentController = TextEditingController();
   final TextEditingController _labelController = TextEditingController();
+  SymptomLabel? selectedLabel;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -35,6 +36,28 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
                 labelText: "Components",
                 hintText: "Enter a Component.",
                 border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: DropdownMenu<SymptomLabel>(
+                controller: _labelController,
+                label: const Text("Label"),
+                hintText: "optional",
+                onSelected: (SymptomLabel? symptomLabel) {
+                  setState(() {
+                    selectedLabel = symptomLabel;
+                  });
+                },
+                dropdownMenuEntries:
+                    SymptomLabel.values.map<DropdownMenuEntry<SymptomLabel>>(
+                  (SymptomLabel symptomLabel) {
+                    return DropdownMenuEntry<SymptomLabel>(
+                      value: symptomLabel,
+                      label: symptomLabel.name,
+                    );
+                  },
+                ).toList(),
               ),
             ),
           ],
