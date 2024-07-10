@@ -411,6 +411,60 @@ void main() {
       );
       expect(sentRequest, isTrue, reason: "Request was not sent");
     });
+
+    test("verify addTimeseriesData", () async {
+      const workshopId = "some-workshop-id";
+      const caseId = "some-case-id";
+      const component = "some-random";
+      const label = TimeseriesDataLabel.norm;
+      const samplingRate = 1000;
+      const duration = 20000;
+      const signal = [1, 2, 3];
+      bool sentRequest = false;
+      final client = MockClient((request) async {
+        sentRequest = true;
+        expect(
+          request.method,
+          equals("POST"),
+          reason: "Request method is not POST",
+        );
+        expect(
+          request.headers["content-type"],
+          startsWith("multipart/form-data"),
+          reason: "Request has wrong content-type header",
+        );
+        final body = request.body;
+        expect(body, contains('name="component"'));
+        expect(body, contains(component));
+        expect(body, contains('name="label"'));
+        expect(body, contains(EnumToString.convertToString(label)));
+        expect(body, contains('name="sampling_rate"'));
+        expect(body, contains(samplingRate.toString()));
+        expect(body, contains('name="duration"'));
+        expect(body, contains(duration.toString()));
+        expect(
+          request.url.toString(),
+          endsWith(
+            "/$workshopId/cases/$caseId/timeseries_data",
+          ),
+          reason:
+              "Request URL does not end with /{workshopId}/cases/{caseId}/timeseries_data",
+        );
+        return http.Response('{"status": "success"}', 200);
+      });
+      await HttpService(client).addTimeseriesData(
+        "token",
+        workshopId,
+        caseId,
+        component,
+        label,
+        samplingRate,
+        duration,
+        signal,
+      );
+      expect(sentRequest, isTrue, reason: "Request was not sent");
+    });
+
     test("verify uploadSymptomData", () async {
       const workshopId = "some-workshop-id";
       const caseId = "some-case-id";

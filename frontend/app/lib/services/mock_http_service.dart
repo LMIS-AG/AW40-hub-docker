@@ -1237,4 +1237,51 @@ class MockHttpService implements HttpService {
       () => Response(jsonEncode(caseDto.toJson()), 201),
     );
   }
+
+  @override
+  Future<Response> addTimeseriesData(
+    String token,
+    String workshopId,
+    String caseId,
+    String component,
+    TimeseriesDataLabel label,
+    int samplingRate,
+    int duration,
+    List<int> signal,
+  ) {
+    _logger.warning(
+      "TimeseriesData not implemented,",
+      "not checking for potential validation errors.",
+    );
+    final CaseDto caseDto = CaseDto(
+      caseId,
+      DateTime.now(),
+      CaseOccasion.problem_defect,
+      47233,
+      CaseStatus.open,
+      "unknown",
+      "12345678901234567",
+      workshopId,
+      null,
+      [],
+      [],
+      [],
+      0,
+      0,
+      0,
+    );
+    if (caseId == demoCaseId) {
+      return Future.delayed(
+        Duration(milliseconds: delay),
+        () {
+          _demoDiagnosisStage2();
+          return Response(jsonEncode(_demoCaseDto.toJson()), 201);
+        },
+      );
+    }
+    return Future.delayed(
+      Duration(milliseconds: delay),
+      () => Response(jsonEncode(caseDto.toJson()), 201),
+    );
+  }
 }

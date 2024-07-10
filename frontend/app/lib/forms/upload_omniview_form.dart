@@ -36,38 +36,36 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _textValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentController,
-              minLines: 1,
-              maxLines: null,
               decoration: const InputDecoration(
                 labelText: "Components",
-                hintText: "Enter a Component.",
+                hintText: "Enter a Component",
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _durationController,
-              minLines: 1,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Duration",
-                hintText: "Enter a Duration.",
+                hintText: "Enter a Duration",
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             TextFormField(
-              validator: _validation,
+              validator: _numberValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _samplingRateController,
-              minLines: 1,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: "Sampling Rate",
-                hintText: "Enter a Sampling Rate.",
+                hintText: "Enter a Sampling Rate",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -78,9 +76,18 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
     );
   }
 
-  String? _validation(String? value) {
+  String? _textValidation(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter some text";
+    }
+    return null;
+  }
+
+  String? _numberValidation(String? value) {
+    if (value == null || value.isEmpty) return "Please enter a number";
+    final int? numberValue = int.tryParse(value);
+    if (numberValue == null) {
+      return "Please enter a valid number";
     }
     return null;
   }
