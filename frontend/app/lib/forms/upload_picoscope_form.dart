@@ -71,10 +71,10 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                     },
                     dropdownMenuEntries: PicoscopeLabel.values
                         .map<DropdownMenuEntry<PicoscopeLabel>>(
-                      (PicoscopeLabel timeseriesDataLabel) {
+                      (PicoscopeLabel picoscopeLabel) {
                         return DropdownMenuEntry<PicoscopeLabel>(
-                          value: timeseriesDataLabel,
-                          label: timeseriesDataLabel.name,
+                          value: picoscopeLabel,
+                          label: picoscopeLabel.name,
                         );
                       },
                     ).toList(),
