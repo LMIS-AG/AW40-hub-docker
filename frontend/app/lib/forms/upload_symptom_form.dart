@@ -85,6 +85,7 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
     final String component = _componentController.text;
     final SymptomLabel? label =
         EnumToString.fromString(SymptomLabel.values, _labelController.text);
+    if (label == null) return;
 
     final bool result = await provider.uploadSymptomData(
       provider.diagnosisCaseId,
