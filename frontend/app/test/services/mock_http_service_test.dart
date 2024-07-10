@@ -902,12 +902,6 @@ void testDemoDiagnosisWorkflow() {
       );
 
       // Add symptom data.
-      final SymptomDto symptomDto = SymptomDto(
-        DateTime.utc(2021, 2, 3),
-        "component",
-        SymptomLabel.defect,
-        5,
-      );
       response = await mockHttpService.uploadSymptomData(
         "token",
         "workshopId",
