@@ -7,6 +7,7 @@ import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/dtos/obd_data_dto.dart";
 import "package:aw40_hub_frontend/dtos/state_machine_log_entry_dto.dart";
 import "package:aw40_hub_frontend/dtos/symptom_dto.dart";
@@ -1143,15 +1144,40 @@ class MockHttpService implements HttpService {
     String token,
     String workshopId,
     String caseId,
-    Map<String, dynamic> requestBody,
+    String component,
+    SymptomLabel label,
   ) {
-    final SymptomDto symptomDto;
+    final NewSymptomDto newSymptomDto;
+    //final Map<String, dynamic> requestBody = symptomDto.toJson();
+
     try {
-      symptomDto = SymptomDto.fromJson(requestBody);
+      newSymptomDto = NewSymptomDto(
+        component,
+        label,
+      );
     } on Error {
       return Future.delayed(
         Duration(milliseconds: delay),
         () => Response("", 422),
+      );
+    }
+
+    final SymptomDto symptomDto = SymptomDto(
+      DateTime.utc(2021, 2, 3),
+      newSymptomDto.component,
+      newSymptomDto.label,
+      29,
+    );
+    if (caseId == demoCaseId) {
+      _demoCaseDto.symptoms.add(
+        symptomDto,
+      );
+      return Future.delayed(
+        Duration(milliseconds: delay),
+        () {
+          _demoDiagnosisStage1();
+          return Response(jsonEncode(_demoCaseDto.toJson()), 201);
+        },
       );
     }
 
@@ -1232,6 +1258,53 @@ class MockHttpService implements HttpService {
       0,
       0,
     );
+    return Future.delayed(
+      Duration(milliseconds: delay),
+      () => Response(jsonEncode(caseDto.toJson()), 201),
+    );
+  }
+
+  @override
+  Future<Response> addTimeseriesData(
+    String token,
+    String workshopId,
+    String caseId,
+    String component,
+    TimeseriesDataLabel label,
+    int samplingRate,
+    int duration,
+    List<int> signal,
+  ) {
+    _logger.warning(
+      "TimeseriesData not implemented,",
+      "not checking for potential validation errors.",
+    );
+    final CaseDto caseDto = CaseDto(
+      caseId,
+      DateTime.now(),
+      CaseOccasion.problem_defect,
+      47233,
+      CaseStatus.open,
+      "unknown",
+      "12345678901234567",
+      workshopId,
+      null,
+      [],
+      [],
+      [],
+      0,
+      0,
+      0,
+    );
+    if (caseId == demoCaseId) {
+      return Future.delayed(
+        Duration(milliseconds: delay),
+        () {
+          _demoDiagnosisStage2();
+          return Response(jsonEncode(_demoCaseDto.toJson()), 201);
+        },
+      );
+    }
     return Future.delayed(
       Duration(milliseconds: delay),
       () => Response(jsonEncode(caseDto.toJson()), 201),
