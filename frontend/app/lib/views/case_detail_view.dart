@@ -1,4 +1,6 @@
 import "dart:async";
+import "package:aw40_hub_frontend/components/dataset_upload_area.dart";
+import "package:aw40_hub_frontend/components/dataset_upload_case_view.dart";
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
@@ -10,6 +12,7 @@ import "package:aw40_hub_frontend/models/timeseries_data_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -199,6 +202,21 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    FilledButton.icon(
+                      icon: const Icon(Icons.upload_rounded),
+                      label: Text(tr("uploadData.label")),
+                      onPressed: () async => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          actions: [
+                            DatasetUploadCaseView(
+                              caseId: widget.caseModel.id,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
                     FilledButton.icon(
                       icon: const Icon(Icons.edit),
                       label: Text(tr("general.edit")),
