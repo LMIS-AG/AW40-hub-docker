@@ -4,6 +4,7 @@ import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/theme_provider.dart";
+import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:aw40_hub_frontend/routing/router.dart";
 import "package:aw40_hub_frontend/services/auth_service.dart";
 import "package:aw40_hub_frontend/services/config_service.dart";
@@ -56,6 +57,12 @@ class AWHubApp extends StatelessWidget {
           ),
           ChangeNotifierProxyProvider<AuthProvider, DiagnosisProvider>(
             create: (_) => DiagnosisProvider(httpService),
+            update: (_, authProvider, caseProvider) =>
+                // ignore: discarded_futures
+                caseProvider!..fetchAndSetAuthToken(authProvider),
+          ),
+          ChangeNotifierProxyProvider<AuthProvider, VehicleProvider>(
+            create: (_) => VehicleProvider(httpService),
             update: (_, authProvider, caseProvider) =>
                 // ignore: discarded_futures
                 caseProvider!..fetchAndSetAuthToken(authProvider),
