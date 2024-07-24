@@ -1290,4 +1290,17 @@ class MockHttpService implements HttpService {
     // TODO: implement getSharedVehicles
     throw UnimplementedError();
   }
+
+  @override
+  Future<Response> getVehicles(String token, String workshopId, String caseId) {
+    // TODO: implement getVehicles
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> updateVehicles(String token, String workshopId,
+      String caseId, Map<String, dynamic> requestBody) {
+    // TODO: implement updateVehicles
+    throw UnimplementedError();
+  }
 }
