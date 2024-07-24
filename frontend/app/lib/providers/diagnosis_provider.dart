@@ -166,6 +166,12 @@ class DiagnosisProvider with ChangeNotifier {
     String caseId,
     List<int> picoscopeData,
     String filename,
+    String? componentA,
+    String? componentB,
+    String? componentC,
+    PicoscopeLabel? labelA,
+    PicoscopeLabel? labelB,
+    PicoscopeLabel? labelC,
   ) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.uploadPicoscopeData(
@@ -174,7 +180,12 @@ class DiagnosisProvider with ChangeNotifier {
       caseId,
       picoscopeData,
       filename,
-      // TODO: Add optional parameters.
+      componentA: componentA,
+      componentB: componentB,
+      componentC: componentC,
+      labelA: labelA,
+      labelB: labelB,
+      labelC: labelC,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
