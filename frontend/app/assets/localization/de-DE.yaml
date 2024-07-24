@@ -66,9 +66,15 @@ diagnoses:
     uploadFile: "Laden Sie eine Datei hoch"
     uploadFileTooltip: "Datei hochladen"
     dragAndDrop: "Datei per Drag & Drop hier ablegen"
+    dropFileError: "Die Datei konnte nicht erfasst werden"
     uploadDataSuccessMessage: "Die Daten wurden erfolgreich hochgeladen."
     uploadDataErrorMessage: "Die Daten konnten nicht hochgeladen werden."
     noFaultPathFound: "Kein Fehlerpfad gefunden"
+  todos:
+    noTodosFound: "Keine Todos gefunden"
+    noTodosFoundDescription: "Die Diagnose hat Status 'Aktion erforderlich', aber keine zugehörigen Todos. Dies ist wahrscheinlich ein Fehler im Backend."
+    unknownDatasetType: "Unbekannter Datentyp"
+    unknownDatasetTypeDescription: "Die Diagnose hat Status 'Aktion erforderlich', aber der Datentyp ist unbekannt. Dies ist wahrscheinlich ein Fehler im Backend."
 cases:
   title: "Fälle"
   actions:

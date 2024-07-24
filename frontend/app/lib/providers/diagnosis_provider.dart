@@ -1,12 +1,15 @@
 import "dart:async";
 import "dart:convert";
 
-import "package:aw40_hub_frontend/dtos/dtos.dart";
-import "package:aw40_hub_frontend/exceptions/exceptions.dart";
-import "package:aw40_hub_frontend/models/models.dart";
-import "package:aw40_hub_frontend/providers/providers.dart";
-import "package:aw40_hub_frontend/services/services.dart";
-import "package:aw40_hub_frontend/utils/utils.dart";
+import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
+import "package:aw40_hub_frontend/exceptions/app_exception.dart";
+import "package:aw40_hub_frontend/models/diagnosis_model.dart";
+import "package:aw40_hub_frontend/providers/auth_provider.dart";
+import "package:aw40_hub_frontend/services/helper_service.dart";
+import "package:aw40_hub_frontend/services/http_service.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";
@@ -17,252 +20,16 @@ class DiagnosisProvider with ChangeNotifier {
   final HttpService _httpService;
 
   final Logger _logger = Logger("diagnosis_provider");
-  late final String workShopId;
+  late final String workshopId;
   String? _authToken;
 
-  Future<List<DiagnosisModel>> getDiagnoses() async {
-    // * Easy way of testing UI for now.
-    // Explicitly ignored lines_longer_than_80_chars lint rule, because this is
-    // not actual code.
-    // return <DiagnosisModel>[
-    //   DiagnosisModel(
-    //     id: const Uuid().v4(),
-    //     timestamp: DateTime.now(),
-    //     status: DiagnosisStatus.action_required,
-    //     caseId: const Uuid().v4(),
-    //     stateMachineLog: [
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: REC_VEHICLE_AND_PROC_METADATA --- "
-    //             "(processed_metadata) ---> PROC_CUSTOMER_COMPLAINTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: PROC_CUSTOMER_COMPLAINTS --- "
-    //             "(no_complaints) ---> "
-    //             "READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES",
-    //         attachment: null,
-    //       ),
-    //
-    //     ],
-    //     todos: [
-    //       ActionModel(
-    //         id: "1",
-    //         instruction: "Laden Sie OBD-Daten hoch",
-    //         actionType: "",
-    //         dataType: "",
-    //         component: "",
-    //       )
-    //     ],
-    //   ),
-    //   DiagnosisModel(
-    //     id: const Uuid().v4(),
-    //     timestamp: DateTime.now(),
-    //     status: DiagnosisStatus.scheduled,
-    //     caseId: const Uuid().v4(),
-    //     stateMachineLog: [],
-    //     todos: [],
-    //   ),
-    //   DiagnosisModel(
-    //     id: const Uuid().v4(),
-    //     timestamp: DateTime.now(),
-    //     status: DiagnosisStatus.processing,
-    //     caseId: const Uuid().v4(),
-    //     stateMachineLog: [
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: REC_VEHICLE_AND_PROC_METADATA --- "
-    //             "(processed_metadata) ---> PROC_CUSTOMER_COMPLAINTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: PROC_CUSTOMER_COMPLAINTS --- "
-    //             "(no_complaints) ---> "
-    //             "READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: obd_data/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    //         "STATE_TRANSITION: READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES "
-    //             "--- (processed_OBD_data) ---> RETRIEVE_HISTORICAL_DATA",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: RETRIEVE_HISTORICAL_DATA --- "
-    //             "(processed_all_data) ---> ESTABLISH_INITIAL_HYPOTHESIS",
-    //         attachment: null,
-    //       ),
-    //
-    //     ],
-    //     todos: [],
-    //   ),
-    //   DiagnosisModel(
-    //     id: const Uuid().v4(),
-    //     timestamp: DateTime.now(),
-    //     status: DiagnosisStatus.finished,
-    //     caseId: const Uuid().v4(),
-    //     stateMachineLog: [
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: REC_VEHICLE_AND_PROC_METADATA --- "
-    //             "(processed_metadata) ---> PROC_CUSTOMER_COMPLAINTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: PROC_CUSTOMER_COMPLAINTS --- "
-    //             "(no_complaints) ---> "
-    //             "READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: obd_data/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    //             "STATE_TRANSITION: READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES "
-    //             "--- (processed_OBD_data) ---> RETRIEVE_HISTORICAL_DATA",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: RETRIEVE_HISTORICAL_DATA --- "
-    //             "(processed_all_data) ---> ESTABLISH_INITIAL_HYPOTHESIS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: ESTABLISH_INITIAL_HYPOTHESIS --- "
-    //             "(established_init_hypothesis) ---> DIAGNOSIS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: "
-    //             "SELECT_BEST_UNUSED_ERROR_CODE_INSTANCE "
-    //             "--- (no_matching_selected_best_instance) ---> "
-    //             "SUGGEST_SUSPECT_COMPONENTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: SUGGEST_SUSPECT_COMPONENTS --- "
-    //             "(provided_suggestions) ---> CLASSIFY_COMPONENTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: timeseries_data/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "HEATMAPS: boost_pressure_control_valve "
-    //             "[ANOMALY - SCORE: 0.0029614063]",
-    //         attachment: "666abcf93d9fdf79fb6c11b5",
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: CLASSIFY_COMPONENTS --- "
-    //             "(detected_anomalies) ---> "
-    //             "ISOLATE_PROBLEM_CHECK_EFFECTIVE_RADIUS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "CAUSAL_GRAPH_VISUALIZATIONS: 0",
-    //         attachment: "666abcfa3d9fdf79fb6c11b7",
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: symptoms/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "CAUSAL_GRAPH_VISUALIZATIONS: 0",
-    //         attachment: "666abcfa3d9fdf79fb6c11b9",
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: "
-    //             "ISOLATE_PROBLEM_CHECK_EFFECTIVE_RADIUS --- "
-    //             "(isolated_problem) ---> PROVIDE_DIAG_AND_SHOW_TRACE",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "FAULT_PATHS: ['boost_pressure_solenoid_valve -> "
-    //             "boost_pressure_control_valve']",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "STATE_TRANSITION: PROVIDE_DIAG_AND_SHOW_TRACE --- "
-    //             "(uploaded_diag) ---> diag",
-    //         attachment: null,
-    //       )
-    //     ],
-    //     todos: [],
-    //   ),
-    //   DiagnosisModel(
-    //     id: const Uuid().v4(),
-    //     timestamp: DateTime.now(),
-    //     status: DiagnosisStatus.failed,
-    //     caseId: const Uuid().v4(),
-    //     stateMachineLog: [
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: REC_VEHICLE_AND_PROC_METADATA --- (processed_metadata) ---> PROC_CUSTOMER_COMPLAINTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: PROC_CUSTOMER_COMPLAINTS --- (no_complaints) ---> READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: obd_data/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: READ_OBD_DATA_AND_GEN_ONTOLOGY_INSTANCES --- (processed_OBD_data) ---> RETRIEVE_HISTORICAL_DATA",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: RETRIEVE_HISTORICAL_DATA --- (processed_all_data) ---> ESTABLISH_INITIAL_HYPOTHESIS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: ESTABLISH_INITIAL_HYPOTHESIS --- (established_init_hypothesis) ---> DIAGNOSIS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: SELECT_BEST_UNUSED_ERROR_CODE_INSTANCE --- (no_matching_selected_best_instance) ---> SUGGEST_SUSPECT_COMPONENTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "STATE_TRANSITION: SUGGEST_SUSPECT_COMPONENTS --- (provided_suggestions) ---> CLASSIFY_COMPONENTS",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message: "RETRIEVED_DATASET: timeseries_data/0",
-    //         attachment: null,
-    //       ),
-    //       StateMachineLogEntryModel(
-    //         message:
-    // ignore: lines_longer_than_80_chars
-    //             "DIAGNOSIS_FAILED: Unexpected error during execution of the state machine.",
-    //         attachment: null,
-    //       )
-    //     ],
-    //     todos: [],
-    //   ),
-    // ];
+  /// The caseId of the diagnosis whose detail view was last shown.
+  late String diagnosisCaseId;
 
+  Future<List<DiagnosisModel>> getDiagnoses() async {
     final String authToken = _getAuthToken();
     final Response response =
-        await _httpService.getDiagnoses(authToken, workShopId);
+        await _httpService.getDiagnoses(authToken, workshopId);
     if (response.statusCode != 200) {
       _logger.warning(
         "Could not get diagnoses. "
@@ -281,7 +48,7 @@ class DiagnosisProvider with ChangeNotifier {
   Future<DiagnosisModel?> getDiagnosis(String caseId) async {
     final String authToken = _getAuthToken();
     final Response response =
-        await _httpService.getDiagnosis(authToken, workShopId, caseId);
+        await _httpService.getDiagnosis(authToken, workshopId, caseId);
     if (response.statusCode == 404) return null;
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
@@ -297,7 +64,7 @@ class DiagnosisProvider with ChangeNotifier {
   Future<DiagnosisModel?> startDiagnosis(String caseId) async {
     final String authToken = _getAuthToken();
     final Response response =
-        await _httpService.startDiagnosis(authToken, workShopId, caseId);
+        await _httpService.startDiagnosis(authToken, workshopId, caseId);
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       201,
@@ -313,7 +80,7 @@ class DiagnosisProvider with ChangeNotifier {
   Future<bool> deleteDiagnosis(String caseId) async {
     final String authToken = _getAuthToken();
     final Response response =
-        await _httpService.deleteDiagnosis(authToken, workShopId, caseId);
+        await _httpService.deleteDiagnosis(authToken, workshopId, caseId);
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       200,
@@ -331,7 +98,7 @@ class DiagnosisProvider with ChangeNotifier {
     final Map<String, dynamic> obdDataJson = obdDataDto.toJson();
     final Response response = await _httpService.uploadObdData(
       authToken,
-      workShopId,
+      workshopId,
       caseId,
       obdDataJson,
     );
@@ -339,6 +106,54 @@ class DiagnosisProvider with ChangeNotifier {
       response.statusCode,
       201,
       "Could not upload obd data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    return true;
+  }
+
+  Future<bool> uploadVcdsData(String caseId, List<int> vcdsData) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.uploadVcdsData(
+      authToken,
+      workshopId,
+      caseId,
+      vcdsData,
+    );
+    return HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload vcds data. ",
+      response,
+      _logger,
+    );
+  }
+
+  Future<bool> addTimeseriesData(
+    String workshopId,
+    String caseId,
+    String component,
+    TimeseriesDataLabel label,
+    int samplingRate,
+    int duration,
+    List<int> signal,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.addTimeseriesData(
+      authToken,
+      workshopId,
+      caseId,
+      component,
+      label,
+      samplingRate,
+      duration,
+      signal,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload timeseries data. ",
       response,
       _logger,
     );
@@ -355,7 +170,7 @@ class DiagnosisProvider with ChangeNotifier {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.uploadPicoscopeData(
       authToken,
-      workShopId,
+      workshopId,
       caseId,
       picoscopeData,
       filename,
@@ -373,6 +188,37 @@ class DiagnosisProvider with ChangeNotifier {
     return true;
   }
 
+  Future<bool> uploadOmniviewData(
+    String caseId,
+    List<int> omniviewData,
+    String filename,
+    String component,
+    int samplingRate,
+    int duration,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.uploadOmniviewData(
+      authToken,
+      workshopId,
+      caseId,
+      component,
+      samplingRate,
+      duration,
+      omniviewData,
+      filename,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload omniview data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
   Future<bool> uploadSymptomData(
     String caseId,
     NewSymptomDto symptomDto,
@@ -381,7 +227,7 @@ class DiagnosisProvider with ChangeNotifier {
     final Map<String, dynamic> symptomDataJson = symptomDto.toJson();
     final Response response = await _httpService.uploadSymptomData(
       authToken,
-      workShopId,
+      workshopId,
       caseId,
       symptomDataJson,
     );

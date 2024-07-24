@@ -1,3 +1,6 @@
+import "package:enum_to_string/enum_to_string.dart";
+import "package:logging/logging.dart";
+
 enum AuthorizedGroup {
   // ignore: constant_identifier_names
   Analysts,
@@ -53,7 +56,22 @@ enum SymptomLabel { unknown, ok, defect }
 
 enum TimeseriesDataLabel { unknown, norm, anomaly }
 
-enum DatasetType { obd, timeseries, symptom }
+enum DatasetType {
+  obd,
+  timeseries,
+  symptom,
+  unknown;
+
+  factory DatasetType.fromJson(String value) {
+    final DatasetType? result =
+        EnumToString.fromString(DatasetType.values, value);
+    if (result == null) {
+      Logger("DatasetType").warning("Unknown DatasetType: $value");
+      return DatasetType.unknown;
+    }
+    return result;
+  }
+}
 
 enum PicoscopeLabel { unknown, norm, anomaly }
 
@@ -68,3 +86,7 @@ enum StateMachineEvent {
   diagnosisFailed,
   unknown,
 }
+
+enum ObdFormat { obd, vcds }
+
+enum TimeseriesFormat { timeseries, omniview, picoscope }
