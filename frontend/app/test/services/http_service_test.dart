@@ -576,7 +576,7 @@ void main() {
       );
       return http.Response('{"status": "success"}', 200);
     });
-    await HttpService(client).getSharedCostumers("some-token");
+    await HttpService(client).getSharedCostumers("some-token", "some_Id");
     expect(sentRequest, isTrue, reason: "Request should have been sent");
   });
 }
