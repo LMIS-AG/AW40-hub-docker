@@ -1,8 +1,13 @@
+import "dart:convert";
+
+import "package:aw40_hub_frontend/dtos/costumer_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
+import "package:aw40_hub_frontend/models/costumer_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/foundation.dart";
+import "package:http/http.dart";
 import "package:logging/logging.dart";
 
 class CostumerProvider with ChangeNotifier {
@@ -15,10 +20,11 @@ class CostumerProvider with ChangeNotifier {
 
   String? _authToken;
 
-  /* Future<List<VehicleModel>> getSharedVehicles() async {
+  Future<List<CostumerModel>> getSharedVehicles(String costumerId) async {
     final String authToken = _getAuthToken();
-    final Response response = await _httpService.getSharedVehicles(
+    final Response response = await _httpService.getSharedCostumers(
       authToken,
+      costumerId,
     );
     if (response.statusCode != 200) {
       _logger.warning(
@@ -32,8 +38,8 @@ class CostumerProvider with ChangeNotifier {
       _logger.warning("Could not decode json response to List.");
       return [];
     }
-    return json.map((e) => VehicleDto.fromJson(e).toModel()).toList();
-  }*/
+    return json.map((e) => CostumerDto.fromJson(e).toModel()).toList();
+  }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
