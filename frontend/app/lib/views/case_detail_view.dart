@@ -203,20 +203,19 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     FilledButton.icon(
                       icon: const Icon(Icons.upload_rounded),
                       label: Text(tr("uploadData.label")),
-                      onPressed: /*caseProvider.workShopId ==
+                      onPressed: caseProvider.workShopId ==
                               widget.caseModel.workshopId
-                          ?*/
-                          () async => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          actions: [
-                            DatasetUploadCaseView(
-                              caseId: widget.caseModel.id,
-                            )
-                          ],
-                        ),
-                      ),
-                      //: null,
+                          ? () async => showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  actions: [
+                                    DatasetUploadCaseView(
+                                      caseId: widget.caseModel.id,
+                                    )
+                                  ],
+                                ),
+                              )
+                          : null,
                     ),
                     const SizedBox(width: 16),
                     FilledButton.icon(
