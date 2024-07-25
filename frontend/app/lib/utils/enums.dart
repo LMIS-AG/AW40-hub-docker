@@ -90,3 +90,5 @@ enum StateMachineEvent {
 enum ObdFormat { obd, vcds }
 
 enum TimeseriesFormat { timeseries, omniview, picoscope }
+
+enum AnonymousCustomerId { unknown, anonymous }
