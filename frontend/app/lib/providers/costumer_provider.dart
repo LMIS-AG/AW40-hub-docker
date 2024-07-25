@@ -20,7 +20,7 @@ class CostumerProvider with ChangeNotifier {
 
   String? _authToken;
 
-  Future<List<CostumerModel>> getSharedVehicles(String costumerId) async {
+  Future<List<CostumerModel>> getSharedCostumers(String costumerId) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.getSharedCostumers(
       authToken,
