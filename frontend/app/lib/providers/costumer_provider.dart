@@ -20,11 +20,10 @@ class CostumerProvider with ChangeNotifier {
 
   String? _authToken;
 
-  Future<List<CostumerModel>> getSharedCostumers(String costumerId) async {
+  Future<List<CostumerModel>> getSharedCostumers() async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.getSharedCostumers(
       authToken,
-      costumerId,
     );
     if (response.statusCode != 200) {
       _logger.warning(

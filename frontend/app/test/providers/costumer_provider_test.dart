@@ -26,17 +26,17 @@ void main() {
       test("calls HttpService.getSharedCostumers()", () async {
         // Arrange.
         final mockHttpService = MockHttpService();
-        when(mockHttpService.getSharedCostumers(any, any)).thenAnswer(
+        when(mockHttpService.getSharedCostumers(any)).thenAnswer(
           (_) async => http.Response("[]", 200),
         );
         final costumerProvider = CostumerProvider(mockHttpService);
         //costumerProvider.workshopId = "some_workshop_id";
-        const String costumerId = "some_id";
+        //const String costumerId = "some_id";
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
-        await costumerProvider.getSharedCostumers(costumerId);
+        await costumerProvider.getSharedCostumers();
         // Assert.
-        verify(mockHttpService.getSharedCostumers(any, any)).called(1);
+        verify(mockHttpService.getSharedCostumers(any)).called(1);
         verifyNoMoreInteractions(mockHttpService);
       });
 
@@ -49,16 +49,16 @@ void main() {
             "_id": id.name,
           },
         ];
-        when(mockHttpService.getSharedCostumers(any, any)).thenAnswer(
+        when(mockHttpService.getSharedCostumers(any)).thenAnswer(
           (_) async => http.Response(jsonEncode(json), 200),
         );
         final costumerProvider = CostumerProvider(mockHttpService);
         //costumerProvider.workshopId = "some_workshop_id";
-        const String costumerId = "some_id";
+        //const String costumerId = "some_id";
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
         final List<CostumerModel> diagnoses =
-            await costumerProvider.getSharedCostumers(costumerId);
+            await costumerProvider.getSharedCostumers();
         // Assert.
         expect(
           diagnoses.length,

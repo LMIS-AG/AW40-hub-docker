@@ -292,7 +292,6 @@ class HttpService {
 
   Future<http.Response> getSharedCostumers(
     String token,
-    String costumerId,
   ) {
     return _client.get(
       Uri.parse("$backendUrl/shared/costumers"),
