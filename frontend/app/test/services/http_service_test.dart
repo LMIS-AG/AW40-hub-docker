@@ -571,8 +571,8 @@ void main() {
       expect(request.body, isEmpty, reason: "Request body should be empty");
       expect(
         request.url.toString(),
-        endsWith("/shared/vehicles"),
-        reason: "Request URL should end with /shared/cases",
+        endsWith("/shared/costumers"),
+        reason: "Request URL should end with /shared/costumers",
       );
       return http.Response('{"status": "success"}', 200);
     });

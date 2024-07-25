@@ -295,7 +295,7 @@ class HttpService {
     String costumerId,
   ) {
     return _client.get(
-      Uri.parse("$backendUrl/shared/vehicles/$costumerId"),
+      Uri.parse("$backendUrl/shared/costumers"),
       headers: getAuthHeaderWith(token),
     );
   }
