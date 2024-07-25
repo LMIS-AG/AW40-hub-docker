@@ -289,4 +289,11 @@ class HttpService {
     final response = await _client.send(request);
     return http.Response.fromStream(response);
   }
+
+  Future<http.Response> getSharedCostumers(String token) {
+    return _client.get(
+      Uri.parse("$backendUrl/shared/vehicles/$costumerId"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
 }
