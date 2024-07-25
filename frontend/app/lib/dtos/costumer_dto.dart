@@ -2,7 +2,7 @@ import "package:aw40_hub_frontend/models/costumer_model.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:json_annotation/json_annotation.dart";
 
-part "vehicle_dto.g.dart";
+part "costumer_dto.g.dart";
 
 @JsonSerializable()
 class CostumerDto {
