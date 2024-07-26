@@ -1,21 +1,21 @@
-import "package:aw40_hub_frontend/models/costumer_model.dart";
+import 'package:aw40_hub_frontend/models/customer_model.dart';
 import "package:flutter/material.dart";
 
-class CostumersDataTableSource extends DataTableSource {
-  CostumersDataTableSource({
+class CustomerDataTableSource extends DataTableSource {
+  CustomerDataTableSource({
     required this.themeData,
     required this.currentIndexNotifier,
-    required this.costumerModels,
+    required this.customerModels,
     required this.onPressedRow,
   });
-  List<CostumerModel> costumerModels;
+  List<CustomerModel> customerModels;
   final void Function(int) onPressedRow;
   final ThemeData themeData;
   final ValueNotifier<int?> currentIndexNotifier;
 
   @override
   DataRow? getRow(int index) {
-    final costumerModel = costumerModels[index];
+    final customerModel = customerModels[index];
     return DataRow(
       onSelectChanged: (_) => onPressedRow(index),
       selected: currentIndexNotifier.value == index,
@@ -28,7 +28,7 @@ class CostumersDataTableSource extends DataTableSource {
       }),
       cells: [
         DataCell(
-          Text(costumerModel.id.name),
+          Text(customerModel.id.name),
         ),
       ],
     );
@@ -38,7 +38,7 @@ class CostumersDataTableSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => costumerModels.length;
+  int get rowCount => customerModels.length;
 
   @override
   int get selectedRowCount => 0;

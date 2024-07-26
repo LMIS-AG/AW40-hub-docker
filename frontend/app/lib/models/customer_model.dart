@@ -1,7 +1,7 @@
 import "package:aw40_hub_frontend/utils/enums.dart";
 
-class CostumerModel {
-  CostumerModel({
+class CustomerModel {
+  CustomerModel({
     required this.id,
   });
   AnonymousCustomerId id;

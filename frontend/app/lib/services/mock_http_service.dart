@@ -1286,8 +1286,15 @@ class MockHttpService implements HttpService {
   }
 
   @override
-  Future<Response> getSharedCostumers(String token) {
-    // TODO: implement getSharedCostumers
+  Future<Response> getCustomers(
+      String token, String workshopId, String caseId) {
+    // TODO: implement getCustomers
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> getSharedCustomers(String token) {
+    // TODO: implement getSharedCustomers
     throw UnimplementedError();
   }
 }

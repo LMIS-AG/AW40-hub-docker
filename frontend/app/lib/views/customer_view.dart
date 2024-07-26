@@ -1,24 +1,22 @@
-import "package:aw40_hub_frontend/data_sources/vehicles_data_table_source.dart";
+import "package:aw40_hub_frontend/data_sources/customer_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
-import "package:aw40_hub_frontend/models/costumer_model.dart";
-import "package:aw40_hub_frontend/models/vehicle_model.dart";
-import "package:aw40_hub_frontend/providers/costumer_provider.dart";
-import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
+import "package:aw40_hub_frontend/models/customer_model.dart";
+import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
-class CostumerView extends StatefulWidget {
-  const CostumerView({
+class CustomerView extends StatefulWidget {
+  const CustomerView({
     super.key,
   });
 
   @override
-  State<CostumerView> createState() => _CostumerViewState();
+  State<CustomerView> createState() => _CustomerViewState();
 }
 
-class _CostumerViewState extends State<CostumerView> {
+class _CustomerViewState extends State<CustomerView> {
   final currentVehicleIndexNotifier = ValueNotifier<int?>(null);
 
   @override
@@ -29,18 +27,18 @@ class _CostumerViewState extends State<CostumerView> {
 
   @override
   Widget build(BuildContext context) {
-    final costumerProvider = Provider.of<CostumerProvider>(context);
+    final costumerProvider = Provider.of<CustomerProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: costumerProvider.getCostumers(),
+      future: costumerProvider.getCustomers(),
       builder:
-          (BuildContext context, AsyncSnapshot<List<CostumerModel>> snapshot) {
+          (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
             !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        final List<CostumerModel>? costumerModels = snapshot.data;
-        if (costumerModels == null) {
+        final List<CustomerModel>? customerModels = snapshot.data;
+        if (customerModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
             exceptionMessage: "Received no vehicles.",
@@ -52,10 +50,10 @@ class _CostumerViewState extends State<CostumerView> {
               flex: 3,
               child: SingleChildScrollView(
                 child: PaginatedDataTable(
-                  source: VehiclesDataTableSource(
+                  source: CustomerDataTableSource(
                     themeData: Theme.of(context),
                     currentIndexNotifier: currentVehicleIndexNotifier,
-                    vehicleModels: costumerModels,
+                    customerModels: customerModels,
                     onPressedRow: (int i) {
                       currentVehicleIndexNotifier.value = i;
                     },

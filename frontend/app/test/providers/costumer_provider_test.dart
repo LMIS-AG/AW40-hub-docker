@@ -1,9 +1,9 @@
 @GenerateNiceMocks([MockSpec<HttpService>(), MockSpec<AuthProvider>()])
 import "dart:convert";
 
-import "package:aw40_hub_frontend/models/costumer_model.dart";
+import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
-import "package:aw40_hub_frontend/providers/costumer_provider.dart";
+import 'package:aw40_hub_frontend/providers/customer_provider.dart';
 import "package:aw40_hub_frontend/services/config_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
@@ -15,7 +15,7 @@ import "package:mockito/mockito.dart";
 import "diagnosis_provider_test.mocks.dart";
 
 void main() {
-  group("CostumerProvider", () {
+  group("CustomerProvider", () {
     final mockAuthProvider = MockAuthProvider();
     setUpAll(() async {
       when(mockAuthProvider.getAuthToken())
@@ -26,17 +26,17 @@ void main() {
       test("calls HttpService.getSharedCostumers()", () async {
         // Arrange.
         final mockHttpService = MockHttpService();
-        when(mockHttpService.getSharedCostumers(any)).thenAnswer(
+        when(mockHttpService.getCustomers(any, any, any)).thenAnswer(
           (_) async => http.Response("[]", 200),
         );
-        final costumerProvider = CostumerProvider(mockHttpService);
+        final costumerProvider = CustomerProvider(mockHttpService);
         //costumerProvider.workshopId = "some_workshop_id";
         //const String costumerId = "some_id";
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
-        await costumerProvider.getSharedCostumers();
+        await costumerProvider.getCustomers();
         // Assert.
-        verify(mockHttpService.getSharedCostumers(any)).called(1);
+        verify(mockHttpService.getCustomers(any, any, any)).called(1);
         verifyNoMoreInteractions(mockHttpService);
       });
 
@@ -49,23 +49,23 @@ void main() {
             "_id": id.name,
           },
         ];
-        when(mockHttpService.getSharedCostumers(any)).thenAnswer(
+        when(mockHttpService.getCustomers(any, any, any)).thenAnswer(
           (_) async => http.Response(jsonEncode(json), 200),
         );
-        final costumerProvider = CostumerProvider(mockHttpService);
+        final costumerProvider = CustomerProvider(mockHttpService);
         //costumerProvider.workshopId = "some_workshop_id";
         //const String costumerId = "some_id";
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
-        final List<CostumerModel> diagnoses =
-            await costumerProvider.getSharedCostumers();
+        final List<CustomerModel> diagnoses =
+            await costumerProvider.getCustomers();
         // Assert.
         expect(
           diagnoses.length,
           equals(1),
           reason: "should return one diagnosis",
         );
-        final CostumerModel diagnosis = diagnoses[0];
+        final CustomerModel diagnosis = diagnoses[0];
         expect(
           diagnosis.id,
           equals(AnonymousCustomerId.anonymous),

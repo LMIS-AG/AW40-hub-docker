@@ -290,20 +290,22 @@ class HttpService {
     return http.Response.fromStream(response);
   }
 
-  Future<http.Response> getSharedCostumers(
+  Future<http.Response> getSharedCustomers(
     String token,
   ) {
     return _client.get(
-      Uri.parse("$backendUrl/shared/costumers"),
+      Uri.parse("$backendUrl/shared/customers"),
       headers: getAuthHeaderWith(token),
     );
   }
 
-  Future<http.Response> getCostumers(
+  Future<http.Response> getCustomers(
     String token,
+    String workshopId,
+    String caseId,
   ) {
     return _client.get(
-      Uri.parse("$backendUrl/shared/costumers"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/customer"),
       headers: getAuthHeaderWith(token),
     );
   }

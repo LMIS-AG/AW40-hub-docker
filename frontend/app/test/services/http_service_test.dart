@@ -554,8 +554,10 @@ void main() {
       expect(sentRequest, isTrue, reason: "Request was not sent");
     });
   });
-  test("verify getSharedCostumers", () async {
+  test("verify getCustomers", () async {
     bool sentRequest = false;
+    const String workshopId = "workshop_id";
+    const String caseId = "caseId";
     final client = MockClient((request) async {
       sentRequest = true;
       expect(
@@ -571,12 +573,17 @@ void main() {
       expect(request.body, isEmpty, reason: "Request body should be empty");
       expect(
         request.url.toString(),
-        endsWith("/shared/costumers"),
-        reason: "Request URL should end with /shared/costumers",
+        endsWith("/$workshopId/cases/$caseId/customer"),
+        reason:
+            "Request URL should end with /$workshopId/cases/$caseId/customer",
       );
       return http.Response('{"status": "success"}', 200);
     });
-    await HttpService(client).getSharedCostumers("some-token");
+    await HttpService(client).getCustomers(
+      "some-token",
+      "workshop_id",
+      "case_id",
+    );
     expect(sentRequest, isTrue, reason: "Request should have been sent");
   });
 }
