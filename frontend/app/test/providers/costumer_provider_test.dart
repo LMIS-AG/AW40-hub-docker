@@ -3,7 +3,7 @@ import "dart:convert";
 
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
-import 'package:aw40_hub_frontend/providers/customer_provider.dart';
+import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/services/config_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
