@@ -18,12 +18,36 @@ class VehicleProvider with ChangeNotifier {
   final Logger _logger = Logger("vehicle_provider");
   late final String workshopId;
 
+  late final String caseId;
+
   String? _authToken;
 
-  Future<List<VehicleModel>> getSharedVehicles() async {
+  /*Future<List<VehicleModel>> getSharedVehicles() async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.getSharedVehicles(
       authToken,
+    );
+    if (response.statusCode != 200) {
+      _logger.warning(
+        "Could not get diagnoses. "
+        "${response.statusCode}: ${response.reasonPhrase}",
+      );
+      return [];
+    }
+    final json = jsonDecode(response.body);
+    if (json is! List) {
+      _logger.warning("Could not decode json response to List.");
+      return [];
+    }
+    return json.map((e) => VehicleDto.fromJson(e).toModel()).toList();
+  }*/
+
+  Future<List<VehicleModel>> getVehicles() async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.getVehicles(
+      authToken,
+      workshopId,
+      caseId,
     );
     if (response.statusCode != 200) {
       _logger.warning(
