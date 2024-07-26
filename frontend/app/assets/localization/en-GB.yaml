@@ -117,6 +117,8 @@ cases:
       timeseriesData: "Timeseries Data"
 customers:
   title: "Customers"
+  headlines: 
+    id: "ID"
 vehicles:
   title: "Vehicles"
 training:
