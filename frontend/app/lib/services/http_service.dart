@@ -298,4 +298,13 @@ class HttpService {
       headers: getAuthHeaderWith(token),
     );
   }
+
+  Future<http.Response> getCostumers(
+    String token,
+  ) {
+    return _client.get(
+      Uri.parse("$backendUrl/shared/costumers"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
 }
