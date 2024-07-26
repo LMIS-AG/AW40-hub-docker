@@ -119,6 +119,11 @@ customers:
   title: "Customers"
 vehicles:
   title: "Vehicles"
+  headlines: 
+    id: "ID"
+    vin: "VIN"
+    tsn: "TSN"
+    yearBuild: "Year Build"
 training:
   title: "Training"
 pageNotFound:

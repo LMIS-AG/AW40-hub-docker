@@ -25,16 +25,16 @@ void main() {
       test("calls HttpService.getSharedVehicles()", () async {
         // Arrange.
         final mockHttpService = MockHttpService();
-        when(mockHttpService.getSharedVehicles(any)).thenAnswer(
+        when(mockHttpService.getVehicles(any, any, any)).thenAnswer(
           (_) async => http.Response("[]", 200),
         );
         final vehiclesProvider = VehicleProvider(mockHttpService);
         vehiclesProvider.workshopId = "some_workshop_id";
         await vehiclesProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
-        await vehiclesProvider.getSharedVehicles();
+        await vehiclesProvider.getVehicles();
         // Assert.
-        verify(mockHttpService.getSharedVehicles(any)).called(1);
+        verify(mockHttpService.getVehicles(any, any, any)).called(1);
         verifyNoMoreInteractions(mockHttpService);
       });
 
@@ -53,7 +53,7 @@ void main() {
             "year_build": yearBuild,
           },
         ];
-        when(mockHttpService.getSharedVehicles(any)).thenAnswer(
+        when(mockHttpService.getVehicles(any, any, any)).thenAnswer(
           (_) async => http.Response(jsonEncode(json), 200),
         );
         final vehiclesProvider = VehicleProvider(mockHttpService);
@@ -61,7 +61,7 @@ void main() {
         await vehiclesProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
         final List<VehicleModel> diagnoses =
-            await vehiclesProvider.getSharedVehicles();
+            await vehiclesProvider.getVehicles();
         // Assert.
         expect(
           diagnoses.length,

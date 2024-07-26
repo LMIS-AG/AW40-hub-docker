@@ -30,11 +30,11 @@ class _VehiclesViewState extends State<VehiclesView> {
     final vehicleProvider = Provider.of<VehicleProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: vehicleProvider.getSharedVehicles(),
+      future: vehicleProvider.getVehicles(),
       builder:
           (BuildContext context, AsyncSnapshot<List<VehicleModel>> snapshot) {
-        if (snapshot.connectionState != ConnectionState.done &&
-            snapshot.hasData) {
+        if (snapshot.connectionState != ConnectionState.done ||
+            !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
         final List<VehicleModel>? vehicleModels = snapshot.data;
@@ -61,17 +61,10 @@ class _VehiclesViewState extends State<VehiclesView> {
                   showCheckboxColumn: false,
                   rowsPerPage: 50,
                   columns: [
-                    DataColumn(
-                      label: Text(tr("general.date")),
-                      numeric: true,
-                    ),
-                    DataColumn(label: Text(tr("general.status"))),
-                    DataColumn(label: Text(tr("general.customer"))),
-                    DataColumn(label: Text("${tr('general.vehicle')} VIN")),
-                    DataColumn(
-                      label: Text(tr("general.workshop")),
-                      numeric: true,
-                    ),
+                    DataColumn(label: Text(tr("vehicles.headlines.id"))),
+                    DataColumn(label: Text(tr("vehicles.headlines.vin"))),
+                    DataColumn(label: Text(tr("vehicles.headlines.tsn"))),
+                    DataColumn(label: Text(tr("vehicles.headlines.yearBuild"))),
                   ],
                 ),
               ),

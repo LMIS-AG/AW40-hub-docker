@@ -11,6 +11,7 @@ import "package:aw40_hub_frontend/dtos/obd_data_dto.dart";
 import "package:aw40_hub_frontend/dtos/state_machine_log_entry_dto.dart";
 import "package:aw40_hub_frontend/dtos/symptom_dto.dart";
 import "package:aw40_hub_frontend/dtos/timeseries_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/vehicle_dto.dart";
 import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
@@ -1293,8 +1294,25 @@ class MockHttpService implements HttpService {
 
   @override
   Future<Response> getVehicles(String token, String workshopId, String caseId) {
-    // TODO: implement getVehicles
-    throw UnimplementedError();
+    const String id = "some_id";
+    const String vin = "some_vin";
+    const String tsn = "some_tsn";
+    const int yearBuild = 2000;
+    final List<VehicleDto> vehicleDtos = [
+      VehicleDto(
+        id,
+        vin,
+        tsn,
+        yearBuild,
+      )
+    ];
+    return Future.delayed(
+      Duration(milliseconds: delay),
+      () => Response(
+        jsonEncode(vehicleDtos.map((e) => e.toJson()).toList()),
+        200,
+      ),
+    );
   }
 
   @override
