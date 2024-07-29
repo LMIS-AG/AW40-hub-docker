@@ -572,7 +572,7 @@ void main() {
       expect(
         request.url.toString(),
         endsWith("/shared/vehicles"),
-        reason: "Request URL should end with /shared/cases",
+        reason: "Request URL should end with /shared/vehicles",
       );
       return http.Response('{"status": "success"}', 200);
     });

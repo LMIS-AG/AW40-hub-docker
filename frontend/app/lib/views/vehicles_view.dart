@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 
 class VehiclesView extends StatefulWidget {
@@ -18,6 +19,7 @@ class VehiclesView extends StatefulWidget {
 
 class _VehiclesViewState extends State<VehiclesView> {
   final currentVehicleIndexNotifier = ValueNotifier<int?>(null);
+  Logger vehicleViewLogger = Logger("VehicleViewLogger");
 
   @override
   void dispose() {
@@ -30,11 +32,13 @@ class _VehiclesViewState extends State<VehiclesView> {
     final vehicleProvider = Provider.of<VehicleProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: vehicleProvider.getVehicles(),
+      future: vehicleProvider.getSharedVehicles(),
       builder:
           (BuildContext context, AsyncSnapshot<List<VehicleModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
             !snapshot.hasData) {
+          vehicleViewLogger.shout(snapshot.error);
+          vehicleViewLogger.shout(snapshot.data);
           return const Center(child: CircularProgressIndicator());
         }
         final List<VehicleModel>? vehicleModels = snapshot.data;
@@ -61,7 +65,6 @@ class _VehiclesViewState extends State<VehiclesView> {
                   showCheckboxColumn: false,
                   rowsPerPage: 50,
                   columns: [
-                    DataColumn(label: Text(tr("vehicles.headlines.id"))),
                     DataColumn(label: Text(tr("vehicles.headlines.vin"))),
                     DataColumn(label: Text(tr("vehicles.headlines.tsn"))),
                     DataColumn(label: Text(tr("vehicles.headlines.yearBuild"))),

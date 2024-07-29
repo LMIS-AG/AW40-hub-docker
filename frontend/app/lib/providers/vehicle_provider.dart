@@ -22,14 +22,14 @@ class VehicleProvider with ChangeNotifier {
 
   String? _authToken;
 
-  /*Future<List<VehicleModel>> getSharedVehicles() async {
+  Future<List<VehicleModel>> getSharedVehicles() async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.getSharedVehicles(
       authToken,
     );
     if (response.statusCode != 200) {
       _logger.warning(
-        "Could not get diagnoses. "
+        "Could not get vehicle. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
       return [];
@@ -40,7 +40,7 @@ class VehicleProvider with ChangeNotifier {
       return [];
     }
     return json.map((e) => VehicleDto.fromJson(e).toModel()).toList();
-  }*/
+  }
 
   Future<List<VehicleModel>> getVehicles() async {
     final String authToken = _getAuthToken();
@@ -51,7 +51,7 @@ class VehicleProvider with ChangeNotifier {
     );
     if (response.statusCode != 200) {
       _logger.warning(
-        "Could not get diagnoses. "
+        "Could not get vehicle. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
       return [];

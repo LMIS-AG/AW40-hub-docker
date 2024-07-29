@@ -29,7 +29,7 @@ class VehicleDto {
   @JsonKey(name: "_id")
   String id;
   String vin;
-  String tsn;
+  String? tsn;
   @JsonKey(name: "year_build")
-  int yearBuild;
+  int? yearBuild;
 }

@@ -7,6 +7,6 @@ class VehicleModel {
   });
   String id;
   String vin;
-  String tsn;
-  int yearBuild;
+  String? tsn;
+  int? yearBuild;
 }
