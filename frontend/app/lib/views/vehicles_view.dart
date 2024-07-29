@@ -19,7 +19,7 @@ class VehiclesView extends StatefulWidget {
 
 class _VehiclesViewState extends State<VehiclesView> {
   final currentVehicleIndexNotifier = ValueNotifier<int?>(null);
-  Logger vehicleViewLogger = Logger("VehicleViewLogger");
+  final Logger _logger = Logger("VehicleViewLogger");
 
   @override
   void dispose() {
@@ -37,8 +37,8 @@ class _VehiclesViewState extends State<VehiclesView> {
           (BuildContext context, AsyncSnapshot<List<VehicleModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
             !snapshot.hasData) {
-          vehicleViewLogger.shout(snapshot.error);
-          vehicleViewLogger.shout(snapshot.data);
+          _logger.shout(snapshot.error);
+          _logger.shout(snapshot.data);
           return const Center(child: CircularProgressIndicator());
         }
         final List<VehicleModel>? vehicleModels = snapshot.data;
@@ -48,31 +48,9 @@ class _VehiclesViewState extends State<VehiclesView> {
             exceptionMessage: "Received no vehicles.",
           );
         }
-        return Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: SingleChildScrollView(
-                child: PaginatedDataTable(
-                  source: VehiclesDataTableSource(
-                    themeData: Theme.of(context),
-                    currentIndexNotifier: currentVehicleIndexNotifier,
-                    vehicleModels: vehicleModels,
-                    onPressedRow: (int i) {
-                      currentVehicleIndexNotifier.value = i;
-                    },
-                  ),
-                  showCheckboxColumn: false,
-                  rowsPerPage: 50,
-                  columns: [
-                    DataColumn(label: Text(tr("vehicles.headlines.vin"))),
-                    DataColumn(label: Text(tr("vehicles.headlines.tsn"))),
-                    DataColumn(label: Text(tr("vehicles.headlines.yearBuild"))),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        return DesktopVehiclesView(
+          vehicleModel: vehicleModels,
+          currentIndexNotifier: currentVehicleIndexNotifier,
         );
 
         // Show detail view if a case is selected.
@@ -94,44 +72,66 @@ class _VehiclesViewState extends State<VehiclesView> {
   }
 }
 
-class VehiclesTable extends StatelessWidget {
-  const VehiclesTable({
+class DesktopVehiclesView extends StatefulWidget {
+  const DesktopVehiclesView({
     required this.vehicleModel,
-    required this.vehicleIndexNotifier,
+    required this.currentIndexNotifier,
     super.key,
   });
 
   final List<VehicleModel> vehicleModel;
-  final ValueNotifier<int?> vehicleIndexNotifier;
+  final ValueNotifier<int?> currentIndexNotifier;
+
+  @override
+  State<DesktopVehiclesView> createState() => DesktopVehiclesViewState();
+}
+
+class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
+  int? currentVehiclesIndex;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: PaginatedDataTable(
-        source: VehiclesDataTableSource(
-          themeData: Theme.of(context),
-          currentIndexNotifier: vehicleIndexNotifier,
-          vehicleModels: vehicleModel,
-          onPressedRow: (int i) {
-            vehicleIndexNotifier.value = i;
-          },
+    if (widget.vehicleModel.isEmpty) {
+      return Center(
+        child: Text(
+          tr("general.no.diagnoses"),
+          style: Theme.of(context).textTheme.displaySmall,
         ),
-        showCheckboxColumn: false,
-        rowsPerPage: 50,
-        columns: [
-          DataColumn(
-            label: Text(tr("general.date")),
-            numeric: true,
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: SingleChildScrollView(
+            child: PaginatedDataTable(
+              source: VehiclesDataTableSource(
+                themeData: Theme.of(context),
+                currentIndexNotifier: widget.currentIndexNotifier,
+                vehicleModels: widget.vehicleModel,
+                onPressedRow: (int i) =>
+                    setState(() => currentVehiclesIndex = i),
+              ),
+              showCheckboxColumn: false,
+              rowsPerPage: 50,
+              columns: [
+                DataColumn(
+                  label: Text(tr("general.date")),
+                  numeric: true,
+                ),
+                DataColumn(label: Text(tr("general.status"))),
+                DataColumn(label: Text(tr("general.customer"))),
+                DataColumn(label: Text("${tr('general.vehicle')} VIN")),
+                DataColumn(
+                  label: Text(tr("general.workshop")),
+                  numeric: true,
+                ),
+              ],
+            ),
           ),
-          DataColumn(label: Text(tr("general.status"))),
-          DataColumn(label: Text(tr("general.customer"))),
-          DataColumn(label: Text("${tr('general.vehicle')} VIN")),
-          DataColumn(
-            label: Text(tr("general.workshop")),
-            numeric: true,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
