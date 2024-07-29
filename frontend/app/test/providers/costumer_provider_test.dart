@@ -26,7 +26,7 @@ void main() {
       test("calls HttpService.getSharedCostumers()", () async {
         // Arrange.
         final mockHttpService = MockHttpService();
-        when(mockHttpService.getCustomers(any, any, any)).thenAnswer(
+        when(mockHttpService.getSharedCustomers(any)).thenAnswer(
           (_) async => http.Response("[]", 200),
         );
         final costumerProvider = CustomerProvider(mockHttpService);
@@ -34,9 +34,9 @@ void main() {
         //const String costumerId = "some_id";
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
-        await costumerProvider.getCustomers();
+        await costumerProvider.getSharedCustomers();
         // Assert.
-        verify(mockHttpService.getCustomers(any, any, any)).called(1);
+        verify(mockHttpService.getSharedCustomers(any)).called(1);
         verifyNoMoreInteractions(mockHttpService);
       });
 
@@ -49,7 +49,7 @@ void main() {
             "_id": id.name,
           },
         ];
-        when(mockHttpService.getCustomers(any, any, any)).thenAnswer(
+        when(mockHttpService.getSharedCustomers(any)).thenAnswer(
           (_) async => http.Response(jsonEncode(json), 200),
         );
         final costumerProvider = CustomerProvider(mockHttpService);
@@ -58,7 +58,7 @@ void main() {
         await costumerProvider.fetchAndSetAuthToken(mockAuthProvider);
         // Act.
         final List<CustomerModel> diagnoses =
-            await costumerProvider.getCustomers();
+            await costumerProvider.getSharedCustomers();
         // Assert.
         expect(
           diagnoses.length,

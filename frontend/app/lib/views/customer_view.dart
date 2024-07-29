@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 
 class CustomerView extends StatefulWidget {
@@ -17,20 +18,20 @@ class CustomerView extends StatefulWidget {
 }
 
 class _CustomerViewState extends State<CustomerView> {
-  final currentVehicleIndexNotifier = ValueNotifier<int?>(null);
+  final currentCustomerIndexNotifier = ValueNotifier<int?>(null);
+  Logger customViewLogger = Logger("CustomerViewLogger");
 
   @override
   void dispose() {
-    currentVehicleIndexNotifier.dispose();
+    currentCustomerIndexNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final costumerProvider = Provider.of<CustomerProvider>(context);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: costumerProvider.getCustomers(),
+      future: Provider.of<CustomerProvider>(context).getSharedCustomers(),
       builder:
           (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
@@ -52,10 +53,10 @@ class _CustomerViewState extends State<CustomerView> {
                 child: PaginatedDataTable(
                   source: CustomerDataTableSource(
                     themeData: Theme.of(context),
-                    currentIndexNotifier: currentVehicleIndexNotifier,
+                    currentIndexNotifier: currentCustomerIndexNotifier,
                     customerModels: customerModels,
                     onPressedRow: (int i) {
-                      currentVehicleIndexNotifier.value = i;
+                      currentCustomerIndexNotifier.value = i;
                     },
                   ),
                   showCheckboxColumn: false,

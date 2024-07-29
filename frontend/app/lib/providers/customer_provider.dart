@@ -16,17 +16,14 @@ class CustomerProvider with ChangeNotifier {
   final HttpService _httpService;
 
   final Logger _logger = Logger("customer_provider");
-  late final String workshopId;
-  late final String caseId;
+  late final String costumerId;
 
   String? _authToken;
 
-  Future<List<CustomerModel>> getCustomers() async {
+  Future<List<CustomerModel>> getSharedCustomers() async {
     final String authToken = _getAuthToken();
-    final Response response = await _httpService.getCustomers(
+    final Response response = await _httpService.getSharedCustomers(
       authToken,
-      workshopId,
-      caseId,
     );
     if (response.statusCode != 200) {
       _logger.warning(
