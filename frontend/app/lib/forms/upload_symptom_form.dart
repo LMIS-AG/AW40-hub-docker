@@ -32,17 +32,17 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
               controller: _componentController,
               minLines: 1,
               maxLines: null,
-              decoration: const InputDecoration(
-                labelText: "Components",
-                hintText: "Enter a Component",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.symptom.component.label"),
+                hintText: tr("forms.symptom.component.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             DropdownMenu<SymptomLabel>(
               controller: _labelController,
-              label: const Text("Label"),
-              hintText: "optional",
+              label: Text(tr("forms.symptom.label")),
+              hintText: tr("forms.symptom.optional"),
               onSelected: (SymptomLabel? symptomLabel) {
                 setState(() {
                   selectedLabel = symptomLabel;
@@ -67,7 +67,7 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
 
   String? _validation(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter some text";
+      return tr("forms.submit");
     }
 
     return null;

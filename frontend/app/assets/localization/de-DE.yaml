@@ -125,3 +125,13 @@ pageNotFound:
   title: "Seite @:general.notFound"
 noAuthorization :
   title: "Keine Autorisierung"
+forms:
+  submit: "Hochladen"
+  validation:
+    enterText: ""Bitte geben Sie einen Text ein"
+  symptom:
+    label: "Label"
+    optional: "optional"
+    component:
+      label: "Komponente"
+      hint: "Geben Sie eine Komponente ein"
