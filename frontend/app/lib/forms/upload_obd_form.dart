@@ -38,7 +38,7 @@ class _UploadObdFormState extends State<UploadObdForm> {
 
   String? _signalValidation(String? value) {
     if (value == null || value.isEmpty) {
-      return tr("forms.obd.enterSignal");
+      return tr("forms.validation.enterSignal");
     }
     final List<String> parts = value.split(",");
     for (final String part in parts) {
