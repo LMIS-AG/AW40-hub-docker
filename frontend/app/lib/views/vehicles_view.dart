@@ -117,16 +117,10 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
               rowsPerPage: 50,
               columns: [
                 DataColumn(
-                  label: Text(tr("general.date")),
-                  numeric: true,
+                  label: Text(tr("vehicle.vin")),
                 ),
-                DataColumn(label: Text(tr("general.status"))),
-                DataColumn(label: Text(tr("general.customer"))),
-                DataColumn(label: Text("${tr('general.vehicle')} VIN")),
-                DataColumn(
-                  label: Text(tr("general.workshop")),
-                  numeric: true,
-                ),
+                DataColumn(label: Text(tr("vehicle.tsn"))),
+                DataColumn(label: Text(tr("vehicle.yearBuild"))),
               ],
             ),
           ),
