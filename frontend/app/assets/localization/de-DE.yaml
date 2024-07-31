@@ -125,3 +125,51 @@ pageNotFound:
   title: "Seite @:general.notFound"
 noAuthorization :
   title: "Keine Autorisierung"
+forms:
+  submit: "Hochladen"
+  validation:
+    enterText: "Bitte geben Sie einen Text ein"
+    enterNumber: "Bitte geben Sie eine Nummer ein"
+    enterValidNumber: "Bitte geben Sie eine gültige Nummer ein"
+    enterSignal: "Bitte geben Sie ein Signal ein"
+    separateWithComma: "Jeder Wert muss eine gültige Zahl sein und durch Kommas getrennt sein"
+    invalidNumber: "Ungültige Zahlen in Feldern"
+  obd:
+    label: "Diagnose-Fehlercodes"
+    hint: "Geben Sie Codes getrennt durch Kommas ein"
+    suffix: "z.B. P0001, U0001, U0002"
+  omniview:
+    component:
+      label: "Komponente"
+      hint: "Geben Sie eine Komponente ein"
+    duration:
+      label: "Dauer"
+      hint: "Geben Sie eine Dauer ein"
+    samplingRate:
+      label: "Abtastrate"
+      hint: "Geben Sie eine Abtastrate ein"
+  picoscope:
+    component:
+      labelA: "Komponente A"
+      labelB: "Komponente B"
+      labelC: "Komponente C"
+      label: "Label"
+      hint: "Komponente eingeben"
+      optional: "optional"
+  timeseries:
+    label: "Label"
+    component:
+      label: "Komponente"
+      hint: "Geben Sie eine Komponente ein"
+    duration:
+      label: "Dauer"
+      hint: "Geben Sie eine Dauer ein"
+    samplingRate:
+      label: "Abtastrate"
+      hint: "Geben Sie eine Abtastrate ein"
+    signal:
+      label: "Signal"
+      hint: "Geben Sie ein Signal getrennt durch Kommas ein"
+      suffix: "z.B. 1, 2, 3"
+
+

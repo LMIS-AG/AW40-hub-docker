@@ -25,11 +25,11 @@ class _UploadObdFormState extends State<UploadObdForm> {
         validator: _signalValidation,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: _controller,
-        decoration: const InputDecoration(
-          labelText: "Diagnostic Trouble Codes",
-          hintText: "Enter Codes separated by commas",
-          suffixText: " e.g., P0001,U0001,U0002",
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: tr("forms.obd.label"),
+          hintText: tr("forms.obd.hint"),
+          suffixText: tr("forms.obd.suffix"),
+          border: const OutlineInputBorder(),
         ),
       ),
       onSubmit: _onSubmit,
@@ -38,12 +38,12 @@ class _UploadObdFormState extends State<UploadObdForm> {
 
   String? _signalValidation(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter a signal";
+      return tr("forms.obd.enterSignal");
     }
     final List<String> parts = value.split(",");
     for (final String part in parts) {
       if (part.trim().isEmpty) {
-        return "Each value must be a valid integer separated by commas";
+        return tr("forms.validation.separateWithComma");
       }
     }
     return null;

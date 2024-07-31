@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 class BaseUploadForm extends StatelessWidget {
@@ -18,7 +19,7 @@ class BaseUploadForm extends StatelessWidget {
         const SizedBox(height: 16),
         ElevatedButton(
           onPressed: onSubmit,
-          child: const Text("Submit"),
+          child: Text(tr("forms.submit")),
         ),
       ],
     );

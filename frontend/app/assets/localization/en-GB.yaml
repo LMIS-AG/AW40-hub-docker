@@ -125,3 +125,52 @@ pageNotFound:
   title: "Page @:general.notFound"
 noAuthorization:
   title: "No Authorization"
+forms:
+  submit: "Submit"
+  validation:
+    enterText: "Please enter some text"
+    enterNumber: "Please enter a number"
+    enterValidNumber: "Please enter a valid number"
+    enterSignal: "Please enter a signal"
+    separateWithComma: "Each value must be a valid integer separated by commas"
+    invalidNumber: "Invalid numbers in fields"
+  obd:
+    label: "Diagnostic Trouble Codes"
+    hint: "Enter codes, separated by commas"
+    suffix: "e.g., P0001, U0001, U0002"
+  omniview:
+    component:
+      label: "Component"
+      hint: "Enter a Component"
+    duration:
+      label: "Duration"
+      hint: "Enter a Duration"
+    samplingRate:
+      label: "Sampling Rate"
+      hint: "Enter a Sampling Rate"
+  picoscope:
+    component:
+      labelA: "Component A"
+      labelB: "Component B"
+      labelC: "Component C"
+      label: "Label"
+      hint: "Enter a Component"
+      optional: "optional"
+  timeseries:
+    label: "Label"
+    component:
+      label: "Component"
+      hint: "Enter a Component"
+    duration:
+      label: "Duration"
+      hint: "Enter a Duration"
+    samplingRate:
+      label: "Sampling Rate"
+      hint: "Enter a Sampling Rate"
+    signal:
+      label: "Signal"
+      hint: "Enter Signals, seperated by commas"
+      suffix: "e.g., 1, 2, 3"
+
+
+
