@@ -134,7 +134,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                       labelText: tr("forms.picoscope.component.labelC"),
                       hintText: tr("forms.picoscope.component.hint"),
                       border: const OutlineInputBorder(),
-                      suffixText: tr("forms.picoscope.component.optional"),
+                      suffixText: tr("forms.optional"),
                     ),
                   ),
                 ),

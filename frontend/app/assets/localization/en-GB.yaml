@@ -127,6 +127,7 @@ noAuthorization:
   title: "No Authorization"
 forms:
   submit: "Submit"
+  optional: "optional"
   validation:
     enterText: "Please enter some text"
     enterNumber: "Please enter a number"
@@ -155,7 +156,6 @@ forms:
       labelC: "Component C"
       label: "Label"
       hint: "Enter a Component"
-      optional: "optional"
   timeseries:
     label: "Label"
     component:
