@@ -42,7 +42,7 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
             DropdownMenu<SymptomLabel>(
               controller: _labelController,
               label: Text(tr("forms.symptom.label")),
-              hintText: tr("forms.symptom.optional"),
+              hintText: tr("forms.optional"),
               onSelected: (SymptomLabel? symptomLabel) {
                 setState(() {
                   selectedLabel = symptomLabel;

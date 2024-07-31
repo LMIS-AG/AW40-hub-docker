@@ -127,11 +127,11 @@ noAuthorization:
   title: "No Authorization"
 forms:
   submit: "Submit"
+  optional: "optional"
   validation:
     enterText: "Please enter some text"
   symptom:
     label: "Label"
-    optional: "optional"
     component:
       label: "Component"
       hint: "Enter a Component"
