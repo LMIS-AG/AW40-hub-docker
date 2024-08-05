@@ -70,6 +70,7 @@ diagnoses:
     uploadDataSuccessMessage: "The data has been uploaded successfully."
     uploadDataErrorMessage: "The data could not be uploaded."
     noFaultPathFound: "No fault path found"
+    noStateMachineLog: "No state machine log available"
   todos:
     noTodosFound: "No todos found"
     noTodosFoundDescription: "The diagnosis has status action_required, but no associated todos. This is likely a mistake in the backend."
@@ -125,3 +126,52 @@ pageNotFound:
   title: "Page @:general.notFound"
 noAuthorization:
   title: "No Authorization"
+forms:
+  submit: "Submit"
+  optional: "optional"
+  validation:
+    enterText: "Please enter some text"
+    enterNumber: "Please enter a number"
+    enterValidNumber: "Please enter a valid number"
+    enterSignal: "Please enter a signal"
+    separateWithComma: "Each value must be a valid integer separated by commas"
+    invalidNumber: "Invalid numbers in fields"
+  obd:
+    label: "Diagnostic Trouble Codes"
+    hint: "Enter codes, separated by commas"
+    suffix: "e.g., P0001, U0001, U0002"
+  omniview:
+    component:
+      label: "Component"
+      hint: "Enter a Component"
+    duration:
+      label: "Duration"
+      hint: "Enter a Duration"
+    samplingRate:
+      label: "Sampling Rate"
+      hint: "Enter a Sampling Rate"
+  picoscope:
+    component:
+      labelA: "Component A"
+      labelB: "Component B"
+      labelC: "Component C"
+      label: "Label"
+      hint: "Enter a Component"
+  timeseries:
+    label: "Label"
+    component:
+      label: "Component"
+      hint: "Enter a Component"
+    duration:
+      label: "Duration"
+      hint: "Enter a Duration"
+    samplingRate:
+      label: "Sampling Rate"
+      hint: "Enter a Sampling Rate"
+    signal:
+      label: "Signal"
+      hint: "Enter Signals, seperated by commas"
+      suffix: "e.g., 1, 2, 3"
+
+
+

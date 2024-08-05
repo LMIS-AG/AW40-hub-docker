@@ -32,16 +32,16 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               validator: _textValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentController,
-              decoration: const InputDecoration(
-                labelText: "Components",
-                hintText: "Enter a Component",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.timeseries.component.label"),
+                hintText: tr("forms.timeseries.component.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             DropdownMenu<TimeseriesDataLabel>(
               controller: _labelController,
-              label: const Text("Label"),
+              label: Text(tr("forms.timeseries.label")),
               onSelected: (TimeseriesDataLabel? timeseriesDataLabel) {
                 setState(() {
                   selectedLabel = timeseriesDataLabel;
@@ -63,10 +63,10 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _durationController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Duration",
-                hintText: "Enter a Duration",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.timeseries.duration.label"),
+                hintText: tr("forms.timeseries.duration.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -75,10 +75,10 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _samplingRateController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Sampling Rate",
-                hintText: "Enter a Sampling Rate",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.timeseries.samplingRate.label"),
+                hintText: tr("forms.timeseries.samplingRate.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -87,11 +87,11 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _signalController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Signal",
-                hintText: "Enter signals separated by commas",
-                suffixText: "e.g., 1,2,3",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.timeseries.signal.label"),
+                hintText: tr("forms.timeseries.signal.hint"),
+                suffixText: tr("forms.timeseries.signal.suffix"),
+                border: const OutlineInputBorder(),
               ),
             ),
           ],
@@ -103,28 +103,30 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
 
   String? _textValidation(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter some text";
+      return tr("forms.validation.enterText");
     }
     return null;
   }
 
   String? _numberValidation(String? value) {
-    if (value == null || value.isEmpty) return "Please enter a number";
+    if (value == null || value.isEmpty) {
+      return tr("forms.validation.enterNumber");
+    }
     final int? numberValue = int.tryParse(value);
     if (numberValue == null) {
-      return "Please enter a valid number";
+      return tr("forms.validation.enterValidNumber");
     }
     return null;
   }
 
   String? _signalValidation(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter a signal";
+      return tr("forms.validation.enterSignal");
     }
     final List<String> parts = value.split(",");
     for (final String part in parts) {
       if (part.trim().isEmpty || int.tryParse(part.trim()) == null) {
-        return "Each value must be a valid integer separated by commas";
+        return tr("forms.validation.separateWithComma");
       }
     }
     return null;
@@ -152,7 +154,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
 
     if (samplingRate == null || duration == null || signal.contains(null)) {
       messengerState.showSnackBar(
-        SnackBar(content: Text(tr("Invalid numbers in fields."))),
+        SnackBar(content: Text(tr("forms.validation.invalidNumber"))),
       );
       return;
     }

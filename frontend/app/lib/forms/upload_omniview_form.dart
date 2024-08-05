@@ -39,10 +39,10 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
               validator: _textValidation,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _componentController,
-              decoration: const InputDecoration(
-                labelText: "Components",
-                hintText: "Enter a Component",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.omniview.component.label"),
+                hintText: tr("forms.omniview.component.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -51,10 +51,10 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _durationController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Duration",
-                hintText: "Enter a Duration",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.omniview.duration.label"),
+                hintText: tr("forms.omniview.duration.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -63,10 +63,10 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _samplingRateController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Sampling Rate",
-                hintText: "Enter a Sampling Rate",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: tr("forms.omniview.samplingRate.label"),
+                hintText: tr("forms.omniview.samplingRate.hint"),
+                border: const OutlineInputBorder(),
               ),
             ),
           ],
@@ -78,16 +78,18 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
 
   String? _textValidation(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter some text";
+      return tr("forms.validation.enterText");
     }
     return null;
   }
 
   String? _numberValidation(String? value) {
-    if (value == null || value.isEmpty) return "Please enter a number";
+    if (value == null || value.isEmpty) {
+      return tr("forms.validation.enterNumber");
+    }
     final int? numberValue = int.tryParse(value);
     if (numberValue == null) {
-      return "Please enter a valid number";
+      return tr("forms.validation.enterValidNumber");
     }
     return null;
   }
@@ -116,7 +118,7 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
 
     if (samplingRate == null || duration == null) {
       messengerState.showSnackBar(
-        SnackBar(content: Text(tr("Invalid numbers in fields."))),
+        SnackBar(content: Text(tr("forms.validation.invalidNumber"))),
       );
       return;
     }
