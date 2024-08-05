@@ -70,6 +70,7 @@ diagnoses:
     uploadDataSuccessMessage: "The data has been uploaded successfully."
     uploadDataErrorMessage: "The data could not be uploaded."
     noFaultPathFound: "No fault path found"
+    noStateMachineLog: "No state machine log available"
   todos:
     noTodosFound: "No todos found"
     noTodosFoundDescription: "The diagnosis has status action_required, but no associated todos. This is likely a mistake in the backend."
