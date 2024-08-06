@@ -1,4 +1,5 @@
 import "dart:async";
+import "package:aw40_hub_frontend/components/dataset_upload_case_view.dart";
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
@@ -199,6 +200,24 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    FilledButton.icon(
+                      icon: const Icon(Icons.upload_rounded),
+                      label: Text(tr("uploadData.label")),
+                      onPressed: caseProvider.workShopId ==
+                              widget.caseModel.workshopId
+                          ? () async => showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  actions: [
+                                    DatasetUploadCaseView(
+                                      caseId: widget.caseModel.id,
+                                    )
+                                  ],
+                                ),
+                              )
+                          : null,
+                    ),
+                    const SizedBox(width: 16),
                     FilledButton.icon(
                       icon: const Icon(Icons.edit),
                       label: Text(tr("general.edit")),
