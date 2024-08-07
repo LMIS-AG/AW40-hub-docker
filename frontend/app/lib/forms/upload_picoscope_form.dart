@@ -56,7 +56,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                       labelText: tr("forms.picoscope.component.labelA"),
                       hintText: tr("forms.picoscope.component.hint"),
                       border: const OutlineInputBorder(),
-                      suffixText: tr("forms.picoscope.component.optional"),
+                      suffixText: tr("forms.optional"),
                     ),
                   ),
                 ),
@@ -65,7 +65,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                   child: DropdownMenu<PicoscopeLabel>(
                     controller: _labelAController,
                     label: Text(tr("forms.picoscope.component.label")),
-                    hintText: tr("forms.picoscope.component.optional"),
+                    hintText: tr("forms.optional"),
                     onSelected: (PicoscopeLabel? picoscopeLabel) {
                       setState(() {
                         selectedLabelA = picoscopeLabel;
@@ -96,7 +96,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                       labelText: tr("forms.picoscope.component.labelB"),
                       hintText: tr("forms.picoscope.component.hint"),
                       border: const OutlineInputBorder(),
-                      suffixText: tr("forms.picoscope.component.optional"),
+                      suffixText: tr("forms.optional"),
                     ),
                   ),
                 ),
@@ -105,7 +105,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                   child: DropdownMenu<PicoscopeLabel>(
                     controller: _labelBController,
                     label: Text(tr("forms.picoscope.component.label")),
-                    hintText: tr("forms.picoscope.component.optional"),
+                    hintText: tr("forms.optional"),
                     onSelected: (PicoscopeLabel? picoscopeLabel) {
                       setState(() {
                         selectedLabelB = picoscopeLabel;
@@ -145,7 +145,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                   child: DropdownMenu<PicoscopeLabel>(
                     controller: _labelCController,
                     label: Text(tr("forms.picoscope.component.label")),
-                    hintText: tr("forms.picoscope.component.optional"),
+                    hintText: tr("forms.optional"),
                     onSelected: (PicoscopeLabel? picoscopeLabel) {
                       setState(() {
                         selectedLabelC = picoscopeLabel;
