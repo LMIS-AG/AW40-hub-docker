@@ -2,7 +2,6 @@ import "dart:async";
 import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
-import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
@@ -90,26 +89,6 @@ class DiagnosisProvider with ChangeNotifier {
     );
     if (!verifyStatusCode) return false;
     notifyListeners();
-    return true;
-  }
-
-  Future<bool> uploadObdData(String caseId, NewOBDDataDto obdDataDto) async {
-    final String authToken = _getAuthToken();
-    final Map<String, dynamic> obdDataJson = obdDataDto.toJson();
-    final Response response = await _httpService.uploadObdData(
-      authToken,
-      workshopId,
-      caseId,
-      obdDataJson,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload obd data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
     return true;
   }
 

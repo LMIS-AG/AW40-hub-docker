@@ -1,13 +1,16 @@
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 
+import "../providers/case_provider.dart";
+
 class UploadObdForm extends StatefulWidget {
-  const UploadObdForm({super.key});
+  const UploadObdForm({required this.caseId, super.key});
+
+  final String caseId;
 
   @override
   State<UploadObdForm> createState() => _UploadObdFormState();
@@ -50,12 +53,11 @@ class _UploadObdFormState extends State<UploadObdForm> {
   }
 
   Future<void> _onSubmit() async {
-    final provider = Provider.of<DiagnosisProvider>(context, listen: false);
+    final provider = Provider.of<CaseProvider>(context, listen: false);
     final messengerState = ScaffoldMessenger.of(context);
     final List<String> codes = _controller.text.split("\n");
     final dto = NewOBDDataDto(null, codes);
-    final bool result =
-        await provider.uploadObdData(provider.diagnosisCaseId, dto);
+    final bool result = await provider.uploadObdData(widget.caseId, dto);
     final String snackBarText = result
         ? tr("diagnoses.details.uploadDataSuccessMessage")
         : tr("diagnoses.details.uploadDataErrorMessage");

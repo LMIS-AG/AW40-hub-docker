@@ -3,6 +3,7 @@ import "dart:convert";
 import "package:aw40_hub_frontend/dtos/case_dto.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -133,6 +134,26 @@ class CaseProvider with ChangeNotifier {
     // Aktuelle Filter werden durch Zustand einer FilterCriteria Instanz
     // definiert.
     _logger.warning("Unimplemented: filterCases()");
+  }
+
+  Future<bool> uploadObdData(String caseId, NewOBDDataDto obdDataDto) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> obdDataJson = obdDataDto.toJson();
+    final Response response = await _httpService.uploadObdData(
+      authToken,
+      workShopId,
+      caseId,
+      obdDataJson,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload obd data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    return true;
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
