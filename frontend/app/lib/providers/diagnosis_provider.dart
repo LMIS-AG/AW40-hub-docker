@@ -92,23 +92,6 @@ class DiagnosisProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> uploadVcdsData(String caseId, List<int> vcdsData) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.uploadVcdsData(
-      authToken,
-      workshopId,
-      caseId,
-      vcdsData,
-    );
-    return HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload vcds data. ",
-      response,
-      _logger,
-    );
-  }
-
   Future<bool> uploadTimeseriesData(
     String workshopId,
     String caseId,

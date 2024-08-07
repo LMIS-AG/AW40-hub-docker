@@ -37,7 +37,7 @@ class _DatasetUploadCaseViewState extends State<DatasetUploadCaseView> {
       case Formats.obd:
         return UploadObdForm(caseId: widget.caseId);
       case Formats.vcds:
-        return const UploadVcdsForm();
+        return UploadVcdsForm(caseId: widget.caseId);
       case Formats.symptom:
         return const UploadSymptomForm();
     }

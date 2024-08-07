@@ -47,9 +47,9 @@ class _DatasetUploadAreaState extends State<DatasetUploadArea> {
   Widget _getObdUploadForm(ObdFormat format) {
     switch (format) {
       case ObdFormat.obd:
-        return const UploadObdForm();
+        return UploadObdForm(caseId: widget.caseId);
       case ObdFormat.vcds:
-        return const UploadVcdsForm();
+        return UploadVcdsForm(caseId: widget.caseId);
     }
   }
 
