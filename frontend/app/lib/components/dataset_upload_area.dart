@@ -36,20 +36,20 @@ class _DatasetUploadAreaState extends State<DatasetUploadArea> {
   Widget _getTimeseriesUploadForm(TimeseriesFormat format) {
     switch (format) {
       case TimeseriesFormat.timeseries:
-        return const UploadTimeseriesForm();
+        return UploadTimeseriesForm(caseId: widget.caseId);
       case TimeseriesFormat.picoscope:
-        return const UploadPicoscopeForm();
+        return UploadPicoscopeForm(caseId: widget.caseId);
       case TimeseriesFormat.omniview:
-        return const UploadOmniviewForm();
+        return UploadOmniviewForm(caseId: widget.caseId);
     }
   }
 
   Widget _getObdUploadForm(ObdFormat format) {
     switch (format) {
       case ObdFormat.obd:
-        return const UploadObdForm();
+        return UploadObdForm(caseId: widget.caseId);
       case ObdFormat.vcds:
-        return const UploadVcdsForm();
+        return UploadVcdsForm(caseId: widget.caseId);
     }
   }
 

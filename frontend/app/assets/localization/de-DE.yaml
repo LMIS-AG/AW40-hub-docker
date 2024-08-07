@@ -116,6 +116,8 @@ cases:
       obdData: "OBD Daten"
       symptoms: "Symptome"
       timeseriesData: "Zeitreihendaten"
+uploadData: 
+  label: "Daten-Upload"
 customers:
   title: "Kunden"
 vehicles:

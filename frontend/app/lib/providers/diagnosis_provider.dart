@@ -2,8 +2,6 @@ import "dart:async";
 import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
-import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
-import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -93,167 +91,6 @@ class DiagnosisProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> uploadObdData(String caseId, NewOBDDataDto obdDataDto) async {
-    final String authToken = _getAuthToken();
-    final Map<String, dynamic> obdDataJson = obdDataDto.toJson();
-    final Response response = await _httpService.uploadObdData(
-      authToken,
-      workshopId,
-      caseId,
-      obdDataJson,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload obd data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    return true;
-  }
-
-  Future<bool> uploadVcdsData(String caseId, List<int> vcdsData) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.uploadVcdsData(
-      authToken,
-      workshopId,
-      caseId,
-      vcdsData,
-    );
-    return HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload vcds data. ",
-      response,
-      _logger,
-    );
-  }
-
-  Future<bool> addTimeseriesData(
-    String workshopId,
-    String caseId,
-    String component,
-    TimeseriesDataLabel label,
-    int samplingRate,
-    int duration,
-    List<int> signal,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.addTimeseriesData(
-      authToken,
-      workshopId,
-      caseId,
-      component,
-      label,
-      samplingRate,
-      duration,
-      signal,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload timeseries data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
-  Future<bool> uploadPicoscopeData(
-    String caseId,
-    List<int> picoscopeData,
-    String filename,
-    String? componentA,
-    String? componentB,
-    String? componentC,
-    PicoscopeLabel? labelA,
-    PicoscopeLabel? labelB,
-    PicoscopeLabel? labelC,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.uploadPicoscopeData(
-      authToken,
-      workshopId,
-      caseId,
-      picoscopeData,
-      filename,
-      componentA: componentA,
-      componentB: componentB,
-      componentC: componentC,
-      labelA: labelA,
-      labelB: labelB,
-      labelC: labelC,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload picoscope data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
-  Future<bool> uploadOmniviewData(
-    String caseId,
-    List<int> omniviewData,
-    String filename,
-    String component,
-    int samplingRate,
-    int duration,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.uploadOmniviewData(
-      authToken,
-      workshopId,
-      caseId,
-      component,
-      samplingRate,
-      duration,
-      omniviewData,
-      filename,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload omniview data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
-  Future<bool> uploadSymptomData(
-    String caseId,
-    NewSymptomDto symptomDto,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Map<String, dynamic> symptomDataJson = symptomDto.toJson();
-    final Response response = await _httpService.uploadSymptomData(
-      authToken,
-      workshopId,
-      caseId,
-      symptomDataJson,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload symptom data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
   DiagnosisModel? _decodeDiagnosisModelFromResponseBody(Response response) {
     final decodedJson = jsonDecode(response.body);
     if (decodedJson is! Map<String, dynamic>) return null;
@@ -270,7 +107,7 @@ class DiagnosisProvider with ChangeNotifier {
     final String? authToken = _authToken;
     if (authToken == null) {
       throw AppException(
-        exceptionMessage: "Called CaseProvider without auth token.",
+        exceptionMessage: "Called DiagnosisProvider without auth token.",
         exceptionType: ExceptionType.unexpectedNullValue,
       );
     }

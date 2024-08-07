@@ -1,13 +1,15 @@
 import "package:aw40_hub_frontend/components/file_upload_form_component.dart";
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 class UploadOmniviewForm extends StatefulWidget {
-  const UploadOmniviewForm({super.key});
+  const UploadOmniviewForm({required this.caseId, super.key});
+
+  final String caseId;
 
   @override
   State<UploadOmniviewForm> createState() => _UploadOmniviewFormState();
@@ -108,7 +110,7 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
     final FormState? formState = _formKey.currentState;
     if (formState != null && !formState.validate()) return;
 
-    final provider = Provider.of<DiagnosisProvider>(context, listen: false);
+    final provider = Provider.of<CaseProvider>(context, listen: false);
     final String? filename = _filename;
     if (filename == null) return;
 
@@ -124,7 +126,7 @@ class _UploadOmniviewFormState extends State<UploadOmniviewForm> {
     }
 
     final bool result = await provider.uploadOmniviewData(
-      provider.diagnosisCaseId,
+      widget.caseId,
       file,
       filename,
       component,

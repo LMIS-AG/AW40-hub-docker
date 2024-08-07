@@ -1,5 +1,5 @@
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:enum_to_string/enum_to_string.dart";
@@ -7,7 +7,9 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 class UploadTimeseriesForm extends StatefulWidget {
-  const UploadTimeseriesForm({super.key});
+  const UploadTimeseriesForm({required this.caseId, super.key});
+
+  final String caseId;
 
   @override
   State<UploadTimeseriesForm> createState() => _UploadTimeseriesFormState();
@@ -137,7 +139,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
     if (formState != null && !formState.validate()) return;
 
     final messengerState = ScaffoldMessenger.of(context);
-    final provider = Provider.of<DiagnosisProvider>(context, listen: false);
+    final provider = Provider.of<CaseProvider>(context, listen: false);
 
     final String component = _componentController.text;
     final TimeseriesDataLabel? label = EnumToString.fromString(
@@ -159,9 +161,8 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
       return;
     }
 
-    final bool result = await provider.addTimeseriesData(
-      provider.workshopId,
-      provider.diagnosisCaseId,
+    final bool result = await provider.uploadTimeseriesData(
+      widget.caseId,
       component,
       label,
       samplingRate,
