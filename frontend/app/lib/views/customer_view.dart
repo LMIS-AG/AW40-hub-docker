@@ -69,64 +69,7 @@ class _CustomerViewState extends State<CustomerView> {
             ),
           ],
         );
-
-        // Show detail view if a case is selected.
-        /*ValueListenableBuilder(
-              valueListenable: currentVehicleIndexNotifier,
-              builder: (context, value, child) {
-                if (value == null) return const SizedBox.shrink();
-                return Expanded(
-                  flex: 2,
-                  child: VehiclesDetailView(
-                    caseModel: caseModels[value],
-                    onClose: () => currentCaseIndexNotifier.value = null,
-                  ),
-                );
-              },
-            )*/
       },
     );
   }
 }
-
-/*class VehiclesTable extends StatelessWidget {
-  const VehiclesTable({
-    required this.vehicleModel,
-    required this.vehicleIndexNotifier,
-    super.key,
-  });
-
-  final List<VehicleModel> vehicleModel;
-  final ValueNotifier<int?> vehicleIndexNotifier;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: PaginatedDataTable(
-        source: VehiclesDataTableSource(
-          themeData: Theme.of(context),
-          currentIndexNotifier: vehicleIndexNotifier,
-          vehicleModels: vehicleModel,
-          onPressedRow: (int i) {
-            vehicleIndexNotifier.value = i;
-          },
-        ),
-        showCheckboxColumn: false,
-        rowsPerPage: 50,
-        columns: [
-          DataColumn(
-            label: Text(tr("general.date")),
-            numeric: true,
-          ),
-          DataColumn(label: Text(tr("general.status"))),
-          DataColumn(label: Text(tr("general.customer"))),
-          DataColumn(label: Text("${tr('general.vehicle')} VIN")),
-          DataColumn(
-            label: Text(tr("general.workshop")),
-            numeric: true,
-          ),
-        ],
-      ),
-    );
-  }
-}*/
