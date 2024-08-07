@@ -40,7 +40,8 @@ class _UploadVcdsFormState extends State<UploadVcdsForm> {
       return;
     }
     final bool result = await provider.uploadVcdsData(
-      provider.diagnosisCaseId,
+      provider
+          .diagnosisCaseId, // TODO this throws error because there is no diagnosisCaseId at this point. maybe i should get the case id from elsewhere
       file,
     );
     final String snackBarText = result
