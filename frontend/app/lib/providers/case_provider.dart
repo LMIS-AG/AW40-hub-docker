@@ -4,6 +4,7 @@ import "package:aw40_hub_frontend/dtos/case_dto.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -264,6 +265,30 @@ class CaseProvider with ChangeNotifier {
       response.statusCode,
       201,
       "Could not upload omniview data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> uploadSymptomData(
+    String caseId,
+    NewSymptomDto symptomDto,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> symptomDataJson = symptomDto.toJson();
+    final Response response = await _httpService.uploadSymptomData(
+      authToken,
+      workShopId,
+      caseId,
+      symptomDataJson,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload symptom data. ",
       response,
       _logger,
     );

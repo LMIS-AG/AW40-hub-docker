@@ -2,7 +2,6 @@ import "dart:async";
 import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
-import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -84,30 +83,6 @@ class DiagnosisProvider with ChangeNotifier {
       response.statusCode,
       200,
       "Could not delete diagnosis. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
-  Future<bool> uploadSymptomData(
-    String caseId,
-    NewSymptomDto symptomDto,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Map<String, dynamic> symptomDataJson = symptomDto.toJson();
-    final Response response = await _httpService.uploadSymptomData(
-      authToken,
-      workshopId,
-      caseId,
-      symptomDataJson,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload symptom data. ",
       response,
       _logger,
     );
