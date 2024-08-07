@@ -1,4 +1,4 @@
-import 'package:aw40_hub_frontend/models/customer_model.dart';
+import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:flutter/material.dart";
 
 class CustomerDataTableSource extends DataTableSource {
