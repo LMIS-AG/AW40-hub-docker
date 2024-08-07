@@ -1,11 +1,10 @@
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
 import "package:provider/provider.dart";
-
-import "../providers/case_provider.dart";
 
 class UploadObdForm extends StatefulWidget {
   const UploadObdForm({required this.caseId, super.key});
