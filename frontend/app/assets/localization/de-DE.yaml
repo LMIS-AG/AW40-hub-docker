@@ -117,7 +117,7 @@ cases:
       symptoms: "Symptome"
       timeseriesData: "Zeitreihendaten"
 uploadData: 
-  label: "Daten hinzufügen"
+  label: "Daten-Upload"
 customers:
   title: "Kunden"
 vehicles:
