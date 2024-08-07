@@ -159,7 +159,7 @@ class _UploadTimeseriesFormState extends State<UploadTimeseriesForm> {
       return;
     }
 
-    final bool result = await provider.addTimeseriesData(
+    final bool result = await provider.uploadTimeseriesData(
       provider.workshopId,
       provider.diagnosisCaseId,
       component,

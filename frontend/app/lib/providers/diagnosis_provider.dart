@@ -130,7 +130,7 @@ class DiagnosisProvider with ChangeNotifier {
     );
   }
 
-  Future<bool> addTimeseriesData(
+  Future<bool> uploadTimeseriesData(
     String workshopId,
     String caseId,
     String component,
@@ -270,7 +270,7 @@ class DiagnosisProvider with ChangeNotifier {
     final String? authToken = _authToken;
     if (authToken == null) {
       throw AppException(
-        exceptionMessage: "Called CaseProvider without auth token.",
+        exceptionMessage: "Called DiagnosisProvider without auth token.",
         exceptionType: ExceptionType.unexpectedNullValue,
       );
     }
