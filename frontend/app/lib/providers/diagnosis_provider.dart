@@ -92,38 +92,6 @@ class DiagnosisProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> uploadTimeseriesData(
-    String workshopId,
-    String caseId,
-    String component,
-    TimeseriesDataLabel label,
-    int samplingRate,
-    int duration,
-    List<int> signal,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.addTimeseriesData(
-      authToken,
-      workshopId,
-      caseId,
-      component,
-      label,
-      samplingRate,
-      duration,
-      signal,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      201,
-      "Could not upload timeseries data. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return false;
-    notifyListeners();
-    return true;
-  }
-
   Future<bool> uploadPicoscopeData(
     String caseId,
     List<int> picoscopeData,

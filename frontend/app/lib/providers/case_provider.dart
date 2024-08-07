@@ -173,6 +173,37 @@ class CaseProvider with ChangeNotifier {
     );
   }
 
+  Future<bool> uploadTimeseriesData(
+    String caseId,
+    String component,
+    TimeseriesDataLabel label,
+    int samplingRate,
+    int duration,
+    List<int> signal,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.addTimeseriesData(
+      authToken,
+      workShopId,
+      caseId,
+      component,
+      label,
+      samplingRate,
+      duration,
+      signal,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload timeseries data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
   }

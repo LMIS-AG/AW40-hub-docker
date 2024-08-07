@@ -29,7 +29,7 @@ class _DatasetUploadCaseViewState extends State<DatasetUploadCaseView> {
   Widget _getUploadForm(Formats format) {
     switch (format) {
       case Formats.timeseries:
-        return const UploadTimeseriesForm();
+        return UploadTimeseriesForm(caseId: widget.caseId);
       case Formats.picoscope:
         return const UploadPicoscopeForm();
       case Formats.omniview:
