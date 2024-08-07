@@ -2,6 +2,7 @@ import "package:aw40_hub_frontend/configs/localization_config.dart";
 import "package:aw40_hub_frontend/main.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
+import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
 import "package:aw40_hub_frontend/providers/theme_provider.dart";
 import "package:aw40_hub_frontend/routing/router.dart";
@@ -56,6 +57,12 @@ class AWHubApp extends StatelessWidget {
           ),
           ChangeNotifierProxyProvider<AuthProvider, DiagnosisProvider>(
             create: (_) => DiagnosisProvider(httpService),
+            update: (_, authProvider, caseProvider) =>
+                // ignore: discarded_futures
+                caseProvider!..fetchAndSetAuthToken(authProvider),
+          ),
+          ChangeNotifierProxyProvider<AuthProvider, CustomerProvider>(
+            create: (_) => CustomerProvider(httpService),
             update: (_, authProvider, caseProvider) =>
                 // ignore: discarded_futures
                 caseProvider!..fetchAndSetAuthToken(authProvider),

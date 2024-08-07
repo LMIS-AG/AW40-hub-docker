@@ -1284,4 +1284,17 @@ class MockHttpService implements HttpService {
       () => Response(jsonEncode(caseDto.toJson()), 201),
     );
   }
+
+  @override
+  Future<Response> getCustomers(
+      String token, String workshopId, String caseId) {
+    // TODO: implement getCustomers
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> getSharedCustomers(String token) {
+    // TODO: implement getSharedCustomers
+    throw UnimplementedError();
+  }
 }

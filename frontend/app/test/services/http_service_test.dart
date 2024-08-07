@@ -554,4 +554,32 @@ void main() {
       expect(sentRequest, isTrue, reason: "Request was not sent");
     });
   });
+  test("verify getSharedCustomers", () async {
+    bool sentRequest = false;
+
+    final client = MockClient((request) async {
+      sentRequest = true;
+      expect(
+        request.method,
+        equals("GET"),
+        reason: "Request method should be GET",
+      );
+      expect(
+        request.headers["content-type"],
+        isNull,
+        reason: "Request has content-type header",
+      );
+      expect(request.body, isEmpty, reason: "Request body should be empty");
+      expect(
+        request.url.toString(),
+        endsWith("/shared/customers"),
+        reason: "Request URL should end with /shared/customers",
+      );
+      return http.Response('{"status": "success"}', 200);
+    });
+    await HttpService(client).getSharedCustomers(
+      "some-token",
+    );
+    expect(sentRequest, isTrue, reason: "Request should have been sent");
+  });
 }
