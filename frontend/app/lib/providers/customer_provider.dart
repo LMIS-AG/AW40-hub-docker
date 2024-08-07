@@ -27,7 +27,7 @@ class CustomerProvider with ChangeNotifier {
     );
     if (response.statusCode != 200) {
       _logger.warning(
-        "Could not get diagnoses. "
+        "Could not get customers. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );
       return [];
