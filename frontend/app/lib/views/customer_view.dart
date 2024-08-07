@@ -62,7 +62,7 @@ class _CustomerViewState extends State<CustomerView> {
                   showCheckboxColumn: false,
                   rowsPerPage: 50,
                   columns: [
-                    DataColumn(label: Text(tr("costumers.headlines.id"))),
+                    DataColumn(label: Text(tr("customers.headlines.id"))),
                   ],
                 ),
               ),
