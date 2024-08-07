@@ -1,6 +1,6 @@
 import "package:aw40_hub_frontend/components/file_upload_form_component.dart";
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:enum_to_string/enum_to_string.dart";
@@ -9,7 +9,9 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 class UploadPicoscopeForm extends StatefulWidget {
-  const UploadPicoscopeForm({super.key});
+  const UploadPicoscopeForm({required this.caseId, super.key});
+
+  final String caseId;
 
   @override
   State<UploadPicoscopeForm> createState() => _UploadPicoscopeFormState();
@@ -183,7 +185,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     final FormState? formState = _formKey.currentState;
     if (formState != null && !formState.validate()) return;
 
-    final provider = Provider.of<DiagnosisProvider>(context, listen: false);
+    final provider = Provider.of<CaseProvider>(context, listen: false);
     final String? filename = _filename;
     if (filename == null) return;
 
@@ -199,7 +201,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
         EnumToString.fromString(PicoscopeLabel.values, _labelCController.text);
 
     final bool result = await provider.uploadPicoscopeData(
-      provider.diagnosisCaseId,
+      widget.caseId,
       file,
       filename,
       componentA,

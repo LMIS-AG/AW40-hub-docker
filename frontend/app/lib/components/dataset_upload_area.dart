@@ -38,7 +38,7 @@ class _DatasetUploadAreaState extends State<DatasetUploadArea> {
       case TimeseriesFormat.timeseries:
         return UploadTimeseriesForm(caseId: widget.caseId);
       case TimeseriesFormat.picoscope:
-        return const UploadPicoscopeForm();
+        return UploadPicoscopeForm(caseId: widget.caseId);
       case TimeseriesFormat.omniview:
         return const UploadOmniviewForm();
     }

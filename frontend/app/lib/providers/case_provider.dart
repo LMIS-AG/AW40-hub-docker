@@ -204,6 +204,43 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
+  Future<bool> uploadPicoscopeData(
+    String caseId,
+    List<int> picoscopeData,
+    String filename,
+    String? componentA,
+    String? componentB,
+    String? componentC,
+    PicoscopeLabel? labelA,
+    PicoscopeLabel? labelB,
+    PicoscopeLabel? labelC,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.uploadPicoscopeData(
+      authToken,
+      workShopId,
+      caseId,
+      picoscopeData,
+      filename,
+      componentA: componentA,
+      componentB: componentB,
+      componentC: componentC,
+      labelA: labelA,
+      labelB: labelB,
+      labelC: labelC,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not upload picoscope data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
   }
