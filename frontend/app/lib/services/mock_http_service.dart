@@ -8,6 +8,7 @@ import "package:aw40_hub_frontend/dtos/customer_dto.dart";
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/dtos/obd_data_dto.dart";
 import "package:aw40_hub_frontend/dtos/state_machine_log_entry_dto.dart";
 import "package:aw40_hub_frontend/dtos/symptom_dto.dart";
@@ -1180,15 +1181,40 @@ class MockHttpService implements HttpService {
     String token,
     String workshopId,
     String caseId,
-    Map<String, dynamic> requestBody,
+    String component,
+    SymptomLabel label,
   ) {
-    final SymptomDto symptomDto;
+    final NewSymptomDto newSymptomDto;
+    //final Map<String, dynamic> requestBody = symptomDto.toJson();
+
     try {
-      symptomDto = SymptomDto.fromJson(requestBody);
+      newSymptomDto = NewSymptomDto(
+        component,
+        label,
+      );
     } on Error {
       return Future.delayed(
         Duration(milliseconds: delay),
         () => Response("", 422),
+      );
+    }
+
+    final SymptomDto symptomDto = SymptomDto(
+      DateTime.utc(2021, 2, 3),
+      newSymptomDto.component,
+      newSymptomDto.label,
+      29,
+    );
+    if (caseId == demoCaseId) {
+      _demoCaseDto.symptoms.add(
+        symptomDto,
+      );
+      return Future.delayed(
+        Duration(milliseconds: delay),
+        () {
+          _demoDiagnosisStage1();
+          return Response(jsonEncode(_demoCaseDto.toJson()), 201);
+        },
       );
     }
 

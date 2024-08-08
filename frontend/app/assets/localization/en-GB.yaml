@@ -169,8 +169,8 @@ forms:
   timeseries:
     label: "Label"
     component:
-      label: "Component"
-      hint: "Enter a Component"
+      label: "Komponente"
+      hint: "Geben Sie eine Komponente ein"
     duration:
       label: "Duration"
       hint: "Enter a Duration"
@@ -181,6 +181,9 @@ forms:
       label: "Signal"
       hint: "Enter Signals, seperated by commas"
       suffix: "e.g., 1, 2, 3"
-
-
+  symptom:
+    label: "Label"
+    component:
+      label: "Component"
+      hint: "Enter a Component"
 
