@@ -73,7 +73,7 @@ class VehicleProvider with ChangeNotifier {
     final String? authToken = _authToken;
     if (authToken == null) {
       throw AppException(
-        exceptionMessage: "Called CaseProvider without auth token.",
+        exceptionMessage: "Called VehicleProvider without auth token.",
         exceptionType: ExceptionType.unexpectedNullValue,
       );
     }
