@@ -290,9 +290,7 @@ class HttpService {
     return http.Response.fromStream(response);
   }
 
-  Future<http.Response> getSharedCustomers(
-    String token,
-  ) {
+  Future<http.Response> getSharedCustomers(String token) {
     return _client.get(
       Uri.parse("$backendUrl/shared/customers"),
       headers: getAuthHeaderWith(token),
