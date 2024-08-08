@@ -169,8 +169,8 @@ forms:
   timeseries:
     label: "Label"
     component:
-      label: "Komponente"
-      hint: "Geben Sie eine Komponente ein"
+      label: "Component"
+      hint: "Enter a Component"
     duration:
       label: "Duration"
       hint: "Enter a Duration"
