@@ -926,6 +926,7 @@ class MockHttpService implements HttpService {
     String workshopId,
     String caseId,
   ) {
+    // ignore: lines_longer_than_80_chars
     // TODO maybe adjust regarding params in the future when getCustomers is used in the customer provider
     return Future.delayed(
       Duration(milliseconds: delay),
