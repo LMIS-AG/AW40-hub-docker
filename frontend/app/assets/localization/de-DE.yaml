@@ -124,6 +124,11 @@ customers:
     id: "ID"
 vehicles:
   title: "Fahrzeuge"
+  headlines: 
+    id: "ID"
+    vin: "VIN"
+    tsn: "TSN"
+    yearBuild: "Baujahr"
 training:
   title: "Schulung"
 pageNotFound:
