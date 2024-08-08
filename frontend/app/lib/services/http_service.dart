@@ -309,4 +309,37 @@ class HttpService {
       headers: getAuthHeaderWith(token),
     );
   }
+
+  Future<http.Response> getSharedVehicles(String token) {
+    return _client.get(
+      Uri.parse("$backendUrl/shared/vehicles"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
+  Future<http.Response> getVehicles(
+    String token,
+    String workshopId,
+    String caseId,
+  ) {
+    return _client.get(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicles"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
+  Future<http.Response> updateVehicles(
+    String token,
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.put(
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicles"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
 }
