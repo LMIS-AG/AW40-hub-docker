@@ -66,6 +66,7 @@ class VehicleProvider with ChangeNotifier {
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
+    notifyListeners();
   }
 
   String _getAuthToken() {
