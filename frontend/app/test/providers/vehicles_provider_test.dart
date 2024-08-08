@@ -53,9 +53,11 @@ void main() {
             "year_build": yearBuild,
           },
         ];
-        when(mockHttpService.getSharedVehicles(
-          any,
-        )).thenAnswer(
+        when(
+          mockHttpService.getSharedVehicles(
+            any,
+          ),
+        ).thenAnswer(
           (_) async => http.Response(jsonEncode(json), 200),
         );
         final vehiclesProvider = VehicleProvider(mockHttpService);
