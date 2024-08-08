@@ -4,6 +4,7 @@ import "dart:convert";
 import "package:aw40_hub_frontend/dtos/action_dto.dart";
 import "package:aw40_hub_frontend/dtos/case_dto.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
+import "package:aw40_hub_frontend/dtos/customer_dto.dart";
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
@@ -678,6 +679,12 @@ class MockHttpService implements HttpService {
       0,
     )
   ];
+  final List<CustomerDto> _customerDtos = [
+    CustomerDto(AnonymousCustomerId.unknown)
+  ];
+  final List<CustomerDto> _sharedCustomerDtos = [
+    CustomerDto(AnonymousCustomerId.anonymous)
+  ];
 
   Future<void> _demoDiagnosisStage0() async {
     if (_demoDiagnosisStage != 0) return;
@@ -910,6 +917,34 @@ class MockHttpService implements HttpService {
     return Future.delayed(
       Duration(milliseconds: delay),
       () => Response(jsonEncode(caseDtos.map((e) => e.toJson()).toList()), 200),
+    );
+  }
+
+  @override
+  Future<Response> getCustomers(
+    String token,
+    String workshopId,
+    String caseId,
+  ) {
+    // TODO maybe adjust regarding params in the future when getCustomers is used in the customer provider
+    return Future.delayed(
+      Duration(milliseconds: delay),
+      () => Response(
+        jsonEncode(_customerDtos.map((e) => e.toJson()).toList()),
+        200,
+      ),
+    );
+  }
+
+  @override
+  Future<Response> getSharedCustomers(String token) {
+    final List<CustomerDto> customerDtos = _customerDtos + _sharedCustomerDtos;
+    return Future.delayed(
+      Duration(milliseconds: delay),
+      () => Response(
+        jsonEncode(customerDtos.map((e) => e.toJson()).toList()),
+        200,
+      ),
     );
   }
 
@@ -1283,18 +1318,5 @@ class MockHttpService implements HttpService {
       Duration(milliseconds: delay),
       () => Response(jsonEncode(caseDto.toJson()), 201),
     );
-  }
-
-  @override
-  Future<Response> getCustomers(
-      String token, String workshopId, String caseId) {
-    // TODO: implement getCustomers
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Response> getSharedCustomers(String token) {
-    // TODO: implement getSharedCustomers
-    throw UnimplementedError();
   }
 }
