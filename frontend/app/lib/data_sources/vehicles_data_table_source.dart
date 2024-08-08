@@ -27,7 +27,7 @@ class VehiclesDataTableSource extends DataTableSource {
         return null; // Use the default value.
       }),
       cells: [
-        DataCell(Text(vehicleModel.vin)),
+        DataCell(Text(vehicleModel.vin ?? "")),
         DataCell(Text(vehicleModel.tsn ?? "")),
         DataCell(
           Text(vehicleModel.yearBuild?.toString() ?? ""),

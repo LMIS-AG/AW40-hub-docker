@@ -27,8 +27,8 @@ class VehicleDto {
   }
 
   @JsonKey(name: "_id")
-  String id;
-  String vin;
+  String? id;
+  String? vin;
   String? tsn;
   @JsonKey(name: "year_build")
   int? yearBuild;

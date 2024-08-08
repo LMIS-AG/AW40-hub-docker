@@ -5,8 +5,8 @@ class VehicleModel {
     required this.tsn,
     required this.yearBuild,
   });
-  String id;
-  String vin;
+  String? id;
+  String? vin;
   String? tsn;
   int? yearBuild;
 }
