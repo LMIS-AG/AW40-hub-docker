@@ -128,7 +128,7 @@ vehicles:
     id: "ID"
     vin: "VIN"
     tsn: "TSN"
-    yearBuild: "Year Build"
+    yearBuild: "Year built"
 training:
   title: "Training"
 pageNotFound:
