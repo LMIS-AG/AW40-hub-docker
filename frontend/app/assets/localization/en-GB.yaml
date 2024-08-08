@@ -120,6 +120,8 @@ uploadData:
   label: "Upload data"
 customers:
   title: "Customers"
+  headlines: 
+    id: "ID"
 vehicles:
   title: "Vehicles"
 training:
