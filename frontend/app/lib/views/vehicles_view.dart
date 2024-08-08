@@ -52,21 +52,6 @@ class _VehiclesViewState extends State<VehiclesView> {
           vehicleModel: vehicleModels,
           currentIndexNotifier: currentVehicleIndexNotifier,
         );
-
-        // Show detail view if a case is selected.
-        /*ValueListenableBuilder(
-              valueListenable: currentVehicleIndexNotifier,
-              builder: (context, value, child) {
-                if (value == null) return const SizedBox.shrink();
-                return Expanded(
-                  flex: 2,
-                  child: VehiclesDetailView(
-                    caseModel: caseModels[value],
-                    onClose: () => currentCaseIndexNotifier.value = null,
-                  ),
-                );
-              },
-            )*/
       },
     );
   }
