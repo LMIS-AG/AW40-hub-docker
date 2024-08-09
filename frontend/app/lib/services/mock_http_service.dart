@@ -1205,19 +1205,6 @@ class MockHttpService implements HttpService {
       newSymptomDto.label,
       29,
     );
-    if (caseId == demoCaseId) {
-      _demoCaseDto.symptoms.add(
-        symptomDto,
-      );
-      return Future.delayed(
-        Duration(milliseconds: delay),
-        () {
-          _demoDiagnosisStage1();
-          return Response(jsonEncode(_demoCaseDto.toJson()), 201);
-        },
-      );
-    }
-
     final CaseDto caseDto = CaseDto(
       caseId,
       DateTime.now(),
