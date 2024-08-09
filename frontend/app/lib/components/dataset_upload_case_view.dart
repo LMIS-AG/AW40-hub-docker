@@ -39,7 +39,7 @@ class _DatasetUploadCaseViewState extends State<DatasetUploadCaseView> {
       case Formats.picoscope:
         return UploadPicoscopeForm(caseId: widget.caseId);
       case Formats.symptom:
-        return const UploadSymptomForm();
+        return UploadSymptomForm(caseId: widget.caseId);
     }
   }
 
