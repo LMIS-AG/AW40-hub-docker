@@ -245,11 +245,6 @@ class HttpService {
     String caseId,
     String component,
     SymptomLabel label,
-    // TODO: Change param structure.
-    // Add 2 String params `component` and `label`
-    // Remove requestBody param
-    // Create JSON object from `component` and `label` params inside function
-    //Map<String, dynamic> requestBody,
   ) {
     final symptomDto = NewSymptomDto(component, label);
     final Map<String, dynamic> requestBody = symptomDto.toJson();
@@ -262,22 +257,6 @@ class HttpService {
       body: jsonEncode(requestBody),
     );
   }
-  /*final request = http.MultipartRequest(
-      "POST",
-      Uri.parse(
-        "$backendUrl/$workshopId/cases/$caseId/symptoms",
-      ),
-    ); 
-
-    request.fields["component"] = component;
-    request.fields["label"] = EnumToString.convertToString(label);
-    
-    final Map<String, String> authHeader = getAuthHeaderWith(token);
-    assert(authHeader.length == 1);
-    request.headers[authHeader.keys.first] = authHeader.values.first;
-
-    final response = await _client.send(request);
-    return http.Response.fromStream(response);*/
 
   Future<http.Response> uploadOmniviewData(
     String token,

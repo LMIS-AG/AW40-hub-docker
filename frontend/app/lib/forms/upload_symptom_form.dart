@@ -1,5 +1,5 @@
 import "package:aw40_hub_frontend/forms/base_upload_form.dart";
-import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:enum_to_string/enum_to_string.dart";
@@ -7,7 +7,9 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 class UploadSymptomForm extends StatefulWidget {
-  const UploadSymptomForm({super.key});
+  const UploadSymptomForm({required this.caseId, super.key});
+
+  final String caseId;
 
   @override
   State<UploadSymptomForm> createState() => _UploadSymptomFormState();
@@ -78,7 +80,7 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
     final FormState? formState = _formKey.currentState;
     if (formState != null && !formState.validate()) return;
 
-    final provider = Provider.of<DiagnosisProvider>(context, listen: false);
+    final provider = Provider.of<CaseProvider>(context, listen: false);
 
     final String component = _componentController.text;
     final SymptomLabel? label =
@@ -86,7 +88,7 @@ class _UploadSymptomFormState extends State<UploadSymptomForm> {
     if (label == null) return;
 
     final bool result = await provider.uploadSymptomData(
-      provider.diagnosisCaseId,
+      widget.caseId,
       component,
       label,
     );

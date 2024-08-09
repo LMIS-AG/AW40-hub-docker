@@ -4,7 +4,6 @@ import "package:aw40_hub_frontend/dtos/case_dto.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
-import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -275,15 +274,16 @@ class CaseProvider with ChangeNotifier {
 
   Future<bool> uploadSymptomData(
     String caseId,
-    NewSymptomDto symptomDto,
+    String component,
+    SymptomLabel label,
   ) async {
     final String authToken = _getAuthToken();
-    final Map<String, dynamic> symptomDataJson = symptomDto.toJson();
     final Response response = await _httpService.uploadSymptomData(
       authToken,
       workShopId,
       caseId,
-      symptomDataJson,
+      component,
+      label,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
