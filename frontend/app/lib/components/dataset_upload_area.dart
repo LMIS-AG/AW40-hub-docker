@@ -100,7 +100,7 @@ class _DatasetUploadAreaState extends State<DatasetUploadArea> {
           ],
         );
       case DatasetType.symptom:
-        return const UploadSymptomForm();
+        return UploadSymptomForm(caseId: widget.caseId);
       case DatasetType.unknown:
       case null:
     }

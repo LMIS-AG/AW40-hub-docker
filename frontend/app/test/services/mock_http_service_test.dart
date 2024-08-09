@@ -590,11 +590,14 @@ void main() {
         );
         const caseId = "caseId";
         const workshopId = "workshopId";
+        const component = "component";
+        const label = SymptomLabel.defect;
         final Response response = await mockHttpService.uploadSymptomData(
           "token",
           workshopId,
           caseId,
-          symptomDto.toJson(),
+          component,
+          label,
         );
 
         expect(response.statusCode, 201, reason: "status code should be 201");
@@ -633,7 +636,7 @@ void main() {
           reason: "symptomDtoResponse.component should be input parameter",
         );
       });
-      test("returns 422 on incorrect requestBody", () async {
+      /*test("returns 422 on incorrect requestBody", () async {
         final Map<String, dynamic> requestBody = {
           "obd_specs": ["some obd specs"],
           "dtcs": 5,
@@ -643,11 +646,12 @@ void main() {
           "token",
           "workshopId",
           "caseId",
-          requestBody,
+          "component",
+          SymptomLabel.defect,
         );
 
         expect(response.statusCode, 422, reason: "status code should be 422");
-      });
+      });*/
     });
     group("uploadVcdsData", () {
       test("returns 201 CaseDto json", () async {
@@ -898,17 +902,12 @@ void testDemoDiagnosisWorkflow() {
       );
 
       // Add symptom data.
-      final SymptomDto symptomDto = SymptomDto(
-        DateTime.utc(2021, 2, 3),
-        "component",
-        SymptomLabel.defect,
-        5,
-      );
       response = await mockHttpService.uploadSymptomData(
         "token",
         "workshopId",
         demoCaseId,
-        symptomDto.toJson(),
+        "component",
+        SymptomLabel.defect,
       );
       expect(
         response.statusCode,

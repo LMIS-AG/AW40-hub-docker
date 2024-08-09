@@ -8,6 +8,7 @@ import "package:aw40_hub_frontend/dtos/customer_dto.dart";
 import "package:aw40_hub_frontend/dtos/diagnosis_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_obd_data_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/dtos/obd_data_dto.dart";
 import "package:aw40_hub_frontend/dtos/state_machine_log_entry_dto.dart";
 import "package:aw40_hub_frontend/dtos/symptom_dto.dart";
@@ -1180,11 +1181,17 @@ class MockHttpService implements HttpService {
     String token,
     String workshopId,
     String caseId,
-    Map<String, dynamic> requestBody,
+    String component,
+    SymptomLabel label,
   ) {
-    final SymptomDto symptomDto;
+    final NewSymptomDto newSymptomDto;
+    //final Map<String, dynamic> requestBody = symptomDto.toJson();
+
     try {
-      symptomDto = SymptomDto.fromJson(requestBody);
+      newSymptomDto = NewSymptomDto(
+        component,
+        label,
+      );
     } on Error {
       return Future.delayed(
         Duration(milliseconds: delay),
@@ -1192,6 +1199,12 @@ class MockHttpService implements HttpService {
       );
     }
 
+    final SymptomDto symptomDto = SymptomDto(
+      DateTime.utc(2021, 2, 3),
+      newSymptomDto.component,
+      newSymptomDto.label,
+      29,
+    );
     final CaseDto caseDto = CaseDto(
       caseId,
       DateTime.now(),

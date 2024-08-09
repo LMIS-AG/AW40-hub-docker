@@ -1,5 +1,6 @@
 import "dart:convert";
 
+import "package:aw40_hub_frontend/dtos/new_symptom_dto.dart";
 import "package:aw40_hub_frontend/services/config_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:collection/collection.dart";
@@ -242,12 +243,12 @@ class HttpService {
     String token,
     String workshopId,
     String caseId,
-    // TODO: Change param structure.
-    // Add 2 String params `component` and `label`
-    // Remove requestBody param
-    // Create JSON object from `component` and `label` params inside function
-    Map<String, dynamic> requestBody,
+    String component,
+    SymptomLabel label,
   ) {
+    final symptomDto = NewSymptomDto(component, label);
+    final Map<String, dynamic> requestBody = symptomDto.toJson();
+
     return _client.post(
       Uri.parse("$backendUrl/$workshopId/cases/$caseId/symptoms"),
       headers: getAuthHeaderWith(token, {

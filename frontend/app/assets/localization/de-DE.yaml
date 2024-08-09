@@ -181,5 +181,9 @@ forms:
       label: "Signal"
       hint: "Geben Sie ein Signal getrennt durch Kommas ein"
       suffix: "z.B. 1, 2, 3"
-
+  symptom:
+    label: "Label"
+    component:
+      label: "Komponente"
+      hint: "Geben Sie eine Komponente ein"
 
