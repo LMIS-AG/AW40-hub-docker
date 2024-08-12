@@ -3,6 +3,7 @@ import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
 import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
+import "package:aw40_hub_frontend/views/vehicle_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
@@ -119,7 +120,14 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
           valueListenable: currentVehiclesIndexNotifier,
           builder: (context, value, child) {
             if (value == null) return const SizedBox.shrink();
-            return const Expanded(flex: 2, child: SizedBox());
+            return Expanded(
+              flex: 2,
+              child: VehicleDetailView(
+                vehicleModel: widget.vehicleModel[currentVehiclesIndexNotifier
+                    .value!], // TODO check if urrentVehiclesIndexNotifier.value is always not null at this point
+                onClose: () => currentVehiclesIndexNotifier.value = null,
+              ),
+            );
           },
         )
       ],
