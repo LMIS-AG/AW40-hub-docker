@@ -72,7 +72,13 @@ class DesktopVehiclesView extends StatefulWidget {
 }
 
 class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
-  int? currentVehiclesIndex;
+  ValueNotifier<int?> currentVehiclesIndexNotifier = ValueNotifier<int?>(null);
+
+  @override
+  void dispose() {
+    currentVehiclesIndexNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +102,7 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
                 currentIndexNotifier: widget.currentIndexNotifier,
                 vehicleModels: widget.vehicleModel,
                 onPressedRow: (int i) =>
-                    setState(() => currentVehiclesIndex = i),
+                    setState(() => widget.currentIndexNotifier.value = i),
               ),
               showCheckboxColumn: false,
               rowsPerPage: 50,
