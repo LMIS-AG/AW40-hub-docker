@@ -50,7 +50,6 @@ class _VehiclesViewState extends State<VehiclesView> {
         }
         return DesktopVehiclesView(
           vehicleModel: vehicleModels,
-          currentIndexNotifier: currentVehicleIndexNotifier,
         );
       },
     );
@@ -60,12 +59,10 @@ class _VehiclesViewState extends State<VehiclesView> {
 class DesktopVehiclesView extends StatefulWidget {
   const DesktopVehiclesView({
     required this.vehicleModel,
-    required this.currentIndexNotifier,
     super.key,
   });
 
   final List<VehicleModel> vehicleModel;
-  final ValueNotifier<int?> currentIndexNotifier;
 
   @override
   State<DesktopVehiclesView> createState() => DesktopVehiclesViewState();
@@ -99,10 +96,10 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
             child: PaginatedDataTable(
               source: VehiclesDataTableSource(
                 themeData: Theme.of(context),
-                currentIndexNotifier: widget.currentIndexNotifier,
+                currentIndexNotifier: currentVehiclesIndexNotifier,
                 vehicleModels: widget.vehicleModel,
                 onPressedRow: (int i) =>
-                    setState(() => widget.currentIndexNotifier.value = i),
+                    setState(() => currentVehiclesIndexNotifier.value = i),
               ),
               showCheckboxColumn: false,
               rowsPerPage: 50,
@@ -116,6 +113,15 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
             ),
           ),
         ),
+
+        // Show detail view if a case is selected.
+        ValueListenableBuilder(
+          valueListenable: currentVehiclesIndexNotifier,
+          builder: (context, value, child) {
+            if (value == null) return const SizedBox.shrink();
+            return const Expanded(flex: 2, child: SizedBox());
+          },
+        )
       ],
     );
   }
