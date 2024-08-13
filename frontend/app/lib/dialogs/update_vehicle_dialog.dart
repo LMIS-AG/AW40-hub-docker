@@ -7,6 +7,7 @@ import "package:aw40_hub_frontend/text_input_formatters/upper_case_text_input_fo
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:routemaster/routemaster.dart";
 
 class UpdateVehicleDialog extends StatefulWidget {
@@ -148,6 +149,23 @@ class UpdateDialogForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: tr("general.tsn"),
+              border: const OutlineInputBorder(),
+            ),
+            controller: tsnController,
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            controller: yearBuildController,
+            decoration: InputDecoration(
+              labelText: tr("general.milage"),
+              border: const OutlineInputBorder(),
+            ),
+          ),
         ],
       ),
     );
