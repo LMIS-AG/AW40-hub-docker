@@ -77,6 +77,16 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                 ),
               ),
               const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FilledButton.icon(
+                    icon: const Icon(Icons.edit),
+                    label: Text(tr("general.edit")),
+                    onPressed: () => {},
+                  ),
+                ],
+              ),
             ],
           ),
         ),
