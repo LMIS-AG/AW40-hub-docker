@@ -1,7 +1,10 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
+import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
+import "package:aw40_hub_frontend/text_input_formatters/upper_case_text_input_formatter.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:routemaster/routemaster.dart";
@@ -109,7 +112,43 @@ class UpdateDialogForm extends StatelessWidget {
       key: formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [],
+        children: [
+          TextFormField(
+            inputFormatters: [UpperCaseTextInputFormatter()],
+            decoration: InputDecoration(
+              labelText: tr("general.vehicleVin"),
+              border: const OutlineInputBorder(),
+            ),
+            controller: vinController,
+            onSaved: (vin) {
+              if (vin == null) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "VIN was null, validation failed.",
+                );
+              }
+              if (vin.isEmpty) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "VIN was empty, validation failed.",
+                );
+              }
+            },
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return tr("general.obligatoryField");
+              }
+              if (value.contains(RegExp("[IOQ]"))) {
+                return tr("cases.addCaseDialog.vinCharactersInvalid");
+              }
+              if (value.length != 17) {
+                return tr("cases.addCaseDialog.vinLengthInvalid");
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
