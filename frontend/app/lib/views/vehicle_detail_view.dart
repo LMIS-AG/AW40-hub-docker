@@ -63,12 +63,6 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                 ],
               ),
               const SizedBox(height: _spacing),
-              // Case ID
-              Text(
-                "", //"${tr('general.case')}: ${widget.diagnosisModel.caseId}",
-                style: textTheme.titleMedium,
-              ),
-              const SizedBox(height: _spacing),
               Table(
                 columnWidths: const {0: IntrinsicColumnWidth()},
                 children: List.generate(
