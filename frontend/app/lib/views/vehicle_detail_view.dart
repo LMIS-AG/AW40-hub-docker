@@ -1,7 +1,10 @@
+import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
+import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
+import "package:provider/provider.dart";
 
 class VehicleDetailView extends StatefulWidget {
   const VehicleDetailView({
@@ -25,6 +28,7 @@ class _VehicleDetailView extends State<VehicleDetailView> {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final vehicleProvider = Provider.of<VehicleProvider>(context);
 
     final List<String> attributesCase = [
       tr("general.vin"),
@@ -83,7 +87,16 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                   FilledButton.icon(
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
-                    onPressed: () => {},
+                    onPressed: () async {
+                      final VehicleUpdateDto? vehicleUpdateDto =
+                          await _showUpdateCaseDialog(widget.vehicleModel);
+                      if (vehicleUpdateDto == null ||
+                          widget.vehicleModel.id == null) return;
+                      await vehicleProvider.updateVehicle(
+                        widget.vehicleModel.id!,
+                        vehicleUpdateDto,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -91,6 +104,18 @@ class _VehicleDetailView extends State<VehicleDetailView> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<VehicleUpdateDto?> _showUpdateCaseDialog(
+      VehicleModel vehicleModel) async {
+    return showDialog<VehicleUpdateDto>(
+      context: context,
+      builder: (BuildContext context) {
+        return const Placeholder();
+        // TODO implement
+        // return UpdateVehicleDialog(vehicleModel: vehicleModel);
+      },
     );
   }
 }

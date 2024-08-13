@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/vehicle_dto.dart";
+import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -62,6 +63,33 @@ class VehicleProvider with ChangeNotifier {
       return [];
     }
     return json.map((e) => VehicleDto.fromJson(e).toModel()).toList();
+  }
+
+  Future<VehicleModel?> updateVehicle(
+    String vehicleId,
+    VehicleUpdateDto updateVehicleDto,
+  ) async {
+    throw UnimplementedError();
+
+    // TODO implement
+    /*final String authToken = _getAuthToken();
+    final Map<String, dynamic> updateCaseJson = updateCaseDto.toJson();
+    final Response response = await _httpService.updateCase(
+      authToken,
+      workShopId,
+      caseId,
+      updateCaseJson,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not update case. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return null;
+    notifyListeners();
+    return _decodeVehicleModelFromResponseBody(response);*/
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
