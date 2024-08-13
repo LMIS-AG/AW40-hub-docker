@@ -26,6 +26,17 @@ class _VehicleDetailView extends State<VehicleDetailView> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
+    final List<String> attributesCase = [
+      tr("general.vin"),
+      tr("general.tsn"),
+      tr("general.yearBuild"),
+    ];
+    final List<String> valuesCase = [
+      widget.vehicleModel.vin ?? "",
+      widget.vehicleModel.tsn ?? "",
+      widget.vehicleModel.yearBuild?.toString() ?? "",
+    ];
+
     return SizedBox.expand(
       child: Card(
         child: Padding(
@@ -54,10 +65,24 @@ class _VehicleDetailView extends State<VehicleDetailView> {
               const SizedBox(height: _spacing),
               // Case ID
               Text(
-                "<placeholder>", //"${tr('general.case')}: ${widget.diagnosisModel.caseId}",
+                "", //"${tr('general.case')}: ${widget.diagnosisModel.caseId}",
                 style: textTheme.titleMedium,
               ),
               const SizedBox(height: _spacing),
+              Table(
+                columnWidths: const {0: IntrinsicColumnWidth()},
+                children: List.generate(
+                  attributesCase.length,
+                  (i) => TableRow(
+                    children: [
+                      const SizedBox(height: 32),
+                      Text(attributesCase[i]),
+                      Text(valuesCase[i]),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

@@ -11,6 +11,7 @@ general:
   edit: "Bearbeiten"
   filter: "Filtern"
   id: "ID"
+  yearBuild: "Baujahr"
   language: "Sprache"
   logout: "Logout"
   milage: "Kilometerstand"
@@ -29,9 +30,11 @@ general:
   status: "Status"
   then: "Dann"
   transition: "Übergang"
+  tsn: "TSN"
   unnamed: "Unbenannt"
   vehicle: "Fahrzeug"
   vehicleVin: "Fahrzeug VIN"
+  vin: "VIN"
   workshop: "Werkstatt"
   workshopId: "Werkstatt ID"
   yes: "Ja"
@@ -124,11 +127,8 @@ customers:
     id: "ID"
 vehicles:
   title: "Fahrzeuge"
-  headlines: 
-    id: "ID"
-    vin: "VIN"
-    tsn: "TSN"
-    yearBuild: "Baujahr"
+  details:
+    headline: "Detailansicht"
 training:
   title: "Schulung"
 pageNotFound:

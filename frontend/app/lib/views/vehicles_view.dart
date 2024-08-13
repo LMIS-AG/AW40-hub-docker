@@ -106,16 +106,16 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
               rowsPerPage: 50,
               columns: [
                 DataColumn(
-                  label: Text(tr("vehicles.headlines.vin")),
+                  label: Text(tr("general.vin")),
                 ),
-                DataColumn(label: Text(tr("vehicles.headlines.tsn"))),
-                DataColumn(label: Text(tr("vehicles.headlines.yearBuild"))),
+                DataColumn(label: Text(tr("general.tsn"))),
+                DataColumn(label: Text(tr("general.yearBuild"))),
               ],
             ),
           ),
         ),
 
-        // Show detail view if a case is selected.
+        // Show detail view if a vehicle is selected.
         ValueListenableBuilder(
           valueListenable: currentVehiclesIndexNotifier,
           builder: (context, value, child) {
