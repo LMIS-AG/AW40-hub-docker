@@ -127,6 +127,8 @@ customers:
     id: "ID"
 vehicles:
   title: "Fahrzeuge"
+  actions:
+    updateVehicle: "Fahrzeug bearbeiten"
   details:
     headline: "Detailansicht"
 training:

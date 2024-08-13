@@ -1,3 +1,4 @@
+import "package:aw40_hub_frontend/dialogs/update_vehicle_dialog.dart";
 import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
 import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
@@ -89,7 +90,7 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                     label: Text(tr("general.edit")),
                     onPressed: () async {
                       final VehicleUpdateDto? vehicleUpdateDto =
-                          await _showUpdateCaseDialog(widget.vehicleModel);
+                          await _showUpdateVehicleDialog(widget.vehicleModel);
                       if (vehicleUpdateDto == null ||
                           widget.vehicleModel.id == null) return;
                       await vehicleProvider.updateVehicle(
@@ -107,14 +108,13 @@ class _VehicleDetailView extends State<VehicleDetailView> {
     );
   }
 
-  Future<VehicleUpdateDto?> _showUpdateCaseDialog(
-      VehicleModel vehicleModel) async {
+  Future<VehicleUpdateDto?> _showUpdateVehicleDialog(
+    VehicleModel vehicleModel,
+  ) async {
     return showDialog<VehicleUpdateDto>(
       context: context,
       builder: (BuildContext context) {
-        return const Placeholder();
-        // TODO implement
-        // return UpdateVehicleDialog(vehicleModel: vehicleModel);
+        return UpdateVehicleDialog(vehicleModel: vehicleModel);
       },
     );
   }
