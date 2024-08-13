@@ -35,7 +35,9 @@ class _UpdateVehicleDialogState extends State<UpdateVehicleDialog> {
 
     _vinController.text = widget.vehicleModel.vin ?? "";
     _tsnController.text = widget.vehicleModel.tsn ?? "";
-    _yearBuildController.text = widget.vehicleModel.yearBuild.toString();
+    _yearBuildController.text = widget.vehicleModel.yearBuild == null
+        ? ""
+        : widget.vehicleModel.yearBuild.toString();
 
     return AlertDialog(
       title: Text(title),
