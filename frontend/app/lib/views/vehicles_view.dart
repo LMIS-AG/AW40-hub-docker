@@ -124,7 +124,7 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
               flex: 2,
               child: VehicleDetailView(
                 vehicleModel: widget.vehicleModel[currentVehiclesIndexNotifier
-                    .value!], // TODO check if urrentVehiclesIndexNotifier.value is always not null at this point
+                    .value!], // TODO check if currentVehiclesIndexNotifier.value is always not null at this point
                 onClose: () => currentVehiclesIndexNotifier.value = null,
               ),
             );
