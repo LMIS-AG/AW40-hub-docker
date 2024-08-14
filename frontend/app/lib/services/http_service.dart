@@ -351,7 +351,7 @@ class HttpService {
     Map<String, dynamic> requestBody,
   ) {
     return _client.put(
-      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicles"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicle"),
       headers: getAuthHeaderWith(token, {
         "Content-Type": "application/json; charset=UTF-8",
       }),

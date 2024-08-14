@@ -32,6 +32,7 @@ class _VehicleDetailView extends State<VehicleDetailView> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final vehicleProvider = Provider.of<VehicleProvider>(context);
+    final caseProvider = Provider.of<CaseProvider>(context);
 
     final List<String> attributesCase = [
       tr("general.vin"),
@@ -93,7 +94,8 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                     onPressed: () async {
                       final vin = widget.vehicleModel.vin;
                       if (vin == null) return;
-                      final cases = await _getCasesByVehicleVin(vin);
+                      final cases =
+                          await _getCasesByVehicleVin(vin, caseProvider);
                       final VehicleUpdateDto? vehicleUpdateDto =
                           await _showUpdateVehicleDialog(widget.vehicleModel);
                       if (vehicleUpdateDto == null && cases.isNotEmpty) return;
@@ -123,8 +125,10 @@ class _VehicleDetailView extends State<VehicleDetailView> {
     );
   }
 
-  Future<List<CaseModel>> _getCasesByVehicleVin(String vehicleVin) {
-    final caseProvider = Provider.of<CaseProvider>(context);
+  Future<List<CaseModel>> _getCasesByVehicleVin(
+    String vehicleVin,
+    CaseProvider caseProvider,
+  ) {
     return caseProvider.getCasesByVehicleVin(vehicleVin);
   }
 }
