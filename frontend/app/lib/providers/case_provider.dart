@@ -51,6 +51,25 @@ class CaseProvider with ChangeNotifier {
     return _jsonBodyToCaseModelList(response.body);
   }
 
+  Future<List<CaseModel>> getCasesByVehicleVin(String vehicleVin) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.getCasesByVehicleVin(
+      authToken,
+      workshopId,
+      vehicleVin,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not get cases by vehicle vin. "
+      "${response.statusCode}: ${response.reasonPhrase}",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return [];
+    return _jsonBodyToCaseModelList(response.body);
+  }
+
   List<CaseModel> _jsonBodyToCaseModelList(String jsonBody) {
     final List<dynamic> dynamicList = jsonDecode(jsonBody);
     final List<CaseModel> caseModels = [];

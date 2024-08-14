@@ -1,6 +1,8 @@
 import "package:aw40_hub_frontend/dialogs/update_vehicle_dialog.dart";
 import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
+import "package:aw40_hub_frontend/models/case_model.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -89,11 +91,15 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                     icon: const Icon(Icons.edit),
                     label: Text(tr("general.edit")),
                     onPressed: () async {
+                      final vin = widget.vehicleModel.vin;
+                      if (vin == null) return;
+                      final cases = await _getCasesByVehicleVin(vin);
                       final VehicleUpdateDto? vehicleUpdateDto =
                           await _showUpdateVehicleDialog(widget.vehicleModel);
-                      if (vehicleUpdateDto == null) return;
+                      if (vehicleUpdateDto == null && cases.isNotEmpty) return;
                       await vehicleProvider.updateVehicle(
-                        vehicleUpdateDto,
+                        cases[0].id,
+                        vehicleUpdateDto!,
                       );
                     },
                   ),
@@ -115,5 +121,10 @@ class _VehicleDetailView extends State<VehicleDetailView> {
         return UpdateVehicleDialog(vehicleModel: vehicleModel);
       },
     );
+  }
+
+  Future<List<CaseModel>> _getCasesByVehicleVin(String vehicleVin) {
+    final caseProvider = Provider.of<CaseProvider>(context);
+    return caseProvider.getCasesByVehicleVin(vehicleVin);
   }
 }

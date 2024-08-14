@@ -67,6 +67,7 @@ class VehicleProvider with ChangeNotifier {
   }
 
   Future<VehicleModel?> updateVehicle(
+    String caseId_,
     VehicleUpdateDto updateVehicleDto,
   ) async {
     final String authToken = _getAuthToken();
@@ -74,7 +75,7 @@ class VehicleProvider with ChangeNotifier {
     final Response response = await _httpService.updateVehicle(
       authToken,
       workshopId,
-      caseId, // TODO updateVehicle fails because caseId is not intialized.
+      caseId_,
       updateVehicleJson,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(

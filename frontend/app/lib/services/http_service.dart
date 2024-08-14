@@ -46,6 +46,23 @@ class HttpService {
     );
   }
 
+  Future<http.Response> getCasesByVehicleVin(
+    String token,
+    String workshopId,
+    String vehicleVin,
+  ) {
+    final uri = Uri.parse("$backendUrl/$workshopId/cases").replace(
+      queryParameters: {
+        "vin": vehicleVin,
+      },
+    );
+
+    return _client.get(
+      uri,
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
   Future<http.Response> addCase(
     String token,
     String workshopId,
