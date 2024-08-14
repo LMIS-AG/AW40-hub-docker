@@ -866,6 +866,16 @@ class MockHttpService implements HttpService {
   }
 
   @override
+  Future<Response> getCasesByVehicleVin(
+    String token,
+    String workshopId,
+    String vehicleVin,
+  ) {
+    // TODO implement
+    throw UnimplementedError();
+  }
+
+  @override
   Future<Response> getDiagnoses(String token, String workshopId) {
     final List<DiagnosisDto> diagnosisDtos = _demoDiagnosisStage > 0
         ? _diagnosisDtos + [_demoDiagnosisDto]
