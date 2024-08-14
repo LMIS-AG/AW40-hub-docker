@@ -15,5 +15,6 @@ class VehicleUpdateDto {
   Map<String, dynamic> toJson() => _$VehicleUpdateDtoToJson(this);
 
   String? tsn;
+  @JsonKey(name: "year_build")
   int? yearBuild;
 }
