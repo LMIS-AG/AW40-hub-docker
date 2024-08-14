@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/dtos/vehicle_update_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/vehicle_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
+import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter/foundation.dart";
@@ -66,30 +67,32 @@ class VehicleProvider with ChangeNotifier {
   }
 
   Future<VehicleModel?> updateVehicle(
-    String vehicleId,
     VehicleUpdateDto updateVehicleDto,
   ) async {
-    throw UnimplementedError();
-
-    // TODO implement
-    /*final String authToken = _getAuthToken();
-    final Map<String, dynamic> updateCaseJson = updateCaseDto.toJson();
-    final Response response = await _httpService.updateCase(
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> updateVehicleJson = updateVehicleDto.toJson();
+    final Response response = await _httpService.updateVehicle(
       authToken,
-      workShopId,
+      workshopId,
       caseId,
-      updateCaseJson,
+      updateVehicleJson,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       200,
-      "Could not update case. ",
+      "Could not update vehicle. ",
       response,
       _logger,
     );
     if (!verifyStatusCode) return null;
     notifyListeners();
-    return _decodeVehicleModelFromResponseBody(response);*/
+    return _decodeVehicleModelFromResponseBody(response);
+  }
+
+  VehicleModel _decodeVehicleModelFromResponseBody(Response response) {
+    final Map<String, dynamic> body = jsonDecode(response.body);
+    final VehicleDto receivedVehicle = VehicleDto.fromJson(body);
+    return receivedVehicle.toModel();
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {

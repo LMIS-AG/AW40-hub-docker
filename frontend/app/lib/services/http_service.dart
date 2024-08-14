@@ -327,7 +327,7 @@ class HttpService {
     );
   }
 
-  Future<http.Response> updateVehicles(
+  Future<http.Response> updateVehicle(
     String token,
     String workshopId,
     String caseId,

@@ -91,10 +91,8 @@ class _VehicleDetailView extends State<VehicleDetailView> {
                     onPressed: () async {
                       final VehicleUpdateDto? vehicleUpdateDto =
                           await _showUpdateVehicleDialog(widget.vehicleModel);
-                      if (vehicleUpdateDto == null ||
-                          widget.vehicleModel.id == null) return;
+                      if (vehicleUpdateDto == null) return;
                       await vehicleProvider.updateVehicle(
-                        widget.vehicleModel.id!,
                         vehicleUpdateDto,
                       );
                     },

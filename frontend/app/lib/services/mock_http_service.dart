@@ -1365,7 +1365,7 @@ class MockHttpService implements HttpService {
   }
 
   @override
-  Future<Response> updateVehicles(
+  Future<Response> updateVehicle(
     String token,
     String workshopId,
     String caseId,

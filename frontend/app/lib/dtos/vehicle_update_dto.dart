@@ -7,8 +7,6 @@ part "vehicle_update_dto.g.dart";
 @JsonSerializable()
 class VehicleUpdateDto {
   VehicleUpdateDto(
-    this.id,
-    this.vin,
     this.tsn,
     this.yearBuild,
   );
@@ -17,8 +15,6 @@ class VehicleUpdateDto {
       _$VehicleUpdateDtoFromJson(json);
   Map<String, dynamic> toJson() => _$VehicleUpdateDtoToJson(this);
 
-  String? id;
-  String? vin;
   String? tsn;
   int? yearBuild;
 }
