@@ -2,8 +2,7 @@ import "package:json_annotation/json_annotation.dart";
 
 part "vehicle_update_dto.g.dart";
 
-// TODO maybe adjust this description
-/// DTO for the PUT /{workshop_id}/vehicles/{case_id} endpoint.
+/// DTO for the PUT /{workshop_id}/cases/{case_id}/vehicle endpoint.
 @JsonSerializable()
 class VehicleUpdateDto {
   VehicleUpdateDto(
