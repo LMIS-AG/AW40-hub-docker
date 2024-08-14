@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
     final String workShopId = authProvider.loggedInUser.workShopId;
-    caseProvider.workShopId = workShopId;
+    caseProvider.workshopId = workShopId;
     diagnosisProvider.workshopId = workShopId;
   }
 
