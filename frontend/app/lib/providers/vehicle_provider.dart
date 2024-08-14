@@ -74,7 +74,7 @@ class VehicleProvider with ChangeNotifier {
     final Response response = await _httpService.updateVehicle(
       authToken,
       workshopId,
-      caseId,
+      caseId, // TODO updateVehicle fails because caseId is not intialized.
       updateVehicleJson,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
