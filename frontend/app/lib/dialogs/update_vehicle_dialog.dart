@@ -123,7 +123,7 @@ class UpdateDialogForm extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             controller: yearBuildController,
             decoration: InputDecoration(
-              labelText: tr("general.milage"),
+              labelText: tr("general.yearBuild"),
               border: const OutlineInputBorder(),
             ),
           ),
