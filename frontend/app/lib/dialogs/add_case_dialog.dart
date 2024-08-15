@@ -155,34 +155,6 @@ class AddDialogForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: tr("general.customerId"),
-              border: const OutlineInputBorder(),
-            ),
-            controller: customerIdController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return tr("general.obligatoryField");
-              }
-              return null;
-            },
-            onSaved: (customerId) {
-              if (customerId == null) {
-                throw AppException(
-                  exceptionType: ExceptionType.unexpectedNullValue,
-                  exceptionMessage: "CustomerId was null, validation failed.",
-                );
-              }
-              if (customerId.isEmpty) {
-                throw AppException(
-                  exceptionType: ExceptionType.unexpectedNullValue,
-                  exceptionMessage: "CustomerId was empty, validation failed.",
-                );
-              }
-            },
-          ),
-          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -259,6 +231,34 @@ class AddDialogForm extends StatelessWidget {
                 throw AppException(
                   exceptionType: ExceptionType.unexpectedNullValue,
                   exceptionMessage: "Milage was empty, validation failed.",
+                );
+              }
+            },
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: tr("general.customer"),
+              border: const OutlineInputBorder(),
+            ),
+            controller: customerIdController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return tr("general.obligatoryField");
+              }
+              return null;
+            },
+            onSaved: (customerId) {
+              if (customerId == null) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "CustomerId was null, validation failed.",
+                );
+              }
+              if (customerId.isEmpty) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "CustomerId was empty, validation failed.",
                 );
               }
             },
