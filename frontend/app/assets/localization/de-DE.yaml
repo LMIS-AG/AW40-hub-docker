@@ -94,6 +94,7 @@ cases:
     title: "Fälle filtern"
     toggleShared: "Fälle aus allen Werkstätten anzeigen"
   addCaseDialog:
+    customerTooltip: "Fall einem Kunden zuordnen"
     vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
     vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
   details:
