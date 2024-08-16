@@ -259,6 +259,8 @@ class AddDialogForm extends StatelessWidget {
               hintText: tr("forms.optional"),
               enableFilter: true,
               width: 343,
+              menuHeight: 350,
+              menuStyle: const MenuStyle(alignment: Alignment.bottomLeft),
               dropdownMenuEntries:
                   customerEntriesMock.map<DropdownMenuEntry<String>>(
                 (String entry) {
