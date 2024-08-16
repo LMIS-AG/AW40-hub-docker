@@ -98,7 +98,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 }
 
 class AddDialogForm extends StatelessWidget {
-  const AddDialogForm({
+  AddDialogForm({
     required this.formKey,
     required this.vinController,
     required this.customerIdController,
@@ -112,6 +112,21 @@ class AddDialogForm extends StatelessWidget {
   final TextEditingController customerIdController;
   final TextEditingController occasionController;
   final TextEditingController milageController;
+
+  final customerEntriesMock = [
+    "Altmann",
+    "Beermann",
+    "Czichow",
+    "Dubski",
+    "Ehrenfeld",
+    "Friede",
+    "Friedman",
+    "Grave",
+    "Gravemeier",
+    "Grau",
+    "Hermann",
+    "Hayek",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +251,24 @@ class AddDialogForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Tooltip(
+          DropdownMenu<String>(
+            controller: customerIdController,
+            label: Text(tr("general.customer")),
+            hintText: tr("forms.optional"),
+            enableFilter: true,
+            width: 343,
+            dropdownMenuEntries:
+                customerEntriesMock.map<DropdownMenuEntry<String>>(
+              (String entry) {
+                return DropdownMenuEntry<String>(
+                  value: entry,
+                  label: entry,
+                );
+              },
+            ).toList(),
+          ),
+          // TODO replace
+          /* Tooltip(
             message: tr("cases.addCaseDialog.customerTooltip"),
             child: TextFormField(
               decoration: InputDecoration(
@@ -266,7 +298,7 @@ class AddDialogForm extends StatelessWidget {
                 }
               },*/
             ),
-          ),
+          ), */
         ],
       ),
     );
