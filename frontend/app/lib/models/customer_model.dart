@@ -6,3 +6,4 @@ class CustomerModel {
   });
   AnonymousCustomerId id;
 }
+// TODO adjust data model
