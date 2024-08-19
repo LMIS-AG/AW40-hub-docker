@@ -270,26 +270,41 @@ class AddDialogForm extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 16),
-              Tooltip(
-                message: tr("cases.addCaseDialog.customerTooltip"),
-                child: DropdownMenu<String>(
-                  controller: customerIdController,
-                  label: Text(tr("general.customer")),
-                  hintText: tr("forms.optional"),
-                  enableFilter: true,
-                  width: 343,
-                  menuHeight: 350,
-                  menuStyle: const MenuStyle(alignment: Alignment.bottomLeft),
-                  dropdownMenuEntries: // TODO replace mock data with adjusted customerModels
-                      customerEntriesMock.map<DropdownMenuEntry<String>>(
-                    (String entry) {
-                      return DropdownMenuEntry<String>(
-                        value: entry,
-                        label: entry,
-                      );
-                    },
-                  ).toList(),
-                ),
+              Row(
+                children: [
+                  Tooltip(
+                    message: tr("cases.addCaseDialog.customerTooltip"),
+                    child: DropdownMenu<String>(
+                      controller: customerIdController,
+                      label: Text(tr("general.customer")),
+                      hintText: tr("forms.optional"),
+                      enableFilter: true,
+                      width: 273,
+                      menuHeight: 350,
+                      menuStyle:
+                          const MenuStyle(alignment: Alignment.bottomLeft),
+                      dropdownMenuEntries: // TODO replace mock data with adjusted customerModels
+                          customerEntriesMock.map<DropdownMenuEntry<String>>(
+                        (String entry) {
+                          return DropdownMenuEntry<String>(
+                            value: entry,
+                            label: entry,
+                          );
+                        },
+                      ).toList(),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Tooltip(
+                    message: tr("cases.addCaseDialog.customerTooltip"),
+                    child: IconButton(
+                      icon: const Icon(Icons.person_add),
+                      onPressed: () {
+                        // TODO implement
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
