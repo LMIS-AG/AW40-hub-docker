@@ -301,7 +301,8 @@ class AddDialogForm extends StatelessWidget {
                   const SizedBox(width: 16),
                   Tooltip(
                     message: tr(
-                        "cases.addCaseDialog.customerTooltip"), // TODO adjust
+                      "cases.addCaseDialog.customerTooltip",
+                    ), // TODO adjust
                     child: IconButton(
                       icon: const Icon(Icons.person_add),
                       onPressed: () {
