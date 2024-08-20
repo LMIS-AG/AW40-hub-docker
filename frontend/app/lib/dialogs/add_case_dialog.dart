@@ -131,6 +131,8 @@ class AddDialogForm extends StatelessWidget {
     "Hayek",
   ];
 
+  String? lastSelectedCustomer;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -320,23 +322,35 @@ class AddDialogForm extends StatelessWidget {
     BuildContext context,
     String? value,
   ) async {
-    final oldValue = customerIdController.value;
-    await _showConfirmSelectCustomerDialog(context)
+    if (value != null) return;
+    await _showConfirmSelectCustomerDialog(context, value!)
         .then((bool? dialogResult) async {
-      // TODO check if there is something todo
-      if (dialogResult ?? false) return;
-      // reset selection
-      customerIdController.value = oldValue;
+      if (dialogResult ?? false) {
+        lastSelectedCustomer = customerIdController.text;
+      } else {
+        // reset selection
+        if (lastSelectedCustomer == null) {
+          customerIdController.clear();
+        } else {
+          customerIdController.text = lastSelectedCustomer!;
+        }
+      }
     });
   }
 
-  static Future<bool?> _showConfirmSelectCustomerDialog(BuildContext context) {
+  static Future<bool?> _showConfirmSelectCustomerDialog(
+    BuildContext context,
+    String value,
+  ) {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
-          content: Text(tr("cases.addCaseDialog.confirmDialog.description")),
+          content: Text(tr(
+            "cases.addCaseDialog.confirmDialog.description",
+            namedArgs: {"customer": value},
+          )),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, false),

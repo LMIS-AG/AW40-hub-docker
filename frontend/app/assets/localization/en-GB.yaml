@@ -99,7 +99,7 @@ cases:
     vinLengthInvalid: "The @:general.vehicleVin must be 17 characters long"
     confirmDialog:
       title: "Add customer"
-      description: "Do you want to add customer XY to the case?"
+      description: "Do you want to add customer {customer} to the case?"
   details:
     headline: "Details"
     dialog:
