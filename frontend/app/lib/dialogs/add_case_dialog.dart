@@ -322,8 +322,8 @@ class AddDialogForm extends StatelessWidget {
     BuildContext context,
     String? value,
   ) async {
-    if (value != null) return;
-    await _showConfirmSelectCustomerDialog(context, value!)
+    if (value == null) return;
+    await _showConfirmSelectCustomerDialog(context, value)
         .then((bool? dialogResult) async {
       if (dialogResult ?? false) {
         lastSelectedCustomer = customerIdController.text;
