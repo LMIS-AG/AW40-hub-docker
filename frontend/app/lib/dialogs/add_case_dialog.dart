@@ -281,6 +281,8 @@ class AddDialogForm extends StatelessWidget {
                       enableFilter: true,
                       width: 273,
                       menuHeight: 350,
+                      onSelected: (value) async =>
+                          _onCustomerSelection(context, value),
                       menuStyle:
                           const MenuStyle(alignment: Alignment.bottomLeft),
                       dropdownMenuEntries: // TODO replace mock data with adjusted customerModels
@@ -296,7 +298,8 @@ class AddDialogForm extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Tooltip(
-                    message: tr("cases.addCaseDialog.customerTooltip"),
+                    message: tr(
+                        "cases.addCaseDialog.customerTooltip"), // TODO adjust
                     child: IconButton(
                       icon: const Icon(Icons.person_add),
                       onPressed: () {
@@ -308,6 +311,47 @@ class AddDialogForm extends StatelessWidget {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onCustomerSelection(
+    BuildContext context,
+    String? value,
+  ) async {
+    final oldValue = customerIdController.value;
+    await _showConfirmSelectCustomerDialog(context)
+        .then((bool? dialogResult) async {
+      // TODO check if there is something todo
+      if (dialogResult ?? false) return;
+      // reset selection
+      customerIdController.value = oldValue;
+    });
+  }
+
+  static Future<bool?> _showConfirmSelectCustomerDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
+          content: Text(tr("cases.addCaseDialog.confirmDialog.description")),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(tr("general.no")),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(
+                tr("general.yes"),
+              ),
+            ),
+          ],
         );
       },
     );

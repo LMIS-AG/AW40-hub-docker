@@ -35,13 +35,13 @@ general:
   workshop: "Werkstatt"
   workshopId: "Werkstatt ID"
   yes: "Ja"
-  no:
-    data: "Keine Daten verfügbar"
-    date: "Kein Datum"
-    customerId: "Keine Kunden ID"
-    vehicleVin: "Keine @:general.vehicleVin"
-    workshopId: "Keine @:general.workshop ID"
-    diagnoses: "Aktuell sind keine Informationen zu laufenden Diagnosen vorhanden."
+  no: "Nein"
+  noData: "Keine Daten verfügbar"
+  noDate: "Kein Datum"
+  noCustomerId: "Keine Kunden ID"
+  noVehicleVin: "Keine @:general.vehicleVin"
+  noWorkshopId: "Keine @:general.workshop ID"
+  noDiagnoses: "Aktuell sind keine Informationen zu laufenden Diagnosen vorhanden."
 diagnoses:
   title: "Diagnosen"
   actions:
@@ -97,6 +97,9 @@ cases:
     customerTooltip: "Fall einem Kunden zuordnen"
     vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
     vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
+    confirmDialog:
+      title: "Kunde hinzufügen"
+      description: "Möchten Sie Kunde XY zum Fall hinzufügen?"
   details:
     headline: "Detailansicht"
     dialog:
