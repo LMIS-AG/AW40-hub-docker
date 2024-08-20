@@ -95,6 +95,7 @@ cases:
     toggleShared: "Fälle aus allen Werkstätten anzeigen"
   addCaseDialog:
     customerTooltip: "Fall einem Kunden zuordnen"
+    createNewCustomerTooltip: "Neuen Kunden erstellen"
     vinCharactersInvalid: "@:general.vehicleVin darf nicht I, O oder Q enthalten"
     vinLengthInvalid: "@:general.vehicleVin muss 17 Zeichen lang sein"
     confirmDialog:
