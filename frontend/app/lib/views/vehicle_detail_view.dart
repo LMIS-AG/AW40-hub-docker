@@ -6,7 +6,6 @@ import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
-import "package:logging/logging.dart";
 import "package:provider/provider.dart";
 
 class VehicleDetailView extends StatefulWidget {
@@ -24,7 +23,6 @@ class VehicleDetailView extends StatefulWidget {
 }
 
 class _VehicleDetailView extends State<VehicleDetailView> {
-  final Logger _logger = Logger("vehicle detail view");
   static const double _spacing = 16;
 
   @override
