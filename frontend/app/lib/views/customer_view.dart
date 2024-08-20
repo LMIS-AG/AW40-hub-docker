@@ -42,7 +42,7 @@ class _CustomerViewState extends State<CustomerView> {
         if (customerModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
-            exceptionMessage: "Received no vehicles.",
+            exceptionMessage: "Received no customers.",
           );
         }
         return Row(

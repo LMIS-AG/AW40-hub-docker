@@ -38,13 +38,13 @@ general:
   workshop: "Workshop"
   workshopId: "Workshop id"
   yes: "Yes"
-  no:
-    data: "No data available"
-    date: "No Date"
-    customerId: "No customer id"
-    vehiclevin: "No vehicle vin"
-    workshopid: "No workshop id"
-    diagnoses: "There is currently no information about ongoing diagnoses."
+  no: "No"
+  noData: "No data available"
+  noDate: "No Date"
+  noCustomerId: "No customer id"
+  noVehicleVin: "No vehicle vin"
+  noWorkshopId: "No workshop id"
+  noDiagnoses: "There is currently no information about ongoing diagnoses."
 diagnoses:
   title: "Diagnosis"
   actions:
@@ -97,8 +97,13 @@ cases:
     title: "Filter cases"
     toggleShared: "Show cases from all workshops"
   addCaseDialog:
+    customerTooltip: "Assign case to a customer"
+    createNewCustomerTooltip: "Create new customer"
     vinCharactersInvalid: "The @:general.vehicleVin must not contain I, O, or Q"
     vinLengthInvalid: "The @:general.vehicleVin must be 17 characters long"
+    confirmDialog:
+      title: "Add customer"
+      description: "Do you want to add customer {customer} to the case?"
   details:
     headline: "Details"
     dialog:

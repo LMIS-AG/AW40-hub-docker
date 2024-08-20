@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:aw40_hub_frontend/components/dataset_upload_case_view.dart";
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
@@ -289,7 +290,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                 ),
                 const SizedBox(height: 16),
                 if (hasNoData)
-                  Text(tr("general.no.data"))
+                  Text(tr("general.noData"))
                 else
                   Table(
                     columnWidths: const {0: IntrinsicColumnWidth()},
