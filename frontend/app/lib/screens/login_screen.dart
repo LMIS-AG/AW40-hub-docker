@@ -5,6 +5,7 @@ import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/providers/vehicle_provider.dart";
 import "package:aw40_hub_frontend/services/auth_service.dart";
 import "package:aw40_hub_frontend/services/config_service.dart";
 import "package:aw40_hub_frontend/services/localization_service.dart";
@@ -111,6 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Provider.of<CaseProvider>(context, listen: false);
     final DiagnosisProvider diagnosisProvider =
         Provider.of<DiagnosisProvider>(context, listen: false);
+    final VehicleProvider vehicleProvider =
+        Provider.of<VehicleProvider>(context, listen: false);
 
     await authProvider.tryLoginWithStoredRefreshToken();
 
@@ -128,8 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
     final String workShopId = authProvider.loggedInUser.workShopId;
-    caseProvider.workShopId = workShopId;
+    caseProvider.workshopId = workShopId;
     diagnosisProvider.workshopId = workShopId;
+    vehicleProvider.workshopId = workShopId;
   }
 
   Future<void> _webGoToKeyCloakLogin() async {

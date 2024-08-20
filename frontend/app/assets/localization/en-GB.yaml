@@ -11,6 +11,7 @@ general:
   edit: "Edit"
   filter: "Filter"
   id: "ID"
+  yearBuild: "Year built"
   language: "Language"
   logout: "Logout"
   milage: "Milage"
@@ -29,9 +30,11 @@ general:
   status: "Status"
   then: "Then"
   transition: "Transition"
+  tsn: "TSN"
   unnamed: "Unnamed"
   vehicle: "Vehicle"
   vehicleVin: "Vehicle vin"
+  vin: "VIN"
   workshop: "Workshop"
   workshopId: "Workshop id"
   yes: "Yes"
@@ -129,11 +132,10 @@ customers:
     id: "ID"
 vehicles:
   title: "Vehicles"
-  headlines: 
-    id: "ID"
-    vin: "VIN"
-    tsn: "TSN"
-    yearBuild: "Year built"
+  actions:
+    updateVehicle: "Update vehicle"
+  details:
+    headline: "Details"
 training:
   title: "Training"
 pageNotFound:
