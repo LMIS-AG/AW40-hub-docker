@@ -328,7 +328,6 @@ class AddDialogForm extends StatelessWidget {
       if (dialogResult ?? false) {
         lastSelectedCustomer = customerIdController.text;
       } else {
-        // reset selection
         if (lastSelectedCustomer == null) {
           customerIdController.clear();
         } else {
