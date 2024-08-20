@@ -100,6 +100,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   }
 }
 
+// ignore: must_be_immutable
 class AddDialogForm extends StatelessWidget {
   AddDialogForm({
     required this.formKey,
@@ -287,7 +288,8 @@ class AddDialogForm extends StatelessWidget {
                           _onCustomerSelection(context, value),
                       menuStyle:
                           const MenuStyle(alignment: Alignment.bottomLeft),
-                      dropdownMenuEntries: // TODO replace mock data with adjusted customerModels
+                      // TODO replace mock data with adjusted customerModels
+                      dropdownMenuEntries:
                           customerEntriesMock.map<DropdownMenuEntry<String>>(
                         (String entry) {
                           return DropdownMenuEntry<String>(
