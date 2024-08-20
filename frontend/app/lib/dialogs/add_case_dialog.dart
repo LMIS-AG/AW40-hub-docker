@@ -346,10 +346,12 @@ class AddDialogForm extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
-          content: Text(tr(
-            "cases.addCaseDialog.confirmDialog.description",
-            namedArgs: {"customer": value},
-          )),
+          content: Text(
+            tr(
+              "cases.addCaseDialog.confirmDialog.description",
+              namedArgs: {"customer": value},
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, false),
