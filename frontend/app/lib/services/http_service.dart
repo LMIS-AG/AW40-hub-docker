@@ -46,6 +46,23 @@ class HttpService {
     );
   }
 
+  Future<http.Response> getCasesByVehicleVin(
+    String token,
+    String workshopId,
+    String vehicleVin,
+  ) {
+    final uri = Uri.parse("$backendUrl/$workshopId/cases").replace(
+      queryParameters: {
+        "vin": vehicleVin,
+      },
+    );
+
+    return _client.get(
+      uri,
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
   Future<http.Response> addCase(
     String token,
     String workshopId,
@@ -327,14 +344,14 @@ class HttpService {
     );
   }
 
-  Future<http.Response> updateVehicles(
+  Future<http.Response> updateVehicle(
     String token,
     String workshopId,
     String caseId,
     Map<String, dynamic> requestBody,
   ) {
     return _client.put(
-      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicles"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/vehicle"),
       headers: getAuthHeaderWith(token, {
         "Content-Type": "application/json; charset=UTF-8",
       }),

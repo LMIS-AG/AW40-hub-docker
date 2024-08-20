@@ -176,7 +176,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         foregroundColor: colorScheme.error,
                       ),
                       onPressed:
-                          caseProvider.workShopId == widget.caseModel.workshopId
+                          caseProvider.workshopId == widget.caseModel.workshopId
                               ? widget.onDelete
                               : null,
                     ),
@@ -203,7 +203,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     FilledButton.icon(
                       icon: const Icon(Icons.upload_rounded),
                       label: Text(tr("uploadData.label")),
-                      onPressed: caseProvider.workShopId ==
+                      onPressed: caseProvider.workshopId ==
                               widget.caseModel.workshopId
                           ? () async => showDialog<String>(
                                 context: context,
@@ -221,7 +221,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     FilledButton.icon(
                       icon: const Icon(Icons.edit),
                       label: Text(tr("general.edit")),
-                      onPressed: caseProvider.workShopId ==
+                      onPressed: caseProvider.workshopId ==
                               widget.caseModel.workshopId
                           ? () async {
                               final CaseUpdateDto? caseUpdateDto =
@@ -237,7 +237,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                     const SizedBox(width: 16),
                     FilledButton.icon(
                       icon: const Icon(Icons.tab),
-                      onPressed: caseProvider.workShopId ==
+                      onPressed: caseProvider.workshopId ==
                               widget.caseModel.workshopId
                           ? () async {
                               if (widget.caseModel.diagnosisId == null) {
