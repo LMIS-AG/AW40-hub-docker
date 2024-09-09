@@ -32,6 +32,14 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   final TextEditingController _occasionController = TextEditingController();
   final TextEditingController _milageController = TextEditingController();
 
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+
+  final TextEditingController _zipcodeController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+  final TextEditingController _housenumberController = TextEditingController();
+
   final title = tr("cases.actions.addCase");
 
   @override
@@ -45,6 +53,12 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
         customerIdController: _customerIdController,
         occasionController: _occasionController,
         milageController: _milageController,
+        cityController: _cityController,
+        firstNameController: _firstNameController,
+        housenumberController: _housenumberController,
+        lastNameController: _lastNameController,
+        streetController: _streetController,
+        zipcodeController: _zipcodeController,
       ),
       actions: [
         TextButton(
@@ -108,6 +122,12 @@ class AddCaseDialogForm extends StatefulWidget {
     required this.customerIdController,
     required this.occasionController,
     required this.milageController,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.zipcodeController,
+    required this.cityController,
+    required this.streetController,
+    required this.housenumberController,
     super.key,
   });
 
@@ -116,6 +136,14 @@ class AddCaseDialogForm extends StatefulWidget {
   final TextEditingController customerIdController;
   final TextEditingController occasionController;
   final TextEditingController milageController;
+
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+
+  final TextEditingController zipcodeController;
+  final TextEditingController cityController;
+  final TextEditingController streetController;
+  final TextEditingController housenumberController;
 
   @override
   State<AddCaseDialogForm> createState() => _AddCaseDialogFormState();
@@ -370,11 +398,47 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     ),
                 ],
               ),
+              if (showAddCustomerFields) ...buildWidgetsForCreatingNewCustomer()
             ],
           ),
         );
       },
     );
+  }
+
+  List<Widget> buildWidgetsForCreatingNewCustomer() {
+    return [
+      const SizedBox(height: 16),
+      TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        controller: widget.milageController,
+        decoration: InputDecoration(
+          labelText: tr("general.milage"), // TODO rename and make required
+          border: const OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return tr("general.obligatoryField");
+          }
+          return null;
+        },
+        onSaved: (customerId) {
+          if (customerId == null) {
+            throw AppException(
+              exceptionType: ExceptionType.unexpectedNullValue,
+              exceptionMessage: "Milage was null, validation failed.",
+            );
+          }
+          if (customerId.isEmpty) {
+            throw AppException(
+              exceptionType: ExceptionType.unexpectedNullValue,
+              exceptionMessage: "Milage was empty, validation failed.",
+            );
+          }
+        },
+      )
+    ];
   }
 
   Future<void> _onCustomerSelection(
