@@ -31,6 +31,39 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   final TextEditingController _customerIdController = TextEditingController();
   final TextEditingController _occasionController = TextEditingController();
   final TextEditingController _milageController = TextEditingController();
+  bool showAddCustomerFields = false;
+
+  final title = tr("cases.actions.addCase");
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AlertDialog(
+      title: Text(title),
+      content: AddDialogForm(
+        formKey: _formKey,
+        vinController: _vinController,
+        customerIdController: _customerIdController,
+        occasionController: _occasionController,
+        milageController: _milageController,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async => _onCancel(context),
+          child: Text(
+            tr("general.cancel"),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: _submitAddCaseForm,
+          child: Text(tr("general.save")),
+        ),
+      ],
+    );
+  }
 
   void _submitAddCaseForm() {
     final FormState? currentFormKeyState = _formKey.currentState;
@@ -65,38 +98,6 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
-  }
-
-  final title = tr("cases.actions.addCase");
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return AlertDialog(
-      title: Text(title),
-      content: AddDialogForm(
-        formKey: _formKey,
-        vinController: _vinController,
-        customerIdController: _customerIdController,
-        occasionController: _occasionController,
-        milageController: _milageController,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () async => _onCancel(context),
-          child: Text(
-            tr("general.cancel"),
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: _submitAddCaseForm,
-          child: Text(tr("general.save")),
-        ),
-      ],
-    );
   }
 }
 
