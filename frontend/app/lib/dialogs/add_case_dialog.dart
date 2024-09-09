@@ -320,7 +320,6 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                   Tooltip(
                     message: tr("cases.addCaseDialog.customerTooltip"),
                     child: DropdownMenu<String>(
-                      controller: widget.customerIdController,
                       label: Text(tr("general.customer")),
                       hintText: tr("forms.optional"),
                       enableFilter: true,
@@ -343,17 +342,32 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Tooltip(
-                    message: tr(
-                      "cases.addCaseDialog.createNewCustomerTooltip",
+                  if (showAddCustomerFields)
+                    Tooltip(
+                      message: tr(
+                        "general.cancel",
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () {
+                          showAddCustomerFields = false;
+                          setState(() {});
+                        },
+                      ),
+                    )
+                  else
+                    Tooltip(
+                      message: tr(
+                        "cases.addCaseDialog.createNewCustomerTooltip",
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.person_add),
+                        onPressed: () {
+                          showAddCustomerFields = true;
+                          setState(() {});
+                        },
+                      ),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.person_add),
-                      onPressed: () {
-                        // TODO implement
-                      },
-                    ),
-                  ),
                 ],
               ),
             ],
