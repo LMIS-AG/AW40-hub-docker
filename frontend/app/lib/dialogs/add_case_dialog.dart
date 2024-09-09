@@ -31,7 +31,6 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   final TextEditingController _customerIdController = TextEditingController();
   final TextEditingController _occasionController = TextEditingController();
   final TextEditingController _milageController = TextEditingController();
-  bool showAddCustomerFields = false;
 
   final title = tr("cases.actions.addCase");
 
@@ -40,7 +39,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
     final theme = Theme.of(context);
     return AlertDialog(
       title: Text(title),
-      content: AddDialogForm(
+      content: AddCaseDialogForm(
         formKey: _formKey,
         vinController: _vinController,
         customerIdController: _customerIdController,
@@ -102,8 +101,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 }
 
 // ignore: must_be_immutable
-class AddDialogForm extends StatelessWidget {
-  AddDialogForm({
+class AddCaseDialogForm extends StatefulWidget {
+  const AddCaseDialogForm({
     required this.formKey,
     required this.vinController,
     required this.customerIdController,
@@ -117,6 +116,48 @@ class AddDialogForm extends StatelessWidget {
   final TextEditingController customerIdController;
   final TextEditingController occasionController;
   final TextEditingController milageController;
+
+  @override
+  State<AddCaseDialogForm> createState() => _AddCaseDialogFormState();
+
+  static Future<bool?> _showConfirmSelectCustomerDialog(
+    BuildContext context,
+    String value,
+  ) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
+          content: Text(
+            tr(
+              "cases.addCaseDialog.confirmDialog.description",
+              namedArgs: {"customer": value},
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(tr("general.no")),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(
+                tr("general.yes"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
+  bool showAddCustomerFields = false;
 
   final customerEntriesMock = [
     "Altmann",
@@ -154,7 +195,7 @@ class AddDialogForm extends StatelessWidget {
           );
         }
         return Form(
-          key: formKey,
+          key: widget.formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -164,7 +205,7 @@ class AddDialogForm extends StatelessWidget {
                   labelText: tr("general.vehicleVin"),
                   border: const OutlineInputBorder(),
                 ),
-                controller: vinController,
+                controller: widget.vinController,
                 onSaved: (vin) {
                   if (vin == null) {
                     throw AppException(
@@ -212,7 +253,7 @@ class AddDialogForm extends StatelessWidget {
                           exceptionMessage: "Occasion was null.",
                         );
                       }
-                      occasionController.text =
+                      widget.occasionController.text =
                           EnumToString.convertToString(newValue);
                     },
                     builder: (FormFieldState<CaseOccasion> field) {
@@ -247,7 +288,7 @@ class AddDialogForm extends StatelessWidget {
               TextFormField(
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                controller: milageController,
+                controller: widget.milageController,
                 decoration: InputDecoration(
                   labelText: tr("general.milage"),
                   border: const OutlineInputBorder(),
@@ -279,7 +320,7 @@ class AddDialogForm extends StatelessWidget {
                   Tooltip(
                     message: tr("cases.addCaseDialog.customerTooltip"),
                     child: DropdownMenu<String>(
-                      controller: customerIdController,
+                      controller: widget.customerIdController,
                       label: Text(tr("general.customer")),
                       hintText: tr("forms.optional"),
                       enableFilter: true,
@@ -327,52 +368,17 @@ class AddDialogForm extends StatelessWidget {
     String? value,
   ) async {
     if (value == null) return;
-    await _showConfirmSelectCustomerDialog(context, value)
+    await AddCaseDialogForm._showConfirmSelectCustomerDialog(context, value)
         .then((bool? dialogResult) async {
       if (dialogResult ?? false) {
-        lastSelectedCustomer = customerIdController.text;
+        lastSelectedCustomer = widget.customerIdController.text;
       } else {
         if (lastSelectedCustomer == null) {
-          customerIdController.clear();
+          widget.customerIdController.clear();
         } else {
-          customerIdController.text = lastSelectedCustomer!;
+          widget.customerIdController.text = lastSelectedCustomer!;
         }
       }
     });
-  }
-
-  static Future<bool?> _showConfirmSelectCustomerDialog(
-    BuildContext context,
-    String value,
-  ) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
-          content: Text(
-            tr(
-              "cases.addCaseDialog.confirmDialog.description",
-              namedArgs: {"customer": value},
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(tr("general.no")),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(
-                tr("general.yes"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
