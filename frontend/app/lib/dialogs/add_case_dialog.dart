@@ -410,11 +410,9 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     return [
       const SizedBox(height: 16),
       TextFormField(
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        controller: widget.milageController,
+        controller: widget.firstNameController,
         decoration: InputDecoration(
-          labelText: tr("general.milage"), // TODO rename and make required
+          labelText: tr("general.firstname"),
           border: const OutlineInputBorder(),
         ),
         validator: (value) {
@@ -423,21 +421,101 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           }
           return null;
         },
-        onSaved: (customerId) {
-          if (customerId == null) {
+        onSaved: (value) {
+          if (value == null) {
             throw AppException(
               exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "Milage was null, validation failed.",
+              exceptionMessage: "First name was null, validation failed.",
             );
           }
-          if (customerId.isEmpty) {
+          if (value.isEmpty) {
             throw AppException(
               exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "Milage was empty, validation failed.",
+              exceptionMessage: "First name was empty, validation failed.",
             );
           }
         },
-      )
+      ),
+      const SizedBox(height: 16),
+      TextFormField(
+        controller: widget.lastNameController,
+        decoration: InputDecoration(
+          labelText: tr("general.lastname"),
+          border: const OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return tr("general.obligatoryField");
+          }
+          return null;
+        },
+        onSaved: (value) {
+          if (value == null) {
+            throw AppException(
+              exceptionType: ExceptionType.unexpectedNullValue,
+              exceptionMessage: "Last name was null, validation failed.",
+            );
+          }
+          if (value.isEmpty) {
+            throw AppException(
+              exceptionType: ExceptionType.unexpectedNullValue,
+              exceptionMessage: "Last name was empty, validation failed.",
+            );
+          }
+        },
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: TextFormField(
+              controller: widget.zipcodeController,
+              decoration: InputDecoration(
+                labelText: tr("general.zipcode"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 233,
+            child: TextFormField(
+              controller: widget.cityController,
+              decoration: InputDecoration(
+                labelText: tr("general.city"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 273,
+            child: TextFormField(
+              controller: widget.streetController,
+              decoration: InputDecoration(
+                labelText: tr("general.street"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 60,
+            child: TextFormField(
+              controller: widget.housenumberController,
+              decoration: InputDecoration(
+                labelText: tr("general.housenumber"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
     ];
   }
 

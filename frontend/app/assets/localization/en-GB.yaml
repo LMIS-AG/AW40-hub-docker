@@ -12,7 +12,7 @@ general:
   edit: "Edit"
   filter: "Filter"
   firstname: "First Name"
-  housenumber: "Housenumber"
+  housenumber: "No."
   id: "ID"
   yearBuild: "Year built"
   language: "Language"
