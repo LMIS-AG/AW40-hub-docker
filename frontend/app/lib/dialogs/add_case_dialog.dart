@@ -327,14 +327,14 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                   }
                   return null;
                 },
-                onSaved: (customerId) {
-                  if (customerId == null) {
+                onSaved: (value) {
+                  if (value == null) {
                     throw AppException(
                       exceptionType: ExceptionType.unexpectedNullValue,
                       exceptionMessage: "Milage was null, validation failed.",
                     );
                   }
-                  if (customerId.isEmpty) {
+                  if (value.isEmpty) {
                     throw AppException(
                       exceptionType: ExceptionType.unexpectedNullValue,
                       exceptionMessage: "Milage was empty, validation failed.",
