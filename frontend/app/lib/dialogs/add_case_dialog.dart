@@ -243,7 +243,8 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                           }
                           if (value.contains(RegExp("[IOQ]"))) {
                             return tr(
-                                "cases.addCaseDialog.vinCharactersInvalid");
+                              "cases.addCaseDialog.vinCharactersInvalid",
+                            );
                           }
                           if (value.length != 17) {
                             return tr("cases.addCaseDialog.vinLengthInvalid");
