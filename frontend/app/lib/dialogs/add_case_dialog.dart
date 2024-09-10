@@ -363,7 +363,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         label: Text(tr("general.customer")),
                         hintText: tr("forms.optional"),
                         enableFilter: true,
-                        width: 273,
+                        width: 328,
                         menuHeight: 350,
                         onSelected: (value) async =>
                             _onCustomerSelection(context, value),
@@ -493,7 +493,34 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
       Row(
         children: [
           SizedBox(
-            width: 100,
+            width: 192,
+            child: TextFormField(
+              // TODO add email validator
+              controller: widget.emailController,
+              decoration: InputDecoration(
+                labelText: tr("general.email"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: widget.phoneController,
+              decoration: InputDecoration(
+                labelText: tr("general.phone"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 96,
             child: TextFormField(
               controller: widget.zipcodeController,
               decoration: InputDecoration(
@@ -504,7 +531,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           ),
           const SizedBox(width: 16),
           SizedBox(
-            width: 233,
+            width: 288,
             child: TextFormField(
               controller: widget.cityController,
               decoration: InputDecoration(
@@ -519,7 +546,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
       Row(
         children: [
           SizedBox(
-            width: 273,
+            width: 320,
             child: TextFormField(
               controller: widget.streetController,
               decoration: InputDecoration(
@@ -530,7 +557,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           ),
           const SizedBox(width: 16),
           SizedBox(
-            width: 60,
+            width: 64,
             child: TextFormField(
               controller: widget.housenumberController,
               decoration: InputDecoration(
