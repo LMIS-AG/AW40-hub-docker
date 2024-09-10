@@ -35,6 +35,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
 
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _zipcodeController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
@@ -59,6 +61,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
         lastNameController: _lastNameController,
         streetController: _streetController,
         zipcodeController: _zipcodeController,
+        emailController: _emailController,
+        phoneController: _phoneController,
       ),
       actions: [
         TextButton(
@@ -128,6 +132,8 @@ class AddCaseDialogForm extends StatefulWidget {
     required this.cityController,
     required this.streetController,
     required this.housenumberController,
+    required this.phoneController,
+    required this.emailController,
     super.key,
   });
 
@@ -140,6 +146,8 @@ class AddCaseDialogForm extends StatefulWidget {
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
 
+  final TextEditingController phoneController;
+  final TextEditingController emailController;
   final TextEditingController zipcodeController;
   final TextEditingController cityController;
   final TextEditingController streetController;
@@ -225,7 +233,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
         return Form(
           key: widget.formKey,
           child: SizedBox(
-            width: 350,
+            width: 400,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -415,60 +423,71 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   List<Widget> buildWidgetsForCreatingNewCustomer() {
     return [
       const SizedBox(height: 16),
-      TextFormField(
-        controller: widget.firstNameController,
-        decoration: InputDecoration(
-          labelText: tr("general.firstname"),
-          border: const OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return tr("general.obligatoryField");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          if (value == null) {
-            throw AppException(
-              exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "First name was null, validation failed.",
-            );
-          }
-          if (value.isEmpty) {
-            throw AppException(
-              exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "First name was empty, validation failed.",
-            );
-          }
-        },
-      ),
-      const SizedBox(height: 16),
-      TextFormField(
-        controller: widget.lastNameController,
-        decoration: InputDecoration(
-          labelText: tr("general.lastname"),
-          border: const OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return tr("general.obligatoryField");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          if (value == null) {
-            throw AppException(
-              exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "Last name was null, validation failed.",
-            );
-          }
-          if (value.isEmpty) {
-            throw AppException(
-              exceptionType: ExceptionType.unexpectedNullValue,
-              exceptionMessage: "Last name was empty, validation failed.",
-            );
-          }
-        },
+      Row(
+        children: [
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: widget.firstNameController,
+              decoration: InputDecoration(
+                labelText: tr("general.firstname"),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return tr("general.obligatoryField");
+                }
+                return null;
+              },
+              onSaved: (value) {
+                if (value == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "First name was null, validation failed.",
+                  );
+                }
+                if (value.isEmpty) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage:
+                        "First name was empty, validation failed.",
+                  );
+                }
+              },
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: widget.lastNameController,
+              decoration: InputDecoration(
+                labelText: tr("general.lastname"),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return tr("general.obligatoryField");
+                }
+                return null;
+              },
+              onSaved: (value) {
+                if (value == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "Last name was null, validation failed.",
+                  );
+                }
+                if (value.isEmpty) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "Last name was empty, validation failed.",
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
       const SizedBox(height: 16),
       Row(
