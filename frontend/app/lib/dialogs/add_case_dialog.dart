@@ -157,41 +157,6 @@ class AddCaseDialogForm extends StatefulWidget {
 
   @override
   State<AddCaseDialogForm> createState() => _AddCaseDialogFormState();
-
-  static Future<bool?> _showConfirmSelectCustomerDialog(
-    BuildContext context,
-    String value,
-  ) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
-          content: Text(
-            tr(
-              "cases.addCaseDialog.confirmDialog.description",
-              namedArgs: {"customer": value},
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(tr("general.no")),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(
-                tr("general.yes"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
@@ -599,7 +564,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     String? value,
   ) async {
     if (value == null) return;
-    await AddCaseDialogForm._showConfirmSelectCustomerDialog(context, value)
+    await _showConfirmSelectCustomerDialog(context, value)
         .then((bool? dialogResult) async {
       if (dialogResult ?? false) {
         lastSelectedCustomer = widget.customerIdController.text;
@@ -611,5 +576,40 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
         }
       }
     });
+  }
+
+  Future<bool?> _showConfirmSelectCustomerDialog(
+    BuildContext context,
+    String value,
+  ) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(tr("cases.addCaseDialog.confirmDialog.title")),
+          content: Text(
+            tr(
+              "cases.addCaseDialog.confirmDialog.description",
+              namedArgs: {"customer": value},
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(tr("general.no")),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(
+                tr("general.yes"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
