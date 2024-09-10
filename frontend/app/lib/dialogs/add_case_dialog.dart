@@ -83,6 +83,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   }
 
   void _submitAddCaseForm() {
+    // TODO check whether new customer should be created and read values
+
     final FormState? currentFormKeyState = _formKey.currentState;
     if (currentFormKeyState != null && currentFormKeyState.validate()) {
       currentFormKeyState.save();
@@ -195,6 +197,7 @@ class AddCaseDialogForm extends StatefulWidget {
 class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   bool showAddCustomerFields = false;
 
+  // TODO replace with actual data
   final customerEntriesMock = [
     "Altmann",
     "Beermann",
