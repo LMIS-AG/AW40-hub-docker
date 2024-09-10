@@ -237,39 +237,86 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  inputFormatters: [UpperCaseTextInputFormatter()],
-                  decoration: InputDecoration(
-                    labelText: tr("general.vehicleVin"),
-                    border: const OutlineInputBorder(),
-                  ),
-                  controller: widget.vinController,
-                  onSaved: (vin) {
-                    if (vin == null) {
-                      throw AppException(
-                        exceptionType: ExceptionType.unexpectedNullValue,
-                        exceptionMessage: "VIN was null, validation failed.",
-                      );
-                    }
-                    if (vin.isEmpty) {
-                      throw AppException(
-                        exceptionType: ExceptionType.unexpectedNullValue,
-                        exceptionMessage: "VIN was empty, validation failed.",
-                      );
-                    }
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return tr("general.obligatoryField");
-                    }
-                    if (value.contains(RegExp("[IOQ]"))) {
-                      return tr("cases.addCaseDialog.vinCharactersInvalid");
-                    }
-                    if (value.length != 17) {
-                      return tr("cases.addCaseDialog.vinLengthInvalid");
-                    }
-                    return null;
-                  },
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 227,
+                      child: TextFormField(
+                        inputFormatters: [UpperCaseTextInputFormatter()],
+                        decoration: InputDecoration(
+                          labelText: tr("general.vehicleVin"),
+                          border: const OutlineInputBorder(),
+                        ),
+                        controller: widget.vinController,
+                        onSaved: (vin) {
+                          if (vin == null) {
+                            throw AppException(
+                              exceptionType: ExceptionType.unexpectedNullValue,
+                              exceptionMessage:
+                                  "VIN was null, validation failed.",
+                            );
+                          }
+                          if (vin.isEmpty) {
+                            throw AppException(
+                              exceptionType: ExceptionType.unexpectedNullValue,
+                              exceptionMessage:
+                                  "VIN was empty, validation failed.",
+                            );
+                          }
+                        },
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return tr("general.obligatoryField");
+                          }
+                          if (value.contains(RegExp("[IOQ]"))) {
+                            return tr(
+                                "cases.addCaseDialog.vinCharactersInvalid");
+                          }
+                          if (value.length != 17) {
+                            return tr("cases.addCaseDialog.vinLengthInvalid");
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    SizedBox(
+                      width: 157,
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        controller: widget.milageController,
+                        decoration: InputDecoration(
+                          labelText: tr("general.milage"),
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return tr("general.obligatoryField");
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          if (value == null) {
+                            throw AppException(
+                              exceptionType: ExceptionType.unexpectedNullValue,
+                              exceptionMessage:
+                                  "Milage was null, validation failed.",
+                            );
+                          }
+                          if (value.isEmpty) {
+                            throw AppException(
+                              exceptionType: ExceptionType.unexpectedNullValue,
+                              exceptionMessage:
+                                  "Milage was empty, validation failed.",
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -321,37 +368,6 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       },
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  controller: widget.milageController,
-                  decoration: InputDecoration(
-                    labelText: tr("general.milage"),
-                    border: const OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return tr("general.obligatoryField");
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    if (value == null) {
-                      throw AppException(
-                        exceptionType: ExceptionType.unexpectedNullValue,
-                        exceptionMessage: "Milage was null, validation failed.",
-                      );
-                    }
-                    if (value.isEmpty) {
-                      throw AppException(
-                        exceptionType: ExceptionType.unexpectedNullValue,
-                        exceptionMessage:
-                            "Milage was empty, validation failed.",
-                      );
-                    }
-                  },
                 ),
                 const SizedBox(height: 16),
                 Row(
