@@ -540,32 +540,6 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
       Row(
         children: [
           SizedBox(
-            width: 96,
-            child: TextFormField(
-              controller: widget.zipcodeController,
-              decoration: InputDecoration(
-                labelText: tr("general.zipcode"),
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          SizedBox(
-            width: 288,
-            child: TextFormField(
-              controller: widget.cityController,
-              decoration: InputDecoration(
-                labelText: tr("general.city"),
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 16),
-      Row(
-        children: [
-          SizedBox(
             width: 320,
             child: TextFormField(
               controller: widget.streetController,
@@ -582,6 +556,32 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
               controller: widget.housenumberController,
               decoration: InputDecoration(
                 labelText: tr("general.housenumber"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 96,
+            child: TextFormField(
+              controller: widget.zipcodeController,
+              decoration: InputDecoration(
+                labelText: tr("general.zipcode"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 288,
+            child: TextFormField(
+              controller: widget.cityController,
+              decoration: InputDecoration(
+                labelText: tr("general.city"),
                 border: const OutlineInputBorder(),
               ),
             ),
