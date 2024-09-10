@@ -189,7 +189,11 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
             !snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox(
+            height: 468,
+            width: 400,
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
         final List<CustomerModel>? customerModels = snapshot.data;
         if (customerModels == null) {
@@ -201,6 +205,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
         return Form(
           key: widget.formKey,
           child: SizedBox(
+            height: 468,
             width: 400,
             child: Column(
               mainAxisSize: MainAxisSize.min,
