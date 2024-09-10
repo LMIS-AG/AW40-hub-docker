@@ -383,7 +383,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         label: Text(tr("general.customer")),
                         hintText: tr("forms.optional"),
                         enableFilter: true,
-                        width: 328,
+                        width: 320,
                         menuHeight: 350,
                         onSelected: (value) async =>
                             _onCustomerSelection(context, value),
@@ -401,7 +401,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         ).toList(),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 20),
                     if (showAddCustomerFields)
                       Tooltip(
                         message: tr(
