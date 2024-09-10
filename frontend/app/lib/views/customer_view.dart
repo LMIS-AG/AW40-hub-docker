@@ -3,6 +3,7 @@ import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
+import "package:aw40_hub_frontend/views/customer_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
@@ -75,6 +76,21 @@ class _CustomerViewState extends State<CustomerView> {
                 ),
               ),
             ),
+
+            // Show detail view if a customer is selected.
+            ValueListenableBuilder(
+              valueListenable: currentCustomerIndexNotifier,
+              builder: (context, value, child) {
+                if (value == null) return const SizedBox.shrink();
+                return Expanded(
+                  flex: 2,
+                  child: CustomerDetailView(
+                    customerModel: customerModels[value],
+                    onClose: () => currentCustomerIndexNotifier.value = null,
+                  ),
+                );
+              },
+            )
           ],
         );
       },
