@@ -330,7 +330,9 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       ),
                     ),
                     FormField(
-                      initialValue: CaseOccasion.unknown,
+                      initialValue: CaseOccasion.fromString(
+                        widget.occasionController.text,
+                      ),
                       onSaved: (CaseOccasion? newValue) {
                         if (newValue == null) {
                           throw AppException(
@@ -361,6 +363,8 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                               final CaseOccasion newVal =
                                   p0.isEmpty ? CaseOccasion.unknown : p0.first!;
                               // newCaseDto.occasion = newVal;
+                              widget.occasionController.text =
+                                  EnumToString.convertToString(newVal);
                               field.didChange(newVal);
                             },
                           ),
