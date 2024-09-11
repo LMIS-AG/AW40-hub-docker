@@ -1,7 +1,9 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/customer_update_dto.dart";
+import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:routemaster/routemaster.dart";
@@ -164,20 +166,165 @@ class UpdateDialogForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // TODO adjust text  fields regarding customer
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: tr("general.firstname"),
-              border: const OutlineInputBorder(),
-            ),
-            controller: firstNameController,
-          ),
-          const SizedBox(height: 16),
-        ],
+      child: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [...buildWidgetsForUpdatingCustomer()],
+        ),
       ),
     );
+  }
+
+// TODO move this code into a dedicated widget and make controllers to params
+  List<Widget> buildWidgetsForUpdatingCustomer() {
+    return [
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: firstNameController,
+              decoration: InputDecoration(
+                labelText: tr("general.firstname"),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return tr("general.obligatoryField");
+                }
+                return null;
+              },
+              onSaved: (value) {
+                if (value == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "First name was null, validation failed.",
+                  );
+                }
+                if (value.isEmpty) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage:
+                        "First name was empty, validation failed.",
+                  );
+                }
+              },
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: lastNameController,
+              decoration: InputDecoration(
+                labelText: tr("general.lastname"),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return tr("general.obligatoryField");
+                }
+                return null;
+              },
+              onSaved: (value) {
+                if (value == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "Last name was null, validation failed.",
+                  );
+                }
+                if (value.isEmpty) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "Last name was empty, validation failed.",
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              // TODO add email validator
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: tr("general.email"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 192,
+            child: TextFormField(
+              controller: phoneController,
+              decoration: InputDecoration(
+                labelText: tr("general.phone"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 320,
+            child: TextFormField(
+              controller: streetController,
+              decoration: InputDecoration(
+                labelText: tr("general.street"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 64,
+            child: TextFormField(
+              controller: housenumberController,
+              decoration: InputDecoration(
+                labelText: tr("general.housenumber"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          SizedBox(
+            width: 96,
+            child: TextFormField(
+              controller: zipcodeController,
+              decoration: InputDecoration(
+                labelText: tr("general.zipcode"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 288,
+            child: TextFormField(
+              controller: cityController,
+              decoration: InputDecoration(
+                labelText: tr("general.city"),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ];
   }
 }

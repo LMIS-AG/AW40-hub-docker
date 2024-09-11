@@ -139,6 +139,8 @@ customers:
   title: "Customers"
   headlines: 
     id: "ID"
+  actions:
+    updateCustomer: "Update customer"
 vehicles:
   title: "Vehicles"
   actions:
