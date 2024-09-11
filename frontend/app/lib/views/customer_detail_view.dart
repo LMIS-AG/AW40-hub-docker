@@ -1,3 +1,5 @@
+import "package:aw40_hub_frontend/dialogs/update_customer_dialog.dart";
+import "package:aw40_hub_frontend/dtos/customer_update_dto.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:easy_localization/easy_localization.dart";
@@ -120,21 +122,16 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
                     FilledButton.icon(
                       icon: const Icon(Icons.edit),
                       label: Text(tr("general.edit")),
-                      onPressed: () {},
-                      // TODO adjust to customer
-                      /* onPressed: customerProvider.workshopId ==
-                              widget.customerModel.workshopId
-                          ? () async {
-                              final CaseUpdateDto? caseUpdateDto =
-                                  await _showUpdateCaseDialog(
-                                      widget.customerModel);
-                              if (caseUpdateDto == null) return;
-                              await customerProvider.updateCase(
-                                widget.customerModel.id,
-                                caseUpdateDto,
-                              );
-                            }
-                          : null, */
+                      onPressed: () async {
+                        final CustomerUpdateDto? customerUpdateDto =
+                            await _showUpdateCustomerDialog(
+                                widget.customerModel);
+                        if (customerUpdateDto == null) return;
+                        await customerProvider.updateCustomer(
+                          widget.customerModel.id.toString(),
+                          customerUpdateDto,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -146,13 +143,14 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
     );
   }
 
-  // TODO adjust to customer
-  /* Future<CaseUpdateDto?> _showUpdateCaseDialog(CaseModel caseModel) async {
-    return showDialog<CaseUpdateDto>(
+  Future<CustomerUpdateDto?> _showUpdateCustomerDialog(
+    CustomerModel customerModel,
+  ) async {
+    return showDialog<CustomerUpdateDto>(
       context: context,
       builder: (BuildContext context) {
-        return UpdateCaseDialog(caseModel: caseModel);
+        return UpdateCustomerDialog(customerModel: customerModel);
       },
     );
-  }*/
+  }
 }
