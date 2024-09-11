@@ -176,7 +176,7 @@ class UpdateDialogForm extends StatelessWidget {
     );
   }
 
-// TODO move this code into a dedicated widget and make controllers to params
+  // TODO move this code into a dedicated widget and make controllers to params
   List<Widget> buildWidgetsForUpdatingCustomer() {
     return [
       const SizedBox(height: 16),
