@@ -315,7 +315,7 @@ class HttpService {
     );
   }
 
-  Future<http.Response> getCustomers(
+  Future<http.Response> getCustomer(
     String token,
     String workshopId,
     String caseId,
