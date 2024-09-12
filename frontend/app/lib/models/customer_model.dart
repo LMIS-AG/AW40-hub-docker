@@ -9,7 +9,7 @@ class CustomerModel {
     this.phone,
     this.street,
     this.housenumber,
-    this.zipcode,
+    this.postcode,
     this.city,
   });
   AnonymousCustomerId id;
@@ -20,6 +20,6 @@ class CustomerModel {
   String? phone;
   String? street;
   String? housenumber;
-  String? zipcode;
+  String? postcode;
   String? city;
 }

@@ -60,7 +60,7 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
       tr("general.phone"),
       tr("general.street"),
       tr("general.housenumber"),
-      tr("general.zipcode"),
+      tr("general.postcode"),
       tr("general.city"),
     ];
     final List<String> valuesCase = [
@@ -71,7 +71,7 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
       widget.customerModel.phone ?? "",
       widget.customerModel.street ?? "",
       widget.customerModel.housenumber ?? "",
-      widget.customerModel.zipcode ?? "",
+      widget.customerModel.postcode ?? "",
       widget.customerModel.city ?? "",
     ];
 

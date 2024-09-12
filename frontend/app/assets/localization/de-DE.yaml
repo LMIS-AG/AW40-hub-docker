@@ -32,6 +32,7 @@ general:
   obligatoryField: "Pflichtfeld"
   occasion: "Anlass"
   phone: "Telefon"
+  postcode: "PLZ"
   previous: "Vorher"
   problem: "Problem"
   repair: "Reparatur"
@@ -52,7 +53,6 @@ general:
   workshop: "Werkstatt"
   workshopId: "Werkstatt ID"
   yes: "Ja"
-  zipcode: "PLZ"
 diagnoses:
   title: "Diagnosen"
   actions:

@@ -11,7 +11,7 @@ class CustomerAttributesForm extends StatelessWidget {
     required this.phoneController,
     required this.streetController,
     required this.housenumberController,
-    required this.zipcodeController,
+    required this.postcodeController,
     required this.cityController,
     super.key,
   });
@@ -22,7 +22,7 @@ class CustomerAttributesForm extends StatelessWidget {
   final TextEditingController phoneController;
   final TextEditingController streetController;
   final TextEditingController housenumberController;
-  final TextEditingController zipcodeController;
+  final TextEditingController postcodeController;
   final TextEditingController cityController;
 
   @override
@@ -157,9 +157,9 @@ class CustomerAttributesForm extends StatelessWidget {
             SizedBox(
               width: 96,
               child: TextFormField(
-                controller: zipcodeController,
+                controller: postcodeController,
                 decoration: InputDecoration(
-                  labelText: tr("general.zipcode"),
+                  labelText: tr("general.postcode"),
                   border: const OutlineInputBorder(),
                 ),
               ),

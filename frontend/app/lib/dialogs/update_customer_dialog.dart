@@ -27,7 +27,7 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
 
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _zipcodeController = TextEditingController();
+  final TextEditingController _postcodeController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _housenumberController = TextEditingController();
@@ -42,7 +42,7 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
     _lastNameController.text = widget.customerModel.lastname ?? "";
     _phoneController.text = widget.customerModel.phone ?? "";
     _emailController.text = widget.customerModel.email ?? "";
-    _zipcodeController.text = widget.customerModel.zipcode ?? "";
+    _postcodeController.text = widget.customerModel.postcode ?? "";
     _cityController.text = widget.customerModel.city ?? "";
     _streetController.text = widget.customerModel.street ?? "";
     _housenumberController.text = widget.customerModel.housenumber ?? "";
@@ -57,7 +57,7 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
         emailController: _emailController,
         streetController: _streetController,
         housenumberController: _housenumberController,
-        zipcodeController: _zipcodeController,
+        postcodeController: _postcodeController,
         cityController: _cityController,
         customerModel: widget.customerModel,
       ),
@@ -95,8 +95,8 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
       final String? housenumber = _housenumberController.text.isEmpty
           ? null
           : _housenumberController.text;
-      final String? zipcode =
-          _zipcodeController.text.isEmpty ? null : _zipcodeController.text;
+      final String? postcode =
+          _postcodeController.text.isEmpty ? null : _postcodeController.text;
       final String? city =
           _cityController.text.isEmpty ? null : _cityController.text;
 
@@ -107,7 +107,7 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
         phone,
         street,
         housenumber,
-        zipcode,
+        postcode,
         city,
       );
       unawaited(
@@ -126,7 +126,7 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
-    _zipcodeController.dispose();
+    _postcodeController.dispose();
     _cityController.dispose();
     _streetController.dispose();
     _housenumberController.dispose();
@@ -141,7 +141,7 @@ class UpdateDialogForm extends StatelessWidget {
     required this.lastNameController,
     required this.phoneController,
     required this.emailController,
-    required this.zipcodeController,
+    required this.postcodeController,
     required this.cityController,
     required this.streetController,
     required this.housenumberController,
@@ -155,7 +155,7 @@ class UpdateDialogForm extends StatelessWidget {
 
   final TextEditingController phoneController;
   final TextEditingController emailController;
-  final TextEditingController zipcodeController;
+  final TextEditingController postcodeController;
   final TextEditingController cityController;
   final TextEditingController streetController;
   final TextEditingController housenumberController;
@@ -175,7 +175,7 @@ class UpdateDialogForm extends StatelessWidget {
               lastNameController: lastNameController,
               phoneController: phoneController,
               emailController: emailController,
-              zipcodeController: zipcodeController,
+              postcodeController: postcodeController,
               cityController: cityController,
               streetController: streetController,
               housenumberController: housenumberController,

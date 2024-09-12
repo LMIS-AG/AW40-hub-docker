@@ -49,7 +49,7 @@ class CustomerDataTableSource extends DataTableSource {
           Text(customerModel.housenumber ?? ""),
         ),
         DataCell(
-          Text(customerModel.zipcode ?? ""),
+          Text(customerModel.postcode ?? ""),
         ),
         DataCell(
           Text(customerModel.city ?? ""),

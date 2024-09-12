@@ -70,7 +70,7 @@ class _CustomerViewState extends State<CustomerView> {
                     DataColumn(label: Text(tr("general.phone"))),
                     DataColumn(label: Text(tr("general.street"))),
                     DataColumn(label: Text(tr("general.housenumber"))),
-                    DataColumn(label: Text(tr("general.zipcode"))),
+                    DataColumn(label: Text(tr("general.postcode"))),
                     DataColumn(label: Text(tr("general.city"))),
                   ],
                 ),

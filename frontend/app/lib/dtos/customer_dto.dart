@@ -14,7 +14,7 @@ class CustomerDto {
     this.phone,
     this.street,
     this.housenumber,
-    this.zipcode,
+    this.postcode,
     this.city,
   );
 
@@ -32,7 +32,7 @@ class CustomerDto {
       phone: phone,
       street: street,
       housenumber: housenumber,
-      zipcode: zipcode,
+      postcode: postcode,
       city: city,
     );
   }
@@ -49,8 +49,6 @@ class CustomerDto {
   String? street;
   @JsonKey(name: "house_number")
   String? housenumber;
-  // TODO maybe rename into postcode
-  @JsonKey(name: "postcode")
-  String? zipcode;
+  String? postcode;
   String? city;
 }

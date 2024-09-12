@@ -32,6 +32,7 @@ general:
   obligatoryField: "Obligatory"
   occasion: "Occasion"
   phone: "Phone"
+  postcode: "Postcode"
   problem: "Problem"
   previous: "Previous"
   repair: "Repair"
@@ -52,7 +53,6 @@ general:
   workshop: "Workshop"
   workshopId: "Workshop id"
   yes: "Yes"
-  zipcode: "Zipcode"
 diagnoses:
   title: "Diagnosis"
   actions:

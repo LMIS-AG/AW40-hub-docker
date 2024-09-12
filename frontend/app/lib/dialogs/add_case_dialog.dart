@@ -38,7 +38,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _zipcodeController = TextEditingController();
+  final TextEditingController _postcodeController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _housenumberController = TextEditingController();
@@ -61,7 +61,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
         housenumberController: _housenumberController,
         lastNameController: _lastNameController,
         streetController: _streetController,
-        zipcodeController: _zipcodeController,
+        postcodeController: _postcodeController,
         emailController: _emailController,
         phoneController: _phoneController,
       ),
@@ -131,7 +131,7 @@ class AddCaseDialogForm extends StatefulWidget {
     required this.milageController,
     required this.firstNameController,
     required this.lastNameController,
-    required this.zipcodeController,
+    required this.postcodeController,
     required this.cityController,
     required this.streetController,
     required this.housenumberController,
@@ -151,7 +151,7 @@ class AddCaseDialogForm extends StatefulWidget {
 
   final TextEditingController phoneController;
   final TextEditingController emailController;
-  final TextEditingController zipcodeController;
+  final TextEditingController postcodeController;
   final TextEditingController cityController;
   final TextEditingController streetController;
   final TextEditingController housenumberController;
@@ -411,7 +411,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     lastNameController: widget.lastNameController,
                     phoneController: widget.phoneController,
                     emailController: widget.emailController,
-                    zipcodeController: widget.zipcodeController,
+                    postcodeController: widget.postcodeController,
                     cityController: widget.cityController,
                     streetController: widget.streetController,
                     housenumberController: widget.housenumberController,
