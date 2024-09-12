@@ -682,10 +682,30 @@ class MockHttpService implements HttpService {
     )
   ];
   final List<CustomerDto> _customerDtos = [
-    CustomerDto(AnonymousCustomerId.unknown)
+    CustomerDto(
+      AnonymousCustomerId.unknown,
+      "some_firstname",
+      "some_lastname",
+      "some_email",
+      "some_phone",
+      "some_street",
+      "some_housenumber",
+      "some_postcode",
+      "some_city",
+    )
   ];
   final List<CustomerDto> _sharedCustomerDtos = [
-    CustomerDto(AnonymousCustomerId.anonymous)
+    CustomerDto(
+      AnonymousCustomerId.unknown,
+      "some_firstname",
+      "some_lastname",
+      "some_email",
+      "some_phone",
+      "some_street",
+      "some_housenumber",
+      "some_postcode",
+      "some_city",
+    )
   ];
 
   Future<void> _demoDiagnosisStage0() async {
@@ -1382,6 +1402,12 @@ class MockHttpService implements HttpService {
     Map<String, dynamic> requestBody,
   ) {
     // TODO: implement updateVehicles
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> getCustomers(String token, int? page, int? pageSize) {
+    // TODO: implement getCustomers
     throw UnimplementedError();
   }
 }
