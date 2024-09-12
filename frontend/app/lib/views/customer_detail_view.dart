@@ -51,7 +51,6 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
     final TextTheme textTheme = theme.textTheme;
     final customerProvider =
         Provider.of<CustomerProvider>(context, listen: false);
-    //final Routemaster routemaster = Routemaster.of(context);
 
     final List<String> attributesCase = [
       tr("general.id"),
@@ -125,7 +124,8 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
                       onPressed: () async {
                         final CustomerUpdateDto? customerUpdateDto =
                             await _showUpdateCustomerDialog(
-                                widget.customerModel);
+                          widget.customerModel,
+                        );
                         if (customerUpdateDto == null) return;
                         await customerProvider.updateCustomer(
                           widget.customerModel.id.toString(),
