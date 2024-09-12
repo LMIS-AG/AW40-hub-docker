@@ -326,6 +326,24 @@ class HttpService {
     );
   }
 
+  Future<http.Response> getCustomers(
+    String token,
+    int? page,
+    int? pageSize,
+  ) {
+    final uri = Uri.parse("$backendUrl/customers").replace(
+      queryParameters: {
+        "page": page ?? 0,
+        "page_size": pageSize ?? 30,
+      },
+    );
+
+    return _client.get(
+      uri,
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
   Future<http.Response> getSharedVehicles(String token) {
     return _client.get(
       Uri.parse("$backendUrl/shared/vehicles"),

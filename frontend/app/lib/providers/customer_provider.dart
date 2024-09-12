@@ -31,6 +31,25 @@ class CustomerProvider with ChangeNotifier {
     );
     if (response.statusCode != 200) {
       _logger.warning(
+        "Could not get shared customers. "
+        "${response.statusCode}: ${response.reasonPhrase}",
+      );
+      return [];
+    }
+    final json = jsonDecode(response.body);
+    if (json is! List) {
+      _logger.warning("Could not decode json response to List.");
+      return [];
+    }
+    return json.map((e) => CustomerDto.fromJson(e).toModel()).toList();
+  }
+
+  Future<List<CustomerModel>> getCustomers(int? page, int? pageSize) async {
+    final String authToken = _getAuthToken();
+    final Response response =
+        await _httpService.getCustomers(authToken, page, pageSize);
+    if (response.statusCode != 200) {
+      _logger.warning(
         "Could not get customers. "
         "${response.statusCode}: ${response.reasonPhrase}",
       );

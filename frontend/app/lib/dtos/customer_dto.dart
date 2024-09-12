@@ -8,6 +8,14 @@ part "customer_dto.g.dart";
 class CustomerDto {
   CustomerDto(
     this.id,
+    this.firstname,
+    this.lastname,
+    this.email,
+    this.phone,
+    this.street,
+    this.housenumber,
+    this.zipcode,
+    this.city,
   );
 
   factory CustomerDto.fromJson(Map<String, dynamic> json) {
@@ -32,12 +40,17 @@ class CustomerDto {
   @JsonKey(name: "_id")
   AnonymousCustomerId id;
   // TODO make firstname and lastname required
+  @JsonKey(name: "first_name")
   String? firstname;
+  @JsonKey(name: "last_name")
   String? lastname;
   String? email;
   String? phone;
   String? street;
+  @JsonKey(name: "house_number")
   String? housenumber;
+  // TODO maybe rename into postcode
+  @JsonKey(name: "postcode")
   String? zipcode;
   String? city;
 }
