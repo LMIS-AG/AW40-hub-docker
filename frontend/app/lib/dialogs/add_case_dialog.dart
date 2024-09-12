@@ -406,7 +406,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                   ],
                 ),
                 if (showAddCustomerFields)
-                  UpdateCustomerForm(
+                  CustomerAttributesForm(
                     firstNameController: widget.firstNameController,
                     lastNameController: widget.lastNameController,
                     phoneController: widget.phoneController,

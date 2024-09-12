@@ -170,7 +170,7 @@ class UpdateDialogForm extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UpdateCustomerForm(
+            CustomerAttributesForm(
               firstNameController: firstNameController,
               lastNameController: lastNameController,
               phoneController: phoneController,

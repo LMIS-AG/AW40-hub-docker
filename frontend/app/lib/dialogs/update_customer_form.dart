@@ -3,8 +3,8 @@ import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
-class UpdateCustomerForm extends StatelessWidget {
-  const UpdateCustomerForm({
+class CustomerAttributesForm extends StatelessWidget {
+  const CustomerAttributesForm({
     required this.firstNameController,
     required this.lastNameController,
     required this.emailController,
