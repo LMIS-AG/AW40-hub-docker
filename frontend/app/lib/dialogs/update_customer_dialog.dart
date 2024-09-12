@@ -1,7 +1,7 @@
 import "dart:async";
 
-import "package:aw40_hub_frontend/dialogs/update_customer_form.dart";
 import "package:aw40_hub_frontend/dtos/customer_update_dto.dart";
+import "package:aw40_hub_frontend/forms/update_customer_form.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";

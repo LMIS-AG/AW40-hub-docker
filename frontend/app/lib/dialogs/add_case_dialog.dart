@@ -1,8 +1,8 @@
 import "dart:async";
 
-import "package:aw40_hub_frontend/dialogs/update_customer_form.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
+import "package:aw40_hub_frontend/forms/update_customer_form.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/customer_provider.dart";
 import "package:aw40_hub_frontend/text_input_formatters/upper_case_text_input_formatter.dart";
