@@ -25,6 +25,7 @@ general:
   noData: "No data available"
   noDate: "No Date"
   noDiagnoses: "There is currently no information about ongoing diagnoses."
+  noVehicles: "There is currently no information about the vehicles."
   noVehicleVin: "No vehicle vin"
   noWorkshopId: "No workshop id"
   notFound: "Not found"

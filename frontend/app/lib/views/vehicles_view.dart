@@ -83,7 +83,7 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
     if (widget.vehicleModel.isEmpty) {
       return Center(
         child: Text(
-          tr("general.noDiagnoses"),
+          tr("general.noVehicles"),
           style: Theme.of(context).textTheme.displaySmall,
         ),
       );
