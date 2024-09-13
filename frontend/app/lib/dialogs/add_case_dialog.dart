@@ -163,8 +163,8 @@ class AddCaseDialogForm extends StatefulWidget {
 class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   bool showAddCustomerFields = false;
 
-  // TODO replace with actual data
-  final customerEntriesMock = [
+  // TODO replace with actual data and delete
+  /*final customerEntriesMock = [
     "Altmann",
     "Beermann",
     "Czichow",
@@ -177,7 +177,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     "Grau",
     "Hermann",
     "Hayek",
-  ];
+  ];*/
 
   String? lastSelectedCustomer;
 
@@ -185,7 +185,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // ignore: discarded_futures
-      future: Provider.of<CustomerProvider>(context).getSharedCustomers(),
+      future: Provider.of<CustomerProvider>(context).getCustomers(0, 30),
       builder:
           (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
@@ -364,13 +364,13 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                             _onCustomerSelection(context, value),
                         menuStyle:
                             const MenuStyle(alignment: Alignment.bottomLeft),
-                        // TODO replace mock data with adjusted customerModels
                         dropdownMenuEntries:
-                            customerEntriesMock.map<DropdownMenuEntry<String>>(
-                          (String entry) {
+                            customerModels.map<DropdownMenuEntry<String>>(
+                          (CustomerModel entry) {
                             return DropdownMenuEntry<String>(
-                              value: entry,
-                              label: entry,
+                              value:
+                                  "${entry.firstname} ${entry.lastname}", // TODO check if this is correct
+                              label: "${entry.firstname} ${entry.lastname}",
                             );
                           },
                         ).toList(),
