@@ -32,7 +32,7 @@ class _CustomerViewState extends State<CustomerView> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // ignore: discarded_futures
-      future: Provider.of<CustomerProvider>(context).getSharedCustomers(),
+      future: Provider.of<CustomerProvider>(context).getCustomers(0, 30),
       builder:
           (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
