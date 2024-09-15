@@ -347,6 +347,20 @@ class HttpService {
     );
   }
 
+  Future<http.Response> updateCustomer(
+    String token,
+    String customerId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.patch(
+      Uri.parse("$backendUrl/customers/$customerId"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> getSharedVehicles(String token) {
     return _client.get(
       Uri.parse("$backendUrl/shared/vehicles"),

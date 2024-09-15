@@ -127,6 +127,7 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
                           widget.customerModel,
                         );
                         if (customerUpdateDto == null) return;
+                        // TODO check for Id?
                         await customerProvider.updateCustomer(
                           widget.customerModel.id.toString(),
                           customerUpdateDto,

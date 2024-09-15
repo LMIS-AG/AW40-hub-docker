@@ -87,9 +87,8 @@ class CustomerProvider with ChangeNotifier {
   ) async {
     final String authToken = _getAuthToken();
     final Map<String, dynamic> updateCustomerJson = updateCustomerDto.toJson();
-    final Response response = await _httpService.updateCase(
+    final Response response = await _httpService.updateCustomer(
       authToken,
-      workshopId,
       customerId,
       updateCustomerJson,
     );

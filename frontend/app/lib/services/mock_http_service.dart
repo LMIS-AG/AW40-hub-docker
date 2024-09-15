@@ -1410,4 +1410,11 @@ class MockHttpService implements HttpService {
     // TODO: implement getCustomers
     throw UnimplementedError();
   }
+
+  @override
+  Future<Response> updateCustomer(
+      String token, String customerId, Map<String, dynamic> requestBody) {
+    // TODO: implement updateCustomer
+    throw UnimplementedError();
+  }
 }
