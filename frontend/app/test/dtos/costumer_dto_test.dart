@@ -5,7 +5,7 @@ import "package:flutter_test/flutter_test.dart";
 
 void main() {
   group("CustomerDto primary constructor", () {
-    const id = AnonymousCustomerId.anonymous;
+    const id = "some_id";
     const firstname = "some_firstname";
     const lastname = "some_lastname";
     const email = "some_email";
@@ -104,7 +104,7 @@ void main() {
     });
   });
   group("CustomerDto toJson method", () {
-    const id = AnonymousCustomerId.anonymous;
+    const id = "some_id";
     const firstname = "some_firstname";
     const lastname = "some_lastname";
     const email = "some_email";
@@ -126,7 +126,7 @@ void main() {
     );
     final Map<String, dynamic> json = customerDto.toJson();
     test("correctly assigns id", () {
-      expect(json["_id"], id.name);
+      expect(json["_id"], id);
     });
     test("correctly assigns firstname", () {
       expect(json["firstname"], firstname);
@@ -155,7 +155,7 @@ void main() {
   });
 
   group("CustomerDto toModel method", () {
-    const id = AnonymousCustomerId.anonymous;
+    const id = "some_id";
     const firstname = "some_firstname";
     const lastname = "some_lastname";
     const email = "some_email";

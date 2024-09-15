@@ -55,12 +55,14 @@ class CustomerProvider with ChangeNotifier {
       );
       return [];
     }
-    final json = jsonDecode(response.body);
+    final respBody = response.body;
+    final json = jsonDecode(respBody);
     if (json is! List) {
       _logger.warning("Could not decode json response to List.");
       return [];
     }
-    return json.map((e) => CustomerDto.fromJson(e).toModel()).toList();
+    final list = json.map((e) => CustomerDto.fromJson(e).toModel()).toList();
+    return list;
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {

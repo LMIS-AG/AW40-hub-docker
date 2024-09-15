@@ -28,7 +28,7 @@ class CustomerDataTableSource extends DataTableSource {
       }),
       cells: [
         DataCell(
-          Text(customerModel.id.name),
+          Text(customerModel.id ?? ""),
         ),
         DataCell(
           Text(customerModel.firstname ?? ""),

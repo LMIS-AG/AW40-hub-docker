@@ -37,9 +37,9 @@ class CustomerDto {
     );
   }
 
+  // TODO make firstname and lastname (and Id?) required
   @JsonKey(name: "_id")
-  AnonymousCustomerId id;
-  // TODO make firstname and lastname required
+  String? id;
   @JsonKey(name: "first_name")
   String? firstname;
   @JsonKey(name: "last_name")

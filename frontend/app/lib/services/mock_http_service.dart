@@ -683,7 +683,7 @@ class MockHttpService implements HttpService {
   ];
   final List<CustomerDto> _customerDtos = [
     CustomerDto(
-      AnonymousCustomerId.unknown,
+      "some_id",
       "some_firstname",
       "some_lastname",
       "some_email",
@@ -696,7 +696,7 @@ class MockHttpService implements HttpService {
   ];
   final List<CustomerDto> _sharedCustomerDtos = [
     CustomerDto(
-      AnonymousCustomerId.unknown,
+      "some_id",
       "some_firstname",
       "some_lastname",
       "some_email",

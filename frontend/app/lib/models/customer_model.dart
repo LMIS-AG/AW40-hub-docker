@@ -1,5 +1,3 @@
-import "package:aw40_hub_frontend/utils/enums.dart";
-
 class CustomerModel {
   CustomerModel({
     required this.id,
@@ -12,8 +10,8 @@ class CustomerModel {
     this.postcode,
     this.city,
   });
-  AnonymousCustomerId id;
-  // TODO make firstname and lastname required
+  // TODO make firstname and lastname (and Id?) required
+  String? id;
   String? firstname;
   String? lastname;
   String? email;

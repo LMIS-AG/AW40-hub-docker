@@ -331,10 +331,13 @@ class HttpService {
     int? page,
     int? pageSize,
   ) {
+    final int pageNumber = page ?? 0;
+    final int pageSizeNumber = pageSize ?? 30;
+
     final uri = Uri.parse("$backendUrl/customers").replace(
       queryParameters: {
-        "page": page ?? 0,
-        "page_size": pageSize ?? 30,
+        "page": pageNumber.toString(),
+        "pageSize": pageSizeNumber.toString(),
       },
     );
 
