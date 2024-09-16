@@ -4,15 +4,18 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor import motor_asyncio
 
-from .data_management import (AttachmentBucket, Case, Customer, Diagnosis,
-                              TimeseriesMetaData, Vehicle, Workshop)
+from .data_management import (
+    Case, Vehicle, Customer, Workshop, TimeseriesMetaData, Diagnosis,
+    AttachmentBucket
+)
 from .data_management.timeseries_data import GridFSSignalStore
 from .diagnostics_management import DiagnosticTaskManager, KnowledgeGraph
-from .routers import diagnostics, minio
-from .security.keycloak import Keycloak
 from .settings import settings
 from .storage.storage_factory import StorageFactory
+from .security.keycloak import Keycloak
 from .v1 import api_v1
+from .routers import diagnostics
+from .routers import minio
 
 app = FastAPI()
 app.add_middleware(
