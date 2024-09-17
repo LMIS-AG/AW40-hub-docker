@@ -1,6 +1,5 @@
 import "package:aw40_hub_frontend/dtos/customer_dto.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
-import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:flutter_test/flutter_test.dart";
 
 void main() {
@@ -54,7 +53,7 @@ void main() {
     });
   });
   group("CustomerDto fromJson constructor", () {
-    const id = AnonymousCustomerId.anonymous;
+    const id = "some_id";
     const firstname = "some_firstname";
     const lastname = "some_lastname";
     const email = "some_email";
@@ -64,7 +63,7 @@ void main() {
     const postcode = "some_postcode";
     const city = "some_city";
     final Map<String, dynamic> json = <String, dynamic>{
-      "_id": id.name,
+      "_id": id,
       "first_name": firstname,
       "last_name": lastname,
       "email": email,
