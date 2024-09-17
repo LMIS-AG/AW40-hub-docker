@@ -43,6 +43,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _housenumberController = TextEditingController();
 
+  CustomerModel? lastSelectedCustomer;
+
   final title = tr("cases.actions.addCase");
 
   @override
@@ -64,6 +66,9 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
         postcodeController: _postcodeController,
         emailController: _emailController,
         phoneController: _phoneController,
+        updateCustomer: (CustomerModel? newCustomer) {
+          lastSelectedCustomer = newCustomer;
+        },
       ),
       actions: [
         TextButton(
@@ -84,11 +89,16 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
   }
 
   void _submitAddCaseForm() {
-    // TODO check whether new customer should be created and read values
-
     final FormState? currentFormKeyState = _formKey.currentState;
     if (currentFormKeyState != null && currentFormKeyState.validate()) {
       currentFormKeyState.save();
+
+      String customerId = lastSelectedCustomer?.id ?? "";
+      if (customerId.isEmpty) {
+        // TODO create new customer first and assign Id and read values after
+        customerId = "example_pls_replace";
+      }
+
       final CaseOccasion? caseOccasion = EnumToString.fromString(
         CaseOccasion.values,
         _occasionController.text,
@@ -99,6 +109,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
           exceptionMessage: "CaseOccasion was null.",
         );
       }
+
       final int? milage = int.tryParse(_milageController.text);
       if (milage == null) {
         throw AppException(
@@ -106,9 +117,10 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
           exceptionMessage: "Milage was null.",
         );
       }
+
       final NewCaseDto newCaseDto = NewCaseDto(
         _vinController.text,
-        _customerIdController.text,
+        customerId,
         caseOccasion,
         milage,
       );
@@ -137,6 +149,7 @@ class AddCaseDialogForm extends StatefulWidget {
     required this.housenumberController,
     required this.phoneController,
     required this.emailController,
+    required this.updateCustomer,
     super.key,
   });
 
@@ -156,6 +169,8 @@ class AddCaseDialogForm extends StatefulWidget {
   final TextEditingController streetController;
   final TextEditingController housenumberController;
 
+  final Function(CustomerModel?) updateCustomer;
+
   @override
   State<AddCaseDialogForm> createState() => _AddCaseDialogFormState();
 }
@@ -163,23 +178,8 @@ class AddCaseDialogForm extends StatefulWidget {
 class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   bool showAddCustomerFields = false;
 
-  // TODO replace with actual data and delete
-  /*final customerEntriesMock = [
-    "Altmann",
-    "Beermann",
-    "Czichow",
-    "Dubski",
-    "Ehrenfeld",
-    "Friede",
-    "Friedman",
-    "Grave",
-    "Gravemeier",
-    "Grau",
-    "Hermann",
-    "Hayek",
-  ];*/
-
-  String? lastSelectedCustomer;
+  List<CustomerModel>? customerModels;
+  CustomerModel? lastSelectedCustomer;
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +196,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
             child: Center(child: CircularProgressIndicator()),
           );
         }
-        final List<CustomerModel>? customerModels = snapshot.data;
+        customerModels = snapshot.data;
         if (customerModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
@@ -355,6 +355,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       message: tr("cases.addCaseDialog.customerTooltip"),
                       child: DropdownMenu<String>(
                         enabled: !showAddCustomerFields,
+                        controller: widget.customerIdController,
                         label: Text(tr("general.customer")),
                         hintText: tr("forms.optional"),
                         enableFilter: true,
@@ -365,12 +366,12 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         menuStyle:
                             const MenuStyle(alignment: Alignment.bottomLeft),
                         dropdownMenuEntries:
-                            customerModels.map<DropdownMenuEntry<String>>(
-                          (CustomerModel entry) {
+                            customerModels!.map<DropdownMenuEntry<String>>(
+                          (CustomerModel customer) {
                             return DropdownMenuEntry<String>(
-                              value:
-                                  "${entry.firstname} ${entry.lastname}", // TODO check if this is correct
-                              label: "${entry.firstname} ${entry.lastname}",
+                              value: customer.id ?? "",
+                              label:
+                                  "${customer.firstname} ${customer.lastname}",
                             );
                           },
                         ).toList(),
@@ -428,24 +429,37 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     BuildContext context,
     String? value,
   ) async {
-    if (value == null) return;
-    await _showConfirmSelectCustomerDialog(context, value)
+    final customer = _getCustomerById(value);
+    if (customer == null) return;
+    await _showConfirmSelectCustomerDialog(context, customer)
         .then((bool? dialogResult) async {
       if (dialogResult ?? false) {
-        lastSelectedCustomer = widget.customerIdController.text;
+        widget.updateCustomer(customer);
+        lastSelectedCustomer = customer;
+      } else if (lastSelectedCustomer == null) {
+        widget.customerIdController.clear();
       } else {
-        if (lastSelectedCustomer == null) {
-          widget.customerIdController.clear();
-        } else {
-          widget.customerIdController.text = lastSelectedCustomer!;
-        }
+        final CustomerModel customer = lastSelectedCustomer!;
+        widget.customerIdController.text =
+            "${customer.firstname} ${customer.lastname}";
       }
     });
   }
 
+  CustomerModel? _getCustomerById(String? id) {
+    if (customerModels == null || id == null) return null;
+    final List<CustomerModel?> customerModels_ = customerModels!;
+    try {
+      return customerModels_.firstWhere((element) => element?.id == id);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool?> _showConfirmSelectCustomerDialog(
     BuildContext context,
-    String value,
+    CustomerModel customer,
   ) {
     return showDialog<bool>(
       context: context,
@@ -455,7 +469,9 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           content: Text(
             tr(
               "cases.addCaseDialog.confirmDialog.description",
-              namedArgs: {"customer": value},
+              namedArgs: {
+                "customer": "${customer.firstname} ${customer.lastname}"
+              },
             ),
           ),
           actions: <Widget>[

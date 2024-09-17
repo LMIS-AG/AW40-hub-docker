@@ -1,5 +1,4 @@
 import "package:aw40_hub_frontend/models/customer_model.dart";
-import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:json_annotation/json_annotation.dart";
 
 part "customer_dto.g.dart";
