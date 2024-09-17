@@ -131,6 +131,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                 caseOccasion,
                 milage,
               );
+              // ignore: use_build_context_synchronously
               unawaited(Routemaster.of(context).pop<NewCaseDto>(newCaseDto));
             }
           },
