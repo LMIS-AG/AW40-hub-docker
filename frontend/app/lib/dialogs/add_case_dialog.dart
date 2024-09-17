@@ -91,14 +91,17 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
               String customerId = lastSelectedCustomer?.id ?? "";
               if (customerId.isEmpty) {
-                // TODO create new customer first and assign Id and read values after
                 final NewCustomerDto newCustomerDto = _createNewCustomerDto();
-
-                // TODO create customer via api and use id from response
                 final CustomerModel? newCustomer =
                     await customerProvider.addCustomer(newCustomerDto);
 
-                customerId = "example_pls_replace";
+                if (newCustomer?.id == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "new customer (or its ID) was null.",
+                  );
+                }
+                customerId = newCustomer!.id!;
               }
 
               final CaseOccasion? caseOccasion = EnumToString.fromString(
@@ -438,8 +441,9 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                           onPressed: () {
                             widget.customerIdController =
                                 TextEditingController();
+                            lastSelectedCustomer = null;
+                            widget.updateCustomer(null);
                             showAddCustomerFields = true;
-
                             setState(() {});
                           },
                         ),
