@@ -38,8 +38,8 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    _firstNameController.text = widget.customerModel.firstname ?? "";
-    _lastNameController.text = widget.customerModel.lastname ?? "";
+    _firstNameController.text = widget.customerModel.firstname;
+    _lastNameController.text = widget.customerModel.lastname;
     _phoneController.text = widget.customerModel.phone ?? "";
     _emailController.text = widget.customerModel.email ?? "";
     _postcodeController.text = widget.customerModel.postcode ?? "";
