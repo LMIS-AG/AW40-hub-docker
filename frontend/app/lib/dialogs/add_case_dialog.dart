@@ -89,21 +89,6 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
             if (currentFormKeyState != null && currentFormKeyState.validate()) {
               currentFormKeyState.save();
 
-              String customerId = lastSelectedCustomer?.id ?? "";
-              if (customerId.isEmpty) {
-                final NewCustomerDto newCustomerDto = _createNewCustomerDto();
-                final CustomerModel? newCustomer =
-                    await customerProvider.addCustomer(newCustomerDto);
-
-                if (newCustomer?.id == null) {
-                  throw AppException(
-                    exceptionType: ExceptionType.unexpectedNullValue,
-                    exceptionMessage: "new customer (or its ID) was null.",
-                  );
-                }
-                customerId = newCustomer!.id!;
-              }
-
               final CaseOccasion? caseOccasion = EnumToString.fromString(
                 CaseOccasion.values,
                 _occasionController.text,
@@ -121,6 +106,21 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                   exceptionType: ExceptionType.unexpectedNullValue,
                   exceptionMessage: "Milage was null.",
                 );
+              }
+
+              String customerId = lastSelectedCustomer?.id ?? "";
+              if (customerId.isEmpty) {
+                final NewCustomerDto newCustomerDto = _createNewCustomerDto();
+                final CustomerModel? newCustomer =
+                    await customerProvider.addCustomer(newCustomerDto);
+
+                if (newCustomer?.id == null) {
+                  throw AppException(
+                    exceptionType: ExceptionType.unexpectedNullValue,
+                    exceptionMessage: "new customer (or its ID) was null.",
+                  );
+                }
+                customerId = newCustomer!.id!;
               }
 
               final NewCaseDto newCaseDto = NewCaseDto(
