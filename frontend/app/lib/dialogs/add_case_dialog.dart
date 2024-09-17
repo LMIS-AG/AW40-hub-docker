@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_customer_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/forms/update_customer_form.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
@@ -96,6 +97,10 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
       String customerId = lastSelectedCustomer?.id ?? "";
       if (customerId.isEmpty) {
         // TODO create new customer first and assign Id and read values after
+        final NewCustomerDto newCustomerDto = _createNewCustomerDto();
+
+        // TODO create customer via api and use id from response
+
         customerId = "example_pls_replace";
       }
 
@@ -128,6 +133,32 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
     }
   }
 
+  NewCustomerDto _createNewCustomerDto() {
+    final firstname = _firstNameController.text;
+    final lastname = _lastNameController.text;
+    final email = _emailController.text.isEmpty ? null : _emailController.text;
+    final phone = _phoneController.text.isEmpty ? null : _phoneController.text;
+    final street =
+        _streetController.text.isEmpty ? null : _streetController.text;
+    final housenumber = _housenumberController.text.isEmpty
+        ? null
+        : _housenumberController.text;
+    final postcode =
+        _postcodeController.text.isEmpty ? null : _postcodeController.text;
+    final city = _cityController.text.isEmpty ? null : _cityController.text;
+
+    return NewCustomerDto(
+      firstname,
+      lastname,
+      email,
+      phone,
+      street,
+      housenumber,
+      postcode,
+      city,
+    );
+  }
+
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
   }
@@ -135,7 +166,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
 // ignore: must_be_immutable
 class AddCaseDialogForm extends StatefulWidget {
-  const AddCaseDialogForm({
+  AddCaseDialogForm({
     required this.formKey,
     required this.vinController,
     required this.customerIdController,
@@ -155,7 +186,7 @@ class AddCaseDialogForm extends StatefulWidget {
 
   final GlobalKey<FormState> formKey;
   final TextEditingController vinController;
-  final TextEditingController customerIdController;
+  TextEditingController customerIdController;
   final TextEditingController occasionController;
   final TextEditingController milageController;
 
@@ -355,7 +386,9 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       message: tr("cases.addCaseDialog.customerTooltip"),
                       child: DropdownMenu<String>(
                         enabled: !showAddCustomerFields,
-                        controller: widget.customerIdController,
+                        controller: showAddCustomerFields
+                            ? null
+                            : widget.customerIdController,
                         label: Text(tr("general.customer")),
                         hintText: tr("forms.optional"),
                         enableFilter: true,
@@ -399,7 +432,10 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         child: IconButton(
                           icon: const Icon(Icons.person_add),
                           onPressed: () {
+                            widget.customerIdController =
+                                TextEditingController();
                             showAddCustomerFields = true;
+
                             setState(() {});
                           },
                         ),
