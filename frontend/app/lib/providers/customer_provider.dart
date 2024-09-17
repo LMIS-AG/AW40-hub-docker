@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/customer_dto.dart";
 import "package:aw40_hub_frontend/dtos/customer_update_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_customer_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -23,6 +24,22 @@ class CustomerProvider with ChangeNotifier {
   late final String costumerId;
 
   String? _authToken;
+
+  Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
+    _authToken = await authProvider.getAuthToken();
+    notifyListeners();
+  }
+
+  String _getAuthToken() {
+    final String? authToken = _authToken;
+    if (authToken == null) {
+      throw AppException(
+        exceptionMessage: "Called CustomerProvider without auth token.",
+        exceptionType: ExceptionType.unexpectedNullValue,
+      );
+    }
+    return authToken;
+  }
 
   Future<List<CustomerModel>> getSharedCustomers() async {
     final String authToken = _getAuthToken();
@@ -65,20 +82,21 @@ class CustomerProvider with ChangeNotifier {
     return list;
   }
 
-  Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
-    _authToken = await authProvider.getAuthToken();
+  Future<CustomerModel?> addCustomer(NewCustomerDto newCustomerDto) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> newCustomerJson = newCustomerDto.toJson();
+    final Response response =
+        await _httpService.addCustomer(authToken, newCustomerJson);
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not add customer. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return null;
     notifyListeners();
-  }
-
-  String _getAuthToken() {
-    final String? authToken = _authToken;
-    if (authToken == null) {
-      throw AppException(
-        exceptionMessage: "Called CustomerProvider without auth token.",
-        exceptionType: ExceptionType.unexpectedNullValue,
-      );
-    }
-    return authToken;
+    return _decodeCustomerModelFromResponseBody(response);
   }
 
   Future<CustomerModel?> updateCustomer(

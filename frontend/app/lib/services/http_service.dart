@@ -347,6 +347,19 @@ class HttpService {
     );
   }
 
+  Future<http.Response> addCustomer(
+    String token,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.post(
+      Uri.parse("$backendUrl/customers"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> updateCustomer(
     String token,
     String customerId,
