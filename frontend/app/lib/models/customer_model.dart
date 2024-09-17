@@ -1,8 +1,8 @@
 class CustomerModel {
   CustomerModel({
     required this.id,
-    this.firstname,
-    this.lastname,
+    required this.firstname,
+    required this.lastname,
     this.email,
     this.phone,
     this.street,
@@ -10,10 +10,9 @@ class CustomerModel {
     this.postcode,
     this.city,
   });
-  // TODO make firstname and lastname (and Id?) required
   String? id;
-  String? firstname;
-  String? lastname;
+  String firstname;
+  String lastname;
   String? email;
   String? phone;
   String? street;

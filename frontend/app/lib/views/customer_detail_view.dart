@@ -65,8 +65,8 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
     ];
     final List<String> valuesCase = [
       widget.customerModel.id.toString(),
-      widget.customerModel.firstname ?? "",
-      widget.customerModel.lastname ?? "",
+      widget.customerModel.firstname,
+      widget.customerModel.lastname,
       widget.customerModel.email ?? "",
       widget.customerModel.phone ?? "",
       widget.customerModel.street ?? "",

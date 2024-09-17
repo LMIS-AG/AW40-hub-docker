@@ -40,9 +40,9 @@ class CustomerDto {
   @JsonKey(name: "_id")
   String? id;
   @JsonKey(name: "first_name")
-  String? firstname;
+  String firstname;
   @JsonKey(name: "last_name")
-  String? lastname;
+  String lastname;
   String? email;
   String? phone;
   String? street;
