@@ -117,7 +117,9 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                 if (newCustomer?.id == null) {
                   throw AppException(
                     exceptionType: ExceptionType.unexpectedNullValue,
-                    exceptionMessage: "new customer (or its ID) was null.",
+                    exceptionMessage: newCustomer == null
+                        ? "new customer was null."
+                        : "ID of new customer was null.",
                   );
                 }
                 customerId = newCustomer!.id!;
