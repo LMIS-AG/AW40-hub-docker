@@ -22,6 +22,7 @@ void main() {
           .thenAnswer((_) async => "some_token");
       await ConfigService().initialize();
     });
+    // TODO 'getVehicles' does not seem to fit here
     group("getVehicles", () {
       test("calls HttpService.getSharedCostumers()", () async {
         // Arrange.
