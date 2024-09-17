@@ -122,10 +122,8 @@ class DesktopVehiclesViewState extends State<DesktopVehiclesView> {
             if (value == null) return const SizedBox.shrink();
             return Expanded(
               flex: 2,
-              // TODO check not null currentVehiclesIndexNotifier.value
               child: VehicleDetailView(
-                vehicleModel:
-                    widget.vehicleModel[currentVehiclesIndexNotifier.value!],
+                vehicleModel: widget.vehicleModel[value],
                 onClose: () => currentVehiclesIndexNotifier.value = null,
               ),
             );
