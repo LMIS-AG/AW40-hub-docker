@@ -36,7 +36,6 @@ class CustomerDto {
     );
   }
 
-  // TODO make firstname and lastname (and Id?) required
   @JsonKey(name: "_id")
   String? id;
   @JsonKey(name: "first_name")
