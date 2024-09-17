@@ -224,251 +224,255 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   Widget build(BuildContext context) {
     final CustomerProvider customerProvider =
         Provider.of<CustomerProvider>(context, listen: false);
-    return FutureBuilder(
-      // ignore: discarded_futures
-      future: customerProvider.getCustomers(0, 30),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
-        if (snapshot.connectionState != ConnectionState.done ||
-            !snapshot.hasData) {
-          return const SizedBox(
-            height: 468,
-            width: 400,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        customerModels = snapshot.data;
-        if (customerModels == null) {
-          throw AppException(
-            exceptionType: ExceptionType.notFound,
-            exceptionMessage: "Received no customers.",
-          );
-        }
-        return Form(
-          key: widget.formKey,
-          child: SizedBox(
-            height: 468,
-            width: 400,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+    if (customerModels == null) {
+      return FutureBuilder(
+        // ignore: discarded_futures
+        future: customerProvider.getCustomers(0, 30),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<CustomerModel>> snapshot,
+        ) {
+          if (snapshot.connectionState != ConnectionState.done ||
+              !snapshot.hasData) {
+            return const SizedBox(
+              height: 468,
+              width: 400,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          customerModels = snapshot.data;
+          if (customerModels == null) {
+            throw AppException(
+              exceptionType: ExceptionType.notFound,
+              exceptionMessage: "Received no customers.",
+            );
+          }
+          return _buildAddCaseDialogForm();
+        },
+      );
+    } else {
+      // Wenn customerModels nicht null sind, direkt das UI aufbauen
+      return _buildAddCaseDialogForm();
+    }
+  }
+
+  Widget _buildAddCaseDialogForm() {
+    return Form(
+      key: widget.formKey,
+      child: SizedBox(
+        height: 468,
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 227,
-                      child: TextFormField(
-                        inputFormatters: [UpperCaseTextInputFormatter()],
-                        decoration: InputDecoration(
-                          labelText: tr("general.vehicleVin"),
-                          border: const OutlineInputBorder(),
-                        ),
-                        controller: widget.vinController,
-                        onSaved: (vin) {
-                          if (vin == null) {
-                            throw AppException(
-                              exceptionType: ExceptionType.unexpectedNullValue,
-                              exceptionMessage:
-                                  "VIN was null, validation failed.",
-                            );
-                          }
-                          if (vin.isEmpty) {
-                            throw AppException(
-                              exceptionType: ExceptionType.unexpectedNullValue,
-                              exceptionMessage:
-                                  "VIN was empty, validation failed.",
-                            );
-                          }
-                        },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return tr("general.obligatoryField");
-                          }
-                          if (value.contains(RegExp("[IOQ]"))) {
-                            return tr(
-                              "cases.addCaseDialog.vinCharactersInvalid",
-                            );
-                          }
-                          if (value.length != 17) {
-                            return tr("cases.addCaseDialog.vinLengthInvalid");
-                          }
-                          return null;
-                        },
-                      ),
+                SizedBox(
+                  width: 227,
+                  child: TextFormField(
+                    inputFormatters: [UpperCaseTextInputFormatter()],
+                    decoration: InputDecoration(
+                      labelText: tr("general.vehicleVin"),
+                      border: const OutlineInputBorder(),
                     ),
-                    const SizedBox(width: 16),
-                    SizedBox(
-                      width: 157,
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        controller: widget.milageController,
-                        decoration: InputDecoration(
-                          labelText: tr("general.milage"),
-                          border: const OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return tr("general.obligatoryField");
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          if (value == null) {
-                            throw AppException(
-                              exceptionType: ExceptionType.unexpectedNullValue,
-                              exceptionMessage:
-                                  "Milage was null, validation failed.",
-                            );
-                          }
-                          if (value.isEmpty) {
-                            throw AppException(
-                              exceptionType: ExceptionType.unexpectedNullValue,
-                              exceptionMessage:
-                                  "Milage was empty, validation failed.",
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        tr("general.occasion"),
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                    FormField(
-                      initialValue: CaseOccasion.fromString(
-                        widget.occasionController.text,
-                      ),
-                      onSaved: (CaseOccasion? newValue) {
-                        if (newValue == null) {
-                          throw AppException(
-                            exceptionType: ExceptionType.unexpectedNullValue,
-                            exceptionMessage: "Occasion was null.",
-                          );
-                        }
-                        widget.occasionController.text =
-                            EnumToString.convertToString(newValue);
-                      },
-                      builder: (FormFieldState<CaseOccasion> field) {
-                        return SizedBox(
-                          width: 275,
-                          child: SegmentedButton(
-                            emptySelectionAllowed: true,
-                            segments: <ButtonSegment<CaseOccasion>>[
-                              ButtonSegment<CaseOccasion>(
-                                value: CaseOccasion.service_routine,
-                                label: Text(tr("cases.occasions.service")),
-                              ),
-                              ButtonSegment<CaseOccasion>(
-                                value: CaseOccasion.problem_defect,
-                                label: Text(tr("cases.occasions.problem")),
-                              ),
-                            ],
-                            selected: {field.value},
-                            onSelectionChanged: (p0) {
-                              final CaseOccasion newVal =
-                                  p0.isEmpty ? CaseOccasion.unknown : p0.first!;
-                              // newCaseDto.occasion = newVal;
-                              widget.occasionController.text =
-                                  EnumToString.convertToString(newVal);
-                              field.didChange(newVal);
-                            },
-                          ),
+                    controller: widget.vinController,
+                    onSaved: (vin) {
+                      if (vin == null) {
+                        throw AppException(
+                          exceptionType: ExceptionType.unexpectedNullValue,
+                          exceptionMessage: "VIN was null, validation failed.",
                         );
-                      },
-                    ),
-                  ],
+                      }
+                      if (vin.isEmpty) {
+                        throw AppException(
+                          exceptionType: ExceptionType.unexpectedNullValue,
+                          exceptionMessage: "VIN was empty, validation failed.",
+                        );
+                      }
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return tr("general.obligatoryField");
+                      }
+                      if (value.contains(RegExp("[IOQ]"))) {
+                        return tr(
+                          "cases.addCaseDialog.vinCharactersInvalid",
+                        );
+                      }
+                      if (value.length != 17) {
+                        return tr("cases.addCaseDialog.vinLengthInvalid");
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Tooltip(
-                      message: tr("cases.addCaseDialog.customerTooltip"),
-                      child: DropdownMenu<String>(
-                        enabled: !showAddCustomerFields,
-                        controller: showAddCustomerFields
-                            ? null
-                            : widget.customerIdController,
-                        label: Text(tr("general.customer")),
-                        hintText: tr("forms.optional"),
-                        enableFilter: true,
-                        width: 320,
-                        menuHeight: 350,
-                        onSelected: (value) async =>
-                            _onCustomerSelection(context, value),
-                        menuStyle:
-                            const MenuStyle(alignment: Alignment.bottomLeft),
-                        dropdownMenuEntries:
-                            customerModels!.map<DropdownMenuEntry<String>>(
-                          (CustomerModel customer) {
-                            return DropdownMenuEntry<String>(
-                              value: customer.id ?? "",
-                              label:
-                                  "${customer.firstname} ${customer.lastname}",
-                            );
-                          },
-                        ).toList(),
-                      ),
+                const SizedBox(width: 16),
+                SizedBox(
+                  width: 157,
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    controller: widget.milageController,
+                    decoration: InputDecoration(
+                      labelText: tr("general.milage"),
+                      border: const OutlineInputBorder(),
                     ),
-                    const SizedBox(width: 20),
-                    if (showAddCustomerFields)
-                      Tooltip(
-                        message: tr(
-                          "cases.addCaseDialog.cancelCreateNewCustomerTooltip",
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.cancel),
-                          onPressed: () {
-                            showAddCustomerFields = false;
-                            setState(() {});
-                          },
-                        ),
-                      )
-                    else
-                      Tooltip(
-                        message: tr(
-                          "cases.addCaseDialog.createNewCustomerTooltip",
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.person_add),
-                          onPressed: () {
-                            widget.customerIdController =
-                                TextEditingController();
-                            lastSelectedCustomer = null;
-                            widget.updateCustomer(null);
-                            showAddCustomerFields = true;
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                  ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return tr("general.obligatoryField");
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      if (value == null) {
+                        throw AppException(
+                          exceptionType: ExceptionType.unexpectedNullValue,
+                          exceptionMessage:
+                              "Milage was null, validation failed.",
+                        );
+                      }
+                      if (value.isEmpty) {
+                        throw AppException(
+                          exceptionType: ExceptionType.unexpectedNullValue,
+                          exceptionMessage:
+                              "Milage was empty, validation failed.",
+                        );
+                      }
+                    },
+                  ),
                 ),
-                if (showAddCustomerFields)
-                  CustomerAttributesForm(
-                    firstNameController: widget.firstNameController,
-                    lastNameController: widget.lastNameController,
-                    phoneController: widget.phoneController,
-                    emailController: widget.emailController,
-                    postcodeController: widget.postcodeController,
-                    cityController: widget.cityController,
-                    streetController: widget.streetController,
-                    housenumberController: widget.housenumberController,
-                  )
               ],
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    tr("general.occasion"),
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+                FormField(
+                  initialValue: CaseOccasion.fromString(
+                    widget.occasionController.text,
+                  ),
+                  onSaved: (CaseOccasion? newValue) {
+                    if (newValue == null) {
+                      throw AppException(
+                        exceptionType: ExceptionType.unexpectedNullValue,
+                        exceptionMessage: "Occasion was null.",
+                      );
+                    }
+                    widget.occasionController.text =
+                        EnumToString.convertToString(newValue);
+                  },
+                  builder: (FormFieldState<CaseOccasion> field) {
+                    return SizedBox(
+                      width: 275,
+                      child: SegmentedButton(
+                        emptySelectionAllowed: true,
+                        segments: <ButtonSegment<CaseOccasion>>[
+                          ButtonSegment<CaseOccasion>(
+                            value: CaseOccasion.service_routine,
+                            label: Text(tr("cases.occasions.service")),
+                          ),
+                          ButtonSegment<CaseOccasion>(
+                            value: CaseOccasion.problem_defect,
+                            label: Text(tr("cases.occasions.problem")),
+                          ),
+                        ],
+                        selected: {field.value},
+                        onSelectionChanged: (p0) {
+                          final CaseOccasion newVal =
+                              p0.isEmpty ? CaseOccasion.unknown : p0.first!;
+                          // newCaseDto.occasion = newVal;
+                          widget.occasionController.text =
+                              EnumToString.convertToString(newVal);
+                          field.didChange(newVal);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Tooltip(
+                  message: tr("cases.addCaseDialog.customerTooltip"),
+                  child: DropdownMenu<String>(
+                    enabled: !showAddCustomerFields,
+                    controller: showAddCustomerFields
+                        ? null
+                        : widget.customerIdController,
+                    label: Text(tr("general.customer")),
+                    hintText: tr("forms.optional"),
+                    enableFilter: true,
+                    width: 320,
+                    menuHeight: 350,
+                    onSelected: (value) async =>
+                        _onCustomerSelection(context, value),
+                    menuStyle: const MenuStyle(alignment: Alignment.bottomLeft),
+                    dropdownMenuEntries:
+                        customerModels!.map<DropdownMenuEntry<String>>(
+                      (CustomerModel customer) {
+                        return DropdownMenuEntry<String>(
+                          value: customer.id ?? "",
+                          label: "${customer.firstname} ${customer.lastname}",
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                if (showAddCustomerFields)
+                  Tooltip(
+                    message: tr(
+                      "cases.addCaseDialog.cancelCreateNewCustomerTooltip",
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.cancel),
+                      onPressed: () {
+                        showAddCustomerFields = false;
+                        setState(() {});
+                      },
+                    ),
+                  )
+                else
+                  Tooltip(
+                    message: tr(
+                      "cases.addCaseDialog.createNewCustomerTooltip",
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.person_add),
+                      onPressed: () {
+                        widget.customerIdController = TextEditingController();
+                        lastSelectedCustomer = null;
+                        widget.updateCustomer(null);
+                        showAddCustomerFields = true;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+              ],
+            ),
+            if (showAddCustomerFields)
+              CustomerAttributesForm(
+                firstNameController: widget.firstNameController,
+                lastNameController: widget.lastNameController,
+                phoneController: widget.phoneController,
+                emailController: widget.emailController,
+                postcodeController: widget.postcodeController,
+                cityController: widget.cityController,
+                streetController: widget.streetController,
+                housenumberController: widget.housenumberController,
+              )
+          ],
+        ),
+      ),
     );
   }
 
