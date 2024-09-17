@@ -128,10 +128,10 @@ void main() {
       expect(json["_id"], id);
     });
     test("correctly assigns firstname", () {
-      expect(json["firstname"], firstname);
+      expect(json["first_name"], firstname);
     });
     test("correctly assigns lastname", () {
-      expect(json["lastname"], lastname);
+      expect(json["last_name"], lastname);
     });
     test("correctly assigns email", () {
       expect(json["email"], email);
@@ -143,7 +143,7 @@ void main() {
       expect(json["street"], street);
     });
     test("correctly assigns housenumber", () {
-      expect(json["housenumber"], housenumber);
+      expect(json["house_number"], housenumber);
     });
     test("correctly assigns postcode", () {
       expect(json["postcode"], postcode);
