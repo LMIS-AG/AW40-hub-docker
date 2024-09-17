@@ -891,7 +891,7 @@ class MockHttpService implements HttpService {
     String workshopId,
     String vehicleVin,
   ) {
-    // TODO implement
+    // TODO implement getCasesByVehicleVin
     throw UnimplementedError();
   }
 
