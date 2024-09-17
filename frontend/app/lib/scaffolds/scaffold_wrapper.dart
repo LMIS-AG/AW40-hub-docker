@@ -91,7 +91,6 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
         actions: [
           IconButton(
             onPressed: () async {
-              // TODO maybe fetch customers here and pass it to add case dialog?
               final NewCaseDto? newCase = await _showAddCaseDialog();
               if (newCase == null) return;
               await caseProvider.addCase(newCase);
