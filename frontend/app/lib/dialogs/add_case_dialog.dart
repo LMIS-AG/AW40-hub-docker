@@ -50,6 +50,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final CustomerProvider customerProvider =
+        Provider.of<CustomerProvider>(context, listen: false);
     final theme = Theme.of(context);
     return AlertDialog(
       title: Text(title),
@@ -82,55 +84,55 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
           ),
         ),
         TextButton(
-          onPressed: _submitAddCaseForm,
+          onPressed: () async {
+            final FormState? currentFormKeyState = _formKey.currentState;
+            if (currentFormKeyState != null && currentFormKeyState.validate()) {
+              currentFormKeyState.save();
+
+              String customerId = lastSelectedCustomer?.id ?? "";
+              if (customerId.isEmpty) {
+                // TODO create new customer first and assign Id and read values after
+                final NewCustomerDto newCustomerDto = _createNewCustomerDto();
+
+                // TODO create customer via api and use id from response
+                final CustomerModel? newCustomer =
+                    await customerProvider.addCustomer(newCustomerDto);
+
+                customerId = "example_pls_replace";
+              }
+
+              final CaseOccasion? caseOccasion = EnumToString.fromString(
+                CaseOccasion.values,
+                _occasionController.text,
+              );
+              if (caseOccasion == null) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "CaseOccasion was null.",
+                );
+              }
+
+              final int? milage = int.tryParse(_milageController.text);
+              if (milage == null) {
+                throw AppException(
+                  exceptionType: ExceptionType.unexpectedNullValue,
+                  exceptionMessage: "Milage was null.",
+                );
+              }
+
+              final NewCaseDto newCaseDto = NewCaseDto(
+                _vinController.text,
+                customerId,
+                caseOccasion,
+                milage,
+              );
+              unawaited(Routemaster.of(context).pop<NewCaseDto>(newCaseDto));
+            }
+          },
           child: Text(tr("general.save")),
         ),
       ],
     );
-  }
-
-  void _submitAddCaseForm() {
-    final FormState? currentFormKeyState = _formKey.currentState;
-    if (currentFormKeyState != null && currentFormKeyState.validate()) {
-      currentFormKeyState.save();
-
-      String customerId = lastSelectedCustomer?.id ?? "";
-      if (customerId.isEmpty) {
-        // TODO create new customer first and assign Id and read values after
-        final NewCustomerDto newCustomerDto = _createNewCustomerDto();
-
-        // TODO create customer via api and use id from response
-
-        customerId = "example_pls_replace";
-      }
-
-      final CaseOccasion? caseOccasion = EnumToString.fromString(
-        CaseOccasion.values,
-        _occasionController.text,
-      );
-      if (caseOccasion == null) {
-        throw AppException(
-          exceptionType: ExceptionType.unexpectedNullValue,
-          exceptionMessage: "CaseOccasion was null.",
-        );
-      }
-
-      final int? milage = int.tryParse(_milageController.text);
-      if (milage == null) {
-        throw AppException(
-          exceptionType: ExceptionType.unexpectedNullValue,
-          exceptionMessage: "Milage was null.",
-        );
-      }
-
-      final NewCaseDto newCaseDto = NewCaseDto(
-        _vinController.text,
-        customerId,
-        caseOccasion,
-        milage,
-      );
-      unawaited(Routemaster.of(context).pop<NewCaseDto>(newCaseDto));
-    }
   }
 
   NewCustomerDto _createNewCustomerDto() {
@@ -214,9 +216,11 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
 
   @override
   Widget build(BuildContext context) {
+    final CustomerProvider customerProvider =
+        Provider.of<CustomerProvider>(context, listen: false);
     return FutureBuilder(
       // ignore: discarded_futures
-      future: Provider.of<CustomerProvider>(context).getCustomers(0, 30),
+      future: customerProvider.getCustomers(0, 30),
       builder:
           (BuildContext context, AsyncSnapshot<List<CustomerModel>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
