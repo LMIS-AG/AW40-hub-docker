@@ -261,7 +261,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
           if (snapshot.connectionState != ConnectionState.done ||
               !snapshot.hasData) {
             return const SizedBox(
-              height: 468,
+              height: 516,
               width: 400,
               child: Center(child: CircularProgressIndicator()),
             );
@@ -286,7 +286,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     return Form(
       key: widget.formKey,
       child: SizedBox(
-        height: 468,
+        height: 516,
         width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
