@@ -449,7 +449,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     child: IconButton(
                       icon: const Icon(Icons.person_add),
                       onPressed: () {
-                        widget.customerIdController = TextEditingController();
+                        widget.customerIdController.clear();
                         lastSelectedCustomer = null;
                         widget.updateCustomer(null);
                         showAddCustomerFields = true;
