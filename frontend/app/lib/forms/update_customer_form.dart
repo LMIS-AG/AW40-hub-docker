@@ -144,7 +144,7 @@ class CustomerAttributesForm extends StatelessWidget {
               child: TextFormField(
                 controller: housenumberController,
                 decoration: InputDecoration(
-                  labelText: tr("general.housenumber"),
+                  labelText: tr("general.number"),
                   border: const OutlineInputBorder(),
                 ),
               ),

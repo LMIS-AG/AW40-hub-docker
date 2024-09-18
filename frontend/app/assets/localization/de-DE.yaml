@@ -13,7 +13,7 @@ general:
   email: "E-Mail"
   filter: "Filtern"
   firstname: "Vorname"
-  housenumber: "Nr."
+  housenumber: "Hausnummer"
   id: "ID"
   yearBuild: "Baujahr"
   language: "Sprache"
