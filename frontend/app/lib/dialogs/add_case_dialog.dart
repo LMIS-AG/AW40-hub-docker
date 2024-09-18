@@ -224,7 +224,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
   @override
   void initState() {
     super.initState();
-    _previousCustomerIdText = widget.customerIdController.text ?? "";
+    _previousCustomerIdText = widget.customerIdController.text;
     widget.customerIdController.addListener(_onCustomerIdChanged);
   }
 
