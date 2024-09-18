@@ -43,9 +43,13 @@ void main() {
         // Arrange.
         final mockHttpService = MockHttpService();
         const id = "some_id";
+        const firstname = "some_firstname";
+        const lastname = "some_lastname";
         final List<Map<String, dynamic>> json = [
           {
             "_id": id,
+            "first_name": firstname,
+            "last_name": lastname,
           },
         ];
         when(mockHttpService.getSharedCustomers(any)).thenAnswer(
