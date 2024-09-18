@@ -219,6 +219,32 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
 
   List<CustomerModel>? customerModels;
   CustomerModel? lastSelectedCustomer;
+  late String _previousCustomerIdText;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousCustomerIdText = widget.customerIdController.text ?? "";
+    widget.customerIdController.addListener(_onCustomerIdChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.customerIdController.removeListener(_onCustomerIdChanged);
+    super.dispose();
+  }
+
+  void _onCustomerIdChanged() {
+    final String currentCustomerIdText = widget.customerIdController.text;
+
+    if (currentCustomerIdText.length < _previousCustomerIdText.length) {
+      lastSelectedCustomer = null;
+      widget.updateCustomer(null);
+      setState(() {});
+    }
+
+    _previousCustomerIdText = currentCustomerIdText;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -410,6 +436,12 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                         : widget.customerIdController,
                     label: Text(tr("general.customer")),
                     hintText: tr("forms.optional"),
+                    leadingIcon: (lastSelectedCustomer == null)
+                        ? null
+                        : const Icon(
+                            Icons.check,
+                            color: Colors.green,
+                          ),
                     enableFilter: true,
                     width: 320,
                     menuHeight: 350,
@@ -494,6 +526,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
         widget.customerIdController.text =
             "${customer.firstname} ${customer.lastname}";
       }
+      setState(() {});
     });
   }
 
