@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 import httpx
 import pytest
@@ -16,8 +16,8 @@ from jose import jws
 @pytest.fixture
 def jwt_payload():
     return {
-        "iat": datetime.utcnow().timestamp(),
-        "exp": (datetime.utcnow() + timedelta(60)).timestamp(),
+        "iat": datetime.now(UTC).timestamp(),
+        "exp": (datetime.now(UTC) + timedelta(60)).timestamp(),
         "preferred_username": "some-user-with-customers-access",
         "realm_access": {"roles": ["customers"]}
     }
@@ -72,7 +72,7 @@ def authenticated_async_client(
     # Client with valid auth header
     client = httpx.AsyncClient(
         app=app,
-        base_url="http://",
+        base_url="http://testserver",
         headers={"Authorization": f"Bearer {signed_jwt}"}
     )
 
@@ -320,6 +320,7 @@ async def test_add_customer(
         assert response_data["last_name"] == last_name
         # Confirm storage in db
         customer_db = await Customer.get(response_data["_id"])
+        assert customer_db
         assert customer_db.first_name == first_name
         assert customer_db.last_name == last_name
 
@@ -358,6 +359,7 @@ async def test_update_customer(
         assert response_data["city"] == update["city"]
         # Confirm storage in db
         customer_db = await Customer.get(response_data["_id"])
+        assert customer_db
         assert customer_db.first_name == update["first_name"]
         assert customer_db.city == update["city"]
 
@@ -470,8 +472,8 @@ def test_invalid_jwt_signature(
 @pytest.fixture
 def expired_jwt_payload():
     return {
-        "iat": (datetime.utcnow() - timedelta(60)).timestamp(),
-        "exp": (datetime.utcnow() - timedelta(1)).timestamp(),
+        "iat": (datetime.now(UTC) - timedelta(60)).timestamp(),
+        "exp": (datetime.now(UTC) - timedelta(1)).timestamp(),
         "preferred_username": "user",
         "realm_access": {"roles": ["customers"]}
     }

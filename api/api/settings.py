@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -57,4 +57,4 @@ class Settings(BaseSettings):
         return self.minio_scheme == "https"
 
 
-settings = Settings()
+settings = Settings()  # type: ignore

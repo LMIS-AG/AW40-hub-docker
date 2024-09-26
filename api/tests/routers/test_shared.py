@@ -1,10 +1,14 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
-import httpx
+from httpx import (
+    AsyncClient,
+    ASGITransport
+)
+
 import pytest
 from api.data_management import (
     Case, NewTimeseriesData, TimeseriesMetaData, GridFSSignalStore, NewOBDData,
-    NewSymptom, Customer
+    NewSymptom, Customer, BaseSignalStore
 )
 from api.routers import shared
 from api.security.keycloak import Keycloak
@@ -18,8 +22,8 @@ from motor import motor_asyncio
 @pytest.fixture
 def jwt_payload():
     return {
-        "iat": datetime.utcnow().timestamp(),
-        "exp": (datetime.utcnow() + timedelta(60)).timestamp(),
+        "iat": datetime.now(UTC).timestamp(),
+        "exp": (datetime.now(UTC) + timedelta(60)).timestamp(),
         "preferred_username": "some-user-with-shared-access",
         "realm_access": {"roles": ["shared"]}
     }
@@ -32,16 +36,16 @@ def signed_jwt(jwt_payload, rsa_private_key_pem: bytes):
 
 
 @pytest.fixture
-def test_app(motor_db):
-    test_app = FastAPI()
-    test_app.include_router(shared.router)
-    yield test_app
+def app(motor_db):
+    app = FastAPI()
+    app.include_router(shared.router)
+    yield app
 
 
 @pytest.fixture
-def unauthenticated_client(test_app):
+def unauthenticated_client(app):
     """Unauthenticated client, e.g. no bearer token in header."""
-    yield TestClient(test_app)
+    yield TestClient(app)
 
 
 @pytest.fixture
@@ -65,21 +69,21 @@ def authenticated_client(
 
 @pytest.fixture
 def authenticated_async_client(
-        test_app, rsa_public_key_pem, signed_jwt
+        app, rsa_public_key_pem, signed_jwt
 ):
     """
     Authenticated async client for tests that require mongodb access via beanie
     """
 
     # Client with valid auth header
-    client = httpx.AsyncClient(
-        app=test_app,
+    client = AsyncClient(
+        transport=ASGITransport(app=app),
         base_url="http://",
         headers={"Authorization": f"Bearer {signed_jwt}"}
     )
 
     # Make app use public key from fixture for token validation
-    test_app.dependency_overrides[
+    app.dependency_overrides[
         Keycloak.get_public_key_for_workshop_realm
     ] = lambda: rsa_public_key_pem.decode()
 
@@ -194,13 +198,13 @@ def data_context(
     # Yield context instance to the test function
     yield DataContext()
     # Reset timeseries signal store after test
-    TimeseriesMetaData.signal_store = None
+    TimeseriesMetaData.signal_store = BaseSignalStore()
     # Drop signal collections from test database
     signal_files = motor_db[
-        bucket.collection.name + ".files"
+        bucket.collection.name + ".files"  # type: ignore[attr-defined]
         ]
     signal_chunks = motor_db[
-        bucket.collection.name + ".chunks"
+        bucket.collection.name + ".chunks"  # type: ignore[attr-defined]
         ]
     signal_files.drop()
     signal_files.drop_indexes()
@@ -647,8 +651,8 @@ def test_invalid_jwt_signature(
 @pytest.fixture
 def expired_jwt_payload():
     return {
-        "iat": (datetime.utcnow() - timedelta(60)).timestamp(),
-        "exp": (datetime.utcnow() - timedelta(1)).timestamp(),
+        "iat": (datetime.now(UTC) - timedelta(60)).timestamp(),
+        "exp": (datetime.now(UTC) - timedelta(1)).timestamp(),
         "preferred_username": "user",
         "realm_access": {"roles": ["shared"]}
     }
