@@ -129,7 +129,7 @@ class CustomerAttributesForm extends StatelessWidget {
         Row(
           children: [
             SizedBox(
-              width: 288,
+              width: 280,
               child: TextFormField(
                 controller: streetController,
                 decoration: InputDecoration(
@@ -140,7 +140,7 @@ class CustomerAttributesForm extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             SizedBox(
-              width: 96,
+              width: 104,
               child: TextFormField(
                 controller: housenumberController,
                 decoration: InputDecoration(
@@ -155,7 +155,7 @@ class CustomerAttributesForm extends StatelessWidget {
         Row(
           children: [
             SizedBox(
-              width: 96,
+              width: 104,
               child: TextFormField(
                 controller: postcodeController,
                 decoration: InputDecoration(
@@ -166,7 +166,7 @@ class CustomerAttributesForm extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             SizedBox(
-              width: 288,
+              width: 280,
               child: TextFormField(
                 controller: cityController,
                 decoration: InputDecoration(
