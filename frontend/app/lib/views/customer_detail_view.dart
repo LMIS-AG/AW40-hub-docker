@@ -2,6 +2,7 @@ import "package:aw40_hub_frontend/dialogs/update_customer_dialog.dart";
 import "package:aw40_hub_frontend/dtos/customer_update_dto.dart";
 import "package:aw40_hub_frontend/models/customer_model.dart";
 import "package:aw40_hub_frontend/providers/customer_provider.dart";
+import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -65,14 +66,14 @@ class _DesktopCustomerDetailViewState extends State<DesktopCustomerDetailView> {
     ];
     final List<String> valuesCase = [
       widget.customerModel.id.toString(),
-      widget.customerModel.firstname,
-      widget.customerModel.lastname,
-      widget.customerModel.email ?? "",
+      HelperService.convertIso88591ToUtf8(widget.customerModel.firstname),
+      HelperService.convertIso88591ToUtf8(widget.customerModel.lastname),
+      HelperService.convertIso88591ToUtf8(widget.customerModel.email ?? ""),
       widget.customerModel.phone ?? "",
-      widget.customerModel.street ?? "",
+      HelperService.convertIso88591ToUtf8(widget.customerModel.street ?? ""),
       widget.customerModel.housenumber ?? "",
       widget.customerModel.postcode ?? "",
-      widget.customerModel.city ?? "",
+      HelperService.convertIso88591ToUtf8(widget.customerModel.city ?? ""),
     ];
 
     return SizedBox.expand(
