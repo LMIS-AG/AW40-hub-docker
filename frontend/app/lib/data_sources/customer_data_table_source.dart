@@ -1,4 +1,5 @@
 import "package:aw40_hub_frontend/models/customer_model.dart";
+import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:flutter/material.dart";
 
 class CustomerDataTableSource extends DataTableSource {
@@ -28,14 +29,40 @@ class CustomerDataTableSource extends DataTableSource {
       }),
       cells: [
         DataCell(Text(customerModel.id ?? "")),
-        DataCell(Text(customerModel.firstname)),
-        DataCell(Text(customerModel.lastname)),
-        DataCell(Text(customerModel.email ?? "")),
+        DataCell(
+          Text(
+            HelperService.convertIso88591ToUtf8(customerModel.firstname),
+          ),
+        ),
+        DataCell(
+          Text(
+            HelperService.convertIso88591ToUtf8(customerModel.lastname),
+          ),
+        ),
+        DataCell(
+          Text(
+            HelperService.convertIso88591ToUtf8(
+              customerModel.email ?? "",
+            ),
+          ),
+        ),
         DataCell(Text(customerModel.phone ?? "")),
-        DataCell(Text(customerModel.street ?? "")),
+        DataCell(
+          Text(
+            HelperService.convertIso88591ToUtf8(
+              customerModel.street ?? "",
+            ),
+          ),
+        ),
         DataCell(Text(customerModel.housenumber ?? "")),
         DataCell(Text(customerModel.postcode ?? "")),
-        DataCell(Text(customerModel.city ?? "")),
+        DataCell(
+          Text(
+            HelperService.convertIso88591ToUtf8(
+              customerModel.city ?? "",
+            ),
+          ),
+        ),
       ],
     );
   }
