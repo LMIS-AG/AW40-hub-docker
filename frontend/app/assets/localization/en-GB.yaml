@@ -15,6 +15,7 @@ general:
   firstname: "First Name"
   housenumber: "House No."
   id: "ID"
+  invalidEmail: "Email is invalid."
   yearBuild: "Year built"
   language: "Language"
   lastname: "Last Name"

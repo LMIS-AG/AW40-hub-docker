@@ -110,6 +110,19 @@ class CustomerAttributesForm extends StatelessWidget {
                   labelText: tr("general.email"),
                   border: const OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return null;
+                  }
+                  const emailPattern =
+                      r"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+                  final regExp = RegExp(emailPattern);
+                  if (!regExp.hasMatch(value)) {
+                    return tr("general.invalidEmail");
+                  }
+                  return null;
+                },
               ),
             ),
             const SizedBox(width: 16),

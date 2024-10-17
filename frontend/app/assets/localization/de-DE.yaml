@@ -15,6 +15,7 @@ general:
   firstname: "Vorname"
   housenumber: "Hausnr."
   id: "ID"
+  invalidEmail: "E-mail ist ungültig."
   yearBuild: "Baujahr"
   language: "Sprache"
   lastname: "Nachname"
