@@ -12,6 +12,7 @@ import "package:aw40_hub_frontend/models/timeseries_data_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/diagnosis_provider.dart";
+import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/utils/extensions.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -38,6 +39,7 @@ class CaseDetailView extends StatelessWidget {
         Provider.of<AuthProvider>(context, listen: false).loggedInUser,
         caseModel.id,
       ),
+      //onDeleteData: () async => _onDeleteButtonDataPress(context),
     );
   }
 
@@ -92,6 +94,39 @@ class CaseDetailView extends StatelessWidget {
     onClose();
   }
 
+  /* Future<void> _onDeleteDataPress(
+  BuildContext context,
+  String dataId,
+  DatasetType datasetType,
+) async {
+  final caseProvider = Provider.of<CaseProvider>(context, listen: false);
+  final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
+
+  final bool? dialogResult = await _showConfirmDeleteDialog(context);
+  if (dialogResult == null || !dialogResult) return;
+
+  bool result = false;
+  switch (datasetType) {
+    case DatasetType.timeseries:
+      result = await caseProvider.deleteTimeseriesData(caseModel.id, dataId);
+      break;
+    case DatasetType.obd:
+      result = await caseProvider.deleteObdData(caseModel.id, dataId);
+      break;
+    case DatasetType.symptom:
+      result = await caseProvider.deleteSymptomData(caseModel.id, dataId);
+      break;
+    case DatasetType.unknown:
+      // TODO: Handle this case.
+      break;
+  }
+
+  final String message = result
+      ? tr("cases.details.deleteDataSuccessMessage")
+      : tr("cases.details.deleteDataErrorMessage");
+  _showMessage(message, scaffoldMessengerState);
+}*/
+
   static void _showMessage(String text, ScaffoldMessengerState state) {
     final SnackBar snackBar = SnackBar(
       content: Center(child: Text(text)),
@@ -105,12 +140,14 @@ class DesktopCaseDetailView extends StatefulWidget {
     required this.caseModel,
     required this.onClose,
     required this.onDelete,
+    //required this.onDeleteData,
     super.key,
   });
 
   final CaseModel caseModel;
   final void Function() onClose;
   final void Function() onDelete;
+  //final void Function() onDeleteData;
 
   @override
   State<DesktopCaseDetailView> createState() => _DesktopCaseDetailViewState();
@@ -303,6 +340,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           Text(tr("general.id")),
                           Text(tr("general.date")),
                           Text(tr("general.dataType")),
+                          const Text("Delete"),
                         ],
                       ),
                       ...[
@@ -333,6 +371,18 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         Text(timeseriesDataModel.dataId.toString()),
         Text(timeseriesDataModel.timestamp?.toGermanDateTimeString() ?? ""),
         Text(timeseriesDataModel.type?.name.capitalize() ?? ""),
+        IconButton(icon: Icon(Icons.delete)   onPressed: onPressed, ),
+        IconButton(
+                      icon: const Icon(Icons.delete_forever),
+                      iconSize: 28,
+                      style: IconButton.styleFrom(
+                        foregroundColor: colorScheme.error,
+                      ),
+                      onPressed:
+                          caseProvider.workshopId == widget.caseModel.workshopId
+                              ? widget.onDelete
+                              : null,
+                    ),
       ],
     );
   }
