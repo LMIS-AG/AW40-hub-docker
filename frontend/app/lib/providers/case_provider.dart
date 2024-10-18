@@ -321,7 +321,7 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  /*Future<bool> deleteObdData(String caseId, String dataId) async {
+  Future<bool> deleteObdData(String caseId, int? dataId) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteObdData(
       authToken,
@@ -339,7 +339,7 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> deleteTimeseriesData(String caseId, String dataId) async {
+  Future<bool> deleteTimeseriesData(String caseId, int? dataId) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteTimeseriesData(
       authToken,
@@ -357,7 +357,7 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> deleteSymptomData(String caseId, String dataId) async {
+  Future<bool> deleteSymptomData(String caseId, int? dataId) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteSymptomData(
       authToken,
@@ -373,7 +373,7 @@ class CaseProvider with ChangeNotifier {
     );
     if (!verifyStatusCode) return false;
     return true;
-  }*/
+  }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
