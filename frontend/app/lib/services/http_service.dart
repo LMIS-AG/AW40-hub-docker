@@ -105,19 +105,21 @@ class HttpService {
 
   Future<http.Response> deleteObdData(
     String token,
-    String caseId,
     int? dataId,
+    String workshopId,
+    String caseId,
   ) {
     return _client.delete(
-      Uri.parse("$backendUrl/cases/$caseId/obd/$dataId"),
+      Uri.parse("$backendUrl/cases/$caseId/obd_data/$dataId"),
       headers: getAuthHeaderWith(token),
     );
   }
 
   Future<http.Response> deleteTimeseriesData(
     String token,
-    String caseId,
     int? dataId,
+    String workshopId,
+    String caseId,
   ) {
     return _client.delete(
       Uri.parse("$backendUrl/cases/$caseId/timeseries/$dataId"),
@@ -127,8 +129,9 @@ class HttpService {
 
   Future<http.Response> deleteSymptomData(
     String token,
-    String caseId,
     int? dataId,
+    String workshopId,
+    String caseId,
   ) {
     return _client.delete(
       Uri.parse("$backendUrl/cases/$caseId/symptoms/$dataId"),

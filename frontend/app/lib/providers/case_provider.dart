@@ -325,8 +325,9 @@ class CaseProvider with ChangeNotifier {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteObdData(
       authToken,
-      caseId,
       dataId,
+      workshopId,
+      caseId,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
@@ -339,12 +340,14 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> deleteTimeseriesData(String caseId, int? dataId) async {
+  Future<bool> deleteTimeseriesData(
+      int? dataId, String workshopId, String caseId) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteTimeseriesData(
       authToken,
-      caseId,
       dataId,
+      workshopId,
+      caseId,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
@@ -361,8 +364,9 @@ class CaseProvider with ChangeNotifier {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteSymptomData(
       authToken,
-      caseId,
       dataId,
+      workshopId,
+      caseId,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,

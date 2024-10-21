@@ -1433,24 +1433,23 @@ class MockHttpService implements HttpService {
   }
 
   @override
-  Future<Response> deleteObdData(String token, String caseId, int? dataId) {
+  Future<Response> deleteTimeseriesData(
+      String token, int? dataId, String workshop_id, String caseId) {
+    // TODO: implement deleteTimeseriesData
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> deleteObdData(
+      String token, int? dataId, String workshopId, String caseId) {
     // TODO: implement deleteObdData
     throw UnimplementedError();
   }
 
   @override
-  Future<Response> deleteSymptomData(String token, String caseId, int? dataId) {
+  Future<Response> deleteSymptomData(
+      String token, int? dataId, String workshopId, String caseId) {
     // TODO: implement deleteSymptomData
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Response> deleteTimeseriesData(
-    String token,
-    String caseId,
-    int? dataId,
-  ) {
-    // TODO: implement deleteTimeseriesData
     throw UnimplementedError();
   }
 }

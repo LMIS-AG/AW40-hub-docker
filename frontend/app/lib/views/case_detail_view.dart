@@ -110,7 +110,8 @@ class CaseDetailView extends StatelessWidget {
     bool result = false;
     switch (datasetType) {
       case DatasetType.timeseries:
-        result = await caseProvider.deleteTimeseriesData(caseModel.id, dataId);
+        result = await caseProvider.deleteTimeseriesData(
+            dataId, caseModel.workshopId, caseModel.id);
         break;
       case DatasetType.obd:
         result = await caseProvider.deleteObdData(caseModel.id, dataId);
@@ -426,6 +427,9 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       ),
       onPressed: () async {
         await widget.onDeleteData(dataId, datasetType);
+        //caseProvider.workshopId == widget.caseModel.workshopId
+        //                      ? widget.onDelete >> hier muss der delete function für die datensätze eingefügt werden
+        //                      : null,
       },
     );
   }
