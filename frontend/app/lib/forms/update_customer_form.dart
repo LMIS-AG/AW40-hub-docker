@@ -39,6 +39,7 @@ class CustomerAttributesForm extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: tr("general.firstname"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -72,6 +73,7 @@ class CustomerAttributesForm extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: tr("general.lastname"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
