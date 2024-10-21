@@ -1446,7 +1446,10 @@ class MockHttpService implements HttpService {
 
   @override
   Future<Response> deleteTimeseriesData(
-      String token, String caseId, int? dataId) {
+    String token,
+    String caseId,
+    int? dataId,
+  ) {
     // TODO: implement deleteTimeseriesData
     throw UnimplementedError();
   }

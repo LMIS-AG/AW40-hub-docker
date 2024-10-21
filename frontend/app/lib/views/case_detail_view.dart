@@ -377,7 +377,10 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         Text(timeseriesDataModel.timestamp?.toGermanDateTimeString() ?? ""),
         Text(timeseriesDataModel.type?.name.capitalize() ?? ""),
         deleteButton(
-            colorScheme, timeseriesDataModel.dataId, DatasetType.timeseries),
+          colorScheme,
+          timeseriesDataModel.dataId,
+          DatasetType.timeseries,
+        ),
       ],
     );
   }
@@ -416,14 +419,15 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     DatasetType datasetType,
   ) {
     return IconButton(
-        icon: const Icon(Icons.delete_forever),
-        iconSize: 28,
-        style: IconButton.styleFrom(
-          foregroundColor: colorScheme.error,
-        ),
-        onPressed: () async {
-          widget.onDeleteData(dataId, datasetType);
-        });
+      icon: const Icon(Icons.delete_forever),
+      iconSize: 28,
+      style: IconButton.styleFrom(
+        foregroundColor: colorScheme.error,
+      ),
+      onPressed: () async {
+        await widget.onDeleteData(dataId, datasetType);
+      },
+    );
   }
 
   /*Future<void> _onDeleteDataPress(
