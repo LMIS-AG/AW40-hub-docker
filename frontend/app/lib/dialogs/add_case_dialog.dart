@@ -301,6 +301,8 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     decoration: InputDecoration(
                       labelText: tr("general.vehicleVin"),
                       border: const OutlineInputBorder(),
+                      errorStyle: const TextStyle(height: 0.1),
+                      errorMaxLines: 2,
                     ),
                     controller: widget.vinController,
                     onSaved: (vin) {
@@ -321,14 +323,15 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       if (value == null || value.isEmpty) {
                         return tr("general.obligatoryField");
                       }
+                      if (value.length != 17) {
+                        return tr("cases.addCaseDialog.vinLengthInvalid");
+                      }
                       if (value.contains(RegExp("[IOQ]"))) {
                         return tr(
                           "cases.addCaseDialog.vinCharactersInvalid",
                         );
                       }
-                      if (value.length != 17) {
-                        return tr("cases.addCaseDialog.vinLengthInvalid");
-                      }
+
                       return null;
                     },
                   ),
@@ -343,6 +346,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     decoration: InputDecoration(
                       labelText: tr("general.milage"),
                       border: const OutlineInputBorder(),
+                      errorStyle: const TextStyle(height: 0.1),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {

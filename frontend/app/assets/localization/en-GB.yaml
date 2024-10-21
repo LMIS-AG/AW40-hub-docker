@@ -112,7 +112,7 @@ cases:
     createNewCustomerTooltip: "Create new customer"
     cancelCreateNewCustomerTooltip: "Cancel creating new customer"
     vinCharactersInvalid: "The @:general.vehicleVin must not contain I, O, or Q"
-    vinLengthInvalid: "The @:general.vehicleVin must be 17 characters long"
+    vinLengthInvalid: "Must be 17 characters long"
     confirmDialog:
       title: "Add customer"
       description: "Do you want to add customer {customer} to the case?"
