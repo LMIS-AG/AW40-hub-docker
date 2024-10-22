@@ -295,6 +295,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
               children: [
                 SizedBox(
                   width: 227,
+                  height: 66,
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     inputFormatters: [UpperCaseTextInputFormatter()],
@@ -339,6 +340,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                 const SizedBox(width: 16),
                 SizedBox(
                   width: 157,
+                  height: 66,
                   child: TextFormField(
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
