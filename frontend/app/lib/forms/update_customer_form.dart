@@ -114,6 +114,7 @@ class CustomerAttributesForm extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: tr("general.email"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
