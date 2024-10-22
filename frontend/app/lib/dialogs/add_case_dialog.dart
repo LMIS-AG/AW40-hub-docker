@@ -286,7 +286,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     return Form(
       key: widget.formKey,
       child: SizedBox(
-        height: 516,
+        height: 518,
         width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
