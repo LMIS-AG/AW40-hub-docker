@@ -303,7 +303,6 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       labelText: tr("general.vehicleVin"),
                       border: const OutlineInputBorder(),
                       errorStyle: const TextStyle(height: 0.1),
-                      errorMaxLines: 2,
                     ),
                     controller: widget.vinController,
                     onSaved: (vin) {
