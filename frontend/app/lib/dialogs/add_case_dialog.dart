@@ -286,7 +286,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
     return Form(
       key: widget.formKey,
       child: SizedBox(
-        height: 516,
+        height: 518,
         width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -295,12 +295,14 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
               children: [
                 SizedBox(
                   width: 227,
+                  height: 66,
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     inputFormatters: [UpperCaseTextInputFormatter()],
                     decoration: InputDecoration(
                       labelText: tr("general.vehicleVin"),
                       border: const OutlineInputBorder(),
+                      errorStyle: const TextStyle(height: 0.1),
                     ),
                     controller: widget.vinController,
                     onSaved: (vin) {
@@ -321,14 +323,15 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                       if (value == null || value.isEmpty) {
                         return tr("general.obligatoryField");
                       }
+                      if (value.length != 17) {
+                        return tr("cases.addCaseDialog.vinLengthInvalid");
+                      }
                       if (value.contains(RegExp("[IOQ]"))) {
                         return tr(
                           "cases.addCaseDialog.vinCharactersInvalid",
                         );
                       }
-                      if (value.length != 17) {
-                        return tr("cases.addCaseDialog.vinLengthInvalid");
-                      }
+
                       return null;
                     },
                   ),
@@ -336,6 +339,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                 const SizedBox(width: 16),
                 SizedBox(
                   width: 157,
+                  height: 66,
                   child: TextFormField(
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -343,6 +347,7 @@ class _AddCaseDialogFormState extends State<AddCaseDialogForm> {
                     decoration: InputDecoration(
                       labelText: tr("general.milage"),
                       border: const OutlineInputBorder(),
+                      errorStyle: const TextStyle(height: 0.1),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {

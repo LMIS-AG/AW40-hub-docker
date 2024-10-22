@@ -34,11 +34,13 @@ class CustomerAttributesForm extends StatelessWidget {
           children: [
             SizedBox(
               width: 192,
+              height: 66,
               child: TextFormField(
                 controller: firstNameController,
                 decoration: InputDecoration(
                   labelText: tr("general.firstname"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -67,11 +69,13 @@ class CustomerAttributesForm extends StatelessWidget {
             const SizedBox(width: 16),
             SizedBox(
               width: 192,
+              height: 66,
               child: TextFormField(
                 controller: lastNameController,
                 decoration: InputDecoration(
                   labelText: tr("general.lastname"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -104,11 +108,13 @@ class CustomerAttributesForm extends StatelessWidget {
           children: [
             SizedBox(
               width: 192,
+              height: 66,
               child: TextFormField(
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: tr("general.email"),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(height: 0.1),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -128,6 +134,7 @@ class CustomerAttributesForm extends StatelessWidget {
             const SizedBox(width: 16),
             SizedBox(
               width: 192,
+              height: 66,
               child: TextFormField(
                 controller: phoneController,
                 decoration: InputDecoration(
@@ -143,6 +150,7 @@ class CustomerAttributesForm extends StatelessWidget {
           children: [
             SizedBox(
               width: 280,
+              height: 66,
               child: TextFormField(
                 controller: streetController,
                 decoration: InputDecoration(
@@ -154,6 +162,7 @@ class CustomerAttributesForm extends StatelessWidget {
             const SizedBox(width: 16),
             SizedBox(
               width: 104,
+              height: 66,
               child: TextFormField(
                 controller: housenumberController,
                 decoration: InputDecoration(
@@ -169,6 +178,7 @@ class CustomerAttributesForm extends StatelessWidget {
           children: [
             SizedBox(
               width: 104,
+              height: 66,
               child: TextFormField(
                 controller: postcodeController,
                 decoration: InputDecoration(
@@ -180,6 +190,7 @@ class CustomerAttributesForm extends StatelessWidget {
             const SizedBox(width: 16),
             SizedBox(
               width: 280,
+              height: 66,
               child: TextFormField(
                 controller: cityController,
                 decoration: InputDecoration(
