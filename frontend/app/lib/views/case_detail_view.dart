@@ -111,13 +111,24 @@ class CaseDetailView extends StatelessWidget {
     switch (datasetType) {
       case DatasetType.timeseries:
         result = await caseProvider.deleteTimeseriesData(
-            dataId, caseModel.workshopId, caseModel.id);
+          dataId,
+          caseModel.workshopId,
+          caseModel.id,
+        );
         break;
       case DatasetType.obd:
-        result = await caseProvider.deleteObdData(caseModel.id, dataId);
+        result = await caseProvider.deleteObdData(
+          dataId,
+          caseModel.workshopId,
+          caseModel.id,
+        );
         break;
       case DatasetType.symptom:
-        result = await caseProvider.deleteSymptomData(caseModel.id, dataId);
+        result = await caseProvider.deleteSymptomData(
+          dataId,
+          caseModel.workshopId,
+          caseModel.id,
+        );
         break;
       case DatasetType.unknown:
         // TODO: Handle this case.
@@ -395,7 +406,11 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         Text(obdDataModel.dataId.toString()),
         Text(obdDataModel.timestamp?.toGermanDateTimeString() ?? ""),
         const Text("Obd"),
-        deleteButton(colorScheme, obdDataModel.dataId, DatasetType.obd),
+        deleteButton(
+          colorScheme,
+          obdDataModel.dataId,
+          DatasetType.obd,
+        ),
       ],
     );
   }
@@ -419,6 +434,10 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     int? dataId,
     DatasetType datasetType,
   ) {
+    final CaseProvider caseProvider = Provider.of<CaseProvider>(
+      context,
+      listen: false,
+    ); //provdier evtl hier nicht an der richitgen stelle?
     return IconButton(
       icon: const Icon(Icons.delete_forever),
       iconSize: 28,
@@ -426,49 +445,14 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         foregroundColor: colorScheme.error,
       ),
       onPressed: () async {
-        await widget.onDeleteData(dataId, datasetType);
-        //caseProvider.workshopId == widget.caseModel.workshopId
-        //                      ? widget.onDelete >> hier muss der delete function für die datensätze eingefügt werden
-        //                      : null,
+        unawaited(
+          caseProvider.workshopId == widget.caseModel.workshopId
+              ? widget.onDeleteData(dataId, datasetType)
+              : null,
+        );
       },
     );
   }
-
-  /*Future<void> _onDeleteDataPress(
-    BuildContext context,
-    int? dataId,
-    DatasetType datasetType,
-  ) async {
-    final caseProvider = Provider.of<CaseProvider>(context, listen: false);
-    final ScaffoldMessengerState scaffoldMessengerState =
-        ScaffoldMessenger.of(context);
-
-    final bool? dialogResult = await _showConfirmDeleteDialog(context);
-    if (dialogResult == null || !dialogResult) return;
-
-    bool result = false;
-    switch (datasetType) {
-      case DatasetType.timeseries:
-        result = await caseProvider.deleteTimeseriesData(
-            widget.caseModel.id, dataId);
-        break;
-      case DatasetType.obd:
-        result = await caseProvider.deleteObdData(widget.caseModel.id, dataId);
-        break;
-      case DatasetType.symptom:
-        result =
-            await caseProvider.deleteSymptomData(widget.caseModel.id, dataId);
-        break;
-      case DatasetType.unknown:
-        // TODO: Handle this case.
-        break;
-    }
-
-    final String message = result
-        ? tr("cases.details.deleteDataSuccessMessage")
-        : tr("cases.details.deleteDataErrorMessage");
-    _showMessage(message, scaffoldMessengerState);
-  }*/
 
   Future<CaseUpdateDto?> _showUpdateCaseDialog(CaseModel caseModel) async {
     return showDialog<CaseUpdateDto>(

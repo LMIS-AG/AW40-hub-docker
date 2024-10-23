@@ -321,7 +321,11 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> deleteObdData(String caseId, int? dataId) async {
+  Future<bool> deleteObdData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteObdData(
       authToken,
@@ -341,7 +345,10 @@ class CaseProvider with ChangeNotifier {
   }
 
   Future<bool> deleteTimeseriesData(
-      int? dataId, String workshopId, String caseId) async {
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteTimeseriesData(
       authToken,
@@ -360,7 +367,11 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
-  Future<bool> deleteSymptomData(String caseId, int? dataId) async {
+  Future<bool> deleteSymptomData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteSymptomData(
       authToken,
