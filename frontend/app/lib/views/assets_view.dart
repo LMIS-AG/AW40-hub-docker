@@ -3,6 +3,7 @@ import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/assets_model.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
+import "package:aw40_hub_frontend/views/assets_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
@@ -118,19 +119,19 @@ class AssetsTableState extends State<AssetsTable> {
         ),
 
         // Show detail view if a assets is selected.
-        /*ValueListenableBuilder(
+        ValueListenableBuilder(
           valueListenable: currentAssetsIndexNotifier,
           builder: (context, value, child) {
             if (value == null) return const SizedBox.shrink();
             return Expanded(
               flex: 2,
               child: AssetsDetailView(
-                vehicleModel: widget.assetsModel[value],
+                assetsModel: widget.assetsModel[value],
                 onClose: () => currentAssetsIndexNotifier.value = null,
               ),
             );
           },
-        )*/
+        )
       ],
     );
   }
