@@ -355,7 +355,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                           Text(tr("general.id")),
                           Text(tr("general.date")),
                           Text(tr("general.dataType")),
-                          const Text("Delete"),
+                          const Text(""),
                         ],
                       ),
                       ...[
@@ -434,10 +434,10 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     int? dataId,
     DatasetType datasetType,
   ) {
-    final CaseProvider caseProvider = Provider.of<CaseProvider>(
+    /*final CaseProvider caseProvider = Provider.of<CaseProvider>(
       context,
       listen: false,
-    ); //provdier evtl hier nicht an der richitgen stelle?
+    ); //provdier evtl hier nicht an der richitgen stelle?*/
     return IconButton(
       icon: const Icon(Icons.delete_forever),
       iconSize: 28,
@@ -445,11 +445,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         foregroundColor: colorScheme.error,
       ),
       onPressed: () async {
-        unawaited(
-          caseProvider.workshopId == widget.caseModel.workshopId
-              ? widget.onDeleteData(dataId, datasetType)
-              : null,
-        );
+        await widget.onDeleteData(dataId, datasetType);
       },
     );
   }
