@@ -150,6 +150,11 @@ vehicles:
     updateVehicle: "Update vehicle"
   details:
     headline: "Details"
+assets:
+  title: "Assets"
+  headlines:
+    id: "Id"
+  noAssets: "No Assets"
 training:
   title: "Training"
 pageNotFound:

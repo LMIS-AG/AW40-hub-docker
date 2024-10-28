@@ -149,6 +149,11 @@ vehicles:
     updateVehicle: "Fahrzeug bearbeiten"
   details:
     headline: "Detailansicht"
+assets:
+  title: "Assets"
+  headlines:
+    id: "Id"
+  noAssets: "Keine Assets"
 training:
   title: "Schulung"
 pageNotFound:
