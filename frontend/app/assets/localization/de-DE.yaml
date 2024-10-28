@@ -152,7 +152,8 @@ vehicles:
 assets:
   title: "Assets"
   headlines:
-    id: "Id"
+    timeOfGeneration: "Zeitpunkt der  Generation"
+    filter: "Filter"
   noAssets: "Keine Assets"
 training:
   title: "Schulung"

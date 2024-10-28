@@ -1,7 +1,9 @@
 class AssetsModel {
   AssetsModel({
-    required this.id,
+    required this.timeOfGeneration,
+    required this.filter,
   });
 
-  String id;
+  String timeOfGeneration;
+  List<String> filter;
 }

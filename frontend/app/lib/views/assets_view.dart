@@ -32,7 +32,12 @@ class _AssetsView extends State<AssetsView> {
   Widget build(BuildContext context) {
     //final assetsProvider = Provider.of<AssetsProvider>(context);
     return AssetsTable(
-      assetsModel: [AssetsModel(id: "some_id")],
+      assetsModel: [
+        AssetsModel(timeOfGeneration: "15:42", filter: [
+          "filter1",
+          "filter2",
+        ])
+      ],
       caseIndexNotifier: currentCaseIndexNotifier,
     );
     /*FutureBuilder(
@@ -112,7 +117,9 @@ class AssetsTableState extends State<AssetsTable> {
               showCheckboxColumn: false,
               rowsPerPage: 50,
               columns: [
-                DataColumn(label: Text(tr("assets.headlines.id"))),
+                DataColumn(
+                    label: Text(tr("assets.headlines.timeOfGeneration"))),
+                DataColumn(label: Text(tr("assets.headlines.filter"))),
               ],
             ),
           ),

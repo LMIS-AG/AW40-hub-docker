@@ -27,7 +27,8 @@ class AssetsDataTableSource extends DataTableSource {
         return null; // Use the default value.
       }),
       cells: [
-        DataCell(Text(assetsModel.id)),
+        DataCell(Text(assetsModel.timeOfGeneration)),
+        DataCell(Text(assetsModel.filter.toString())),
       ],
     );
   }

@@ -5,9 +5,7 @@ part "assets_dto.g.dart";
 
 @JsonSerializable()
 class AssetsDto {
-  AssetsDto(
-    this.id,
-  );
+  AssetsDto(this.timeOfGeneration, this.filter);
 
   factory AssetsDto.fromJson(Map<String, dynamic> json) {
     return _$AssetsDtoFromJson(json);
@@ -16,10 +14,11 @@ class AssetsDto {
 
   AssetsModel toModel() {
     return AssetsModel(
-      id: id,
+      timeOfGeneration: timeOfGeneration,
+      filter: filter,
     );
   }
 
-  @JsonKey(name: "_id")
-  String id;
+  String timeOfGeneration;
+  List<String> filter;
 }

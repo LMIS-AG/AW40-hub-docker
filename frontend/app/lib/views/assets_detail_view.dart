@@ -51,10 +51,12 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     //final assetsProvider = Provider.of<AssetsProvider>(context, listen: false);
 
     final List<String> attributesCase = [
-      tr("general.id"),
+      tr("assets.headlines.timeOfGeneration"),
+      tr("assets.headlines.filter")
     ];
     final List<String> valuesCase = [
-      widget.assetsModel.id.toString(),
+      widget.assetsModel.timeOfGeneration,
+      widget.assetsModel.filter.toString(),
     ];
 
     return SizedBox.expand(
