@@ -33,10 +33,13 @@ class _AssetsView extends State<AssetsView> {
     //final assetsProvider = Provider.of<AssetsProvider>(context);
     return AssetsTable(
       assetsModel: [
-        AssetsModel(timeOfGeneration: "15:42", filter: [
-          "filter1",
-          "filter2",
-        ])
+        AssetsModel(
+          timeOfGeneration: "15:42",
+          filter: [
+            "filter1",
+            "filter2",
+          ],
+        )
       ],
       caseIndexNotifier: currentCaseIndexNotifier,
     );

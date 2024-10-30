@@ -154,6 +154,7 @@ assets:
   headlines:
     timeOfGeneration: "Zeitpunkt der  Generation"
     filter: "Filter"
+  upload: "Asset-Upload"
   noAssets: "Keine Assets"
 training:
   title: "Schulung"

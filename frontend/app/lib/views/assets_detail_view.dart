@@ -98,28 +98,17 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                     ),
                   ),
                 ),
-                /*const SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FilledButton.icon(
-                      icon: const Icon(Icons.edit),
-                      label: Text(tr("general.edit")),
-                      onPressed: () async {
-                        final AssetsUpdateDto? customerUpdateDto =
-                            await _showUpdateAssetsDialog(
-                          widget.assetsModel,
-                        );
-                        if (customerUpdateDto == null) return;
-                        // TODO check for Id?
-                        await customerProvider.updateAssets(
-                          widget.assetsModel.id.toString(),
-                          customerUpdateDto,
-                        );
-                      },
+                      icon: const Icon(Icons.drive_folder_upload_outlined),
+                      label: Text(tr("assets.upload")),
+                      onPressed: () {},
                     ),
                   ],
-                ),*/
+                ),
               ],
             ),
           ),
