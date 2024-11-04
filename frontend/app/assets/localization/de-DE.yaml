@@ -161,6 +161,7 @@ assets:
     name: "Name"
     description: "Beschreibung"
     author: "Author"
+    datatype: "Datentyp"
     license: "Lizenz"
     offer: "Anbieten"
   noAssets: "Keine Assets"

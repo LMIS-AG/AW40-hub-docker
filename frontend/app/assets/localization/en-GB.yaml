@@ -162,6 +162,7 @@ assets:
     name: "Name"
     description: "Description"
     author: "Author"
+    datatype: "Datatype"
     license: "License"
     offer: "Offer"
   noAssets: "No Assets"
