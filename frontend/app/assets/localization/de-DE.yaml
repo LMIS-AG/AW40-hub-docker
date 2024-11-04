@@ -154,7 +154,15 @@ assets:
   headlines:
     timeOfGeneration: "Zeitpunkt der  Generation"
     filter: "Filter"
-  upload: "Asset-Upload"
+  upload: 
+    title: "Asset-Upload"
+    price: "Preis"
+    dataname: "Datenname"
+    name: "Name"
+    description: "Beschreibung"
+    author: "Author"
+    license: "Lizenz"
+    offer: "Anbieten"
   noAssets: "Keine Assets"
 training:
   title: "Schulung"

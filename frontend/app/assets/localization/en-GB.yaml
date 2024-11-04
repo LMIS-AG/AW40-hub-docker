@@ -4,7 +4,7 @@ general:
   city: "City"
   close: "Close"
   customer: "Customer"
-  customerId: "Customer id"
+  customerId: "Customer ID"
   dataType: "Data Type"
   date: "Date"
   datasets: "Datasets"
@@ -22,13 +22,13 @@ general:
   logout: "Logout"
   milage: "Milage"
   no: "No"
-  noCustomerId: "No customer id"
+  noCustomerId: "No customer ID"
   noData: "No data available"
   noDate: "No Date"
   noDiagnoses: "There is currently no information about ongoing diagnoses."
   noVehicles: "There is currently no information about the vehicles."
-  noVehicleVin: "No vehicle vin"
-  noWorkshopId: "No workshop id"
+  noVehicleVin: "No vehicle VIN"
+  noWorkshopId: "No workshop ID"
   notFound: "Not found"
   notSpecified: "Not specified"
   number: "No."
@@ -51,10 +51,10 @@ general:
   tsn: "TSN"
   unnamed: "Unnamed"
   vehicle: "Vehicle"
-  vehicleVin: "Vehicle vin"
+  vehicleVin: "Vehicle VIN"
   vin: "VIN"
   workshop: "Workshop"
-  workshopId: "Workshop id"
+  workshopId: "Workshop ID"
   yes: "Yes"
 diagnoses:
   title: "Diagnosis"
@@ -128,7 +128,7 @@ cases:
       unknown: "Unknown"
       service_routine: "@:general.service"
       problem_defect: "@:general.repair"
-    startDiagnosis: "Start diagnosis"
+    startDiagnosis: "Start Diagnosis"
     status:
       open: "Open"
       closed: "Closed"
@@ -137,7 +137,7 @@ cases:
       symptoms: "Symptoms"
       timeseriesData: "Timeseries Data"
 uploadData: 
-  label: "Upload data"
+  label: "Upload Data"
 customers:
   title: "Customers"
   headlines: 
@@ -155,7 +155,15 @@ assets:
   headlines:
     timeOfGeneration: "Time of Generation"
     filter: "Filter"
-  upload: "Upload Asset"
+  upload: 
+    title: "Asset-Upload"
+    price: "Price"
+    dataname: "Filename"
+    name: "Name"
+    description: "Description"
+    author: "Author"
+    license: "License"
+    offer: "Offer"
   noAssets: "No Assets"
 training:
   title: "Training"

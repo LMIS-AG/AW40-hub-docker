@@ -1,3 +1,5 @@
+import "package:aw40_hub_frontend/dialogs/offer_assets_dialog.dart";
+import "package:aw40_hub_frontend/dtos/assets_dto.dart";
 import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
 import "package:aw40_hub_frontend/models/assets_model.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
@@ -104,8 +106,10 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                   children: [
                     FilledButton.icon(
                       icon: const Icon(Icons.drive_folder_upload_outlined),
-                      label: Text(tr("assets.upload")),
-                      onPressed: () {},
+                      label: Text(tr("assets.upload.title")),
+                      onPressed: () async {
+                        await _showOfferAssetsDialog();
+                      },
                     ),
                   ],
                 ),
@@ -117,14 +121,26 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     );
   }
 
-  /*Future<AssetsUpdateDto?> _showUpdateAssetsDialog(
-    AssetsModel assetsModel,
-  ) async {
-    return showDialog<AssetsUpdateDto>(
+  //This is a placeholder
+  Future<AssetsDto?> _showOfferAssetsDialog() async {
+    final AssetsDto? newCase = await showDialog<AssetsDto>(
       context: context,
       builder: (BuildContext context) {
-        return UpdateAssetsDialog(assetsModel: assetsModel);
+        return const OfferAssetsDialog();
       },
     );
+    return newCase;
+  }
+
+  //should be sth like this, MarketplaceAssetDto not implemented
+
+  /*Future<MarketplaceAssetDto?> _showOfferAssetsDialog() async {
+    final MarketplaceAssetDto? newCase = await showDialog<MarketplaceAssetDto>(
+      context: context,
+      builder: (BuildContext context) {
+        return const OfferAssetsDialog();
+      },
+    );
+    return newCase;
   }*/
 }
