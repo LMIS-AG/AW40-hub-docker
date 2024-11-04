@@ -124,6 +124,8 @@ cases:
     showDiagnosis: "Show diagnosis"
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
+    deleteDataSuccessMessage: "The dataset was successfully deleted."
+    deleteDataErrorMessage: "The dataset could not be deleted."
     occasion:
       unknown: "Unknown"
       service_routine: "@:general.service"

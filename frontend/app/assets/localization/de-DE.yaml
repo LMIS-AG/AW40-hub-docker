@@ -123,6 +123,8 @@ cases:
     showDiagnosis: "Diagnose anzeigen"
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
+    deleteDataSuccessMessage: "Der Datensatz wurde erfolgreich gelöscht."
+    deleteDataErrorMessage: "Der Datensatz konnte nicht gelöscht werden."
     occasion:
       unknown: "Unbekannt"
       service_routine: "@:general.service"

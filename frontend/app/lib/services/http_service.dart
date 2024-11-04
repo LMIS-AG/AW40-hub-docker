@@ -103,6 +103,42 @@ class HttpService {
     );
   }
 
+  Future<http.Response> deleteObdData(
+    String token,
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) {
+    return _client.delete(
+      Uri.parse("$backendUrl/cases/$caseId/obd_data/$dataId"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
+  Future<http.Response> deleteTimeseriesData(
+    String token,
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) {
+    return _client.delete(
+      Uri.parse("$backendUrl/cases/$caseId/timeseries/$dataId"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
+  Future<http.Response> deleteSymptomData(
+    String token,
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) {
+    return _client.delete(
+      Uri.parse("$backendUrl/cases/$caseId/symptoms/$dataId"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
   Future<http.Response> getDiagnoses(
     String token,
     String workshopId,

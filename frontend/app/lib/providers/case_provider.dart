@@ -321,6 +321,75 @@ class CaseProvider with ChangeNotifier {
     return true;
   }
 
+  Future<bool> deleteObdData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteObdData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete OBD data",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    return true;
+  }
+
+  Future<bool> deleteTimeseriesData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteTimeseriesData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete timeseries data",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    return true;
+  }
+
+  Future<bool> deleteSymptomData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteSymptomData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete symptom data",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    return true;
+  }
+
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {
     _authToken = await authProvider.getAuthToken();
     notifyListeners();
