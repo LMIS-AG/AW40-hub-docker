@@ -125,6 +125,7 @@ cases:
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
     deleteDataSuccessMessage: "The dataset was successfully deleted."
+    deleteDataUnknownDataTypeMessage: "Data cannot be deleted: Unknown data record type"
     deleteDataErrorMessage: "The dataset could not be deleted."
     occasion:
       unknown: "Unknown"
@@ -138,11 +139,11 @@ cases:
       obdData: "OBD Data"
       symptoms: "Symptoms"
       timeseriesData: "Timeseries Data"
-uploadData: 
+uploadData:
   label: "Upload data"
 customers:
   title: "Customers"
-  headlines: 
+  headlines:
     id: "ID"
   actions:
     updateCustomer: "Update customer"
@@ -209,4 +210,3 @@ forms:
     component:
       label: "Component"
       hint: "Enter a Component"
-

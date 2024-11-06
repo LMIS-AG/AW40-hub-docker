@@ -131,7 +131,10 @@ class CaseDetailView extends StatelessWidget {
         );
         break;
       case DatasetType.unknown:
-        // TODO: Handle this case.
+        _showMessage(
+          tr("cases.details.deleteDataUnknownDataTypeMessage"),
+          scaffoldMessengerState,
+        );
         break;
     }
 

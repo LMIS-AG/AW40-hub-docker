@@ -124,6 +124,7 @@ cases:
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
     deleteDataSuccessMessage: "Der Datensatz wurde erfolgreich gelöscht."
+    deleteDataUnknownDataTypeMessage: "Daten können nicht gelöscht werden: Unbekannter Datensatz-Typ"
     deleteDataErrorMessage: "Der Datensatz konnte nicht gelöscht werden."
     occasion:
       unknown: "Unbekannt"
@@ -137,11 +138,11 @@ cases:
       obdData: "OBD Daten"
       symptoms: "Symptome"
       timeseriesData: "Zeitreihendaten"
-uploadData: 
+uploadData:
   label: "Daten-Upload"
 customers:
   title: "Kunden"
-  headlines: 
+  headlines:
     id: "ID"
   actions:
     updateCustomer: "Kunden bearbeiten"
@@ -155,7 +156,7 @@ training:
   title: "Schulung"
 pageNotFound:
   title: "Seite @:general.notFound"
-noAuthorization :
+noAuthorization:
   title: "Keine Autorisierung"
 forms:
   submit: "Hochladen"
@@ -208,4 +209,3 @@ forms:
     component:
       label: "Komponente"
       hint: "Geben Sie eine Komponente ein"
-
