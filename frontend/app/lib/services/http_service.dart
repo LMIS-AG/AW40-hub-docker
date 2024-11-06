@@ -110,7 +110,7 @@ class HttpService {
     String caseId,
   ) {
     return _client.delete(
-      Uri.parse("$backendUrl/cases/$caseId/obd_data/$dataId"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/obd_data/$dataId"),
       headers: getAuthHeaderWith(token),
     );
   }
@@ -122,7 +122,7 @@ class HttpService {
     String caseId,
   ) {
     return _client.delete(
-      Uri.parse("$backendUrl/cases/$caseId/timeseries/$dataId"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/timeseries/$dataId"),
       headers: getAuthHeaderWith(token),
     );
   }
@@ -134,7 +134,7 @@ class HttpService {
     String caseId,
   ) {
     return _client.delete(
-      Uri.parse("$backendUrl/cases/$caseId/symptoms/$dataId"),
+      Uri.parse("$backendUrl/$workshopId/cases/$caseId/symptoms/$dataId"),
       headers: getAuthHeaderWith(token),
     );
   }
