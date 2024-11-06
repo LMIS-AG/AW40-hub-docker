@@ -434,10 +434,6 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
     int? dataId,
     DatasetType datasetType,
   ) {
-    /*final CaseProvider caseProvider = Provider.of<CaseProvider>(
-      context,
-      listen: false,
-    ); //provdier evtl hier nicht an der richitgen stelle?*/
     return IconButton(
       icon: const Icon(Icons.delete_forever),
       iconSize: 28,
