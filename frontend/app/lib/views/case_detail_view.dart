@@ -408,7 +408,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         const SizedBox(height: 32),
         Text(obdDataModel.dataId.toString()),
         Text(obdDataModel.timestamp?.toGermanDateTimeString() ?? ""),
-        const Text("Obd"),
+        Text(tr("general.obd")),
         deleteButton(
           colorScheme,
           obdDataModel.dataId,
@@ -426,7 +426,7 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
         const SizedBox(height: 32),
         Text(symptomModel.dataId.toString()),
         Text(symptomModel.timestamp?.toGermanDateTimeString() ?? ""),
-        const Text("Symptom"),
+        Text(tr("general.symptom")),
         deleteButton(colorScheme, symptomModel.dataId, DatasetType.symptom),
       ],
     );
