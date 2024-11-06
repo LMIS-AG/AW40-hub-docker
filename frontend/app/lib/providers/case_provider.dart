@@ -172,6 +172,7 @@ class CaseProvider with ChangeNotifier {
       _logger,
     );
     if (!verifyStatusCode) return false;
+    notifyListeners();
     return true;
   }
 
@@ -188,13 +189,16 @@ class CaseProvider with ChangeNotifier {
       vcdsData,
       filename,
     );
-    return HelperService.verifyStatusCode(
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       201,
       "Could not upload vcds data. ",
       response,
       _logger,
     );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
   }
 
   Future<bool> uploadTimeseriesData(
@@ -341,6 +345,7 @@ class CaseProvider with ChangeNotifier {
       _logger,
     );
     if (!verifyStatusCode) return false;
+    notifyListeners();
     return true;
   }
 
@@ -364,6 +369,7 @@ class CaseProvider with ChangeNotifier {
       _logger,
     );
     if (!verifyStatusCode) return false;
+    notifyListeners();
     return true;
   }
 
@@ -387,6 +393,7 @@ class CaseProvider with ChangeNotifier {
       _logger,
     );
     if (!verifyStatusCode) return false;
+    notifyListeners();
     return true;
   }
 
