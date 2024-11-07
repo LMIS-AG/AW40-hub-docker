@@ -4,6 +4,7 @@ import "package:aw40_hub_frontend/components/dataset_upload_case_view.dart";
 import "package:aw40_hub_frontend/dialogs/update_case_dialog.dart";
 import "package:aw40_hub_frontend/dtos/case_update_dto.dart";
 import "package:aw40_hub_frontend/models/case_model.dart";
+import "package:aw40_hub_frontend/models/data_model.dart";
 import "package:aw40_hub_frontend/models/diagnosis_model.dart";
 import "package:aw40_hub_frontend/models/logged_in_user_model.dart";
 import "package:aw40_hub_frontend/models/obd_data_model.dart";
@@ -350,11 +351,15 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                   Text(tr("general.noData"))
                 else
                   Table(
-                    columnWidths: const {0: IntrinsicColumnWidth()},
+                    columnWidths: const {
+                      0: FlexColumnWidth(2),
+                      1: FlexColumnWidth(5),
+                      2: FlexColumnWidth(3),
+                      3: FlexColumnWidth(),
+                    },
                     children: [
                       TableRow(
                         children: [
-                          const SizedBox(height: 32),
                           Text(tr("general.id")),
                           Text(tr("general.date")),
                           Text(tr("general.dataType")),
@@ -362,10 +367,9 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
                         ],
                       ),
                       ...[
-                        ...widget.caseModel.timeseriesData
-                            .map(buildTimeseriesDataRow),
-                        ...widget.caseModel.obdData.map(buildObdDataRow),
-                        ...widget.caseModel.symptoms.map(buildSymptomsDataRow),
+                        ...widget.caseModel.timeseriesData.map(buildDataRow),
+                        ...widget.caseModel.obdData.map(buildDataRow),
+                        ...widget.caseModel.symptoms.map(buildDataRow),
                       ],
                     ],
                   ),
@@ -382,52 +386,51 @@ class _DesktopCaseDetailViewState extends State<DesktopCaseDetailView> {
       widget.caseModel.timeseriesData.isEmpty &&
       widget.caseModel.obdData.isEmpty;
 
-  TableRow buildTimeseriesDataRow(TimeseriesDataModel timeseriesDataModel) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    return TableRow(
-      children: [
-        const SizedBox(height: 32),
-        Text(timeseriesDataModel.dataId.toString()),
-        Text(timeseriesDataModel.timestamp?.toGermanDateTimeString() ?? ""),
-        Text(timeseriesDataModel.type?.name.capitalize() ?? ""),
-        deleteButton(
-          colorScheme,
-          timeseriesDataModel.dataId,
-          DatasetType.timeseries,
-        ),
-      ],
-    );
-  }
+  TableRow buildDataRow(DataModel model) {
+    Text textWidget = const Text("");
+    switch (model.runtimeType) {
+      case ObdDataModel:
+        textWidget = Text(tr("general.obd"));
+        break;
+      case TimeseriesDataModel:
+        final timeseriesDataModel = model as TimeseriesDataModel;
+        textWidget = Text(timeseriesDataModel.type?.name.capitalize() ?? "");
+        break;
+      case SymptomModel:
+        textWidget = Text(tr("general.symptom"));
+        break;
+    }
 
-  TableRow buildObdDataRow(ObdDataModel obdDataModel) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     return TableRow(
       children: [
-        const SizedBox(height: 32),
-        Text(obdDataModel.dataId.toString()),
-        Text(obdDataModel.timestamp?.toGermanDateTimeString() ?? ""),
-        Text(tr("general.obd")),
+        SizedBox(
+          height: 32,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(model.dataId.toString()),
+          ),
+        ),
+        SizedBox(
+          height: 32,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(model.timestamp?.toGermanDateTimeString() ?? ""),
+          ),
+        ),
+        SizedBox(
+          height: 32,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: textWidget,
+          ),
+        ),
         deleteButton(
           colorScheme,
-          obdDataModel.dataId,
+          model.dataId,
           DatasetType.obd,
         ),
-      ],
-    );
-  }
-
-  TableRow buildSymptomsDataRow(SymptomModel symptomModel) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    return TableRow(
-      children: [
-        const SizedBox(height: 32),
-        Text(symptomModel.dataId.toString()),
-        Text(symptomModel.timestamp?.toGermanDateTimeString() ?? ""),
-        Text(tr("general.symptom")),
-        deleteButton(colorScheme, symptomModel.dataId, DatasetType.symptom),
       ],
     );
   }
