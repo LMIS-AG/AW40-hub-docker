@@ -126,7 +126,7 @@ cases:
     deleteCaseSuccessMessage: "Der Fall wurde erfolgreich gelöscht."
     deleteCaseErrorMessage: "Der Fall konnte nicht gelöscht werden."
     deleteDataSuccessMessage: "Der Datensatz wurde erfolgreich gelöscht."
-    deleteDataUnknownDataTypeMessage: "Daten können nicht gelöscht werden: Unbekannter Datensatz-Typ"
+    deleteDataUnknownDataTypeMessage: "Der Datensatz konnte nicht gelöscht werden. Fehler: Unbekannter Datensatz-Typ"
     deleteDataErrorMessage: "Der Datensatz konnte nicht gelöscht werden."
     occasion:
       unknown: "Unbekannt"

@@ -136,7 +136,7 @@ class CaseDetailView extends StatelessWidget {
           tr("cases.details.deleteDataUnknownDataTypeMessage"),
           scaffoldMessengerState,
         );
-        break;
+        return;
     }
 
     final String message = result

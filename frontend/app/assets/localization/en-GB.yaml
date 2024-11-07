@@ -127,8 +127,8 @@ cases:
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
     deleteDataSuccessMessage: "The dataset was successfully deleted."
-    deleteDataUnknownDataTypeMessage: "Data cannot be deleted: Unknown data record type"
-    deleteDataErrorMessage: "The dataset could not be deleted."
+    deleteDataUnknownDataTypeMessage: "The dataset cannot be deleted. Error: Unknown data record type"
+    deleteDataErrorMessage: "The dataset cannot be deleted."
     occasion:
       unknown: "Unknown"
       service_routine: "@:general.service"
