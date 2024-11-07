@@ -172,6 +172,7 @@ class CaseProvider with ChangeNotifier {
       _logger,
     );
     if (!verifyStatusCode) return false;
+    notifyListeners();
     return true;
   }
 
@@ -188,13 +189,16 @@ class CaseProvider with ChangeNotifier {
       vcdsData,
       filename,
     );
-    return HelperService.verifyStatusCode(
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       201,
       "Could not upload vcds data. ",
       response,
       _logger,
     );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
   }
 
   Future<bool> uploadTimeseriesData(
@@ -313,6 +317,78 @@ class CaseProvider with ChangeNotifier {
       response.statusCode,
       201,
       "Could not upload symptom data. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> deleteObdData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteObdData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete OBD data",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> deleteTimeseriesData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteTimeseriesData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete timeseries data",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> deleteSymptomData(
+    int? dataId,
+    String workshopId,
+    String caseId,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteSymptomData(
+      authToken,
+      dataId,
+      workshopId,
+      caseId,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete symptom data",
       response,
       _logger,
     );
