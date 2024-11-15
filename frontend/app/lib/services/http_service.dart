@@ -485,6 +485,30 @@ class HttpService {
     );
   }
 
+  Future<http.Response> getAssets(
+    String token,
+  ) {
+    return _client.get(
+      Uri.parse("$backendUrl/dataspace/manage/assets"),
+      headers: getAuthHeaderWith(token),
+    );
+  }
+
+  Future<http.Response> updateAssets(
+    String token,
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.put(
+      Uri.parse("$backendUrl/$workshopId/assets"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> getVehicleComponents(
     String token,
   ) {

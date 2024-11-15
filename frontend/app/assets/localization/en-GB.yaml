@@ -162,6 +162,14 @@ vehicles:
     updateVehicle: "Update vehicle"
   details:
     headline: "Details"
+assets:
+  title: "Assets"
+  headlines:
+    timeOfGeneration: "Time of generation"
+    name: "Name"
+    filter: "Filter"
+  upload: "Upload Asset"
+  noAssets: "No Assets"
 training:
   title: "Training"
 pageNotFound:

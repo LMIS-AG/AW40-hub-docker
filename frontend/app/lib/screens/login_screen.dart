@@ -118,6 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Provider.of<VehicleProvider>(context, listen: false);
     final CustomerProvider customerProvider =
         Provider.of<CustomerProvider>(context, listen: false);
+
+    //final AssetProvider assetProvider =
+    //Provider.of<AssetProvider>(context, listen: false);
+
     // apparently this has an effect despite the variable not being used here
     // ignore: unused_local_variable
     final KnowledgeProvider knowledgeProvider =

@@ -1474,6 +1474,25 @@ class MockHttpService implements HttpService {
   }
 
   @override
+  Future<Response> getAssets(
+    String token,
+  ) {
+    // TODO: implement getAssets
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> updateAssets(
+    String token,
+    String workshopId,
+    String caseId,
+    Map<String, dynamic> requestBody,
+  ) {
+    // TODO: implement updateAssets
+    throw UnimplementedError();
+  }
+
+  @override
   Future<Response> getVehicleComponents(String token) {
     // TODO: implement getVehicleComponents
     throw UnimplementedError();
