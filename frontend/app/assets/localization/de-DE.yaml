@@ -167,6 +167,9 @@ assets:
     timeOfGeneration: "Zeitpunkt der  Generation"
     name: "Name"
     filter: "Filter"
+  confirmation: 
+    title: Asset Upload
+    descrption: "Möchten Sie das Asset wirklich anbieten?"
   upload: 
     title: "Asset-Upload"
     price: "Preis"

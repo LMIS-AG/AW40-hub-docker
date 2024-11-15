@@ -168,6 +168,9 @@ assets:
     timeOfGeneration: "Time of Generation"
     name: "Name"
     filter: "Filter"
+  confirmation: 
+    title: Asset Upload
+    descrption: "Do you really would like to offer the asset?"
   upload: 
     title: "Asset-Upload"
     price: "Price"

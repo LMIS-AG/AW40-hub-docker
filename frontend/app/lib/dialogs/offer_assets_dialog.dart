@@ -79,22 +79,50 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
                 );
               }
 
-              final PublicationDto publicationDto = PublicationDto(
-                "PONTUSXDEV",
-                licenseType,
-                price,
-                "some_id",
-                "some_asset_url",
-              );
-              // ignore: use_build_context_synchronously
-              unawaited(
-                Routemaster.of(context).pop<PublicationDto>(publicationDto),
-              );
+              final bool? confirmation = await _showConfirmOfferDialog(context);
+
+              if (confirmation == true) {
+                _uploadAsset(price, licenseType, privateKeyType);
+              }
             }
           },
           child: Text(tr("assets.upload.offer")),
         ),
       ],
+    );
+  }
+
+  void _uploadAsset(int price, String licenseType, String privateKeyType) {
+    final PublicationDto publicationDto = PublicationDto(
+      "PONTUSXDEV",
+      licenseType,
+      price,
+      "some_id",
+      "some_asset_url",
+    );
+  }
+
+  static Future<bool?> _showConfirmOfferDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(tr("assets.upload.confirm.title")),
+          content: Text(tr("assets.upload.confirm.description")),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(tr("general.cancel")),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(
+                tr("general.proceed"),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -136,7 +164,7 @@ class _AddCaseDialogFormState extends State<OfferAssetsDialogForm> {
               priceController: widget.priceController,
               licenseController: widget.licenseController,
               privateKeyController: widget.privateKeyController,
-            )
+            ),
           ],
         ),
       ),
