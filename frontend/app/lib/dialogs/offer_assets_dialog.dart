@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:aw40_hub_frontend/dtos/publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/forms/offer_assets_form.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
@@ -22,9 +23,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   final Logger _logger = Logger("offer_assets_dialog");
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _priceController = TextEditingController();
-  final ValueNotifier<Licence?> _licenseController = ValueNotifier<Licence?>(
-    null,
-  );
+  final TextEditingController _licenseController = TextEditingController();
   final TextEditingController _privateKeyController = TextEditingController();
 
   final title = tr("assets.upload.title");
@@ -56,7 +55,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
             if (currentFormKeyState != null && currentFormKeyState.validate()) {
               currentFormKeyState.save();
 
-              final double? price = double.tryParse(_priceController.text);
+              final int? price = int.tryParse(_priceController.text);
               if (price == null) {
                 throw AppException(
                   exceptionType: ExceptionType.unexpectedNullValue,
@@ -64,8 +63,8 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
                 );
               }
 
-              final Licence? licenseType = _licenseController.value;
-              if (licenseType == null) {
+              final String licenseType = _licenseController.text;
+              if (licenseType.isEmpty) {
                 throw AppException(
                   exceptionType: ExceptionType.unexpectedNullValue,
                   exceptionMessage: "License type was not selected.",
@@ -80,18 +79,17 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
                 );
               }
 
-              /*final MarketplaceAssetDto marketplaceAssetDto =
-                  NeMarketplaceAssetDtowAssetDto(
-                      price: _priceController.text,
-                      filename: _filenameController.text,
-                      assetType: _assetsDatatypeController.value,
-                      name: _nameController.text,
-                      details: _detailsController.text,
-                      author: _authorController.text,
-                      licenseType: _licenseController.value);
+              final PublicationDto publicationDto = PublicationDto(
+                "PONTUSXDEV",
+                licenseType,
+                price,
+                "some_id",
+                "some_asset_url",
+              );
               // ignore: use_build_context_synchronously
               unawaited(
-                  Routemaster.of(context).pop<NewCaseDto>(MarketplaceAssetDto));*/
+                Routemaster.of(context).pop<PublicationDto>(publicationDto),
+              );
             }
           },
           child: Text(tr("assets.upload.offer")),
@@ -117,7 +115,7 @@ class OfferAssetsDialogForm extends StatefulWidget {
 
   final GlobalKey<FormState> formKey;
   final TextEditingController priceController;
-  final ValueNotifier<Licence?> licenseController;
+  final TextEditingController licenseController;
   final TextEditingController privateKeyController;
 
   @override

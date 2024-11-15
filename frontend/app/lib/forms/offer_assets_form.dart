@@ -11,7 +11,7 @@ class OfferAssetsForm extends StatelessWidget {
   });
 
   final TextEditingController priceController;
-  final ValueNotifier<Licence?> licenseController;
+  final TextEditingController licenseController;
   final TextEditingController privateKeyController;
 
   @override
@@ -47,24 +47,16 @@ class OfferAssetsForm extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          child: DropdownButtonFormField<Licence>(
-            value: licenseController.value,
+          width: 192,
+          child: TextFormField(
+            controller: licenseController,
             decoration: InputDecoration(
               labelText: tr("assets.upload.license"),
               border: const OutlineInputBorder(),
               errorStyle: const TextStyle(height: 0.1),
             ),
-            items: Licence.values.map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(
-                  type.name,
-                ),
-              );
-            }).toList(),
-            onChanged: (value) => licenseController.value = value,
             validator: (value) {
-              if (value == null) {
+              if (value == null || value.isEmpty) {
                 return tr("general.obligatoryField");
               }
               return null;
@@ -72,7 +64,6 @@ class OfferAssetsForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        // Private-Key-Feld
         SizedBox(
           width: 192,
           child: TextFormField(

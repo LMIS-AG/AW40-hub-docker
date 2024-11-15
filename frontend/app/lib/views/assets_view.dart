@@ -1,6 +1,7 @@
 import "package:aw40_hub_frontend/data_sources/assets_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
+import "package:aw40_hub_frontend/models/publication_model.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/views/assets_detail_view.dart";

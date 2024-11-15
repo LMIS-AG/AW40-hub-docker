@@ -166,6 +166,7 @@ assets:
   title: "Assets"
   headlines:
     timeOfGeneration: "Time of Generation"
+    name: "Name"
     filter: "Filter"
   upload: 
     title: "Asset-Upload"
