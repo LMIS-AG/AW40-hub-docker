@@ -1,11 +1,7 @@
-import "package:aw40_hub_frontend/dialogs/offer_assets_dialog.dart";
-import "package:aw40_hub_frontend/dtos/assets_dto.dart";
-import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
-import "package:aw40_hub_frontend/models/assets_model.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
-import "package:provider/provider.dart";
+
 
 class AssetsDetailView extends StatelessWidget {
   const AssetsDetailView({
@@ -14,7 +10,7 @@ class AssetsDetailView extends StatelessWidget {
     super.key,
   });
 
-  final AssetsModel assetsModel;
+  final AssetModel assetsModel;
   final void Function() onClose;
 
   @override
@@ -35,7 +31,7 @@ class DesktopAssetsDetailView extends StatefulWidget {
     super.key,
   });
 
-  final AssetsModel assetsModel;
+  final AssetModel assetsModel;
   final void Function() onClose;
   final void Function() onDelete;
 
@@ -50,15 +46,16 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     final TextTheme textTheme = theme.textTheme;
-    //final assetsProvider = Provider.of<AssetsProvider>(context, listen: false);
-
+    
     final List<String> attributesCase = [
       tr("assets.headlines.timeOfGeneration"),
+      tr("assets.headlines.name"),
       tr("assets.headlines.filter")
     ];
     final List<String> valuesCase = [
-      widget.assetsModel.timeOfGeneration,
-      widget.assetsModel.filter.toString(),
+      widget.assetsModel.timestamp.toString(),
+      widget.assetsModel.name,
+      widget.assetsModel.definition.toString(),
     ];
 
     return SizedBox.expand(
@@ -106,10 +103,8 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                   children: [
                     FilledButton.icon(
                       icon: const Icon(Icons.drive_folder_upload_outlined),
-                      label: Text(tr("assets.upload.title")),
-                      onPressed: () async {
-                        await _showOfferAssetsDialog();
-                      },
+                      label: Text(tr("assets.upload")),
+                      onPressed: () {},
                     ),
                   ],
                 ),
@@ -121,26 +116,14 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     );
   }
 
-  //This is a placeholder
-  Future<AssetsDto?> _showOfferAssetsDialog() async {
-    final AssetsDto? newCase = await showDialog<AssetsDto>(
+  /*Future<AssetsUpdateDto?> _showUpdateAssetsDialog(
+    AssetsModel assetsModel,
+  ) async {
+    return showDialog<AssetsUpdateDto>(
       context: context,
       builder: (BuildContext context) {
-        return const OfferAssetsDialog();
+        return UpdateAssetsDialog(assetsModel: assetsModel);
       },
     );
-    return newCase;
-  }
-
-  //should be sth like this, MarketplaceAssetDto not implemented
-
-  /*Future<MarketplaceAssetDto?> _showOfferAssetsDialog() async {
-    final MarketplaceAssetDto? newCase = await showDialog<MarketplaceAssetDto>(
-      context: context,
-      builder: (BuildContext context) {
-        return const OfferAssetsDialog();
-      },
-    );
-    return newCase;
   }*/
 }

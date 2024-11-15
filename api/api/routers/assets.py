@@ -37,8 +37,7 @@ management_router = APIRouter(
 
 public_router = APIRouter(
     tags=["Public Dataspace Resources"],
-    prefix="/dataspace/public",
-    dependencies=[Depends(api_key_auth)]
+    prefix="/dataspace/public"
 )
 
 
@@ -176,6 +175,13 @@ async def publish_asset(
             )
         ]
     )
+
+    # Might need to fix asset_url scheme if running behind reverse proxy
+    x_forwarded_proto = request.headers.get("x-forwarded-proto", None)
+    if x_forwarded_proto is not None:
+        if x_forwarded_proto != asset_url[:len(x_forwarded_proto)]:
+            asset_url = f"{x_forwarded_proto}://{asset_url.split('://')[1]}"
+
     # Use nautilus to trigger the publication and store publication info
     # within the asset.
     publication, info = nautilus.publish_access_dataset(
@@ -193,13 +199,27 @@ async def publish_asset(
     return publication
 
 
-@public_router.get(
+@public_router.head(
     "/assets/{asset_id}/data",
     status_code=200,
     response_class=FileResponse
 )
+async def get_published_dataset_head(
+    asset: Asset = Depends(asset_by_id)
+):
+    return FileResponse(
+        path=asset.data_file_path, filename=f"{asset.name}.zip"
+    )
+
+
+@public_router.get(
+    "/assets/{asset_id}/data",
+    status_code=200,
+    response_class=FileResponse,
+    dependencies=[Depends(api_key_auth)]
+)
 async def get_published_dataset(
-    asset_key: str = Depends(APIKeyHeader(name="asset_key")),
+    asset_key: str = Depends(APIKeyHeader(name="data_key")),
     asset: Asset = Depends(asset_by_id)
 ):
     """Public download link for asset data."""

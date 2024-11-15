@@ -1,9 +1,9 @@
 import "dart:convert";
 
-import "package:aw40_hub_frontend/dtos/assets_dto.dart";
+import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
-import "package:aw40_hub_frontend/models/assets_model.dart";
+import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
@@ -12,44 +12,22 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart";
 import "package:logging/logging.dart";
 
-class AssetsProvider with ChangeNotifier {
-  AssetsProvider(this._httpService);
+class AssetProvider with ChangeNotifier {
+  AssetProvider(this._httpService);
 
   final HttpService _httpService;
 
-  final Logger _logger = Logger("AssetsProvider");
+  final Logger _logger = Logger("asset_provider");
   late final String workshopId;
 
   late final String caseId;
 
   String? _authToken;
 
-  Future<List<AssetsModel>> getSharedAssets() async {
-    final String authToken = _getAuthToken();
-    final Response response = await _httpService.getSharedAssets(
-      authToken,
-    );
-    if (response.statusCode != 200) {
-      _logger.warning(
-        "Could not get assets. "
-        "${response.statusCode}: ${response.reasonPhrase}",
-      );
-      return [];
-    }
-    final json = jsonDecode(response.body);
-    if (json is! List) {
-      _logger.warning("Could not decode json response to List.");
-      return [];
-    }
-    return json.map((e) => AssetsDto.fromJson(e).toModel()).toList();
-  }
-
-  Future<List<AssetsModel>> getAssets() async {
+  Future<List<AssetModel>> getAssets() async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.getAssets(
       authToken,
-      workshopId,
-      caseId,
     );
     if (response.statusCode != 200) {
       _logger.warning(
@@ -63,10 +41,10 @@ class AssetsProvider with ChangeNotifier {
       _logger.warning("Could not decode json response to List.");
       return [];
     }
-    return json.map((e) => AssetsDto.fromJson(e).toModel()).toList();
+    return json.map((e) => AssetDto.fromJson(e).toModel()).toList();
   }
 
-  Future<AssetsModel?> updateAssets(
+  Future<AssetModel?> updateAssets(
     String caseId_,
     AssetsUpdateDto updateAssetsDto,
   ) async {
@@ -90,9 +68,9 @@ class AssetsProvider with ChangeNotifier {
     return _decodeAssetsModelFromResponseBody(response);
   }
 
-  AssetsModel _decodeAssetsModelFromResponseBody(Response response) {
+  AssetModel _decodeAssetsModelFromResponseBody(Response response) {
     final Map<String, dynamic> body = jsonDecode(response.body);
-    final AssetsDto receivedAssets = AssetsDto.fromJson(body);
+    final AssetDto receivedAssets = AssetDto.fromJson(body);
     return receivedAssets.toModel();
   }
 
