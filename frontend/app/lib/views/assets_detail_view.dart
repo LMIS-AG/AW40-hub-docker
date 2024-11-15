@@ -2,7 +2,6 @@ import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
-
 class AssetsDetailView extends StatelessWidget {
   const AssetsDetailView({
     required this.assetsModel,
@@ -46,7 +45,7 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     final TextTheme textTheme = theme.textTheme;
-    
+
     final List<String> attributesCase = [
       tr("assets.headlines.timeOfGeneration"),
       tr("assets.headlines.name"),

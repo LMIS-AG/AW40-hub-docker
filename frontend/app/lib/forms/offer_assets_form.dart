@@ -1,4 +1,3 @@
-import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -27,6 +26,7 @@ class OfferAssetsForm extends StatelessWidget {
             controller: priceController,
             decoration: InputDecoration(
               labelText: tr("assets.upload.price"),
+              suffixText: "€",
               border: const OutlineInputBorder(),
               errorStyle: const TextStyle(height: 0.1),
             ),
@@ -82,7 +82,7 @@ class OfferAssetsForm extends StatelessWidget {
               border: const OutlineInputBorder(),
               errorStyle: const TextStyle(height: 0.1),
             ),
-            obscureText: true, // Passwort verstecken
+            obscureText: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return tr("general.obligatoryField");

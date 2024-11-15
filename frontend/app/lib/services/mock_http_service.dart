@@ -1441,12 +1441,6 @@ class MockHttpService implements HttpService {
   }
 
   @override
-  Future<Response> getAssets(String token, String workshopId, String caseId) {
-    // TODO: implement getAssets
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Response> deleteTimeseriesData(
     String token,
     int? dataId,
@@ -1471,13 +1465,6 @@ class MockHttpService implements HttpService {
     String caseId,
   ) {
     // TODO: implement deleteObdData
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Response> updateAssets(String token, String workshopId, String caseId,
-      Map<String, dynamic> requestBody) {
-    // TODO: implement updateAssets
     throw UnimplementedError();
   }
 
