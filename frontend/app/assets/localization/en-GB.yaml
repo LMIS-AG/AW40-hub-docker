@@ -163,12 +163,8 @@ assets:
   upload: 
     title: "Asset-Upload"
     price: "Price"
-    dataname: "Filename"
-    name: "Name"
-    description: "Description"
-    author: "Author"
-    datatype: "Datatype"
     license: "License"
+    privateKey: "Private Key"
     offer: "Offer"
   noAssets: "No Assets"
 training:

@@ -6,150 +6,40 @@ import "package:flutter/material.dart";
 class OfferAssetsForm extends StatelessWidget {
   const OfferAssetsForm({
     required this.priceController,
-    required this.filenameController,
-    required this.nameController,
-    required this.detailsController,
-    required this.authorController,
-    required this.assetsDatatypeController,
     required this.licenseController,
+    required this.privateKeyController,
     super.key,
   });
 
   final TextEditingController priceController;
-  final TextEditingController filenameController;
-  final ValueNotifier<AssetsDatatype?> assetsDatatypeController;
-  final TextEditingController nameController;
-  final TextEditingController detailsController;
-  final TextEditingController authorController;
   final ValueNotifier<Licence?> licenseController;
+  final TextEditingController privateKeyController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const SizedBox(height: 16),
-        Row(
-          children: [
-            SizedBox(
-              width: 192,
-              height: 66,
-              child: TextFormField(
-                controller: priceController,
-                decoration: InputDecoration(
-                  labelText: tr("assets.upload.price"),
-                  border: const OutlineInputBorder(),
-                  errorStyle: const TextStyle(height: 0.1),
-                ),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return tr("general.obligatoryField");
-                  }
-                  // Validate decimal format (2 decimal places)
-                  const pricePattern = r"^\d+(\.\d{1,2})?$";
-                  final regExp = RegExp(pricePattern);
-                  if (!regExp.hasMatch(value)) {
-                    return tr("assets.invalidPriceFormat");
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: 192,
-              height: 66,
-              child: TextFormField(
-                controller: filenameController,
-                decoration: InputDecoration(
-                  labelText: tr("assets.upload.dataName"),
-                  border: const OutlineInputBorder(),
-                  errorStyle: const TextStyle(height: 0.1),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return tr("general.obligatoryField");
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            SizedBox(
-              width: 192,
-              height: 66,
-              child: TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: tr("assets.upload.name"),
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return tr("general.obligatoryField");
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: 192,
-              height: 66,
-              child: TextFormField(
-                controller: authorController,
-                decoration: InputDecoration(
-                  labelText: tr("assets.upload.author"),
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return tr("general.obligatoryField");
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
         SizedBox(
-          width: double.infinity,
+          width: 192,
           height: 66,
           child: TextFormField(
-            controller: detailsController,
+            controller: priceController,
             decoration: InputDecoration(
-              labelText: tr("assets.upload.description"),
-              border: const OutlineInputBorder(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          child: DropdownButtonFormField<AssetsDatatype>(
-            value: assetsDatatypeController.value,
-            decoration: InputDecoration(
-              labelText: tr("assets.upload.datatype"),
+              labelText: tr("assets.upload.price"),
               border: const OutlineInputBorder(),
               errorStyle: const TextStyle(height: 0.1),
             ),
-            items: AssetsDatatype.values.map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(
-                  type.name,
-                ),
-              );
-            }).toList(),
-            onChanged: (value) => assetsDatatypeController.value = value,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             validator: (value) {
-              if (value == null) {
+              if (value == null || value.isEmpty) {
                 return tr("general.obligatoryField");
+              }
+              // Validate decimal format (2 decimal places)
+              const pricePattern = r"^\d+(\.\d{1,2})?$";
+              final regExp = RegExp(pricePattern);
+              if (!regExp.hasMatch(value)) {
+                return tr("assets.invalidPriceFormat");
               }
               return null;
             },
@@ -175,6 +65,26 @@ class OfferAssetsForm extends StatelessWidget {
             onChanged: (value) => licenseController.value = value,
             validator: (value) {
               if (value == null) {
+                return tr("general.obligatoryField");
+              }
+              return null;
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Private-Key-Feld
+        SizedBox(
+          width: 192,
+          child: TextFormField(
+            controller: privateKeyController,
+            decoration: InputDecoration(
+              labelText: tr("assets.upload.privateKey"),
+              border: const OutlineInputBorder(),
+              errorStyle: const TextStyle(height: 0.1),
+            ),
+            obscureText: true, // Passwort verstecken
+            validator: (value) {
+              if (value == null || value.isEmpty) {
                 return tr("general.obligatoryField");
               }
               return null;
