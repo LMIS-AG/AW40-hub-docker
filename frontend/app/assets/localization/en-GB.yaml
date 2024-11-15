@@ -32,6 +32,7 @@ general:
   notFound: "Not found"
   notSpecified: "Not specified"
   number: "No."
+  obd: "OBD"
   obligatoryField: "Obligatory"
   occasion: "Occasion"
   phone: "Phone"
@@ -46,6 +47,7 @@ general:
   state: "State"
   status: "Status"
   street: "Street"
+  symptom: "Symptom"
   then: "Then"
   transition: "Transition"
   tsn: "TSN"
@@ -124,6 +126,9 @@ cases:
     showDiagnosis: "Show diagnosis"
     deleteCaseSuccessMessage: "The case was successfully deleted."
     deleteCaseErrorMessage: "The case could not be deleted."
+    deleteDataSuccessMessage: "The dataset was successfully deleted."
+    deleteDataUnknownDataTypeMessage: "The dataset cannot be deleted. Error: Unknown data record type"
+    deleteDataErrorMessage: "The dataset cannot be deleted."
     occasion:
       unknown: "Unknown"
       service_routine: "@:general.service"
@@ -140,7 +145,7 @@ uploadData:
   label: "Upload Data"
 customers:
   title: "Customers"
-  headlines: 
+  headlines:
     id: "ID"
   actions:
     updateCustomer: "Update customer"
@@ -223,4 +228,3 @@ forms:
     component:
       label: "Component"
       hint: "Enter a Component"
-
