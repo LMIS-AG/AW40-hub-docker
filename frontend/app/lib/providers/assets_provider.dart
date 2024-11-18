@@ -44,6 +44,10 @@ class AssetProvider with ChangeNotifier {
     return json.map((e) => AssetDto.fromJson(e).toModel()).toList();
   }
 
+  createAsset(newAsset) {
+    throw UnimplementedError();
+  }
+
   Future<AssetModel?> updateAssets(
     String caseId_,
     AssetsUpdateDto updateAssetsDto,

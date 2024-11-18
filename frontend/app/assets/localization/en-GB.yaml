@@ -98,9 +98,10 @@ cases:
   title: "Cases"
   actions:
     addCase: "Add case"
-    updateCase: "Update case"
-    sortCases: "@:general.sort"
+    createAsset: "Create asset"
     filterCases: "@:general.filter"
+    sortCases: "@:general.sort"
+    updateCase: "Update case"
   occasions:
     notSpecified: "@:general.notSpecified"
     service: "@:general.service"

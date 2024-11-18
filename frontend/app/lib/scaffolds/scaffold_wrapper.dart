@@ -2,9 +2,11 @@ import "dart:async";
 
 import "package:aw40_hub_frontend/dialogs/add_case_dialog.dart";
 import "package:aw40_hub_frontend/dialogs/filter_cases_dialog.dart";
+import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/models/logged_in_user_model.dart";
 import "package:aw40_hub_frontend/models/navigation_item_model.dart";
+import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/scaffolds/desktop_scaffold.dart";
@@ -58,6 +60,17 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     );
   }
 
+  Future<NewAssetDto?> _showCreateAssetDialog() async {
+    final NewAssetDto? newCase = await showDialog<NewAssetDto>(
+      context: context,
+      builder: (BuildContext context) {
+        // TODO CreateAssetDialog
+        return const Center();
+      },
+    );
+    return newCase;
+  }
+
   Future<NewCaseDto?> _showAddCaseDialog() async {
     final NewCaseDto? newCase = await showDialog<NewCaseDto>(
       context: context,
@@ -107,6 +120,7 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
 
   List<NavigationMenuItemModel> _getMenuItemModels() {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
+    final assetProvider = Provider.of<AssetProvider>(context, listen: false);
     final List<NavigationMenuItemModel> navigationItemModels = [
       NavigationMenuItemModel(
         title: tr("cases.title"),
@@ -137,6 +151,15 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            onPressed: () async {
+              final NewAssetDto? newAsset = await _showCreateAssetDialog();
+              if (newAsset == null) return;
+              await assetProvider.createAsset(newAsset);
+            },
+            icon: const Icon(Icons.create_new_folder),
+            tooltip: tr("cases.actions.createAsset"),
           ),
           IconButton(
             onPressed: () async {
