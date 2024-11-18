@@ -170,6 +170,9 @@ assets:
   confirmation: 
     title: Asset Upload
     descrption: "Möchten Sie das Asset wirklich anbieten?"
+  remove:
+    title: "Entferne das Assert"
+    description: "Möchten Sie das Asset wirklich entfernen?"
   upload: 
     title: "Asset-Upload"
     price: "Preis"

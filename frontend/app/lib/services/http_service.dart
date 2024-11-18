@@ -523,6 +523,18 @@ class HttpService {
     );
   }
 
+  Future<http.Response> deleteAsset(
+    String token,
+    String assetId,
+    String requestBody,
+  ) {
+    return _client.delete(
+      Uri.parse("$backendUrl//dataspace/manage/assets/$assetId"),
+      headers: getAuthHeaderWith(token),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> getVehicleComponents(
     String token,
   ) {

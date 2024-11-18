@@ -22,6 +22,7 @@ class AssetProvider with ChangeNotifier {
   final Logger _logger = Logger("asset_provider");
   late final String workshopId;
   late final String assetId;
+  late final String privateKey;
 
   late final String caseId;
 
@@ -88,6 +89,25 @@ class AssetProvider with ChangeNotifier {
     if (!verifyStatusCode) return null;
     notifyListeners();
     return _decodeNewPublicationModelFromResponseBody(response);
+  }
+
+  Future<bool> deleteAsset(String privateKey) async {
+    final String authToken = _getAuthToken();
+    final Response response = await _httpService.deleteAsset(
+      authToken,
+      assetId,
+      privateKey,
+    );
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      200,
+      "Could not delete asset. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return false;
+    notifyListeners();
+    return true;
   }
 
   NewPublicationModel _decodeNewPublicationModelFromResponseBody(
