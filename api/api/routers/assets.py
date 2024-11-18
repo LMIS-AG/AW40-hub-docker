@@ -106,7 +106,7 @@ async def delete_asset(
 ):
     """Delete an Asset and revoke any publications."""
     if asset.publication is not None:
-        revocation_successful, info = nautilus.revoke_publication(
+        revocation_successful, info = await nautilus.revoke_publication(
             publication=asset.publication,
             nautilus_private_key=nautilus_private_key
         )
@@ -182,19 +182,34 @@ async def publish_asset(
         if x_forwarded_proto != asset_url[:len(x_forwarded_proto)]:
             asset_url = f"{x_forwarded_proto}://{asset_url.split('://')[1]}"
 
-    # Use nautilus to trigger the publication and store publication info
-    # within the asset.
-    publication, info = nautilus.publish_access_dataset(
+    # Generate a new asset key
+    asset_key = secrets.token_urlsafe(32)
+
+    # Setup Publication with undetermined did
+    publication = Publication(
+        did="undetermined",
+        asset_key=asset_key,
         asset_url=asset_url,
-        asset=asset,
-        new_publication=new_publication
+        **new_publication.model_dump()
     )
-    if publication is None:
+    asset.publication = publication
+    await asset.save()
+
+    # Use nautilus to trigger the publication
+    did, info = await nautilus.publish_access_dataset(
+        asset=asset,
+        nautilus_private_key=new_publication.nautilus_private_key
+    )
+    if did is None:
+        asset.publication = None
+        await asset.save()
         raise HTTPException(
             status_code=500,
             detail=f"Failed communication with nautilus: {info}"
         )
-    asset.publication = publication
+
+    # Store the publication did
+    asset.publication.did = did
     await asset.save()
     return publication
 

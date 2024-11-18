@@ -1,9 +1,8 @@
-import secrets
 from typing import Optional, Tuple
 
 import httpx
 
-from ..data_management import Asset, Publication, NewPublication
+from ..data_management import Asset, Publication
 
 
 class Nautilus:
@@ -30,7 +29,7 @@ class Nautilus:
     def _revocation_url(self):
         return "/".join([self._url, "revoke"])
 
-    def _post_request(
+    async def _post_request(
             self,
             url: str,
             headers: dict,
@@ -40,7 +39,7 @@ class Nautilus:
         Helper method to perform a POST request with standard error handling.
         """
         try:
-            response = httpx.post(
+            response = await httpx.AsyncClient().post(
                 url, json=json_payload, headers=headers, timeout=self._timeout
             )
             response.raise_for_status()
@@ -50,61 +49,54 @@ class Nautilus:
         except httpx.HTTPStatusError as e:
             return None, e.response.text
 
-    def publish_access_dataset(
-            self,
-            asset_url: str,
-            asset: "Asset",
-            new_publication: NewPublication
-    ) -> Tuple[Optional[Publication], str]:
+    async def publish_access_dataset(
+            self, asset: Asset, nautilus_private_key: str
+    ) -> Tuple[Optional[str], str]:
         """
         Publish an asset to Nautilus.
         """
-        # Generate a new asset key
-        asset_key = secrets.token_urlsafe(32)
         # Set up request payload
         payload = {
             "service_descr": {
-                "url": asset_url,
+                "url": asset.publication.asset_url,
                 "api_key": self._api_key_assets,
-                "data_key": asset_key
+                "data_key": asset.publication.asset_key
             },
             "asset_descr": {
                 **asset.model_dump(
                     include={"name", "type", "description", "author"}
                 ),
-                "license": new_publication.license,
+                "license": asset.publication.license,
                 "price": {
-                    "value": new_publication.price,
+                    "value": asset.publication.price,
                     "currency": "FIXED_EUROE"
                 }
             }
         }
         # Attempt publication
-        response, info = self._post_request(
-            url="/".join([self._publication_url, new_publication.network]),
-            headers={"priv_key": new_publication.nautilus_private_key},
+        response, info = await self._post_request(
+            url="/".join(
+                [self._publication_url, asset.publication.network]
+            ),
+            headers={"priv_key": nautilus_private_key},
             json_payload=payload
         )
-
+        # Publication failed. No did is returned.
         if response is None:
             return None, info
 
+        # Publication successful. Did is returned.
         did = response.json().get("assetdid")
-        return Publication(
-            did=did,
-            asset_key=asset_key,
-            asset_url=asset_url,
-            **new_publication.model_dump()
-        ), info
+        return did, info
 
-    def revoke_publication(
+    async def revoke_publication(
             self, publication: Publication, nautilus_private_key: str
     ) -> Tuple[bool, str]:
         """Revoke a published asset in Nautilus."""
         url = "/".join(
             [self._revocation_url, publication.network, publication.did]
         )
-        response, info = self._post_request(
+        response, info = await self._post_request(
             url=url, headers={"priv_key": nautilus_private_key}
         )
         if response is None:
