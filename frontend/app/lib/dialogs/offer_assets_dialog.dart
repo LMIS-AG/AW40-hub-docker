@@ -1,12 +1,15 @@
 import "dart:async";
 
+import "package:aw40_hub_frontend/dtos/new_publication_dto.dart";
 import "package:aw40_hub_frontend/dtos/publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/forms/offer_assets_form.dart";
+import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:logging/logging.dart";
+import "package:provider/provider.dart";
 import "package:routemaster/routemaster.dart";
 
 class OfferAssetsDialog extends StatefulWidget {
@@ -25,6 +28,8 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
   final TextEditingController _privateKeyController = TextEditingController();
+
+  late final AssetProvider _assetProvider;
 
   final title = tr("assets.upload.title");
 
@@ -55,7 +60,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
             if (currentFormKeyState != null && currentFormKeyState.validate()) {
               currentFormKeyState.save();
 
-              final int? price = int.tryParse(_priceController.text);
+              final double? price = double.tryParse(_priceController.text);
               if (price == null) {
                 throw AppException(
                   exceptionType: ExceptionType.unexpectedNullValue,
@@ -79,11 +84,12 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
                 );
               }
 
-              final bool? confirmation = await _showConfirmOfferDialog(context);
+              final bool confirmation =
+                  await _showConfirmOfferDialog(context) ?? false;
 
-              if (confirmation == true) {
-                _uploadAsset(price, licenseType, privateKeyType);
-              }
+              if (confirmation) {
+                await _uploadAsset(price, licenseType, privateKeyType);
+              } else {}
             }
           },
           child: Text(tr("assets.upload.offer")),
@@ -92,32 +98,39 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
     );
   }
 
-  void _uploadAsset(int price, String licenseType, String privateKeyType) {
-    final PublicationDto publicationDto = PublicationDto(
+  Future<void> _uploadAsset(
+      double price, String licenseType, String privateKeyType) async {
+    _assetProvider = Provider.of<AssetProvider>(context, listen: false);
+    final NewPublicationDto newPublicationDto = NewPublicationDto(
       "PONTUSXDEV",
       licenseType,
       price,
-      "some_id",
-      "some_asset_url",
+      privateKeyType,
     );
+    await _assetProvider.publishAsset(newPublicationDto);
   }
 
   static Future<bool?> _showConfirmOfferDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
+        //final theme = Theme.of(context);
         return AlertDialog(
-          title: Text(tr("assets.upload.confirm.title")),
-          content: Text(tr("assets.upload.confirm.description")),
+          title: Text(tr("assets.confirmation.title")),
+          content: Text(tr("assets.confirmation.description")),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(tr("general.cancel")),
+              child: Text(
+                tr("general.cancel"),
+                //style: theme.textTheme.labelLarge?.copyWith(
+                // color: theme.colorScheme.error, ),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
-                tr("general.proceed"),
+                tr("assets.upload.offer"),
               ),
             ),
           ],

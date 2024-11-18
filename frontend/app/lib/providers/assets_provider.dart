@@ -2,8 +2,10 @@ import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
+import "package:aw40_hub_frontend/models/new_publication_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/services/helper_service.dart";
 import "package:aw40_hub_frontend/services/http_service.dart";
@@ -19,6 +21,7 @@ class AssetProvider with ChangeNotifier {
 
   final Logger _logger = Logger("asset_provider");
   late final String workshopId;
+  late final String assetId;
 
   late final String caseId;
 
@@ -66,6 +69,34 @@ class AssetProvider with ChangeNotifier {
     if (!verifyStatusCode) return null;
     notifyListeners();
     return _decodeAssetsModelFromResponseBody(response);
+  }
+
+  Future<NewPublicationModel?> publishAsset(
+    NewPublicationDto newPublicationDto,
+  ) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> newPublicationJson = newPublicationDto.toJson();
+    final Response response =
+        await _httpService.addCase(authToken, assetId, newPublicationJson);
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not publish asset. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return null;
+    notifyListeners();
+    return _decodeNewPublicationModelFromResponseBody(response);
+  }
+
+  NewPublicationModel _decodeNewPublicationModelFromResponseBody(
+      Response response) {
+    final Map<String, dynamic> body = jsonDecode(response.body);
+    final NewPublicationDto receivedNewPublication = NewPublicationDto.fromJson(
+      body,
+    );
+    return receivedNewPublication.toModel();
   }
 
   AssetModel _decodeAssetsModelFromResponseBody(Response response) {

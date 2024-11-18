@@ -1452,12 +1452,6 @@ class MockHttpService implements HttpService {
   }
 
   @override
-  Future<Response> getSharedAssets(String token) {
-    // TODO: implement getSharedAssets
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Response> deleteObdData(
     String token,
     int? dataId,
@@ -1501,6 +1495,13 @@ class MockHttpService implements HttpService {
   @override
   Future<Response> getVehicleComponents(String token) {
     // TODO: implement getVehicleComponents
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> publishAsset(
+      String token, String assetId, Map<String, dynamic> requestBody) {
+    // TODO: implement publishAsset
     throw UnimplementedError();
   }
 }
