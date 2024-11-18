@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -44,7 +45,8 @@ class AssetProvider with ChangeNotifier {
     return json.map((e) => AssetDto.fromJson(e).toModel()).toList();
   }
 
-  createAsset(newAsset) {
+  // TODO implement
+  void createAsset(NewAssetDto newAssetDto) {
     throw UnimplementedError();
   }
 

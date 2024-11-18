@@ -5,6 +5,7 @@ general:
   city: "City"
   close: "Close"
   component: "Component"
+  create: "Create"
   customer: "Customer"
   customerId: "Customer id"
   dataType: "Data Type"
@@ -109,14 +110,11 @@ cases:
   status:
     open: "Open"
     closed: "Closed"
-  filterDialog:
-    error: "Error code"
-    resetFilterCriteria: "Reset filter"
-    title: "Filter cases"
-    toggleShared: "Show cases from all workshops"
-    tooltip: "Please select"
-    vin: "First six numbers of vehicle vin"
-    vinLengthInvalid: "Must be a maximum of six characters long"
+  createAssetDialog:
+    title: "Create asset"
+    name: "Name"
+    description: "Description"
+    author: "Author"
   addCaseDialog:
     customerTooltip: "Assign case to a customer"
     createNewCustomerTooltip: "Create new customer"
@@ -126,6 +124,14 @@ cases:
     confirmDialog:
       title: "Add customer"
       description: "Do you want to add customer {customer} to the case?"
+  filterDialog:
+    error: "Error code"
+    resetFilterCriteria: "Reset filter"
+    title: "Filter cases"
+    toggleShared: "Show cases from all workshops"
+    tooltip: "Please select"
+    vin: "First six numbers of vehicle vin"
+    vinLengthInvalid: "Must be a maximum of six characters long"
   details:
     headline: "Details"
     dialog:

@@ -17,10 +17,8 @@ class NewAssetDto {
       _$NewAssetDtoFromJson(json);
   Map<String, dynamic> toJson() => _$NewAssetDtoToJson(this);
 
-  String? id;
   String name;
-  AssetDefinitionDto definition;
-
+  AssetDefinitionDto? definition;
   String description;
   String author;
 }

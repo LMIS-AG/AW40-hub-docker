@@ -1,6 +1,7 @@
 import "dart:async";
 
-import "package:aw40_hub_frontend/dialogs/add_case_dialog.dart";
+import 'package:aw40_hub_frontend/dialogs/add_case_dialog.dart';
+import "package:aw40_hub_frontend/dialogs/create_asset_dialog.dart";
 import "package:aw40_hub_frontend/dialogs/filter_cases_dialog.dart";
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
@@ -64,8 +65,7 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     final NewAssetDto? newCase = await showDialog<NewAssetDto>(
       context: context,
       builder: (BuildContext context) {
-        // TODO CreateAssetDialog
-        return const Center();
+        return CreateAssetDialog();
       },
     );
     return newCase;
