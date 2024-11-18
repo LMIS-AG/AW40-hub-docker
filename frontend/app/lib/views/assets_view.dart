@@ -53,32 +53,8 @@ class _AssetsView extends State<AssetsView> {
           );
         }
 
-        final List<AssetModel> vehicleModels2 = [
-          AssetModel(
-            id: "some_ide",
-            name: "name",
-            definition: AssetDefinitionModel(
-              vin: "11111111111111111",
-              obdDataDtc: "obdDataDtc",
-              timeseriesDataComponent: "timeseriesDataComponent",
-            ),
-            description: "description",
-            timestamp: DateTime.now(),
-            type: "type",
-            author: "author",
-            dataStatus: "dataStatus",
-            publication: PublicationModel(
-              network: "network",
-              license: "",
-              price: 56,
-              did: "did",
-              assetUrl: "assetUrl",
-            ),
-          ),
-        ];
-
         return AssetsTable(
-          assetsModels: vehicleModels2,
+          assetsModels: vehicleModels,
           caseIndexNotifier: currentCaseIndexNotifier,
         );
       },
