@@ -1,6 +1,6 @@
 import "dart:async";
 
-import 'package:aw40_hub_frontend/dialogs/add_case_dialog.dart';
+import "package:aw40_hub_frontend/dialogs/add_case_dialog.dart";
 import "package:aw40_hub_frontend/dialogs/create_asset_dialog.dart";
 import "package:aw40_hub_frontend/dialogs/filter_cases_dialog.dart";
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
