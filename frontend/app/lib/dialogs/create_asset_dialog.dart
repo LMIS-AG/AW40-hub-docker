@@ -1,9 +1,7 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
-import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
-import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -166,22 +164,6 @@ class _CreateAssetDialogContentState extends State<CreateAssetDialogContent> {
                     return tr("general.obligatoryField");
                   }
                   return null;
-                },
-                onSaved: (value) {
-                  if (value == null) {
-                    throw AppException(
-                      exceptionType: ExceptionType.unexpectedNullValue,
-                      exceptionMessage:
-                          "First name was null, validation failed.",
-                    );
-                  }
-                  if (value.isEmpty) {
-                    throw AppException(
-                      exceptionType: ExceptionType.unexpectedNullValue,
-                      exceptionMessage:
-                          "First name was empty, validation failed.",
-                    );
-                  }
                 },
               ),
             ),
