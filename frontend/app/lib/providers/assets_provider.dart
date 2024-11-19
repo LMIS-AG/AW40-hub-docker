@@ -46,7 +46,7 @@ class AssetProvider with ChangeNotifier {
   }
 
   // TODO implement
-  void createAsset(NewAssetDto newAssetDto) {
+  Future<void> createAsset(NewAssetDto newAssetDto) {
     throw UnimplementedError();
   }
 

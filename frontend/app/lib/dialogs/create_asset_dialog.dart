@@ -63,7 +63,7 @@ class CreateAssetDialog extends StatelessWidget {
       author,
     );
 
-    _assetProvider.createAsset(filterCriteria);
+    await _assetProvider.createAsset(filterCriteria);
 
     // ignore: use_build_context_synchronously
     await Routemaster.of(context).pop();
