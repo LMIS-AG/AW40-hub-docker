@@ -17,6 +17,7 @@ class CreateAssetDialog extends StatelessWidget {
   final TextEditingController _authorController = TextEditingController();
 
   late final AssetProvider _assetProvider;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class CreateAssetDialog extends StatelessWidget {
         nameController: _nameController,
         descriptionController: _descriptionController,
         authorController: _authorController,
+        formKey: _formKey,
       ),
       actions: [
         TextButton(
@@ -41,7 +43,7 @@ class CreateAssetDialog extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () async => _createAsset(context),
+          onPressed: () async => _createAsset(context, _formKey),
           child: Text(tr("general.create")),
         ),
       ],
@@ -52,21 +54,29 @@ class CreateAssetDialog extends StatelessWidget {
     await Routemaster.of(context).pop();
   }
 
-  Future<void> _createAsset(BuildContext context) async {
-    final name = _nameController.text;
-    final description = _descriptionController.text;
-    final author = _authorController.text;
-    final filterCriteria = NewAssetDto(
-      name,
-      null,
-      description,
-      author,
-    );
+  Future<void> _createAsset(
+    BuildContext context,
+    final GlobalKey<FormState> formKey,
+  ) async {
+    final FormState? currentFormKeyState = _formKey.currentState;
+    if (currentFormKeyState != null && currentFormKeyState.validate()) {
+      currentFormKeyState.save();
 
-    await _assetProvider.createAsset(filterCriteria);
+      final name = _nameController.text;
+      final description = _descriptionController.text;
+      final author = _authorController.text;
+      final filterCriteria = NewAssetDto(
+        name,
+        null,
+        description,
+        author,
+      );
 
-    // ignore: use_build_context_synchronously
-    await Routemaster.of(context).pop();
+      await _assetProvider.createAsset(filterCriteria);
+
+      // ignore: use_build_context_synchronously
+      await Routemaster.of(context).pop();
+    }
   }
 }
 
@@ -75,12 +85,14 @@ class CreateAssetDialogContent extends StatefulWidget {
     required this.nameController,
     required this.descriptionController,
     required this.authorController,
+    required this.formKey,
     super.key,
   });
 
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final TextEditingController authorController;
+  final GlobalKey<FormState> formKey;
 
   @override
   State<CreateAssetDialogContent> createState() =>
@@ -91,6 +103,7 @@ class _CreateAssetDialogContentState extends State<CreateAssetDialogContent> {
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: widget.formKey,
       child: SizedBox(
         height: 250,
         width: 350,
