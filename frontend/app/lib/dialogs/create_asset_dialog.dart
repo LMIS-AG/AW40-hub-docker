@@ -1,7 +1,9 @@
 import "dart:async";
 
+import "package:aw40_hub_frontend/dtos/asset_definition_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -15,12 +17,14 @@ class CreateAssetDialog extends StatelessWidget {
   final TextEditingController _authorController = TextEditingController();
 
   late final AssetProvider _assetProvider;
+  late final CaseProvider _caseProvider;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     _assetProvider = Provider.of<AssetProvider>(context, listen: false);
+    _caseProvider = Provider.of<CaseProvider>(context, listen: false);
 
     return AlertDialog(
       title: Text(tr("cases.createAssetDialog.title")),
@@ -63,14 +67,22 @@ class CreateAssetDialog extends StatelessWidget {
       final name = _nameController.text;
       final description = _descriptionController.text;
       final author = _authorController.text;
-      final filterCriteria = NewAssetDto(
+
+      final fitlerCriteria = _caseProvider.filterCriteria;
+      final definition = AssetDefinitionDto(
+        fitlerCriteria?.vin,
+        fitlerCriteria?.obdDataDtc,
+        fitlerCriteria?.timeseriesDataComponent,
+      );
+
+      final newAsset = NewAssetDto(
         name,
-        null,
+        definition,
         description,
         author,
       );
 
-      await _assetProvider.createAsset(filterCriteria);
+      await _assetProvider.createAsset(newAsset);
 
       // ignore: use_build_context_synchronously
       await Routemaster.of(context).pop();

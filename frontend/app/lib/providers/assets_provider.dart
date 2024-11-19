@@ -45,9 +45,21 @@ class AssetProvider with ChangeNotifier {
     return json.map((e) => AssetDto.fromJson(e).toModel()).toList();
   }
 
-  // TODO implement
-  Future<void> createAsset(NewAssetDto newAssetDto) {
-    throw UnimplementedError();
+  Future<AssetModel?> createAsset(NewAssetDto newAssetDto) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> newAssetJson = newAssetDto.toJson();
+    final Response response =
+        await _httpService.createAsset(authToken, newAssetJson);
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not create asset. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return null;
+    notifyListeners();
+    return _decodeAssetModelFromResponseBody(response);
   }
 
   Future<AssetModel?> updateAssets(
@@ -71,10 +83,10 @@ class AssetProvider with ChangeNotifier {
     );
     if (!verifyStatusCode) return null;
     notifyListeners();
-    return _decodeAssetsModelFromResponseBody(response);
+    return _decodeAssetModelFromResponseBody(response);
   }
 
-  AssetModel _decodeAssetsModelFromResponseBody(Response response) {
+  AssetModel _decodeAssetModelFromResponseBody(Response response) {
     final Map<String, dynamic> body = jsonDecode(response.body);
     final AssetDto receivedAssets = AssetDto.fromJson(body);
     return receivedAssets.toModel();
