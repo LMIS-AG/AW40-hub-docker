@@ -153,11 +153,14 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
             ),
           ),
           IconButton(
-            onPressed: () async {
-              final NewAssetDto? newAsset = await _showCreateAssetDialog();
-              if (newAsset == null) return;
-              await assetProvider.createAsset(newAsset);
-            },
+            onPressed: _isFilterActive
+                ? () async {
+                    final NewAssetDto? newAsset =
+                        await _showCreateAssetDialog();
+                    if (newAsset == null) return;
+                    await assetProvider.createAsset(newAsset);
+                  }
+                : null,
             icon: const Icon(Icons.create_new_folder),
             tooltip: tr("cases.actions.createAsset"),
           ),
