@@ -88,8 +88,8 @@ class AssetProvider with ChangeNotifier {
 
   AssetModel _decodeAssetModelFromResponseBody(Response response) {
     final Map<String, dynamic> body = jsonDecode(response.body);
-    final AssetDto receivedAssets = AssetDto.fromJson(body);
-    return receivedAssets.toModel();
+    final AssetDto assetDto = AssetDto.fromJson(body);
+    return assetDto.toModel();
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {

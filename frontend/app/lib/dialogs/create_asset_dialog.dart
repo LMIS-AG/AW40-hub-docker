@@ -60,7 +60,9 @@ class CreateAssetDialog extends StatelessWidget {
     BuildContext context,
     final GlobalKey<FormState> formKey,
   ) async {
+    final messengerState = ScaffoldMessenger.of(context);
     final FormState? currentFormKeyState = _formKey.currentState;
+
     if (currentFormKeyState != null && currentFormKeyState.validate()) {
       currentFormKeyState.save();
 
@@ -82,7 +84,11 @@ class CreateAssetDialog extends StatelessWidget {
         author,
       );
 
-      await _assetProvider.createAsset(newAsset);
+      final result = await _assetProvider.createAsset(newAsset);
+      final String snackBarText = result != null
+          ? tr("cases.createAssetDialog.successMessage")
+          : tr("cases.createAssetDialog.errorMessage");
+      messengerState.showSnackBar(SnackBar(content: Text(snackBarText)));
 
       // ignore: use_build_context_synchronously
       await Routemaster.of(context).pop();

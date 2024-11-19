@@ -114,6 +114,8 @@ cases:
     name: "Name"
     description: "Beschreibung"
     author: "Autor"
+    successMessage: "Das Asset wurde erfolgreich erstellt."
+    errorMessage: "Das Asset konnte nicht erstellt werden."
   addCaseDialog:
     customerTooltip: "Fall einem Kunden zuordnen"
     createNewCustomerTooltip: "Neuen Kunden erstellen"
