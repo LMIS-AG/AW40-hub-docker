@@ -104,7 +104,3 @@ enum TimeseriesFormat { timeseries, omniview, picoscope }
 enum Formats { obd, vcds, timeseries, omniview, picoscope, symptom }
 
 enum AnonymousCustomerId { unknown, anonymous }
-
-enum AssetsDatatype { datatype, aiModell, aiService }
-
-enum Licence { mit, apache20, unknown }
