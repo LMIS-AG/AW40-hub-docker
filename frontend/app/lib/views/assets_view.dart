@@ -77,7 +77,7 @@ class _AssetsView extends State<AssetsView> {
         ];
 
         return AssetsTable(
-          assetsModels: vehicleModels2,
+          assetModels: vehicleModels2,
           caseIndexNotifier: currentCaseIndexNotifier,
         );
       },
@@ -87,12 +87,12 @@ class _AssetsView extends State<AssetsView> {
 
 class AssetsTable extends StatefulWidget {
   const AssetsTable({
-    required this.assetsModels,
+    required this.assetModels,
     required this.caseIndexNotifier,
     super.key,
   });
 
-  final List<AssetModel> assetsModels;
+  final List<AssetModel> assetModels;
   final ValueNotifier<int?> caseIndexNotifier;
 
   @override
@@ -110,7 +110,7 @@ class AssetsTableState extends State<AssetsTable> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.assetsModels.isEmpty) {
+    if (widget.assetModels.isEmpty) {
       return Center(
         child: Text(
           tr("assets.noAssets"),
@@ -128,7 +128,7 @@ class AssetsTableState extends State<AssetsTable> {
               source: AssetsDataTableSource(
                 themeData: Theme.of(context),
                 currentIndexNotifier: currentAssetsIndexNotifier,
-                assetModels: widget.assetsModels,
+                assetModels: widget.assetModels,
                 onPressedRow: (int i) =>
                     setState(() => currentAssetsIndexNotifier.value = i),
               ),
@@ -153,7 +153,7 @@ class AssetsTableState extends State<AssetsTable> {
             return Expanded(
               flex: 2,
               child: AssetsDetailView(
-                assetsModel: widget.assetsModels[value],
+                assetsModel: widget.assetModels[value],
                 onClose: () => currentAssetsIndexNotifier.value = null,
               ),
             );
