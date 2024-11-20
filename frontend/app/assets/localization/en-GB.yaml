@@ -205,6 +205,7 @@ forms:
       labelA: "Component A"
       labelB: "Component B"
       labelC: "Component C"
+      labelD: "Component D"
       label: "Label"
       hint: "Enter a Component"
   timeseries:

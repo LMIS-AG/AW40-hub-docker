@@ -23,12 +23,15 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
   final TextEditingController _componentAController = TextEditingController();
   final TextEditingController _componentBController = TextEditingController();
   final TextEditingController _componentCController = TextEditingController();
+  final TextEditingController _componentDController = TextEditingController();
   final TextEditingController _labelAController = TextEditingController();
   final TextEditingController _labelBController = TextEditingController();
   final TextEditingController _labelCController = TextEditingController();
+  final TextEditingController _labelDController = TextEditingController();
   PicoscopeLabel? selectedLabelA;
   PicoscopeLabel? selectedLabelB;
   PicoscopeLabel? selectedLabelC;
+  PicoscopeLabel? selectedLabelD;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -164,6 +167,46 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _componentDController,
+                    decoration: InputDecoration(
+                      labelText: tr("forms.picoscope.component.labelD"),
+                      hintText: tr("forms.picoscope.component.hint"),
+                      border: const OutlineInputBorder(),
+                      suffixText: tr("forms.optional"),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownMenu<PicoscopeLabel>(
+                    controller: _labelDController,
+                    label: Text(tr("forms.picoscope.component.label")),
+                    hintText: tr("forms.optional"),
+                    onSelected: (PicoscopeLabel? picoscopeLabel) {
+                      setState(() {
+                        selectedLabelD = picoscopeLabel;
+                      });
+                    },
+                    dropdownMenuEntries: PicoscopeLabel.values
+                        .map<DropdownMenuEntry<PicoscopeLabel>>(
+                      (PicoscopeLabel timeseriesDataLabel) {
+                        return DropdownMenuEntry<PicoscopeLabel>(
+                          value: timeseriesDataLabel,
+                          label: timeseriesDataLabel.name,
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         onSubmit: _onSubmit,
@@ -192,6 +235,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     final String componentA = _componentAController.text;
     final String componentB = _componentBController.text;
     final String componentC = _componentCController.text;
+    final String componentD = _componentDController.text;
     //if (_labelAController.text.isEmpty) return;
     final PicoscopeLabel? labelA =
         EnumToString.fromString(PicoscopeLabel.values, _labelAController.text);
@@ -199,6 +243,8 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
         EnumToString.fromString(PicoscopeLabel.values, _labelBController.text);
     final PicoscopeLabel? labelC =
         EnumToString.fromString(PicoscopeLabel.values, _labelCController.text);
+    final PicoscopeLabel? labelD =
+        EnumToString.fromString(PicoscopeLabel.values, _labelDController.text);
 
     final bool result = await provider.uploadPicoscopeData(
       widget.caseId,
@@ -207,9 +253,11 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
       componentA,
       componentB,
       componentC,
+      componentD,
       labelA,
       labelB,
       labelC,
+      labelD,
     );
 
     final String snackBarText = result

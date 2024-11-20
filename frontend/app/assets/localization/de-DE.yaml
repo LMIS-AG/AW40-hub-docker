@@ -204,6 +204,7 @@ forms:
       labelA: "Komponente A"
       labelB: "Komponente B"
       labelC: "Komponente C"
+      labelD: "Komponente D"
       label: "Label"
       hint: "Komponente eingeben"
   timeseries:
