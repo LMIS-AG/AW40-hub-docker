@@ -18,18 +18,16 @@ import "package:logging/logging.dart";
 class CaseProvider with ChangeNotifier {
   CaseProvider(this._httpService);
   final HttpService _httpService;
-
   final Logger _logger = Logger("case_provider");
+
+  String? _authToken;
   late String workshopId;
+  bool notifiedListenersAfterGettingCurrentCases = false;
+
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
 
-  String? _authToken;
-
-  bool notifiedListenersAfterGettingCurrentCases = false;
-
   FilterCriteria? _filterCriteria;
-
   FilterCriteria? get filterCriteria => _filterCriteria;
 
   void setFilterCriteria(FilterCriteria criteria) {
