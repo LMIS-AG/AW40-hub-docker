@@ -8,4 +8,12 @@ class AssetDefinitionModel {
   String? vin;
   String? obdDataDtc;
   String? timeseriesDataComponent;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "vin": vin,
+      "obdDataDtc": obdDataDtc,
+      "timeseriesDataComponent": timeseriesDataComponent,
+    };
+  }
 }
