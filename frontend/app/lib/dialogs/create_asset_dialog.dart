@@ -2,7 +2,7 @@ import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/asset_definition_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/asset_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";

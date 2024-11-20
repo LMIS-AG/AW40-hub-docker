@@ -7,7 +7,7 @@ import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/models/logged_in_user_model.dart";
 import "package:aw40_hub_frontend/models/navigation_item_model.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/asset_provider.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/scaffolds/desktop_scaffold.dart";

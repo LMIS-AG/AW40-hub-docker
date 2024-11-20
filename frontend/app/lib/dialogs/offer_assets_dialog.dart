@@ -3,7 +3,7 @@ import "dart:async";
 import "package:aw40_hub_frontend/dtos/new_publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/forms/offer_assets_form.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/asset_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -122,6 +122,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   ) async {
     final String assetId = _assetProvider.assetId;
     final NewPublicationDto newPublicationDto = NewPublicationDto(
+      // TODO is this hard coded value ok?
       "PONTUSXDEV",
       licenseType,
       price,
