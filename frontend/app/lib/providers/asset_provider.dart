@@ -20,7 +20,6 @@ class AssetProvider with ChangeNotifier {
   final HttpService _httpService;
 
   final Logger _logger = Logger("asset_provider");
-  late final String workshopId;
 
   String? _authToken;
 
