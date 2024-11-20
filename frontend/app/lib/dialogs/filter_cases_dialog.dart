@@ -75,7 +75,20 @@ class FilterCasesDialog extends StatelessWidget {
     await Routemaster.of(context).pop();
   }
 
+  bool _containsAnyFilterInput() {
+    return _obdDataDtcController.text.isNotEmpty ||
+        _vinController.text.isNotEmpty ||
+        _timeseriesDataComponentController.text.isNotEmpty;
+  }
+
   Future<void> _applyFilterForCases(BuildContext context) async {
+    if (!_containsAnyFilterInput()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr("cases.filterDialog.noFilterInput"))),
+      );
+      return;
+    }
+
     final obdDataDtc = _obdDataDtcController.text;
     final vin = _vinController.text;
     final timeseriesDataComponent = _timeseriesDataComponentController.text;

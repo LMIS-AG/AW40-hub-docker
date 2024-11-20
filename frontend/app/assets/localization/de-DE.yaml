@@ -127,6 +127,7 @@ cases:
       description: "Möchten Sie Kunde {customer} zum Fall hinzufügen?"
   filterDialog:
     error: "Fehler-Code"
+    noFilterInput: "Bitte mindestens einen Filter eingeben"
     resetFilterCriteria: "Filter zurücksetzen"
     title: "Fälle filtern"
     toggleShared: "Fälle aus allen Werkstätten anzeigen"

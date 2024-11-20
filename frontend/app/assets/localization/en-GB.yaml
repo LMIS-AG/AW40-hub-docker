@@ -128,6 +128,7 @@ cases:
       description: "Do you want to add customer {customer} to the case?"
   filterDialog:
     error: "Error code"
+    noFilterInput: "Please enter at least one filter"
     resetFilterCriteria: "Reset filter"
     title: "Filter cases"
     toggleShared: "Show cases from all workshops"
