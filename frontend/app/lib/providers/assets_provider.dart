@@ -1,7 +1,6 @@
 import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/asset_dto.dart";
-import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
@@ -57,30 +56,6 @@ class AssetProvider with ChangeNotifier {
       response.statusCode,
       201,
       "Could not create asset. ",
-      response,
-      _logger,
-    );
-    if (!verifyStatusCode) return null;
-    notifyListeners();
-    return _decodeAssetModelFromResponseBody(response);
-  }
-
-  Future<AssetModel?> updateAssets(
-    String caseId_,
-    AssetsUpdateDto updateAssetsDto,
-  ) async {
-    final String authToken = _getAuthToken();
-    final Map<String, dynamic> updateAssetsJson = updateAssetsDto.toJson();
-    final Response response = await _httpService.updateAssets(
-      authToken,
-      workshopId,
-      caseId_,
-      updateAssetsJson,
-    );
-    final bool verifyStatusCode = HelperService.verifyStatusCode(
-      response.statusCode,
-      200,
-      "Could not update assets. ",
       response,
       _logger,
     );
