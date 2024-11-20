@@ -1,8 +1,6 @@
 import "package:aw40_hub_frontend/data_sources/assets_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
-import "package:aw40_hub_frontend/models/asset_definition_model.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
-import "package:aw40_hub_frontend/models/publication_model.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/views/assets_detail_view.dart";
@@ -45,39 +43,16 @@ class _AssetsView extends State<AssetsView> {
           _logger.shout(snapshot.data);
           return const Center(child: CircularProgressIndicator());
         }
-        final List<AssetModel>? vehicleModels = snapshot.data;
-        if (vehicleModels == null) {
+        final List<AssetModel>? assetModels = snapshot.data;
+        if (assetModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
             exceptionMessage: "Received no assets.",
           );
         }
-        final List<AssetModel> vehicleModels2 = [
-          AssetModel(
-            id: "some_ide",
-            name: "name",
-            definition: AssetDefinitionModel(
-              vin: "11111111111111111",
-              obdDataDtc: "obdDataDtc",
-              timeseriesDataComponent: "timeseriesDataComponent",
-            ),
-            description: "description",
-            timestamp: DateTime.now(),
-            type: "type",
-            author: "author",
-            dataStatus: "dataStatus",
-            publication: PublicationModel(
-              network: "network",
-              license: "",
-              price: 56,
-              did: "did",
-              assetUrl: "assetUrl",
-            ),
-          ),
-        ];
 
         return AssetsTable(
-          assetModels: vehicleModels2,
+          assetModels: assetModels,
           caseIndexNotifier: currentCaseIndexNotifier,
         );
       },
