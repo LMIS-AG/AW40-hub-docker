@@ -56,7 +56,7 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     final List<String> valuesCase = [
       widget.assetModel.timestamp.toString(),
       widget.assetModel.name,
-      widget.assetModel.definition.toJson().toString(),
+      widget.assetModel.definition.toJsonWithoutNullValues().toString(),
     ];
 
     return SizedBox.expand(
