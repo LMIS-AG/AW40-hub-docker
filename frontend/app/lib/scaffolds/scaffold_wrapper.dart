@@ -171,7 +171,7 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
                 if (newCase == null) return;
                 await caseProvider.addCase(newCase);
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_circle),
               tooltip: tr("cases.actions.addCase"),
             ),
           ),
