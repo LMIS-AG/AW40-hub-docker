@@ -151,7 +151,8 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: IconButton(
-              onPressed: _isFilterActive
+              onPressed: _isFilterActive &&
+                      !caseProvider.notifiedListenersAfterGettingCurrentCases
                   ? () async {
                       final NewAssetDto? newAsset =
                           await _showCreateAssetDialog();

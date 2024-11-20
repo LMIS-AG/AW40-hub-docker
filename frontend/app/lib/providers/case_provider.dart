@@ -23,7 +23,10 @@ class CaseProvider with ChangeNotifier {
   late String workshopId;
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
+
   String? _authToken;
+
+  bool notifiedListenersAfterGettingCurrentCases = false;
 
   FilterCriteria? _filterCriteria;
 
@@ -36,6 +39,7 @@ class CaseProvider with ChangeNotifier {
 
   void resetFilterCriteria() {
     _filterCriteria = null;
+    notifiedListenersAfterGettingCurrentCases = false;
     notifyListeners();
   }
 
@@ -45,6 +49,7 @@ class CaseProvider with ChangeNotifier {
 
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
+    notifiedListenersAfterGettingCurrentCases = false;
     await getCurrentCases();
     notifyListeners();
   }
@@ -73,8 +78,18 @@ class CaseProvider with ChangeNotifier {
       response,
       _logger,
     );
-    if (!verifyStatusCode) return [];
-    return _jsonBodyToCaseModelList(response.body);
+    late List<CaseModel> result;
+    if (!verifyStatusCode) {
+      result = [];
+    } else {
+      result = _jsonBodyToCaseModelList(response.body);
+    }
+
+    if (result.isEmpty) {
+      notifiedListenersAfterGettingCurrentCases = true;
+      notifyListeners();
+    }
+    return result;
   }
 
   Future<List<CaseModel>> getCasesByVehicleVin(String vehicleVin) async {
