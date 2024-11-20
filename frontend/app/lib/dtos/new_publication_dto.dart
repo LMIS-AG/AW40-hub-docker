@@ -19,10 +19,11 @@ class NewPublicationDto {
 
   NewPublicationModel toModel() {
     return NewPublicationModel(
-        license: license,
-        network: network,
-        price: price,
-        privateKey: privateKey);
+      license: license,
+      network: network,
+      price: price,
+      privateKey: privateKey,
+    );
   }
 
   String network;

@@ -1500,7 +1500,10 @@ class MockHttpService implements HttpService {
 
   @override
   Future<Response> publishAsset(
-      String token, String assetId, Map<String, dynamic> requestBody) {
+    String token,
+    String assetId,
+    Map<String, dynamic> requestBody,
+  ) {
     // TODO: implement publishAsset
     throw UnimplementedError();
   }

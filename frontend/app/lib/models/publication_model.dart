@@ -9,7 +9,7 @@ class PublicationModel {
 
   String network;
   String license;
-  int? price;
+  double? price;
   String did;
   String assetUrl;
 }

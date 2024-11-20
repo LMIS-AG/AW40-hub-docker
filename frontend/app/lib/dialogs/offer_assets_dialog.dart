@@ -1,7 +1,6 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dtos/new_publication_dto.dart";
-import "package:aw40_hub_frontend/dtos/publication_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/forms/offer_assets_form.dart";
 import "package:aw40_hub_frontend/providers/assets_provider.dart";
@@ -36,6 +35,8 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    _assetProvider = Provider.of<AssetProvider>(context, listen: false);
+
     return AlertDialog(
       title: Text(title),
       content: OfferAssetsDialogForm(
@@ -94,20 +95,39 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
           },
           child: Text(tr("assets.upload.offer")),
         ),
+        /*TextButton(
+          onPressed: () async {
+            final String? keyConfirmation =
+                await _showConfirmRemoveDialog(context);
+
+            if (keyConfirmation != null && keyConfirmation.isNotEmpty) {
+              await _assetProvider.deleteAsset(keyConfirmation);
+            }
+          },
+          child: Text(
+            tr("assets.upload.remove"),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ),*/
       ],
     );
   }
 
   Future<void> _uploadAsset(
-      double price, String licenseType, String privateKeyType) async {
-    _assetProvider = Provider.of<AssetProvider>(context, listen: false);
+    double price,
+    String licenseType,
+    String privateKeyType,
+  ) async {
+    final String assetId = _assetProvider.assetId;
     final NewPublicationDto newPublicationDto = NewPublicationDto(
       "PONTUSXDEV",
       licenseType,
       price,
       privateKeyType,
     );
-    await _assetProvider.publishAsset(newPublicationDto);
+    await _assetProvider.publishAsset(assetId, newPublicationDto);
   }
 
   static Future<bool?> _showConfirmOfferDialog(BuildContext context) {
@@ -142,6 +162,56 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
   }
+
+  /*Future<String?> _showConfirmRemoveDialog(BuildContext context) async {
+    final TextEditingController privateKeyController = TextEditingController();
+
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          title: Text(tr("assets.remove.title")),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(tr("assets.remove.description")),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: privateKeyController,
+                decoration: InputDecoration(
+                  labelText: tr("assets.privateKey"),
+                  border: const OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: Text(
+                tr("general.cancel"),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                final privateKey = privateKeyController.text;
+                Navigator.pop(
+                  context,
+                  privateKey.isNotEmpty ? privateKey : null,
+                );
+              },
+              child: Text(tr("general.confirm")),
+            ),
+          ],
+        );
+      },
+    );
+  }*/
 }
 
 // ignore: must_be_immutable

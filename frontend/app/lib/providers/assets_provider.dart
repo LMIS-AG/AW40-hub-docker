@@ -72,12 +72,13 @@ class AssetProvider with ChangeNotifier {
   }
 
   Future<NewPublicationModel?> publishAsset(
+    String assetId,
     NewPublicationDto newPublicationDto,
   ) async {
     final String authToken = _getAuthToken();
     final Map<String, dynamic> newPublicationJson = newPublicationDto.toJson();
     final Response response =
-        await _httpService.addCase(authToken, assetId, newPublicationJson);
+        await _httpService.publishAsset(authToken, assetId, newPublicationJson);
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
       201,
@@ -91,7 +92,8 @@ class AssetProvider with ChangeNotifier {
   }
 
   NewPublicationModel _decodeNewPublicationModelFromResponseBody(
-      Response response) {
+    Response response,
+  ) {
     final Map<String, dynamic> body = jsonDecode(response.body);
     final NewPublicationDto receivedNewPublication = NewPublicationDto.fromJson(
       body,
