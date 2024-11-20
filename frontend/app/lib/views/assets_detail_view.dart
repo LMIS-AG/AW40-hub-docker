@@ -77,8 +77,6 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                         foregroundColor: colorScheme.primary,
                       ),
                     ),
-                    // TODO remove?
-                    // const SizedBox(width: 16),
                     Text(
                       tr("cases.details.headline"),
                       style: textTheme.displaySmall,
