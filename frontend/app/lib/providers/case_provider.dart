@@ -22,7 +22,7 @@ class CaseProvider with ChangeNotifier {
 
   String? _authToken;
   late String workshopId;
-  bool notifiedListenersAfterGettingCurrentCases = false;
+  bool notifiedListenersAfterGettingEmptyCurrentCases = false;
 
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
@@ -37,7 +37,7 @@ class CaseProvider with ChangeNotifier {
 
   void resetFilterCriteria() {
     _filterCriteria = null;
-    notifiedListenersAfterGettingCurrentCases = false;
+    notifiedListenersAfterGettingEmptyCurrentCases = false;
     notifyListeners();
   }
 
@@ -47,7 +47,7 @@ class CaseProvider with ChangeNotifier {
 
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
-    notifiedListenersAfterGettingCurrentCases = false;
+    notifiedListenersAfterGettingEmptyCurrentCases = false;
     await getCurrentCases();
     notifyListeners();
   }
@@ -84,7 +84,7 @@ class CaseProvider with ChangeNotifier {
     }
 
     if (result.isEmpty) {
-      notifiedListenersAfterGettingCurrentCases = true;
+      notifiedListenersAfterGettingEmptyCurrentCases = true;
       notifyListeners();
     }
     return result;

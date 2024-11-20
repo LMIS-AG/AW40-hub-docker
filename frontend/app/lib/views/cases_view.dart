@@ -30,8 +30,8 @@ class _CasesViewState extends State<CasesView> {
   Widget build(BuildContext context) {
     final caseProvider = Provider.of<CaseProvider>(context);
 
-    if (caseProvider.notifiedListenersAfterGettingCurrentCases) {
-      caseProvider.notifiedListenersAfterGettingCurrentCases = false;
+    if (caseProvider.notifiedListenersAfterGettingEmptyCurrentCases) {
+      caseProvider.notifiedListenersAfterGettingEmptyCurrentCases = false;
       return buildCasesTable([]);
     }
 
