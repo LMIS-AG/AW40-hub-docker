@@ -43,14 +43,14 @@ class _CasesViewState extends State<CasesView> {
             !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        List<CaseModel>? caseModels = snapshot.data;
+        final List<CaseModel>? caseModels = snapshot.data;
         if (caseModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
             exceptionMessage: "Received no case data.",
           );
         }
-        return buildCasesTable(caseModels!);
+        return buildCasesTable(caseModels);
       },
     );
   }
