@@ -271,9 +271,11 @@ class CaseProvider with ChangeNotifier {
     String? componentA,
     String? componentB,
     String? componentC,
+    String? componentD,
     PicoscopeLabel? labelA,
     PicoscopeLabel? labelB,
     PicoscopeLabel? labelC,
+    PicoscopeLabel? labelD,
   ) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.uploadPicoscopeData(
@@ -285,9 +287,11 @@ class CaseProvider with ChangeNotifier {
       componentA: componentA,
       componentB: componentB,
       componentC: componentC,
+      componentD: componentD,
       labelA: labelA,
       labelB: labelB,
       labelC: labelC,
+      labelD: labelD,
     );
     final bool verifyStatusCode = HelperService.verifyStatusCode(
       response.statusCode,
