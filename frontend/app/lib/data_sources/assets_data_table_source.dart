@@ -29,7 +29,8 @@ class AssetsDataTableSource extends DataTableSource {
       cells: [
         DataCell(Text(assetModel.name)),
         DataCell(
-            Text(assetModel.definition.toJsonWithoutNullValues().toString())),
+          Text(assetModel.definition.toJsonWithoutNullValues().toString()),
+        ),
         DataCell(Text(assetModel.timestamp.toString())),
       ],
     );
