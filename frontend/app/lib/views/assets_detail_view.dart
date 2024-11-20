@@ -6,18 +6,18 @@ import "package:flutter/material.dart";
 
 class AssetsDetailView extends StatelessWidget {
   const AssetsDetailView({
-    required this.assetsModel,
+    required this.assetModel,
     required this.onClose,
     super.key,
   });
 
-  final AssetModel assetsModel;
+  final AssetModel assetModel;
   final void Function() onClose;
 
   @override
   Widget build(BuildContext context) {
     return DesktopAssetsDetailView(
-      assetsModel: assetsModel,
+      assetModel: assetModel,
       onClose: onClose,
       onDelete: () {},
     );
@@ -26,13 +26,13 @@ class AssetsDetailView extends StatelessWidget {
 
 class DesktopAssetsDetailView extends StatefulWidget {
   const DesktopAssetsDetailView({
-    required this.assetsModel,
+    required this.assetModel,
     required this.onClose,
     required this.onDelete,
     super.key,
   });
 
-  final AssetModel assetsModel;
+  final AssetModel assetModel;
   final void Function() onClose;
   final void Function() onDelete;
 
@@ -54,9 +54,9 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
       tr("assets.headlines.filter")
     ];
     final List<String> valuesCase = [
-      widget.assetsModel.timestamp.toString(),
-      widget.assetsModel.name,
-      widget.assetsModel.definition.toString(),
+      widget.assetModel.timestamp.toString(),
+      widget.assetModel.name,
+      widget.assetModel.definition.toString(),
     ];
 
     return SizedBox.expand(
@@ -77,6 +77,7 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                         foregroundColor: colorScheme.primary,
                       ),
                     ),
+                    // TODO remove?
                     // const SizedBox(width: 16),
                     Text(
                       tr("cases.details.headline"),
@@ -123,7 +124,7 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     return showDialog<AssetDto>(
       context: context,
       builder: (BuildContext context) {
-        return const OfferAssetsDialog();
+        return OfferAssetsDialog(assetModelId: widget.assetModel.id!);
       },
     );
   }

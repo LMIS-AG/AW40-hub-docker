@@ -13,8 +13,11 @@ import "package:routemaster/routemaster.dart";
 
 class OfferAssetsDialog extends StatefulWidget {
   const OfferAssetsDialog({
+    required this.assetModelId,
     super.key,
   });
+
+  final String assetModelId;
 
   @override
   State<OfferAssetsDialog> createState() => _OfferAssetsDialogState();
@@ -89,38 +92,22 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
                   await _showConfirmOfferDialog(context) ?? false;
 
               if (confirmation) {
-                await _uploadAsset(price, licenseType, privateKeyType);
+                await _publishAsset(price, licenseType, privateKeyType);
               } else {}
             }
           },
           child: Text(tr("assets.upload.offer")),
         ),
-        /*TextButton(
-          onPressed: () async {
-            final String? keyConfirmation =
-                await _showConfirmRemoveDialog(context);
-
-            if (keyConfirmation != null && keyConfirmation.isNotEmpty) {
-              await _assetProvider.deleteAsset(keyConfirmation);
-            }
-          },
-          child: Text(
-            tr("assets.upload.remove"),
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-        ),*/
       ],
     );
   }
 
-  Future<void> _uploadAsset(
+  Future<void> _publishAsset(
     double price,
     String licenseType,
     String privateKeyType,
   ) async {
-    final String assetId = _assetProvider.assetId;
+    final String assetId = widget.assetModelId;
     final NewPublicationDto newPublicationDto = NewPublicationDto(
       // TODO is this hard coded value ok?
       "PONTUSXDEV",

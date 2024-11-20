@@ -128,7 +128,7 @@ class AssetsTableState extends State<AssetsTable> {
             return Expanded(
               flex: 2,
               child: AssetsDetailView(
-                assetsModel: widget.assetModels[value],
+                assetModel: widget.assetModels[value],
                 onClose: () => currentAssetsIndexNotifier.value = null,
               ),
             );

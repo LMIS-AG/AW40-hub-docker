@@ -21,9 +21,6 @@ class AssetProvider with ChangeNotifier {
 
   final Logger _logger = Logger("asset_provider");
   late final String workshopId;
-  late final String assetId;
-
-  late final String caseId;
 
   String? _authToken;
 
