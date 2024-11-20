@@ -236,7 +236,6 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     final String componentB = _componentBController.text;
     final String componentC = _componentCController.text;
     final String componentD = _componentDController.text;
-    //if (_labelAController.text.isEmpty) return;
     final PicoscopeLabel? labelA =
         EnumToString.fromString(PicoscopeLabel.values, _labelAController.text);
     final PicoscopeLabel? labelB =
