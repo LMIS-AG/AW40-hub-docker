@@ -174,9 +174,10 @@ vehicles:
 assets:
   title: "Assets"
   headlines:
-    timeOfGeneration: "Zeitpunkt der Generation"
-    name: "Name"
+    description: "Beschreibung"
     filter: "Filter"
+    name: "Name"
+    timeOfGeneration: "Zeitpunkt der Generation"
   confirmation:
     title: Asset Upload
     descrption: "Möchten Sie das Asset wirklich anbieten?"

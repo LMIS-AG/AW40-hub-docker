@@ -158,7 +158,7 @@ cases:
       obdData: "OBD Data"
       symptoms: "Symptoms"
       timeseriesData: "Timeseries Data"
-uploadData: 
+uploadData:
   label: "Upload Data"
 customers:
   title: "Customers"
@@ -175,13 +175,14 @@ vehicles:
 assets:
   title: "Assets"
   headlines:
-    timeOfGeneration: "Time of Generation"
-    name: "Name"
+    description: "Description"
     filter: "Filter"
-  confirmation: 
+    name: "Name"
+    timeOfGeneration: "Time of Generation"
+  confirmation:
     title: Asset Upload
     descrption: "Do you really would like to offer the asset?"
-  upload: 
+  upload:
     title: "Asset-Upload"
     price: "Price"
     license: "License"
