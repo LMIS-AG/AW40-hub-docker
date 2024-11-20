@@ -5,6 +5,7 @@ general:
   city: "Stadt"
   close: "Schließen"
   component: "Komponente"
+  create: "Erstellen"
   customer: "Kunde"
   customerId: "Kunden ID"
   dataType: "Datentyp"
@@ -97,9 +98,10 @@ cases:
   title: "Fälle"
   actions:
     addCase: "Neuen Fall anlegen"
-    updateCase: "Fall bearbeiten"
-    sortCases: "@:general.sort"
+    createAsset: "Asset erstellen"
     filterCases: "@:general.filter"
+    sortCases: "@:general.sort"
+    updateCase: "Fall bearbeiten"
   occasions:
     notSpecified: "@:general.notSpecified"
     service: "@:general.service"
@@ -107,14 +109,13 @@ cases:
   status:
     open: "Offen"
     closed: "Geschlossen"
-  filterDialog:
-    error: "Fehler-Code"
-    resetFilterCriteria: "Filter zurücksetzen"
-    title: "Fälle filtern"
-    toggleShared: "Fälle aus allen Werkstätten anzeigen"
-    tooltip: "Bitte auswählen"
-    vin: "Die ersten sechs Stellen der VIN"
-    vinLengthInvalid: "Muss maximal sechs Zeichen lang sein"
+  createAssetDialog:
+    title: "Asset erstellen"
+    name: "Name"
+    description: "Beschreibung"
+    author: "Autor"
+    successMessage: "Das Asset wurde erfolgreich erstellt."
+    errorMessage: "Das Asset konnte nicht erstellt werden."
   addCaseDialog:
     customerTooltip: "Fall einem Kunden zuordnen"
     createNewCustomerTooltip: "Neuen Kunden erstellen"
@@ -124,6 +125,15 @@ cases:
     confirmDialog:
       title: "Kunde hinzufügen"
       description: "Möchten Sie Kunde {customer} zum Fall hinzufügen?"
+  filterDialog:
+    error: "Fehler-Code"
+    noFilterInput: "Bitte mindestens einen Filter eingeben"
+    resetFilterCriteria: "Filter zurücksetzen"
+    title: "Fälle filtern"
+    toggleShared: "Fälle aus allen Werkstätten anzeigen"
+    tooltip: "Bitte auswählen"
+    vin: "Die ersten sechs Stellen der VIN"
+    vinLengthInvalid: "Muss maximal sechs Zeichen lang sein"
   details:
     headline: "Detailansicht"
     dialog:

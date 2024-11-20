@@ -494,6 +494,19 @@ class HttpService {
     );
   }
 
+  Future<http.Response> createAsset(
+    String token,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.post(
+      Uri.parse("$backendUrl/dataspace/manage/assets"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> updateAssets(
     String token,
     String workshopId,

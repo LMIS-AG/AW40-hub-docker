@@ -18,15 +18,16 @@ import "package:logging/logging.dart";
 class CaseProvider with ChangeNotifier {
   CaseProvider(this._httpService);
   final HttpService _httpService;
-
   final Logger _logger = Logger("case_provider");
+
+  String? _authToken;
   late String workshopId;
+  bool notifiedListenersAfterGettingEmptyCurrentCases = false;
+
   bool _showSharedCases = true;
   bool get showSharedCases => _showSharedCases;
-  String? _authToken;
 
   FilterCriteria? _filterCriteria;
-
   FilterCriteria? get filterCriteria => _filterCriteria;
 
   void setFilterCriteria(FilterCriteria criteria) {
@@ -36,6 +37,7 @@ class CaseProvider with ChangeNotifier {
 
   void resetFilterCriteria() {
     _filterCriteria = null;
+    notifiedListenersAfterGettingEmptyCurrentCases = false;
     notifyListeners();
   }
 
@@ -45,6 +47,7 @@ class CaseProvider with ChangeNotifier {
 
   Future<void> toggleShowSharedCases() async {
     _showSharedCases = !_showSharedCases;
+    notifiedListenersAfterGettingEmptyCurrentCases = false;
     await getCurrentCases();
     notifyListeners();
   }
@@ -73,8 +76,18 @@ class CaseProvider with ChangeNotifier {
       response,
       _logger,
     );
-    if (!verifyStatusCode) return [];
-    return _jsonBodyToCaseModelList(response.body);
+    late List<CaseModel> result;
+    if (!verifyStatusCode) {
+      result = [];
+    } else {
+      result = _jsonBodyToCaseModelList(response.body);
+    }
+
+    if (result.isEmpty) {
+      notifiedListenersAfterGettingEmptyCurrentCases = true;
+      notifyListeners();
+    }
+    return result;
   }
 
   Future<List<CaseModel>> getCasesByVehicleVin(String vehicleVin) async {

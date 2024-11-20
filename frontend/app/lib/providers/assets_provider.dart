@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/assets_update_dto.dart";
+import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
@@ -44,6 +45,23 @@ class AssetProvider with ChangeNotifier {
     return json.map((e) => AssetDto.fromJson(e).toModel()).toList();
   }
 
+  Future<AssetModel?> createAsset(NewAssetDto newAssetDto) async {
+    final String authToken = _getAuthToken();
+    final Map<String, dynamic> newAssetJson = newAssetDto.toJson();
+    final Response response =
+        await _httpService.createAsset(authToken, newAssetJson);
+    final bool verifyStatusCode = HelperService.verifyStatusCode(
+      response.statusCode,
+      201,
+      "Could not create asset. ",
+      response,
+      _logger,
+    );
+    if (!verifyStatusCode) return null;
+    notifyListeners();
+    return _decodeAssetModelFromResponseBody(response);
+  }
+
   Future<AssetModel?> updateAssets(
     String caseId_,
     AssetsUpdateDto updateAssetsDto,
@@ -65,13 +83,13 @@ class AssetProvider with ChangeNotifier {
     );
     if (!verifyStatusCode) return null;
     notifyListeners();
-    return _decodeAssetsModelFromResponseBody(response);
+    return _decodeAssetModelFromResponseBody(response);
   }
 
-  AssetModel _decodeAssetsModelFromResponseBody(Response response) {
+  AssetModel _decodeAssetModelFromResponseBody(Response response) {
     final Map<String, dynamic> body = jsonDecode(response.body);
-    final AssetDto receivedAssets = AssetDto.fromJson(body);
-    return receivedAssets.toModel();
+    final AssetDto assetDto = AssetDto.fromJson(body);
+    return assetDto.toModel();
   }
 
   Future<void> fetchAndSetAuthToken(AuthProvider authProvider) async {

@@ -109,11 +109,11 @@ class AssetsTableState extends State<AssetsTable> {
               showCheckboxColumn: false,
               rowsPerPage: 50,
               columns: [
+                DataColumn(label: Text(tr("assets.headlines.name"))),
+                DataColumn(label: Text(tr("assets.headlines.filter"))),
                 DataColumn(
                   label: Text(tr("assets.headlines.timeOfGeneration")),
                 ),
-                DataColumn(label: Text(tr("assets.headlines.name"))),
-                DataColumn(label: Text(tr("assets.headlines.filter"))),
               ],
             ),
           ),

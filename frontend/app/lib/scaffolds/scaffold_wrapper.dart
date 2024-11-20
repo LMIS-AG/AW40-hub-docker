@@ -1,10 +1,13 @@
 import "dart:async";
 
 import "package:aw40_hub_frontend/dialogs/add_case_dialog.dart";
+import "package:aw40_hub_frontend/dialogs/create_asset_dialog.dart";
 import "package:aw40_hub_frontend/dialogs/filter_cases_dialog.dart";
+import "package:aw40_hub_frontend/dtos/new_asset_dto.dart";
 import "package:aw40_hub_frontend/dtos/new_case_dto.dart";
 import "package:aw40_hub_frontend/models/logged_in_user_model.dart";
 import "package:aw40_hub_frontend/models/navigation_item_model.dart";
+import "package:aw40_hub_frontend/providers/assets_provider.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/scaffolds/desktop_scaffold.dart";
@@ -58,6 +61,16 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
     );
   }
 
+  Future<NewAssetDto?> _showCreateAssetDialog() async {
+    final NewAssetDto? newCase = await showDialog<NewAssetDto>(
+      context: context,
+      builder: (BuildContext context) {
+        return CreateAssetDialog();
+      },
+    );
+    return newCase;
+  }
+
   Future<NewCaseDto?> _showAddCaseDialog() async {
     final NewCaseDto? newCase = await showDialog<NewCaseDto>(
       context: context,
@@ -107,6 +120,7 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
 
   List<NavigationMenuItemModel> _getMenuItemModels() {
     final caseProvider = Provider.of<CaseProvider>(context, listen: false);
+    final assetProvider = Provider.of<AssetProvider>(context, listen: false);
     final List<NavigationMenuItemModel> navigationItemModels = [
       NavigationMenuItemModel(
         title: tr("cases.title"),
@@ -114,56 +128,78 @@ class _ScaffoldWrapperState extends State<ScaffoldWrapper> {
         destination: kRouteCases,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 64),
-            child: Row(
-              children: [
-                Transform.scale(
-                  scale: 0.75,
-                  child: Tooltip(
-                    message: tr("cases.filterDialog.toggleShared"),
-                    child: Switch(
-                      value: _switchState,
-                      onChanged: (v) async {
-                        setState(() {
-                          _switchState = v;
-                        });
-                        await Provider.of<CaseProvider>(
-                          context,
-                          listen: false,
-                        ).toggleShowSharedCases();
-                      },
-                    ),
-                  ),
+            padding: const EdgeInsets.only(right: 8),
+            child: Transform.scale(
+              scale: 0.75,
+              child: Tooltip(
+                message: tr("cases.filterDialog.toggleShared"),
+                child: Switch(
+                  value: _switchState,
+                  onChanged: (v) async {
+                    setState(() {
+                      _switchState = v;
+                    });
+                    await Provider.of<CaseProvider>(
+                      context,
+                      listen: false,
+                    ).toggleShowSharedCases();
+                  },
                 ),
-              ],
+              ),
             ),
           ),
-          IconButton(
-            onPressed: () async {
-              final NewCaseDto? newCase = await _showAddCaseDialog();
-              if (newCase == null) return;
-              await caseProvider.addCase(newCase);
-            },
-            icon: const Icon(Icons.add),
-            tooltip: tr("cases.actions.addCase"),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.sort),
-            tooltip: tr("cases.actions.sortCases"),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: _isFilterActive
-                  ? Colors.blue.withOpacity(0.2)
-                  : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
             child: IconButton(
-              onPressed: () async => _showFilterCasesDialog(),
-              icon: const Icon(Icons.filter_list),
-              color: _isFilterActive ? Colors.blue : null,
-              tooltip: tr("cases.actions.filterCases"),
+              onPressed: _isFilterActive &&
+                      !caseProvider
+                          .notifiedListenersAfterGettingEmptyCurrentCases
+                  ? () async {
+                      final NewAssetDto? newAsset =
+                          await _showCreateAssetDialog();
+                      if (newAsset == null) return;
+                      await assetProvider.createAsset(newAsset);
+                    }
+                  : null,
+              icon: const Icon(Icons.create_new_folder),
+              tooltip: tr("cases.actions.createAsset"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () async {
+                final NewCaseDto? newCase = await _showAddCaseDialog();
+                if (newCase == null) return;
+                await caseProvider.addCase(newCase);
+              },
+              icon: const Icon(Icons.add_circle),
+              tooltip: tr("cases.actions.addCase"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.sort),
+              tooltip: tr("cases.actions.sortCases"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: _isFilterActive
+                    ? Colors.blue.withOpacity(0.2)
+                    : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: () async => _showFilterCasesDialog(),
+                icon: const Icon(Icons.filter_list),
+                color: _isFilterActive ? Colors.blue : null,
+                tooltip: tr("cases.actions.filterCases"),
+              ),
             ),
           )
         ],
