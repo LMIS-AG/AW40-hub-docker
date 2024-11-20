@@ -522,6 +522,20 @@ class HttpService {
     );
   }
 
+  Future<http.Response> publishAsset(
+    String token,
+    String assetId,
+    Map<String, dynamic> requestBody,
+  ) {
+    return _client.post(
+      Uri.parse("$backendUrl/dataspace/manage/assets/$assetId/publication"),
+      headers: getAuthHeaderWith(token, {
+        "Content-Type": "application/json; charset=UTF-8",
+      }),
+      body: jsonEncode(requestBody),
+    );
+  }
+
   Future<http.Response> getVehicleComponents(
     String token,
   ) {

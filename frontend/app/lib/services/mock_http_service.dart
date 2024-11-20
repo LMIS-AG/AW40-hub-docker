@@ -1503,4 +1503,13 @@ class MockHttpService implements HttpService {
     // TODO: implement createAsset
     throw UnimplementedError();
   }
+
+  Future<Response> publishAsset(
+    String token,
+    String assetId,
+    Map<String, dynamic> requestBody,
+  ) {
+    // TODO: implement publishAsset
+    throw UnimplementedError();
+  }
 }

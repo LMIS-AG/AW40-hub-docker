@@ -30,7 +30,7 @@ class PublicationDto {
 
   String network;
   String license;
-  int? price;
+  double? price;
   String did;
   @JsonKey(name: "asset_url")
   String assetUrl;

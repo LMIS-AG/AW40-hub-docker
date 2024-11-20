@@ -1,3 +1,5 @@
+import "package:aw40_hub_frontend/dialogs/offer_assets_dialog.dart";
+import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -102,8 +104,10 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                   children: [
                     FilledButton.icon(
                       icon: const Icon(Icons.drive_folder_upload_outlined),
-                      label: Text(tr("assets.upload")),
-                      onPressed: () {},
+                      label: Text(tr("assets.upload.offer")),
+                      onPressed: () async {
+                        await _showOfferAssetsDialog();
+                      },
                     ),
                   ],
                 ),
@@ -115,14 +119,12 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     );
   }
 
-  /*Future<AssetsUpdateDto?> _showUpdateAssetsDialog(
-    AssetsModel assetsModel,
-  ) async {
-    return showDialog<AssetsUpdateDto>(
+  Future<AssetDto?> _showOfferAssetsDialog() async {
+    return showDialog<AssetDto>(
       context: context,
       builder: (BuildContext context) {
-        return UpdateAssetsDialog(assetsModel: assetsModel);
+        return const OfferAssetsDialog();
       },
     );
-  }*/
+  }
 }
