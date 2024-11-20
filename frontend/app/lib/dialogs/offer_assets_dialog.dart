@@ -131,6 +131,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   }
 
   static Future<bool?> _showConfirmOfferDialog(BuildContext context) {
+    final theme = Theme.of(context);
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -143,8 +144,9 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
               onPressed: () => Navigator.pop(context, false),
               child: Text(
                 tr("general.cancel"),
-                //style: theme.textTheme.labelLarge?.copyWith(
-                // color: theme.colorScheme.error, ),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
               ),
             ),
             TextButton(
@@ -163,6 +165,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
     await Routemaster.of(context).pop();
   }
 
+  // TODO remove?
   /*Future<String?> _showConfirmRemoveDialog(BuildContext context) async {
     final TextEditingController privateKeyController = TextEditingController();
 
