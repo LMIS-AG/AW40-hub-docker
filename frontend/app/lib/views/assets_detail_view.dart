@@ -1,21 +1,23 @@
+import "package:aw40_hub_frontend/dialogs/offer_assets_dialog.dart";
+import "package:aw40_hub_frontend/dtos/asset_dto.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 class AssetsDetailView extends StatelessWidget {
   const AssetsDetailView({
-    required this.assetsModel,
+    required this.assetModel,
     required this.onClose,
     super.key,
   });
 
-  final AssetModel assetsModel;
+  final AssetModel assetModel;
   final void Function() onClose;
 
   @override
   Widget build(BuildContext context) {
     return DesktopAssetsDetailView(
-      assetsModel: assetsModel,
+      assetModel: assetModel,
       onClose: onClose,
       onDelete: () {},
     );
@@ -24,13 +26,13 @@ class AssetsDetailView extends StatelessWidget {
 
 class DesktopAssetsDetailView extends StatefulWidget {
   const DesktopAssetsDetailView({
-    required this.assetsModel,
+    required this.assetModel,
     required this.onClose,
     required this.onDelete,
     super.key,
   });
 
-  final AssetModel assetsModel;
+  final AssetModel assetModel;
   final void Function() onClose;
   final void Function() onDelete;
 
@@ -52,9 +54,9 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
       tr("assets.headlines.filter")
     ];
     final List<String> valuesCase = [
-      widget.assetsModel.timestamp.toString(),
-      widget.assetsModel.name,
-      widget.assetsModel.definition.toString(),
+      widget.assetModel.timestamp.toString(),
+      widget.assetModel.name,
+      widget.assetModel.definition.toJsonWithoutNullValues().toString(),
     ];
 
     return SizedBox.expand(
@@ -75,7 +77,6 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                         foregroundColor: colorScheme.primary,
                       ),
                     ),
-                    // const SizedBox(width: 16),
                     Text(
                       tr("cases.details.headline"),
                       style: textTheme.displaySmall,
@@ -102,8 +103,10 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                   children: [
                     FilledButton.icon(
                       icon: const Icon(Icons.drive_folder_upload_outlined),
-                      label: Text(tr("assets.upload")),
-                      onPressed: () {},
+                      label: Text(tr("assets.upload.offer")),
+                      onPressed: () async {
+                        await _showOfferAssetsDialog();
+                      },
                     ),
                   ],
                 ),
@@ -115,14 +118,12 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
     );
   }
 
-  /*Future<AssetsUpdateDto?> _showUpdateAssetsDialog(
-    AssetsModel assetsModel,
-  ) async {
-    return showDialog<AssetsUpdateDto>(
+  Future<AssetDto?> _showOfferAssetsDialog() async {
+    return showDialog<AssetDto>(
       context: context,
       builder: (BuildContext context) {
-        return UpdateAssetsDialog(assetsModel: assetsModel);
+        return OfferAssetsDialog(assetModelId: widget.assetModel.id!);
       },
     );
-  }*/
+  }
 }

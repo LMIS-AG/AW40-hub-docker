@@ -9,11 +9,15 @@ class AssetDefinitionModel {
   String? obdDataDtc;
   String? timeseriesDataComponent;
 
-  Map<String, dynamic> toJson() {
-    return {
-      "vin": vin,
-      "obdDataDtc": obdDataDtc,
-      "timeseriesDataComponent": timeseriesDataComponent,
-    };
+  Map<String, dynamic> toJsonWithoutNullValues() {
+    final Map<String, dynamic> data = {};
+
+    if (vin != null) data["vin"] = vin;
+    if (obdDataDtc != null) data["obdDataDtc"] = obdDataDtc;
+    if (timeseriesDataComponent != null) {
+      data["timeseriesDataComponent"] = timeseriesDataComponent;
+    }
+
+    return data;
   }
 }

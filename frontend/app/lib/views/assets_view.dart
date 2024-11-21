@@ -1,7 +1,7 @@
 import "package:aw40_hub_frontend/data_sources/assets_data_table_source.dart";
 import "package:aw40_hub_frontend/exceptions/app_exception.dart";
 import "package:aw40_hub_frontend/models/asset_model.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/asset_provider.dart";
 import "package:aw40_hub_frontend/utils/enums.dart";
 import "package:aw40_hub_frontend/views/assets_detail_view.dart";
 import "package:easy_localization/easy_localization.dart";
@@ -43,15 +43,16 @@ class _AssetsView extends State<AssetsView> {
           _logger.shout(snapshot.data);
           return const Center(child: CircularProgressIndicator());
         }
-        final List<AssetModel>? vehicleModels = snapshot.data;
-        if (vehicleModels == null) {
+        final List<AssetModel>? assetModels = snapshot.data;
+        if (assetModels == null) {
           throw AppException(
             exceptionType: ExceptionType.notFound,
             exceptionMessage: "Received no assets.",
           );
         }
+
         return AssetsTable(
-          assetsModels: vehicleModels,
+          assetModels: assetModels,
           caseIndexNotifier: currentCaseIndexNotifier,
         );
       },
@@ -61,12 +62,12 @@ class _AssetsView extends State<AssetsView> {
 
 class AssetsTable extends StatefulWidget {
   const AssetsTable({
-    required this.assetsModels,
+    required this.assetModels,
     required this.caseIndexNotifier,
     super.key,
   });
 
-  final List<AssetModel> assetsModels;
+  final List<AssetModel> assetModels;
   final ValueNotifier<int?> caseIndexNotifier;
 
   @override
@@ -84,7 +85,7 @@ class AssetsTableState extends State<AssetsTable> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.assetsModels.isEmpty) {
+    if (widget.assetModels.isEmpty) {
       return Center(
         child: Text(
           tr("assets.noAssets"),
@@ -102,7 +103,7 @@ class AssetsTableState extends State<AssetsTable> {
               source: AssetsDataTableSource(
                 themeData: Theme.of(context),
                 currentIndexNotifier: currentAssetsIndexNotifier,
-                assetModels: widget.assetsModels,
+                assetModels: widget.assetModels,
                 onPressedRow: (int i) =>
                     setState(() => currentAssetsIndexNotifier.value = i),
               ),
@@ -127,7 +128,7 @@ class AssetsTableState extends State<AssetsTable> {
             return Expanded(
               flex: 2,
               child: AssetsDetailView(
-                assetsModel: widget.assetsModels[value],
+                assetModel: widget.assetModels[value],
                 onClose: () => currentAssetsIndexNotifier.value = null,
               ),
             );

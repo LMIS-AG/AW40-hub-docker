@@ -1,6 +1,6 @@
 import "package:aw40_hub_frontend/configs/localization_config.dart";
 import "package:aw40_hub_frontend/main.dart";
-import "package:aw40_hub_frontend/providers/assets_provider.dart";
+import "package:aw40_hub_frontend/providers/asset_provider.dart";
 import "package:aw40_hub_frontend/providers/auth_provider.dart";
 import "package:aw40_hub_frontend/providers/case_provider.dart";
 import "package:aw40_hub_frontend/providers/customer_provider.dart";

@@ -174,10 +174,19 @@ vehicles:
 assets:
   title: "Assets"
   headlines:
-    timeOfGeneration: "Zeitpunkt der Generation"
-    name: "Name"
+    description: "Beschreibung"
     filter: "Filter"
-  upload: "Asset-Upload"
+    name: "Name"
+    timeOfGeneration: "Zeitpunkt der Generation"
+  confirmation:
+    title: Asset Upload
+    descrption: "Möchten Sie das Asset wirklich anbieten?"
+  upload:
+    title: "Asset-Upload"
+    price: "Preis"
+    license: "Lizenz"
+    privateKey: "Private Key"
+    offer: "Anbieten"
   noAssets: "Keine Assets"
 training:
   title: "Schulung"

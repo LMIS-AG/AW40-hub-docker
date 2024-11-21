@@ -1,15 +1,13 @@
-class PublicationModel {
-  PublicationModel({
+class NewPublicationModel {
+  NewPublicationModel({
     required this.network,
     required this.license,
     required this.price,
-    required this.did,
-    required this.assetUrl,
+    required this.privateKey,
   });
 
   String network;
   String license;
   double? price;
-  String did;
-  String assetUrl;
+  String privateKey;
 }
