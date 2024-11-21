@@ -192,6 +192,7 @@ assets:
     privateKey: "Private Key"
     offer: "Anbieten"
     retract: "Entfernen"
+    invalidPriceFormat: "Ungültiges Preis-Format"
   noAssets: "Keine Assets"
 training:
   title: "Schulung"

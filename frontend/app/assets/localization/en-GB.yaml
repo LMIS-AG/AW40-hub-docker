@@ -193,6 +193,7 @@ assets:
     privateKey: "Private Key"
     offer: "Offer"
     retract: "Retract"
+    invalidPriceFormat: "Invalid price format"
   noAssets: "No Assets"
 training:
   title: "Training"
