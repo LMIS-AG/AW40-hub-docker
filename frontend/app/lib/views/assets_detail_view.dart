@@ -108,6 +108,18 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
                         await _showOfferAssetsDialog();
                       },
                     ),
+                    const SizedBox(width: 16),
+                    FilledButton.icon(
+                      icon: const Icon(Icons.unpublished_outlined),
+                      label: Text(tr("assets.upload.retract")),
+                      onPressed: () async {
+                        final bool confirmation =
+                            await _showConfirmRemoveDialog(context) ?? false;
+                        if (confirmation) {
+                          // await _removeAsset(context);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -123,6 +135,56 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
       context: context,
       builder: (BuildContext context) {
         return OfferAssetsDialog(assetModelId: widget.assetModel.id!);
+      },
+    );
+  }
+
+  Future<bool?> _showConfirmRemoveDialog(BuildContext context) async {
+    final TextEditingController privateKeyController = TextEditingController();
+
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          title: Text(tr("assets.remove.title")),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(tr("assets.remove.description")),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: privateKeyController,
+                decoration: InputDecoration(
+                  labelText: tr("assets.upload.privateKey"),
+                  border: const OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: Text(
+                tr("general.cancel"),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                final privateKey = privateKeyController.text;
+                Navigator.pop(
+                  context,
+                  privateKey.isNotEmpty ? privateKey : null,
+                );
+              },
+              child: Text(tr("general.confirm")),
+            ),
+          ],
+        );
       },
     );
   }

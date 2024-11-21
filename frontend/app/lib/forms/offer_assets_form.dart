@@ -20,7 +20,6 @@ class OfferAssetsForm extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           width: 192,
-          height: 66,
           child: TextFormField(
             controller: priceController,
             decoration: InputDecoration(

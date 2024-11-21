@@ -5,6 +5,7 @@ general:
   city: "City"
   close: "Close"
   component: "Component"
+  confirm: "Confirm"
   create: "Create"
   customer: "Customer"
   customerId: "Customer ID"
@@ -182,12 +183,17 @@ assets:
   confirmation:
     title: Asset Upload
     descrption: "Do you really would like to offer the asset?"
+  remove:
+    title: "Remove Asset"
+    description: "Do you really would like to remove the asset?"
   upload:
-    title: "Asset-Upload"
+    title: "Asset Upload"
     price: "Price"
     license: "License"
     privateKey: "Private Key"
     offer: "Offer"
+    retract: "Retract"
+    invalidPriceFormat: "Invalid price format"
   noAssets: "No Assets"
 training:
   title: "Training"

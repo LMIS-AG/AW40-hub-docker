@@ -93,7 +93,7 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
 
               if (confirmation) {
                 await _publishAsset(price, licenseType, privateKeyType);
-              } else {}
+              }
             }
           },
           child: Text(tr("assets.upload.offer")),
@@ -123,7 +123,6 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        //final theme = Theme.of(context);
         return AlertDialog(
           title: Text(tr("assets.confirmation.title")),
           content: Text(tr("assets.confirmation.description")),
@@ -152,57 +151,6 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
   Future<void> _onCancel(BuildContext context) async {
     await Routemaster.of(context).pop();
   }
-
-  // TODO remove?
-  /*Future<String?> _showConfirmRemoveDialog(BuildContext context) async {
-    final TextEditingController privateKeyController = TextEditingController();
-
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        final theme = Theme.of(context);
-        return AlertDialog(
-          title: Text(tr("assets.remove.title")),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(tr("assets.remove.description")),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: privateKeyController,
-                decoration: InputDecoration(
-                  labelText: tr("assets.privateKey"),
-                  border: const OutlineInputBorder(),
-                ),
-                obscureText: true,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, null),
-              child: Text(
-                tr("general.cancel"),
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                final privateKey = privateKeyController.text;
-                Navigator.pop(
-                  context,
-                  privateKey.isNotEmpty ? privateKey : null,
-                );
-              },
-              child: Text(tr("general.confirm")),
-            ),
-          ],
-        );
-      },
-    );
-  }*/
 }
 
 // ignore: must_be_immutable
