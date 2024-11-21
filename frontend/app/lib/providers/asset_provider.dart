@@ -21,8 +21,6 @@ class AssetProvider with ChangeNotifier {
 
   final Logger _logger = Logger("asset_provider");
 
-  late final String privateKey;
-
   String? _authToken;
 
   Future<List<AssetModel>> getAssets() async {
