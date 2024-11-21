@@ -5,6 +5,7 @@ general:
   city: "City"
   close: "Close"
   component: "Component"
+  confirm: "Confirm"
   create: "Create"
   customer: "Customer"
   customerId: "Customer ID"
@@ -191,6 +192,7 @@ assets:
     license: "License"
     privateKey: "Private Key"
     offer: "Offer"
+    retract: "Retract"
   noAssets: "No Assets"
 training:
   title: "Training"
