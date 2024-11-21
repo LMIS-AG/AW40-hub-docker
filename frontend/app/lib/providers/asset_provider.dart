@@ -20,8 +20,7 @@ class AssetProvider with ChangeNotifier {
   final HttpService _httpService;
 
   final Logger _logger = Logger("asset_provider");
-  // TODO remove and replace with param in delete method
-  late final String assetId;
+
   late final String privateKey;
 
   String? _authToken;
@@ -83,7 +82,7 @@ class AssetProvider with ChangeNotifier {
     return _decodeNewPublicationModelFromResponseBody(response);
   }
 
-  Future<bool> deleteAsset(String privateKey) async {
+  Future<bool> deleteAsset(String assetId, String privateKey) async {
     final String authToken = _getAuthToken();
     final Response response = await _httpService.deleteAsset(
       authToken,
