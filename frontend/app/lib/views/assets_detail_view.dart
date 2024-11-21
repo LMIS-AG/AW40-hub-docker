@@ -177,7 +177,9 @@ class _DesktopAssetsDetailViewState extends State<DesktopAssetsDetailView> {
               onPressed: () {
                 final privateKey = privateKeyController.text;
                 Navigator.pop(
-                    context, privateKey.isNotEmpty ? privateKey : null);
+                  context,
+                  privateKey.isNotEmpty ? privateKey : null,
+                );
               },
               child: Text(tr("general.confirm")),
             ),
