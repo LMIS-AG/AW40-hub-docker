@@ -93,10 +93,26 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
 
               if (confirmation) {
                 await _publishAsset(price, licenseType, privateKeyType);
-              } else {}
+              }
             }
           },
           child: Text(tr("assets.upload.offer")),
+        ),
+        TextButton(
+          onPressed: () async {
+            final bool confirmation =
+                await _showConfirmRemoveDialog(context) ?? false;
+
+            if (confirmation) {
+              // await _removeAsset(context);
+            }
+          },
+          child: Text(
+            tr("assets.upload.remove"),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
         ),
       ],
     );
@@ -203,6 +219,53 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
       },
     );
   }*/
+}
+
+Future<bool?> _showConfirmRemoveDialog(BuildContext context) async {
+  final TextEditingController privateKeyController = TextEditingController();
+
+  return showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      final theme = Theme.of(context);
+      return AlertDialog(
+        title: Text(tr("assets.remove.title")),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(tr("assets.remove.description")),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: privateKeyController,
+              decoration: InputDecoration(
+                labelText: tr("assets.upload.privateKey"),
+                border: const OutlineInputBorder(),
+              ),
+              obscureText: true,
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: Text(
+              tr("general.cancel"),
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              final privateKey = privateKeyController.text;
+              Navigator.pop(context, privateKey.isNotEmpty ? privateKey : null);
+            },
+            child: Text(tr("general.confirm")),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 // ignore: must_be_immutable

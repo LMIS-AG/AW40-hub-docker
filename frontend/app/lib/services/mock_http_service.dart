@@ -1502,4 +1502,10 @@ class MockHttpService implements HttpService {
     // TODO: implement publishAsset
     throw UnimplementedError();
   }
+
+  @override
+  Future<Response> deleteAsset(String token, String assetId) {
+    // TODO: implement deleteAsset
+    throw UnimplementedError();
+  }
 }
