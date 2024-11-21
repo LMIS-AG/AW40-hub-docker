@@ -139,7 +139,6 @@ class _OfferAssetsDialogState extends State<OfferAssetsDialog> {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        //final theme = Theme.of(context);
         return AlertDialog(
           title: Text(tr("assets.confirmation.title")),
           content: Text(tr("assets.confirmation.description")),
