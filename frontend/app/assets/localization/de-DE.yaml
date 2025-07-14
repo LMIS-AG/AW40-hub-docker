@@ -89,6 +89,7 @@ diagnoses:
     dragAndDrop: "Datei per Drag & Drop hier ablegen"
     dropFileError: "Die Datei konnte nicht erfasst werden"
     uploadDataSuccessMessage: "Die Daten wurden erfolgreich hochgeladen."
+    uploadDragAndDropfailed: "Fehlgeschlagen. Es muss noch eine Daten-File hinzugefügt werden."
     uploadDataErrorMessage: "Die Daten konnten nicht hochgeladen werden."
     noFaultPathFound: "Kein Fehlerpfad gefunden"
     noStateMachineLog: "Kein State-Machine-Protokoll verfügbar"
@@ -210,6 +211,7 @@ noAuthorization:
 forms:
   submit: "Hochladen"
   optional: "optional"
+  mandatory: "mandatorisch"
   validation:
     enterText: "Bitte geben Sie einen Text ein"
     enterNumber: "Bitte geben Sie eine Nummer ein"
@@ -239,6 +241,7 @@ forms:
       labelD: "Komponente D"
       label: "Label"
       hint: "Komponente eingeben"
+      required: "Komponente A und Label A erforderlich"
   timeseries:
     label: "Label"
     component:

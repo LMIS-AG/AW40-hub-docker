@@ -53,13 +53,14 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                 Expanded(
                   flex: 2,
                   child: TextFormField(
+                    validator: _validation,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _componentAController,
                     decoration: InputDecoration(
                       labelText: tr("forms.picoscope.component.labelA"),
                       hintText: tr("forms.picoscope.component.hint"),
                       border: const OutlineInputBorder(),
-                      suffixText: tr("forms.optional"),
+                      suffixText: tr("forms.mandatory"),
                     ),
                   ),
                 ),
@@ -68,7 +69,7 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
                   child: DropdownMenu<PicoscopeLabel>(
                     controller: _labelAController,
                     label: Text(tr("forms.picoscope.component.label")),
-                    hintText: tr("forms.optional"),
+                    hintText: tr("forms.mandatory"),
                     onSelected: (PicoscopeLabel? picoscopeLabel) {
                       setState(() {
                         selectedLabelA = picoscopeLabel;
@@ -214,13 +215,20 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     );
   }
 
+  String? _validation(String? value) {
+    if (value == null || value.isEmpty) {
+      return tr("forms.validation.enterText");
+    }
+    return null;
+  }
+
   Future<void> _onSubmit() async {
     final messengerState = ScaffoldMessenger.of(context);
     final Uint8List? file = _file;
     if (file == null) {
       messengerState.showSnackBar(
         SnackBar(
-          content: Text(tr("diagnoses.details.uploadDataErrorMessage")),
+          content: Text(tr("diagnoses.details.uploadDragAndDropfailed")),
         ),
       );
       return;
@@ -245,6 +253,15 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
     final PicoscopeLabel? labelD =
         EnumToString.fromString(PicoscopeLabel.values, _labelDController.text);
 
+    if (componentA == "" || labelA == null) {
+      messengerState.showSnackBar(
+        SnackBar(
+          content: Text(tr("forms.picoscope.component.required")),
+        ),
+      );
+      return;
+    }
+
     final bool result = await provider.uploadPicoscopeData(
       widget.caseId,
       file,
@@ -263,5 +280,10 @@ class _UploadPicoscopeFormState extends State<UploadPicoscopeForm> {
         ? tr("diagnoses.details.uploadDataSuccessMessage")
         : tr("diagnoses.details.uploadDataErrorMessage");
     messengerState.showSnackBar(SnackBar(content: Text(snackBarText)));
+    _closeForm();
+  }
+
+  void _closeForm() {
+    Navigator.of(context).pop();
   }
 }

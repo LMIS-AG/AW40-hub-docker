@@ -90,6 +90,7 @@ diagnoses:
     dragAndDrop: "Drag and drop the file here"
     dropFileError: "The file could not be captured."
     uploadDataSuccessMessage: "The data has been uploaded successfully."
+    uploadDragAndDropfailed: "Failed. A Datafile has to be uploaded."
     uploadDataErrorMessage: "The data could not be uploaded."
     noFaultPathFound: "No fault path found"
     noStateMachineLog: "No state machine log available"
@@ -211,6 +212,7 @@ noAuthorization:
 forms:
   submit: "Submit"
   optional: "optional"
+  mandatory: "mandatory"
   validation:
     enterText: "Please enter some text"
     enterNumber: "Please enter a number"
@@ -240,6 +242,7 @@ forms:
       labelD: "Component D"
       label: "Label"
       hint: "Enter a Component"
+      required: "Component A und Label A required"
   timeseries:
     label: "Label"
     component:
