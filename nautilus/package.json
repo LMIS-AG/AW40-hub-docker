@@ -14,7 +14,7 @@
     "@deltadao/nautilus": "^1.0.1",
     "body-parser": "^1.20.3",
     "dotenv": "^16.3.1",
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "express": "^4.21.0",
     "express-validator": "^7.2.0",
     "swagger-ui-express": "^5.0.1"
